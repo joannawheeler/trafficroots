@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Ad;
 use App\Site;
 use App\Zone;
 use App\ModuleType;
 use App\LocationType;
+use App\PublisherBooking;
 use DB;
 use Log;
 use Auth;
@@ -63,6 +65,47 @@ class ZoneController extends Controller
 
         }
     }
+    private function insertFirstAd($handle,$location_type)
+    {
+        try{
+            $ad = new Ad();
+            $data = array();
+            $data['zone_handle'] = $handle;
+            $data['location_type'] = $location_type;
+            $data['weight'] = 100;
+            $data['status'] = 1;
+            $ad->fill($data);
+            $ad->save();
+            return true;
+        }catch(Exception $e){
+            Log::error($e->getMessage());
+            return false;
+
+        }
+
+    }
+    private function insertPublisherBooking($handle)
+    {
+        try{
+            $zone = Zone::where('handle', $handle)->first();
+            $booking = new PublisherBooking();
+            $data = array();
+            $data['zone_id'] = $zone->id;
+            $data['site_id'] = $zone->site_id;
+            $data['pub_id'] = $zone->pub_id;
+            $data['start_date'] = date('Y-m-d');
+            $data['end_date'] = date('Y-m-d', strtotime('last day of this month'));
+            $booking->fill($data);
+            $booking->save();
+            return true;       
+
+
+        }catch(Exception $e){
+            Log::error($e->getMessage());
+            return false;
+        }
+
+    }
     public function postZone(Request $request)
     {
         try{
@@ -74,8 +117,11 @@ class ZoneController extends Controller
             if(sizeof($site)){
                 $zone = new Zone();
                 $data['handle'] = bin2hex(random_bytes(5));
+                $data['pub_id'] = $user->id;
                 $zone->fill($data);
                 $zone->save();
+                $this->insertFirstAd($data['handle'],$data['location_type']);
+                $this->insertPublisherBooking($data['handle']);
                 Session::flash('status', 'Zone Creation was Successful');
                 return redirect()->action('HomeController@index');
             }else{

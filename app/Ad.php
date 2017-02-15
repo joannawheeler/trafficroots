@@ -6,5 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ad extends Model
 {
-    //
+    //TrafficRoots Ad Model
+    protected $table = 'ads';
+    protected $fillable = ['zone_handle','location_type','status','buyer_id','weight','country_id','state_id',
+                           'city_id','category_id','device_id','os_id','browser_id'];
 }

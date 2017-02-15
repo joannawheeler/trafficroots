@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>TrafficRoots</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
@@ -81,7 +81,6 @@
                 <div class="links">
                     <a href="https://publishers.telematronics.com">Publishers</a>
                     <a href="https://buyers.telematronics.com">Advertisers</a>
-                    <a href="https://laravel-news.com">News</a>
                     <a href="/about">About Us</a>
                     <a href="https://trafficroots.com">Home</a>
                 </div>
