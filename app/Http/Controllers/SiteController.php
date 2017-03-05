@@ -44,7 +44,7 @@ class SiteController extends Controller
             $site->site_handle = uniqid();
             $site->save();
 
-            return redirect()->action('SiteController@index');
+            return redirect()->action('HomeController@index');
         }catch(Exception $e){
             Log::error($e->getMessage());
         }

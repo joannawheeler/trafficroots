@@ -12,13 +12,13 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/home');
 });
 
 Route::get('/pixel/{handle?}', 'PixelController@getIndex');
 Route::get('/analysis/{handle}', 'SiteController@analyzeSite'); 
 Auth::routes();
-Route::get('/about', 'HomeController@aboutUs');
+Route::get('/about', 'PublicController@aboutUs');
 Route::get('/home', 'HomeController@index');
 Route::get('/sites', 'SiteController@index');
 Route::post('/sites', 'SiteController@postSite');

@@ -15,7 +15,7 @@
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label" for="site_url">Site URL</label>
+            <label class="control-label" for="site_url">Site URL</label>&nbsp;&nbsp;-&nbsp;&nbsp;<small>Must be a valid URL, including http:// or https://</small>
             <div class="controls">
                 <input type="url" size="45" maxlength="60" id="site_url" name="site_url" class="border-radius-none" placeholder="Site URL" required>
             </div>
@@ -32,7 +32,7 @@
         <div class="control-group">
             {{ csrf_field() }}
             <br /><br /><div class="controls">
-                <input type="submit" value="Continue">
+                <input type="submit" value="Continue">&nbsp;&nbsp;<button class="button" onclick="window.location = '/home';">Cancel</button>
             </div>
         </div>
             </form>
