@@ -29,4 +29,5 @@ Route::get('/addzone/{site_id}', 'ZoneController@addZone');
 Route::post('/addzone/{site_id}', 'ZoneController@postZone');
 Route::get('/stats/zone/{zone_id}/{range}', 'StatsController@getZoneStats');
 Route::get('/stats/site/{site_id}/{range}', 'StatsController@getSiteStats');
-
+Route::get('/tickets', 'TicketController@index');
+Route::post('/tickets', 'TicketController@store');
