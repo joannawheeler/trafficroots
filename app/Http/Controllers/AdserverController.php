@@ -11,6 +11,7 @@ use DB;
 use App\Zone;
 use App\Site;
 use App\Ad;
+use App\DefaultAd;
 use App\Creative;
 use Illuminate\Http\Request;
 use App\Http\Controllers\PixelController;
@@ -37,7 +38,7 @@ class AdserverController extends Controller
         if(strlen($this->handle)){
             $this->zone = Cache::remember('zone_'.$this->handle, 60, function()
             {
-                return Zone::where('zone_handle', $this->handle)->first();
+                return Zone::where('handle', $this->handle)->first();
             });
             if($this->zone){
                 $ads = Cache::remember('ads_'.$this->handle, 10, function()
@@ -116,7 +117,28 @@ class AdserverController extends Controller
     }
     public function showDefaultAd()
     {
-        //todo: grab affiliate ad for this size and location
+        $ads = Cache::remember('default_ads_'.$this->handle, 10, function(){
+             return DefaultAd::where('location_type', $this->zone->location_type)->get();
+        });
+        $winner = $ads[mt_rand(0,sizeof($ads)-1)];
+        $this->recordDefaultImpression($winner);
+        if($winner->folder_id){
+            $this->returnIframe($winner->folder_id);
+        }else{
+            $this->returnDiv($winner->media_id, $winner->link_id);
+        } 
+  
+    }
+    public function returnIframe($folder_id)
+    {
+        $sql = 'select * from `buyers`.`folders` where id = '.$folder_id;
+        //die(''.$sql);
+        $folder = DB::select('select * from `buyers`.`folders` where id = '.$folder_id);
+        if(!$folder) die('fuck...');
+        $iframe = '<iframe frameborder="0" width="100%" height="100%" style="overflow: hidden; position: absolute;" src="https://buyers.trafficroots.com'
+                  .$folder[0]->file_location.'"></iframe>';
+        echo $iframe;
+
     }
     public function showGeoAd()
     {
@@ -130,7 +152,7 @@ class AdserverController extends Controller
             return BidCreative::where('bid_id', $bid->id)->orderBy('weight', 'desc')->get();
         });
         if(sizeof($creatives)){
-            if(sizeof($creatives == 1){
+            if(sizeof($creatives == 1)){
                 $creative = $creatives[0];
             }else{
                 $creative = $this->runCreativeLottery($creatives);
@@ -152,7 +174,7 @@ class AdserverController extends Controller
             return Creative::where('ad_id', $ad->id)->orderBy('weight', 'desc')->get();
         });
         if(sizeof($creatives)){
-            if(sizeof($creatives == 1){
+            if(sizeof($creatives == 1)){
                 $creative = $creatives[0];
             }else{
                 $creative = $this->runCreativeLottery($creatives);
@@ -164,6 +186,11 @@ class AdserverController extends Controller
     public function recordImpression($ad, $creative)
     {
         $keyname = 'IMPRESSION|'.date('Y-m-d').'|'.$this->handle.'|'.$ad->id.'|'.$creative->id.'|'.serialize($this->visitor);
+        Cache::increment($keyname);
+    }
+    public function recordDefaultImpression($ad)
+    {
+        $keyname = 'DEFAULT|'.date('Y-m-d').'|'.$this->handle.'|'.$ad->id.'|'.serialize($this->visitor);
         Cache::increment($keyname);
     }
 }
