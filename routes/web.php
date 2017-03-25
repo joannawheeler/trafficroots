@@ -32,3 +32,4 @@ Route::get('/stats/site/{site_id}/{range}', 'StatsController@getSiteStats');
 Route::get('/tickets', 'TicketController@index');
 Route::post('/tickets', 'TicketController@store');
 Route::get('/service/{handle}/{keywords?}', 'AdserverController@getIndex');
+Route::get('/click/{querystr}', 'AdserverController@clickedMe');
