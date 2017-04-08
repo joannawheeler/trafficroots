@@ -41,7 +41,7 @@
                     <div><a href="{{ url('/') }}"  style="float: left; padding-top: 10px;
     padding-right: 10px;
     padding-bottom: 10px;
-    padding-left: 10px;"><img src="{{ url('/logo.png') }}" alt="TrafficRoots" width="40" height="42"></a>&nbsp;<a href="{{ url('/') }}" class="navbar-brand">
+    padding-left: 10px;"><img src="{{ url('/trafficroots.jpeg') }}" alt="TrafficRoots" width="40" height="42"></a>&nbsp;<a href="{{ url('/') }}" class="navbar-brand">
                         {{ config('app.name', 'Laravel') }}
                     </a>
                     <img alt="Trafficroots Analysis Pixel" src="https://publishers.trafficroots.com/pixel/58daaf821381f" width: 1px; height: 1px;> 
