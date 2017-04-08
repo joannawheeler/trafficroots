@@ -142,7 +142,7 @@ class PixelController extends Controller
                 $browser_set = true;
             }
         }
-
+        $md['platform'] = $device;
         $md['geo'] = $result->country->isoCode;
         $md['state'] = $result->mostSpecificSubdivision->name;
         $md['city'] = $result->city->name;

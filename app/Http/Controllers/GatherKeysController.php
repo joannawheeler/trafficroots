@@ -7,10 +7,14 @@ use Illuminate\Support\Facades\Redis;
 use Cache;
 use DB;
 use Log;
+use App\Zone;
 use App\Site;
 use App\Browser;
 use App\OperatingSystem;
 use App\Platform;
+use App\Country;
+use App\City;
+use App\State;
 
 class GatherKeysController extends Controller
 {
@@ -21,6 +25,7 @@ class GatherKeysController extends Controller
     public function getIndex()
     {
         $this->gatherSiteKeys();
+        $this->gatherImpressions();
     }
     public function gatherSiteKeys()
     {
@@ -88,7 +93,76 @@ class GatherKeysController extends Controller
 
 
 
-        Log::info('Gather Keys ended.');        
+        Log::info('Gather Site Keys ended.');        
 
+    }
+    public function transposeUser($user)
+    {
+        $data = array();
+        if(is_array($user)){
+            $platform = Platform::where('platform', $user['platform'])->get();
+            $browser = Browser::where('browser', $user['browser'])->get();
+            $os = OperatingSystem::where('os', $user['os'])->get();
+            $country = Country::where('country_short', $user['geo'])->get();
+            if(!sizeof($country)){
+                DB::insert("INSERT INTO countries VALUES(NULL,'".$user['geo']."','',NULL,NULL);");
+                $country = Country::where('country_short', $user['geo'])->get();
+            }
+            $state = State::where('state_name', $user['state'])->get();
+            $city = City::where('state_code', $state[0]->id)->where('city_name', $user['city'])->get();
+            if(!sizeof($city)){
+                DB::insert("INSERT INTO cities VALUES(NULL,'".$user['city']."',".$state[0]->id.",NULL,NULL);");
+                $city = City::where('state_code', $state[0]->id)->where('city_name', $user['city'])->get();
+            }
+            $data['platform'] = $platform[0]->id;
+            $data['browser'] = $browser[0]->id;
+            $data['os'] = $os[0]->id;
+            $data['country'] = $country[0]->id;
+            $data['state'] = $state[0]->id;
+            $data['city'] = $city[0]->id;
+
+        }
+        return $data;
+
+    }
+    public function gatherImpressions()
+    {
+        // 'IMPRESSION|'.date('Y-m-d').'|'.$this->handle.'|'.$this->ad_id.'|'.$creative->id.'|'.serialize($this->visitor);
+        /* get impression keys */
+        $pairs = array();
+        do{
+            $keyname = Redis::spop('KEYS_IMPRESSIONS');
+            if(strlen(trim($keyname))){
+                $val = Redis::get($keyname);
+                Redis::del($keyname);
+                $stuff = explode("|", $keyname);
+                $visitor = unserialize($stuff[5]);
+                $zone = Zone::where('handle', $stuff[2])->first();
+          
+                $data = $this->transposeUser($visitor);
+                $pair = '('.$zone->site_id.','
+                        .$zone->id.",'"
+                        .$stuff[3]."',"
+                        .$stuff[4].','
+                        .$data['country'].','
+                        .$data['state'].','
+                        .$data['city'].','
+                        .$data['platform'].','
+                        .$data['os'].','
+                        .$data['browser'].','
+                        .$val.",'"
+                        .$stuff[1]."')";
+                 $pairs[] = $pair;
+            }
+        }while(!$keyname == '');
+        if(sizeof($pairs)){
+        $prefix = "INSERT INTO stats (`site_id`,`zone_id`,`ad_id`,`ad_creative_id`,
+                   `country_id`,`state_code`,`city_code`,`platform`,`os`,`browser`,`impressions`,`stat_date`) VALUES";
+        $suffix = " ON DUPLICATE KEY UPDATE `impressions` = `impressions` + VALUES(`impressions`);";
+        $query = $prefix.implode(",",$pairs).$suffix;
+        DB::insert($query);
+        Log::info($query);
+        }
+        Log::info('Impressions Gathered');
     }
 }

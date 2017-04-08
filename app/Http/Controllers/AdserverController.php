@@ -17,6 +17,12 @@ use App\Ad;
 use App\Bid;
 use App\DefaultAd;
 use App\Creative;
+use App\Browser;
+use App\OperatingSystem;
+use App\Platform;
+use App\Country;
+use App\State;
+use App\City;
 use Illuminate\Http\Request;
 use App\Http\Controllers\PixelController;
 class AdserverController extends Controller
@@ -27,6 +33,7 @@ class AdserverController extends Controller
     public $ad_id;
     public $creative;
     public $cookie;
+    public $keywords = array();
     public $campaign;
     public $debug = "Start\n";
 
@@ -38,6 +45,7 @@ class AdserverController extends Controller
     public function getIndex(Request $request)
     {
         $cookie = Cookie::get();
+        $this->cookie = $cookie;
         if(isset($cookie['pixel'])){
             $this->visitor = unserialize($cookie['pixel']);
         }else{
@@ -45,7 +53,11 @@ class AdserverController extends Controller
             $this->visitor = $pixel->getUser($request);
             setcookie('pixel',serialize($this->visitor),time() + 86400);
         }
-        $this->debug .= print_r($this->visitor,true);   
+        $this->debug .= "Visitor Info\n".print_r($this->visitor,true);
+        if(isset($request->keywords)){
+            $this->keywords = explode(" ",$request->keywords);
+            $this->debug .= "Keywords\n".print_r($this->keywords,true);
+        }
         $geos = array();
         $geo[] = 'US';
         $geo[] = 'CA';
@@ -57,6 +69,7 @@ class AdserverController extends Controller
                 return Zone::where('handle', $this->handle)->first();
             });
             $this->debug .= "Got Zone\n";
+            $this->readCookie();
             if($this->zone){
                 $ads = Cache::remember('ads_'.$this->handle, 10, function()
                 {
@@ -73,7 +86,7 @@ class AdserverController extends Controller
                     if(!$ad->buyer_id){
                         $this->debug .= "No fixed ads, falling to bidding\n";
                         $bid = $this->runBidLottery();
-                        $this->debug .= "Bidding Winner is Campaign ".$bid->id."\n";
+                        $this->debug .= "Bidding Winner is Campaign ".$bid->campaign_id."\n";
                         if(is_object($bid)){
                             $this->ad_id = 'BID_'.$bid->id;
                             $this->showBidAd($bid);
@@ -91,12 +104,46 @@ class AdserverController extends Controller
             }    
         }
     }
+    /**
+     * read cookies
+     * @author Cary White
+     */
+    public function readCookie()
+    {
+        $this->cookie = Cookie::get();
+        $cookies = $this->cookie;
+        $unique = true;
+        foreach($cookies as $key => $val){
+            if(substr($key,0,3) == "ad_"){
+                $cookieval = json_decode(Cookie::get($key));
+                $this->capped_ads[substr($key,3)] = $cookieval[0];
+            }            
+            if($key == $this->handle){
+                $unique = false;
+                $this->debug .= "You've visited this Zone already today\n";
+            }
+        }
+        if($unique){
+            $this->debug .= "This is your first visit\n";
+            setcookie($this->handle,"unique",strtotime("+1 day"));
+            $keyname = 'UNIQUE_'.$this->handle.'_'.date('Y-m-d');
+            Redis::incr($keyname);
+            $this->debug .= "Unique Visitor recorded on Zone ".$this->handle."\n";
+        }
+
+    }
     public function runBidLottery()
     {
-        $bids = Cache::remember('bids_'.$this->handle, 10, function()
+        $mybids = Cache::remember('bids_'.$this->handle, 10, function()
         {
             return Bid::where('zone_handle', $this->handle)->where('status', 1)->get();       
         });
+        $bids = array();
+        foreach($mybids as $bid){
+            $bids[] = $bid;
+        }
+        /* perform targeting and capping */
+        $bids = $this->shakeDown($bids);
         if(sizeof($bids)){
             $this->debug .= sizeof($bids)." Bidder(s) found\n";
             $weights = array();
@@ -113,22 +160,191 @@ class AdserverController extends Controller
                 $weights[$bid->id] += ($bid->bid / $cash) * 100;
             }
             //lottery
-            arsort($weights);
-            $rand = mt_rand($default,200);
-            $this->debug .= "Random number chosen: $rand\n";
+            $min = 200;
+            foreach($weights as $k => $v){
+                if($v < $min) $min = $v;
+            }
+            asort($weights);
+            $rand = mt_rand($min,200);
+            $this->debug .= "Random: $rand\nWeights:".print_r($weights,true)."\n";
             foreach($weights as $key => $value){
-                $this->debug .= "Rand = $rand\nValue = $value\n";            
-                if($rand <= $value){
+                if($value >= (200 -$rand)){
                     foreach($bids as $bid){
-                        if($bid->id == $key) {$this->debug .= "Returning Bid id ".$bid->id; return $bid;}
+                        if($bid->id == $key) {
+                            if($bid->frequency_capping){
+                                /* set cookie */
+                                $cookiename = 'ad_'.$bid->campaign_id;
+                                if(isset($_COOKIE[$cookiename])){
+                                    $thiscookie = json_decode($_COOKIE[$cookiename]);
+                                    $views = intval($thiscookie[0]);
+                                    $expires = intval($thiscookie[1]);
+                                    $views = ($views + 1); 
+                                    $thiscookie[0] = $views;
+                                    setcookie($cookiename,json_encode($thiscookie),$expires);
+                                    $this->debug .= "You've seen this ad $views times today\n";  
+                                }else{
+                                    /* set the cookie */
+                                    $cookieval = array(1,strtotime("+1 day"));
+                                    setcookie($cookiename,json_encode($cookieval),strtotime("+1 day"));
+                                    $this->debug .= "This is the first time you've seen this ad today.\n";
+                                }
+                            }else{$this->debug .= "This campaign does not employ frequency capping\n";}
+                            $this->debug .= "Returning Bid id ".$bid->id."\n";
+                            return $bid;
+                        }
                     }
                 }
             }
-            $this->debug .= "WTF?\n";    
             $this->showDefaultAd();        
          }else{
             $this->showDefaultAd();
         }
+    }
+    /**
+     * function to target and frequency cap ads
+     * @author Cary White
+     */
+    public function shakeDown($bids)
+    {
+        if(sizeof($bids)){
+            /* get valid targets for this instance */
+            /* platforms */
+            $valid_platforms = array();
+            $valid_platforms[] = 0;
+            $platforms = Platform::all();
+            foreach($platforms as $platform){
+                if($this->visitor['platform'] == $platform->platform) $valid_platforms[] = $platform->id;
+            }
+            /* operating systems */
+            $valid_os = array();
+            $valid_os[] = 0;
+            $os_targets = OperatingSystem::all();
+            foreach($os_targets as $os){
+                if($os->os == $this->visitor['os']) $valid_os[] = $os->id;
+            }            
+            /* browsers */
+            $valid_browsers = array();
+            $valid_browsers[] = 0;
+            $browsers = Browser::all();
+            foreach($browsers as $browser){
+                if($this->visitor['browser'] == $browser->browser) $valid_browsers[] = $browser->id;
+            }
+            /* countries */
+            $valid_geos = array();
+            $valid_geos[] = 0;
+            $countries = Country::all();
+            foreach($countries as $country){
+                if($this->visitor['geo'] == $country->country_short) $valid_geos[] = $country->id;
+            }
+            /* states */
+            $valid_states = array();
+            $valid_states[] = 0;
+            $states = State::all();
+            foreach($states as $state){
+                if($this->visitor['state'] == $state->state_name) $valid_states[] = $state->state_name;
+            }
+            /* cities */
+            $valid_cities = array();
+            $valid_cities[] = 0;
+            $cities = City::all();
+            foreach($cities as $city){
+                if($this->visitor['city'] == $city->city_name) $valid_cities[] = $city->city_name;
+            } 
+
+            /* process campaigns */
+            foreach($bids as $key => $bid){
+                /* frequency capping */
+                if($bid->frequency_capping){
+                    if(isset($_COOKIE['ad_'.$bid->campaign_id])){
+                        $thiscookie = json_decode($_COOKIE['ad_'.$bid->campaign_id]);
+                        $views = intval($thiscookie[0]);
+                        if($views >= $bid->frequency_capping){
+                            $this->debug .= "Bid Campaign ".$bid->campaign_id." was removed by Frequency Capper\n";
+                            unset($bids[$key]);
+                        }
+                    }
+                }
+             }
+             $bids = array_values($bids);
+             foreach($bids as $key => $bid){ 
+                /* platform targeting */
+                if($bid->device_id == '0'){}else{
+                    $include = false;
+                    $platforms = explode("|",$bid->device_id);
+                    foreach($platforms as $k2 => $v2){
+                           if(in_array(intval($v2), $valid_platforms)){
+                               $include = true; 
+                               break;
+                           }                        
+                    }   
+                    if(!$include) unset($bids[$key]);   
+                }
+              }
+              $bids = array_values($bids);
+              foreach($bids as $key => $bid){
+                /* browser targeting */
+                if($bid->browser_id == '0'){}else{
+                    $include = false;
+                    $browsers = explode("|",$bid->browser_id);
+                    foreach($browsers as $k2 => $v2){
+                           if(in_array(intval($v2), $valid_browsers)){
+                               $include = true;
+                               break;
+                           }
+                    }
+                    if(!$include) unset($bids[$key]);
+                }
+              }
+              $bids = array_values($bids); 
+              foreach($bids as $key => $bid){
+                /* os targeting */
+                if($bid->os_id == '0'){}else{
+                    $include = false;
+                    $operating_systems = explode("|",$bid->os_id);
+                    foreach($operating_systems as $k2 => $v2){
+                           if(in_array(intval($v2), $valid_os)){
+                               $include = true;
+                               break;
+                           }
+                    }
+                    if(!$include) unset($bids[$key]);
+                }
+              }
+              $bids = array_values($bids);
+              foreach($bids as $key => $bid){
+                /* keyword targeting */
+                if(strlen($bid->keywords)){
+                    $include = false;
+                    $this->debug .= "Keywords: ".$bid->keywords."\n";
+                    $my_keywords = Array();
+                    $my_keywords = explode("|",$bid->keywords);                          
+                    foreach($my_keywords as $key2 => $value2) {
+                        foreach($this->keywords as $key3 => $value3){
+                            $pos = strpos(strtoupper($value3), strtoupper($value2));
+                            if($pos === false){
+                            } else {
+                                $include = true;
+                                $this->debug .= "Keyword matched!\n";
+                                break;
+                            }
+                        }
+                    }
+                    if(!$include){
+                        unset($bids[$key]);
+                        $this->debug .= "Bid Campaign ".$bid->campaign_id." was removed by Keyword Targeter\n";
+                    }                   
+                }else{
+                    $this->debug .= "Keyword targeting skipped\n";
+                }
+                /* end keyword targeting */
+               }
+               $bids = array_values($bids);
+            
+            return $bids;
+        }else{
+            return $bids;
+        }
+
     }
     public function runCreativeLottery($creatives)
     {
@@ -153,7 +369,6 @@ class AdserverController extends Controller
         $ads = Cache::remember('default_ads_'.$this->handle, 10, function(){
              return DefaultAd::where('location_type', $this->zone->location_type)->get();
         });
-        die(str_replace("\n","<br />",$this->debug));
         $winner = $ads[mt_rand(0,sizeof($ads)-1)];
         $this->ad_id = 'DEF_'.$winner->id;
         $this->recordDefaultImpression($winner);
@@ -211,9 +426,9 @@ class AdserverController extends Controller
         if(!$folder) die('fuck...');
         $iframe = '<iframe frameborder="0" width="100%" height="100%" style="overflow: hidden; position: absolute; allowtransparency="true" style="border:0px; margin:0px;" src="https://buyers.trafficroots.com'
         .$folder[0]->file_location.'"></iframe>';
-        $out .= $iframe . "</body>\n</html>";
+        $out .= $iframe;
+        $out .= "<pre>".str_replace("\n","<br />",$this->debug)."</pre></body>\n</html>";
         die($out);
-        die();
     }
     public function showGeoAd()
     {

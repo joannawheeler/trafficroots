@@ -69,7 +69,17 @@ class CronController extends Controller
         }
         if(sizeof($pairs)){
         $prefix = "INSERT INTO bids (id,zone_handle,location_type,status,buyer_id,campaign_id,bid,country_id,state_id,city_id,category_id,device_id,os_id,browser_id,keywords,created_at,updated_at) VALUES";
-        $suffix = " ON DUPLICATE KEY UPDATE updated_at = NOW();";
+        $suffix = " ON DUPLICATE KEY UPDATE 
+                    bid = VALUES(`bid`), 
+                    country_id = VALUES(`country_id`), 
+                    state_id = VALUES(`state_id`), 
+                    city_id = VALUES(`city_id`), 
+                    category_id = VALUES(`category_id`),
+                    device_id = VALUES(`device_id`),
+                    os_id = VALUES(`os_id`),
+                    browser_id = VALUES(`browser_id`),
+                    keywords = VALUES(`keywords`),
+                    updated_at = NOW();";
         $result = DB::insert($prefix.implode($pairs,",").$suffix);           
         if(!$result){
             echo DB::error();
