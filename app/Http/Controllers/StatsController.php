@@ -22,29 +22,12 @@ class StatsController extends Controller
     {
 
     }
-    public function getRange($range)
-    {
-        try{
-            switch($range){
-                case 1:
-                    $start_date = date('Y-m-d', strtotime('-1 week'));
-                    break;
-                case 2:
-                    $start_date = date('Y-m-d', strtotime('-30 days'));
-                    break;
-                case 3:
-                    $start_date = date('Y-m-d', strtotime('first day of this month'));
-                    break;
-                case 4:
-                    $start_date = date('Y-m-d', strtotime('first day of this year'));
-                    break;
-
-            }
-            return $start_date;
-        }catch(Exception $e){
-            Log::error($e->getMessage());
-        }
-    }
+    /**
+     * @author Cary White
+     * @returns View
+     * @access public
+     * returns stats view by site and range
+     */
     public function getSiteStats($site_id, $range)
     {
         try{
@@ -56,58 +39,81 @@ class StatsController extends Controller
                }
            } 
            $zone_count = Zone::where('site_id', $site_id)->count();
-           if(!$zone_count) return view('stats',['site' => $site, 'zone_count' => $zone_count]); 
-           $start_date = $this->getRange($range);
+
+            switch($range){
+                case 1:
+                    $start_date = date('Y-m-d', strtotime('-1 week'));
+                    $range_desc = "Past Week";
+                    break;
+                case 2:
+                    $start_date = date('Y-m-d', strtotime('-30 days'));
+                    $range_desc = "Past 30 Days";
+                    break;
+                case 3:
+                    $start_date = date('Y-m-d', strtotime('first day of this month'));
+                    $range_desc = "Month to Date";
+                    break;
+                case 4:
+                    $start_date = date('Y-m-d', strtotime('first day of this year'));
+                    $range_desc = "Year to Date";
+                    break;
+
+            }
            $query = "SELECT * 
                      FROM stats
                      WHERE site_id = $site_id
-                     AND `date` BETWEEN '$start_date' AND '".date('Y-m-d')."'";
+                     AND `stat_date` BETWEEN '$start_date' AND '".date('Y-m-d')."'";
            $result = DB::select($query);
-           if(sizeof($result)){
                $browsers = Browser::all();
                $platforms = Platform::all();
-               $operating_systems = OperatingSystems::all();
+               $operating_systems = OperatingSystem::all();
                $sitedata = array();
                $zones = array();
                $big = array();
                $imps = 0;
                $clicks = 0;
+            if(sizeof($result)){
                foreach($result as $row){
-                  if(isset($sitedata[$row->date][$row->country_short]['impressions'])){
-                      $sitedata[$row->date][$row->country_short]['impressions'] += $row->impressions;
+                  if(isset($sitedata[$row->stat_date][$row->country_id]['impressions'])){
+                      $sitedata[$row->stat_date][$row->country_id]['impressions'] += $row->impressions;
                   }else{
-                      $sitedata[$row->date][$row->country_short]['impressions'] = $row->impressions;
+                      $sitedata[$row->stat_date][$row->country_id]['impressions'] = $row->impressions;
                   }
-                  if(isset($sitedata[$row->date][$row->country_short]['clicks'])){
-                      $sitedata[$row->date][$row->country_short]['clicks'] += $row->clicks;
+                  if(isset($sitedata[$row->stat_date][$row->country_id]['clicks'])){
+                      $sitedata[$row->stat_date][$row->country_id]['clicks'] += $row->clicks;
                   }else{
-                      $sitedata[$row->date][$row->country_short]['clicks'] = $row->clicks;
+                      $sitedata[$row->stat_date][$row->country_id]['clicks'] = $row->clicks;
                   }
                   $clicks += $row->clicks;
-                  $imps += $row->clicks;
-                  if(isset($big['browsers'])){
+                  $imps += $row->impressions;
+                  if(isset($big['browsers'][$row->browser])){
                       $big['browsers'][$row->browser] += $row->impressions;
                   }else{
                       $big['browsers'][$row->browser] = $row->impressions;
                   }
-                  if(isset($big['platforms'])){
+                  if(isset($big['platforms'][$row->platform])){
                       $big['platforms'][$row->platform] += $row->impressions;
                   }else{
                       $big['platforms'][$row->platform] = $row->impressions;
                   }
-                  if(isset($big['os'])){
+                  if(isset($big['os'][$row->os])){
                       $big['os'][$row->os] += $row->impressions;
                   }else{
                       $big['os'][$row->os] = $row->impressions;
                   }
                }
-
-               return view('stats',['site' => $site, 'zone_count' => $zone_count, 'browsers' => $browsers, 'platforms' => $platforms, 'operating_systems' => $operating_systems, 'sitedata' => $sitedata, 'zones' => $zones, 'imps' => $imps, 'clicks' => $clicks]);
-           }
+             }
+               return view('stats',['site' => $site, 'big' => $big, 'range' => $range_desc, 'zone_count' => $zone_count, 'browsers' => $browsers, 'platforms' => $platforms, 'operating_systems' => $operating_systems, 'sitedata' => $sitedata, 'zones' => $zones, 'imps' => $imps, 'clicks' => $clicks]);
         }catch(Exception $e){
             Log::error($e->getMessage());
         }
     }
+    /**
+     * @author Cary White
+     * @returns View
+     * @access public
+     * return data by zone id
+     */
     public function getZoneStats($zone_id, $range)
     {
         try{
