@@ -5,7 +5,7 @@
     <div class="row">
     <div class="col-md-12">
     <div class="panel panel-default">
-    <div class="panel-heading">Site Analysis</div>
+    <div class="panel-heading">Site Analysis:  <div class="pull-right"><strong> {{ $site->site_name }} </strong>- <a href="{{ $site->site_url }}" target="_blank">{{ $site->site_url }}</a></div></div>
     <div class="row">
         <div class="col-md-4">
             <div class="panel panel-default">
@@ -73,7 +73,13 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function(){
-    
+        $.noConflict();
+        $('.data-table1').DataTable({
+            "order": [[ 1, "desc" ]]
+        });    
+        $('.data-table2').DataTable({
+            "order": [[ 2, "desc" ]]
+        });
     });
 
 </script>

@@ -132,6 +132,24 @@ class AdserverController extends Controller
         }
 
     }
+    /**
+     * @author Cary White
+     * @returns array
+     * @access public
+     * returns array of advertisers and their current bank balance
+     */
+    public function getBuyerBalances()
+    {
+        $bank = Cache::remember('buyer_balances', 1, function()
+        {
+            $buyers = array();
+            foreach(DB::select('SELECT a.user_id, a.running_balance FROM buyers.bank a JOIN (SELECT MAX(id) AS id, user_id FROM buyers.bank GROUP BY user_id) b ON a.id=b.id') as $buyer){
+                 $buyers[$buyer->user_id] = $buyer->running_balance;
+            }
+            return $buyers;
+        });
+        return $bank;
+    }
     public function runBidLottery()
     {
         $mybids = Cache::remember('bids_'.$this->handle, 10, function()
@@ -252,6 +270,16 @@ class AdserverController extends Controller
             } 
 
             /* process campaigns */
+            $bank = $this->getBuyerBalances();
+            foreach($bids as $key => $bid){
+                /* check bank balances */
+                if($bid->bid > (float) $bank[$bid->buyer_id]){
+                    /* bid amount exceeds bank balance */
+                    $this->debug .= "Bid Campaign ".$bid->campaign_id." was removed by bank checker.\n";
+                    unset($bids[$key]);
+                }
+             }
+            $bids = array_values($bids);
             foreach($bids as $key => $bid){
                 /* frequency capping */
                 if($bid->frequency_capping){
@@ -527,7 +555,7 @@ class AdserverController extends Controller
         $creative = $query['creative'];
         $zone_id = $query['zone'];
 
-        $key = 'CLICK|'.date('Y-m-d').'|'.$ad_id.'|'.$creative.'|'.$zone_id;
+        $key = 'CLICK|'.date('Y-m-d').'|'.$ad_id.'|'.$creative.'|'.$zone_id.'|'.serialize($this->visitor);
         Redis::sadd('KEYS_CLICKS', $key);
         Redis::incr($key);
                 
