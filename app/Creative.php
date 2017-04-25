@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Creative extends Model
 {
-    //TrafficRoots Ad Creative Model
+    protected $fillable = ['description','campaign_id','user_id','weight','status','media_id','link_id','folder_id'];
     protected $table = 'creatives';
-    protected $fillable = ['ad_id','weight','status','html_id','link_id'];
-    //
 }
