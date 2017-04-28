@@ -18,6 +18,7 @@ Route::get('/', function () {
 Route::get('/pixel/{handle?}', 'PixelController@getIndex');
 Route::get('/analysis/{handle}', 'SiteController@analyzeSite'); 
 Auth::routes();
+Route::get('/charge', 'ChargeController@index');
 Route::get('/about', 'PublicController@aboutUs');
 Route::get('/home', 'HomeController@index');
 Route::get('/buyers', 'HomeController@buyers');

@@ -47,7 +47,7 @@
     </div>
 </div>
 <script type="text/javascript">
-    $(document).ready(function(){
+    jQuery(document).ready(function ($) {
         $('.site_row').click(function(){
             var spinner = '<center><i class="fa fa-cog fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span></center>';
             $( "#zone_heading").html('My Zones');
@@ -80,4 +80,10 @@
     });
 
 </script>
+   <script type="text/javascript">
+       jQuery(document).ready(function ($) {
+               $('.nav-click').removeClass("active");
+               $('#nav_pub').addClass("active");
+       });
+   </script>
 @endsection

@@ -19,10 +19,10 @@
         </div>
     </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function(){
-    
-    });
-
-</script>
+   <script type="text/javascript">
+       jQuery(document).ready(function ($) {
+               $('.nav-click').removeClass("active");
+               $('#nav_about').addClass("active");
+       });
+   </script>
 @endsection
