@@ -112,7 +112,7 @@
     </div>
 </div>
 <script type="text/javascript">
-    $(document).ready(function(){
+    jQuery(document).ready(function($){
         $('[data-toggle="tooltip"]').tooltip();
         $(".form-control").change(function(){
             var url = "{{ url('/update_targets') }}";
@@ -128,4 +128,10 @@
     });
 
 </script>
+   <script type="text/javascript">
+       jQuery(document).ready(function ($) {
+               $('.nav-click').removeClass("active");
+               $('#nav_buyer').addClass("active");
+       });
+   </script>
 @endsection

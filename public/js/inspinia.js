@@ -172,7 +172,7 @@ jQuery(document).ready(function ($) {
     })
 });
 
-
+jQuery(document).ready(function ($) {
 // Minimalize menu when screen is less than 768px
 $(window).bind("resize", function () {
     if ($(this).width() < 769) {
@@ -181,7 +181,7 @@ $(window).bind("resize", function () {
         $('body').removeClass('body-small')
     }
 });
-
+});
 // Local Storage functions
 // Set proper body class and plugins based on user configuration
 jQuery(document).ready(function ($) {

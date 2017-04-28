@@ -101,7 +101,7 @@ Maximum File Size Limit is 300kB.
     </div>
 </div>
 <script type="text/javascript">
-    $(document).ready(function(){
+    jQuery(document).ready(function($){
 $('#image').bind('change', function() {
 if ($('input:submit').attr('disabled',false)){
 	$('input:submit').attr('disabled',true);
@@ -129,4 +129,10 @@ if ($.inArray(ext, ['gif','png','jpg','jpeg']) == -1){
     });
 
 </script>
+   <script type="text/javascript">
+       jQuery(document).ready(function ($) {
+               $('.nav-click').removeClass("active");
+               $('#nav_buyer').addClass("active");
+       });
+   </script>
 @endsection

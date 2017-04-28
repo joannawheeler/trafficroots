@@ -37,4 +37,10 @@
         </div>
     </div>
 </div>
+   <script type="text/javascript">
+       jQuery(document).ready(function ($) {
+               $('.nav-click').removeClass("active");
+               $('#nav_pub').addClass("active");
+       });
+   </script>
 @endsection

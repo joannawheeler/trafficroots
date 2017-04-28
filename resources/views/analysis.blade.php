@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="row">
-    <div class="col-md-10 col-md-offset-1">
+    <div class="col-md-12">
     <div class="panel panel-default">
     <div class="panel-heading">Site Analysis:  <div class="pull-right"><strong> {{ $site->site_name }} </strong>- <a href="{{ $site->site_url }}" target="_blank">{{ $site->site_url }}</a></div></div>
     <div class="row">
@@ -69,7 +69,7 @@
     </div>
 </div>
 <script type="text/javascript">
-    $(document).ready(function(){
+    jQuery(document).ready(function ($) {
         $.noConflict();
         $('.data-table1').DataTable({
             "order": [[ 1, "desc" ]],
@@ -86,4 +86,10 @@
     });
 
 </script>
+   <script type="text/javascript">
+       jQuery(document).ready(function ($) {
+               $('.nav-click').removeClass("active");
+               $('#nav_pub').addClass("active");
+       });
+   </script>
 @endsection

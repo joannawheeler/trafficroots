@@ -100,7 +100,7 @@
     </div>
 </div>
 <script type="text/javascript">
-    $(document).ready(function(){
+    jQuery(document).ready(function($){
         $('#folder_id').change(function(){
             var check = parseInt($(this).val());
             if(check){
@@ -114,4 +114,10 @@
     });
 
 </script>
+   <script type="text/javascript">
+       jQuery(document).ready(function ($) {
+               $('.nav-click').removeClass("active");
+               $('#nav_buyer').addClass("active");
+       });
+   </script>
 @endsection
