@@ -1,62 +1,53 @@
-@extends('layouts.app')
+@extends('layouts.app') 
 
-@section('content')
+
+@section('css')
+<link href="css/plugins/iCheck/custom.css" rel="stylesheet"> 
+@endsection
+
+@section('content') 
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">Login</div>
-                <div class="panel-body">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Login</h5>
+                </div>
+                <div class="ibox-content">
                     <form class="form-horizontal" role="form" method="POST" action="{{ url('/login') }}">
-                        {{ csrf_field() }}
+                        {{ csrf_field() }} {{--
+                        <p>Sign in today for more expirience.</p> --}}
+                        <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
+                            <label class="col-lg-2 control-label">Email</label>
 
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="email" class="col-md-4 control-label">E-Mail Address</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required autofocus>
-
+                            <div class="col-lg-10">
+                                <input type="email" placeholder="Email" name="email" class="form-control"> 
                                 @if ($errors->has('email'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
+                                <span class="help-block m-b-none">{{ $errors->first('email') }}</span> 
                                 @endif
                             </div>
                         </div>
+                        <div class="form-group {{ $errors->has('password') ? ' has-error' : '' }}">
+                            <label class="col-lg-2 control-label">Password</label>
 
-                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label for="password" class="col-md-4 control-label">Password</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password" required>
-
-                                @if ($errors->has('password'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
+                            <div class="col-lg-10">
+                                <input type="password" placeholder="Password" name="password" class="form-control"> 
+                                @if($errors->has('password'))
+                                <span class="help-block m-b-none">{{ $errors->first('password') }}</span> 
                                 @endif
                             </div>
                         </div>
-
                         <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <div class="checkbox">
+                            <div class="col-lg-offset-2 col-lg-10">
+                                <div class="i-checks">
                                     <label>
-                                        <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : ''}}> Remember Me
-                                    </label>
+                                        <input type="checkbox" name="remember"><i></i> Remember me </label>
                                 </div>
                             </div>
                         </div>
-
                         <div class="form-group">
-                            <div class="col-md-8 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
-                                    Login
-                                </button>
-
-                                <a class="btn btn-link" href="{{ url('/password/reset') }}">
-                                    Forgot Your Password?
-                                </a>
+                            <div class="col-lg-offset-2 col-lg-10">
+                                <button class="btn btn-sm btn-white" type="submit">Sign in</button>
                             </div>
                         </div>
                     </form>
@@ -65,4 +56,16 @@
         </div>
     </div>
 </div>
+@endsection 
+
+@section('js')
+<script src="js/plugins/iCheck/icheck.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('.i-checks').iCheck({
+        checkboxClass: 'icheckbox_square-green',
+        radioClass: 'iradio_square-green',
+    });
+});
+</script>
 @endsection
