@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="_globalsign-domain-verification" content="qbw9lV17xS49YNux6uCCiE45peUkwMOWEjK5xjrONE" /> 
+    <meta name="_globalsign-domain-verification" content="qbw9lV17xS49YNux6uCCiE45peUkwMOWEjK5xjrONE" />
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -12,14 +13,15 @@
 
     <!-- Scripts -->
     <script>
-        window.Laravel = <?php echo json_encode([
+    window.Laravel = <?php echo json_encode([
             'csrfToken' => csrf_token(),
         ]); ?>
     </script>
-        <!-- Global and page level js -->
-        @include('_scripts')
-        @include('_styles')
+    <!-- Global and page level js -->
+    @include('_styles')
+    @include('_scripts')
 </head>
+
 <body class="no-skin-config">
     <div id="wrapper">
     <nav class="navbar-default navbar-static-side" role="navigation">
@@ -35,69 +37,64 @@
                                </div>
                             </a>
                         </div>
-                    </div>
-                    <div class="logo-element">
-                        <img src="{{ url('/logo.png') }}" alt="TrafficRoots" width="40" height="42">
-                    </div>
-                </li>
-                <!-- Authentication Links -->
-                @if (Auth::guest())
-                <li id="nav_login" class="active nav-click"><a href="{{ url('/login') }}"><i class="fa fa-sign-in"></i><span class="nav-label">Login</span></a></li>
-                <li id="nav_register" class="nav-click"><a href="{{ url('/register') }}"><i class="fa fa-pencil"></i><span class="nav-label">Register</span></a></li>
-                <li id="nav_about" class="nav-click"><a href="{{ url('/about') }}"><i class="fa fa-group"></i><span class="nav-label">About</span></a></li>
-                @else
-                <li id="nav_pub" class="nav-click"><a href="{{ url('/home') }}"><i class="fa fa-globe"></i><span class="nav-label">Publisher Dashboard</span></a></li>
-                <li id="nav_buyer" class="nav-click"><a href="{{ url('/buyers') }}"><i class="fa fa-diamond"></i><span class="nav-label">Advertiser Dashboard</span></a></li>
-                <li id="nav_support" class="nav-click"><a href="{{ url('/tickets') }}"><i class="fa fa-bug"></i><span class="nav-label">Support</span></a></li>
-                <li id="nav_about" class="nav-click"><a href="{{ url('/about') }}"><i class="fa fa-group"></i><span class="nav-label">About</span></a></li>
-                <li id="nav_logout" class="nav-click"><a href="{{ url('/logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="fa fa-plug"></i><span class="nav-label">Logout</span></a>
-                    <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
-                        {{ csrf_field() }}
-                    </form>
-                </li>
-                @endif
-
+                        <div class="logo-element">
+                            <img src="{{ url('/logo.png') }}" alt="TrafficRoots" width="40" height="42">
+                        </div>
+                    </li>
+                    <!-- Authentication Links -->
+                    @if (Auth::guest())
+                    <li id="nav_login" class="active nav-click"><a href="{{ url('/login') }}"><i class="fa fa-sign-in"></i><span class="nav-label">Login</span></a></li>
+                    <li id="nav_register" class="nav-click"><a href="{{ url('/register') }}"><i class="fa fa-pencil"></i><span class="nav-label">Register</span></a></li>
+                    <li id="nav_about" class="nav-click"><a href="{{ url('/about') }}"><i class="fa fa-group"></i><span class="nav-label">About</span></a></li>
+                    @else
+                    <li id="nav_pub" class="nav-click"><a href="{{ url('/home') }}"><i class="fa fa-globe"></i><span class="nav-label">Publisher Dashboard</span></a></li>
+                    <li id="nav_buyer" class="nav-click"><a href="{{ url('/buyers') }}"><i class="fa fa-diamond"></i><span class="nav-label">Advertiser Dashboard</span></a></li>
+                    <li id="nav_support" class="nav-click"><a href="{{ url('/tickets') }}"><i class="fa fa-bug"></i><span class="nav-label">Support</span></a></li>
+                    <li id="nav_about" class="nav-click"><a href="{{ url('/about') }}"><i class="fa fa-group"></i><span class="nav-label">About</span></a></li>
+                    <li id="nav_logout" class="nav-click"><a href="{{ url('/logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="fa fa-plug"></i><span class="nav-label">Logout</span></a>
+                        <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+                            {{ csrf_field() }}
+                        </form>
+                    </li>
+                    @endif
 
                 </ul>
-                </div>
             </div>
-        </nav>
-        <div id="page-wrapper" class="gray-bg">
+    </div>
+    </nav>
+    <div id="page-wrapper" class="gray-bg">
         <div class="row border-bottom">
-        <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
-        <div class="navbar-header">
-            <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i></a>
-        </div>
-            <ul class="nav navbar-top-links navbar-right">
-                @if(!Auth::guest())
-                <li>
-                    <span class="m-r-sm text-muted welcome-message">{{ Auth::user()->name }}</span>
-                </li>
-                
-                <li>
-                    <a href="{{ url('/logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="fa fa-plug"></i><span class="nav-label">Logout</span></a>
-                    <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
-                        {{ csrf_field() }}
-                    </form>                
-                </li>
-                <li>
-                    <a class="right-sidebar-toggle">
-                        <i class="fa fa-tasks"></i>
-                    </a>
-                </li>
-                @endif
-            </ul>
+            <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
+                <div class="navbar-header">
+                    <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i></a>
+                </div>
+                <ul class="nav navbar-top-links navbar-right">
+                    @if(!Auth::guest())
+                    <li>
+                        <span class="m-r-sm text-muted welcome-message">{{ Auth::user()->name }}</span>
+                    </li>
 
-        </nav>
-        </div>
+                    <li>
+                        <a href="{{ url('/logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="fa fa-plug"></i><span class="nav-label">Logout</span></a>
+                        <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+                            {{ csrf_field() }}
+                        </form>
+                    </li>
+                    <li>
+                        <a class="right-sidebar-toggle">
+                            <i class="fa fa-tasks"></i>
+                        </a>
+                    </li>
+                    @endif
+                </ul>
 
+            </nav>
+        </div>
 
         <div class="wrapper wrapper-content">
         @yield('content')
        </div>
 <div id="right-sidebar">
-            <div class="sidebar-container">
-
                 <ul class="nav nav-tabs navs-3">
 
                     <li class="active"><a data-toggle="tab" href="#tab-1">
@@ -477,4 +474,5 @@
 </div>
 <img alt="Trafficroots Analysis Pixel" src="https://publishers.trafficroots.com/pixel/58daaf821381f" width: 1px; height: 1px;>
 </body>
+
 </html>
