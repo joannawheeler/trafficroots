@@ -22,9 +22,9 @@
 
 <!-- tips styles -->
 <style>
-	.tips-pad-top{
-		padding-top: 10px;
-	}
+    .logo-style{
+    width: 70px; height: 70px; border-radius: 50%; background-color: #19aa8d; display:table-cell; vertical-align:middle; text-align:center;
+    }
 </style>
 <!-- end globals -->
 <!-- page level styles -->
