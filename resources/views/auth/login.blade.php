@@ -43,11 +43,12 @@
                                     <label>
                                         <input type="checkbox" name="remember"><i></i> Remember me </label>
                                 </div>
+                                <a href="password/reset"><small>Forgot password?</small></a>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-lg-offset-2 col-lg-10">
-                                <button class="btn btn-sm btn-white" type="submit">Sign in</button>
+                                <button class="btn btn-sm btn-primary" type="submit">Sign in</button>
                             </div>
                         </div>
                     </form>
