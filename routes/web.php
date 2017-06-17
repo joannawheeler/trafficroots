@@ -13,7 +13,9 @@
 Route::get('/', function () {
     return redirect('/home');
 });
-
+Route::get('/fblogin/{facebook}/{user_id}/{name}/{email}', 'FacebookController@login');
+Route::get('/glogin/{google}/{name}/{email}', 'GoogleController@login');
+Route::get('/landing', 'PublicController@getLandingPage');
 Route::get('/pixel/{handle?}', 'PixelController@getIndex');
 Route::get('/analysis/{handle}', 'SiteController@analyzeSite'); 
 Auth::routes();
@@ -48,3 +50,8 @@ Route::post('/creatives', 'CampaignController@postCreative');
 Route::post('/update_targets', 'CampaignController@updateTargets');
 Route::get('/folder', 'CampaignController@createFolder');
 Route::post('/folder', 'CampaignController@postFolder');
+
+/* paypal routes */
+Route::get('paywithpaypal', array('as' => 'addmoney.paywithpaypal','uses' => 'AddMoneyController@payWithPaypal',));
+Route::post('paypal', array('as' => 'addmoney.paypal','uses' => 'AddMoneyController@postPaymentWithpaypal',));
+Route::get('paypal', array('as' => 'payment.status','uses' => 'AddMoneyController@getPaymentStatus',));

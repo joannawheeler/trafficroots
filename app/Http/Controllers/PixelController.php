@@ -272,6 +272,7 @@ class PixelController extends Controller
                 $browser_set = true;
             }
         }
+        if(!$browser_set) $md['browser'] = 'Other';
         if(isset($request->handle)){
             $site = Site::where('site_handle', $request->handle)->get();
             if(sizeof($site)){           
@@ -341,13 +342,16 @@ class PixelController extends Controller
 
         $useragent = htmlspecialchars($_SERVER['HTTP_USER_AGENT']);
         $useragent = strtolower($useragent);
-
+        $thisos = "Unknown";
         foreach($osList as $os=>$match) {
-            if (preg_match('/' . $match . '/i', $useragent)) {
+           try{
+            if (preg_match('/' . preg_quote($match,'/') . '/i', $useragent)) {
+                $thisos = $os;
                 break;  
-            } else {
-                $os = "Unknown";    
             }
+          }catch(Exception $e){
+              Log::error($e->getMesssage());
+          }
         }
         return $os;
 

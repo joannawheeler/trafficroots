@@ -14,7 +14,9 @@
         "riverskies/laravel-mobile-detect": "^1.0",
         "swiftmailer/swiftmailer": "^5.4",
         "aws/aws-sdk-php": "~3.0",
-        "authorizenet/authorizenet": "^1.9"
+        "authorizenet/authorizenet": "^1.9",
+        "guzzlehttp/guzzle": "~5.2",
+        "paypal/rest-api-sdk-php": "*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

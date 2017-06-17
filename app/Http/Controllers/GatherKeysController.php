@@ -62,7 +62,7 @@ class GatherKeysController extends Controller
             if($impressions){
             Log::info($site['site_name'].' - handle: '.$mydata[1].' Key: '.$value.' has a value of '.$impressions);
             $sql = "INSERT INTO site_analysis (site_handle, stat_date, geo, state, city, device, browser, os, impressions)
-                    VALUES('".$mydata[1]."','".$mydata[2]."','".$mydata[3]."','".$mydata[4]."','".$mydata[5]."',";
+                    VALUES('".$mydata[1]."','".$mydata[2]."','".$mydata[3]."','".addslashes($mydata[4])."','".addslashes($mydata[5])."',";
             $device = 0;
             foreach($platforms as $k => $v){
                 if($mydata[6] == $v) {
