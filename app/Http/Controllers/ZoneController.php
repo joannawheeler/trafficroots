@@ -35,12 +35,12 @@ class ZoneController extends Controller
             $sql = "SELECT DISTINCT(stat_date) FROM site_analysis WHERE site_handle = '".$site->site_handle."'";
             $result = DB::select($sql);
             if(sizeof($result) < 3){
-                $msg = '<div><p>For all new sites, 72 hours of traffic analysis is required before Zone Creation can be activated.</p><br /><p>Please insert the following image tag on your site`s main index page.  When sufficient data has been gathered, your site can be added to our inventory and you will be able to create zones!</p><br />This code will show a transparent 1x1 GIF image.<br /><br /><code>'.htmlspecialchars('<img alt="Trafficroots Analysis Pixel" src="'.env('APP_URL', 'http://localhost').'/pixel/'.$site->site_handle.'" width: 1px; height: 1px;>');
+                $msg = '<div><p>For all new sites, 72 hours of traffic analysis is required before Zone Creation can be activated.</p><br /><p>Please insert the following image tag on your site`s main index page.  When sufficient data has been gathered, your site can be added to our inventory and you will be able to create zones!</p><br />This code will show a transparent 1x1 GIF image.<br /><br /><code>'.htmlspecialchars('<img alt="Trafficroots Analysis Pixel" src="'.env('APP_URL', 'http://localhost').'/pixel/'.$site->site_handle.'" style="display:none;">');
                 $msg .= '</code><br /><br /><a href="/analysis/'.$site->site_handle.'"><button type="button" class="btn-u">View Site Analysis Data</button></a></div>';
                 $msg = $site->site_name .'|'.$msg;
                 return $msg;
             }else{
-                $msg = '<div><h3>Your Trafficroots Analysis Pixel</h3><code>'.htmlspecialchars('<img alt="Trafficroots Analysis Pixel" src="'.env('APP_URL', 'http://localhost').'/pixel/'.$site->site_handle.'" width: 1px; height: 1px;>');
+                $msg = '<div><h3>Your Trafficroots Analysis Pixel</h3><code>'.htmlspecialchars('<img alt="Trafficroots Analysis Pixel" src="'.env('APP_URL', 'http://localhost').'/pixel/'.$site->site_handle.'" style="display:none;">');
                 $msg .= '</code><br /><br /><a href="/analysis/'.$site->site_handle.'"><button type="button" class="btn-u">View Site Analysis Data</button></a><br /><br />';
             $zones = Zone::where('site_id', $site_id)
                      ->join('location_types', 'zones.location_type', '=', 'location_types.id')
