@@ -101,8 +101,8 @@
         <div class="row">
             <div class="col-lg-12 text-center">
                 <div class="navy-line"></div>
-                <h1>Even more great feautres</h1>
-                <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. </p>
+                <h1>We want YOUR Traffic!</h1>
+                <p>Join our network and access exclusive features, while adding your own distinctiveness to our environment.  The bigger we get, the better you will do.  Our sales team are relentlessly pursuing all Cannabis related sites and products in an effort to present the most diverse lifestyle network in this space. Signup today and receive a limited time offer in your inbox! </p>
             </div>
         </div>
         <div class="row features-block">
@@ -110,7 +110,7 @@
                 <h2>Publishers</h2>
                 <p>Traffic Roots provides publishers with the unique opportunity to monetize their website by getting in front of thousands of advertisers, instantly. We cooked up an algorithm that will generate relevant, high quality ads on your website, specifically chosen for your audience. Whether you’re a leader of the masses or the meeting post for the niche, Traffic Roots provides ads that your visitors will find useful (and your wallet won’t mind it, either).
 </p>
-                <a href="" class="btn btn-primary">Learn more</a>
+                <a href="" class="btn btn-primary" data-toggle="modal" data-target="#pubModal">Learn more</a>
             </div>
             <div class="col-lg-6 text-right m-t-n-lg wow zoomIn">
                 <img src="img/landing/iphone.jpg" class="img-responsive" alt="dashboard">
@@ -119,10 +119,67 @@
                 <h2>Advertisers</h2>
                 <p>Get a first-hand introduction to the largest audience of prospective buyers and clients in the cannabis industry. We meticulously developed our ad software to connect you to sites and consumers with the biggest buying potential for you, earning you more money without ever breaking a sweat. Running a digital ad campaign across a multi-channel network is easy and affordable with Traffic Roots.
 </p>
-                <a href="" class="btn btn-primary">Learn more</a>
+                <a href="" class="btn btn-primary" data-toggle="modal" data-target="#buyerModal">Learn more</a>
             </div>
         </div>
     </div>
+
+<!-- modal windows -->
+                            <div class="modal inmodal" id="pubModal" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog">
+                                <div class="modal-content animated bounceInRight">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                            <i class="fa fa-laptop modal-icon"></i>
+                                            <h4 class="modal-title">Publishers</h4>
+                                            <small class="font-bold">Join us today!</small>
+                                        </div>
+                                        <form name="publisher_form" id="publisher_form" action="" method="POST">
+                                        {{ csrf_field() }}
+                                        <div id="pub_body" class="modal-body">
+                                            <p>Sign up for our newsletter and find out about all the opportunities to monetize your traffic and maximize your earnings with the Traffic Roots Ad Network</p>
+ 
+                                                    <div class="form-group"><label>First Name</label> <input type="text" name="first_name" id="first_name" placeholder="First name" class="form-control" required></div>
+                                                    <div class="form-group"><label>Last Name</label> <input type="text" name="last_name" id="last_name" placeholder="Last name" class="form-control" required></div>
+                                                    <div class="form-group"><label>Email</label> <input type="email" name="email" id="email" placeholder="Enter your email" class="form-control" required></div>
+                                        </div>
+                                        <input type="hidden" name="list_id" id="list_id" value="1">
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                                            <button type="submit" id="subscribePublisher" class="btn btn-primary">Submit</button>
+                                        </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal inmodal" id="buyerModal" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog">
+                                <div class="modal-content animated bounceInRight">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                            <i class="fa fa-laptop modal-icon"></i>
+                                            <h4 class="modal-title">Advertisers</h4>
+                                            <small class="font-bold">Join us today!</small>
+                                        </div>
+                                        <form name="buyer_form" id="buyer_form" action="" method="POST">
+                                        {{ csrf_field() }}
+                                        <div id="buyer_body" class="modal-body">
+                                                    <p>Sign up for our newsletter and stay informed about all the opportunities for marketing your product. Learn about our affiliate networks and how to start your own affiliate program!</p>
+                                                    <div class="form-group"><label>First Name</label> <input type="text" name="first_name" id="first_name" placeholder="First name" class="form-control" required></div>
+                                                    <div class="form-group"><label>Last Name</label> <input type="text" name="last_name" id="last_name" placeholder="Last name" class="form-control" required></div>
+                                                    <div class="form-group"><label>Email</label> <input type="email" name="email" id="email" placeholder="Enter your email" class="form-control" required></div>
+                                        
+                                        </div>
+                                        <input type="hidden" name="list_id" id="list_id" value="2">
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                                            <button type="submit" id="subscribeBuyer" class="btn btn-primary">Submit</button>
+                                        </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
 
 </section>
 <section id="traffic" class="features">
@@ -199,6 +256,45 @@
 
    <script type="text/javascript">
        jQuery(document).ready(function ($) {
+
+        $('#buyer_form').submit(function(){
+            var formdata = $('#buyer_form').serialize();
+            $.post( "/subscribe", formdata)
+                .done(function( data ) {
+                    var response = JSON.parse(data);
+                    if((response.response.success) && (response.response.success == "Subscriber added successfully")){
+                        $('#buyer_body').fadeOut(function(){
+                            $('#buyer_body').html('<h1>Thank You!</h1>');
+                                $('#buyer_body').fadeIn(function(){
+                                    setTimeout(function(){ $('#buyerModal').modal('hide'); }, 2000);
+                                });
+                            
+                        });
+                    }else{
+                      alert(data);
+                    }
+                });
+            return false;
+        });
+        $('#publisher_form').submit(function() {
+            var formdata = $('#publisher_form').serialize();
+            $.post( "/subscribe", formdata)
+                .done(function( data ) {
+                    var response = JSON.parse(data);
+                    if((response.response.success) && (response.response.success == "Subscriber added successfully")){
+                        $('#pub_body').fadeOut(function(){
+                            $('#pub_body').html('<h1>Thank You!</h1>');
+                                $('#pub_body').fadeIn(function(){
+                                    setTimeout(function(){ $('#pubModal').modal('hide'); }, 2000);
+                                });
+
+                        });
+                    }else{
+                      alert(data);
+                    }
+                });
+            return false;
+        });
         $('body').scrollspy({
             target: '.navbar-fixed-top',
             offset: 80

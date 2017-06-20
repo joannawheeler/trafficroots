@@ -13,6 +13,7 @@
 Route::get('/', function () {
     return redirect('/home');
 });
+Route::post('/subscribe', 'PublicController@subscribeUser');
 Route::get('/fblogin/{facebook}/{user_id}/{name}/{email}', 'FacebookController@login');
 Route::get('/glogin/{google}/{name}/{email}', 'GoogleController@login');
 Route::get('/landing', 'PublicController@getLandingPage');
