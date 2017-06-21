@@ -10,6 +10,10 @@
 | to using a Closure or controller method. Build something great!
 |
 */
+Route::group(['domain' => 'www.trafficroots.com'], function () {
+    Route::get('/', 'PublicController@getLandingPage');
+    Route::post('/subscribe', 'PublicController@subscribeUser');
+});
 Route::get('/', function () {
     return redirect('/home');
 });

@@ -45,7 +45,7 @@
                         <li><a class="page-scroll" href="#page-top">Home</a></li>
                         <li><a class="page-scroll" href="#features">Features</a></li>
                         <li><a class="page-scroll" href="#team">Team</a></li>
-                        <li><a class="page-scroll" href="#testimonials">Testimonials</a></li>
+                        <li><a class="page-scroll" href="#joinus">Join Us!</a></li>
                         <li><a class="page-scroll" href="#traffic">Traffic</a></li>
                         <li><a class="page-scroll" href="#contact">Contact</a></li>
                     </ul>

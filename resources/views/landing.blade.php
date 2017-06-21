@@ -84,6 +84,8 @@
         </div>
     </div>
 </section>
+
+<!--
 <section id="team" class="features">
     <div class="row features-block">
         <div class="col-lg-6 features-text text-center wow fadeInLeft">
@@ -96,7 +98,37 @@
         </div>
     </div>
 </section>
-<section id="testimonials" class="features">
+--!>
+
+<section id="team" class="gray-section team">
+    <div class="container">
+        <div class="row m-b-lg">
+            <div class="col-lg-12 text-center">
+                <div class="navy-line"></div>
+                <h1>Our Team</h1>
+                <p>Traffic Roots is built by a team of industry veterans who know what it is like to count daily impressions in the billions.  We bring together Executive Management, Systems Architecture and Javascript Wizardry. We built our self service platform to meet the needs of a wide variety of publishing and media verticals - from traditional, web based campaigns to in-dispensary, closed circuit displays to emerging video ads and streaming television markets.  We can monetize your traffic.  If you've got a product or service to market, we can get you in front of the right eyeballs and drive your conversions like never before.  If you need help breaking into digital marketing for the first time, our support team can guide you and train you on our system.  If you are an expert, ready to start your own affiliate program on our network, we've got the tools and support for you, too.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4 wow fadeInLeft">
+                <div class="team-member">
+                    <h1><i class="fa fa-gears fa-4x"></i></h1>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="team-member wow zoomIn">
+                    <h1><i class="fa fa-university fa-5x"></i></h1>
+                </div>
+            </div>
+            <div class="col-sm-4 wow fadeInRight">
+                <div class="team-member">
+                    <h1><i class="fa fa-magic fa-4x"></i></h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id="joinus" class="features">
     <div class="container">
         <div class="row">
             <div class="col-lg-12 text-center">
@@ -225,9 +257,7 @@
                 </address>
             </div>
             <div class="col-lg-4">
-                <p class="text-color">
-                    Consectetur adipisicing elit. Aut eaque, totam corporis laboriosam veritatis quis ad perspiciatis, totam corporis laboriosam veritatis, consectetur adipisicing elit quos non quis ad perspiciatis, totam corporis ea,
-                </p>
+                <div class="navy-line"></div>
             </div>
         </div>
         <div class="row">
