@@ -10,6 +10,11 @@
 | to using a Closure or controller method. Build something great!
 |
 */
+
+// OAuth Routes
+Route::get('auth/{driver}', ['as' => 'socialAuth', 'uses' => 'Auth\SocialController@redirectToProvider']);
+Route::get('auth/{driver}/callback', ['as' => 'socialAuthCallback', 'uses' => 'Auth\SocialController@handleProviderCallback']);
+
 Route::group(['domain' => 'www.trafficroots.com'], function () {
     Route::get('/', 'PublicController@getLandingPage');
     Route::post('/subscribe', 'PublicController@subscribeUser');

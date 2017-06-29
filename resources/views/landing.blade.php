@@ -142,16 +142,16 @@
                 <h2>Publishers</h2>
                 <p>Traffic Roots provides publishers with the unique opportunity to monetize their website by getting in front of thousands of advertisers, instantly. We cooked up an algorithm that will generate relevant, high quality ads on your website, specifically chosen for your audience. Whether you’re a leader of the masses or the meeting post for the niche, Traffic Roots provides ads that your visitors will find useful (and your wallet won’t mind it, either).
 </p>
-                <a href="" class="btn btn-primary" data-toggle="modal" data-target="#pubModal">Learn more</a>
+                <div><a href="" class="btn btn-primary" data-toggle="modal" data-target="#pubModal">Learn more</a></div>
             </div>
-            <div class="col-lg-6 text-right m-t-n-lg wow zoomIn">
+            <div class="col-lg-6 text-right">
                 <img src="img/landing/iphone.jpg" class="img-responsive" alt="dashboard">
             </div>
             <div class="col-lg-3 features-text text-right wow fadeInRight">
                 <h2>Advertisers</h2>
                 <p>Get a first-hand introduction to the largest audience of prospective buyers and clients in the cannabis industry. We meticulously developed our ad software to connect you to sites and consumers with the biggest buying potential for you, earning you more money without ever breaking a sweat. Running a digital ad campaign across a multi-channel network is easy and affordable with Traffic Roots.
 </p>
-                <a href="" class="btn btn-primary" data-toggle="modal" data-target="#buyerModal">Learn more</a>
+                <div><a href="" class="btn btn-primary" data-toggle="modal" data-target="#buyerModal">Learn more</a></div>
             </div>
         </div>
     </div>
