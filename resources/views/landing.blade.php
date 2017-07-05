@@ -245,18 +245,18 @@
             <div class="col-lg-12 text-center">
                 <div class="navy-line"></div>
                 <h1>Contact Us</h1>
-                <p>Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod.</p>
             </div>
         </div>
         <div class="row m-b-lg">
-            <div class="col-lg-3 col-lg-offset-3">
+            <div class="col-lg-12 text-center">
                 <address>
                     <strong><span class="navy">Traffic Roots, LLC.</span></strong><br/>
-                    San Diego, CA<br/>
+                    6335 Ferris Square, Suite B<br />
+                    San Diego, CA 92121<br/>  
                     <abbr title="Phone">P:</abbr> (619) 431-1017
                 </address>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-12 text-center">
                 <div class="navy-line"></div>
             </div>
         </div>
@@ -267,11 +267,13 @@
                     Or follow us on social platform
                 </p>
                 <ul class="list-inline social-icon">
-                    <li><a href="https://twitter.com/TrafficRoots"><i class="fa fa-twitter"></i></a>
+                    <li><a href="https://twitter.com/TrafficRoots" target="_blank"><i class="fa fa-twitter"></i></a>
                     </li>
-                    <li><a href="https://www.facebook.com/trafficrootsmedia/"><i class="fa fa-facebook"></i></a>
+                    <li><a href="https://www.facebook.com/trafficrootsmedia/" target="_blank"><i class="fa fa-facebook"></i></a>
                     </li>
-                    <li><a href="https://www.linkedin.com/in/traffic-roots-44b648123/"><i class="fa fa-linkedin"></i></a>
+                    <li><a href="https://www.linkedin.com/in/traffic-roots-44b648123/" target="_blank"><i class="fa fa-linkedin"></i></a>
+                    </li>
+                    <li><a href="https://instagram.com/traffic_roots" target="_blank"><i class="fa fa-instagram"></i></a>
                     </li>
                 </ul>
             </div>
@@ -289,7 +291,7 @@
 
         $('#buyer_form').submit(function(){
             var formdata = $('#buyer_form').serialize();
-            $.post( "/subscribe", formdata)
+            $.post( "/buyer_subscribe", formdata)
                 .done(function( data ) {
                     var response = JSON.parse(data);
                     if((response.response.success) && (response.response.success == "Subscriber added successfully")){
@@ -308,7 +310,7 @@
         });
         $('#publisher_form').submit(function() {
             var formdata = $('#publisher_form').serialize();
-            $.post( "/subscribe", formdata)
+            $.post( "/pub_subscribe", formdata)
                 .done(function( data ) {
                     var response = JSON.parse(data);
                     if((response.response.success) && (response.response.success == "Subscriber added successfully")){

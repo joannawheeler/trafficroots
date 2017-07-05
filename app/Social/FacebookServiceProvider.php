@@ -3,6 +3,7 @@
 namespace App\Social;
 
 use App\User;
+use App\Http\Controllers\PublicController;
 
 class FacebookServiceProvider extends AbstractServiceProvider
 {
@@ -44,7 +45,14 @@ class FacebookServiceProvider extends AbstractServiceProvider
                 'facebook_id' => $user->id,                
             ]
         ]);        
-
+        $sendlane = new PublicController();
+        $data = array();
+        $data['email'] = $user->email;
+        $data['first_name'] = $user->first_name;
+        $data['last_name'] = $user->last_name;
+        $data['list_id'] = 3;
+        $result = $sendlane->sendlaneSubscribe($data);
+        
         return $this->login($newUser);
     }       
 }

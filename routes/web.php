@@ -15,10 +15,14 @@
 Route::get('auth/{driver}', ['as' => 'socialAuth', 'uses' => 'Auth\SocialController@redirectToProvider']);
 Route::get('auth/{driver}/callback', ['as' => 'socialAuthCallback', 'uses' => 'Auth\SocialController@handleProviderCallback']);
 
-Route::group(['domain' => 'www.trafficroots.com'], function () {
+$landing = function() {
     Route::get('/', 'PublicController@getLandingPage');
-    Route::post('/subscribe', 'PublicController@subscribeUser');
-});
+    Route::post('/buyer_subscribe', 'PublicController@subscribeUser');
+    Route::post('/pub_subscribe', 'PublicController@subscribeUser');
+};
+Route::group(['domain' => 'www.trafficroots.com'], $landing);
+Route::group(['domain' => 'trafficroots.com'], $landing);
+
 Route::get('/', function () {
     return redirect('/home');
 });
