@@ -45,12 +45,24 @@
                     @if (Auth::guest())
                     <li id="nav_login" class="active nav-click"><a href="{{ url('/login') }}"><i class="fa fa-sign-in"></i><span class="nav-label">Login</span></a></li>
                     <li id="nav_register" class="nav-click"><a href="{{ url('/register') }}"><i class="fa fa-pencil"></i><span class="nav-label">Register</span></a></li>
-                    <li id="nav_about" class="nav-click"><a href="{{ url('/about') }}"><i class="fa fa-group"></i><span class="nav-label">About</span></a></li>
+                    {{-- <li id="nav_about" class="nav-click"><a href="{{ url('/about') }}"><i class="fa fa-group"></i><span class="nav-label">About</span></a></li> --}}
                     @else
-                    <li id="nav_pub" class="nav-click"><a href="{{ url('/home') }}"><i class="fa fa-globe"></i><span class="nav-label">Publisher Dashboard</span></a></li>
-                    <li id="nav_buyer" class="nav-click"><a href="{{ url('/buyers') }}"><i class="fa fa-diamond"></i><span class="nav-label">Advertiser Dashboard</span></a></li>
+                    <li id="nav_pub" class="nav-click">
+                        <a href="{{ url('/home') }}"><i class="fa fa-globe"></i><span class="nav-label">Publisher</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse">
+                            <li><a href="{{ URL::to('home') }}">Dashboard</a></li>
+                            <li><a href="{{ URL::to('sites') }}">Sites</a></li>
+                            <li><a href="{{ URL::to('zones') }}">Zones</a></li>
+                        </ul>
+                    </li>
+                    <li id="nav_buyer" class="nav-click">
+                        <a href="{{ url('/buyers') }}"><i class="fa fa-diamond"></i><span class="nav-label">Advertiser</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse">
+                            <li><a href="{{URL::to('buyers')}}">Dashboard</a></li>
+                        </ul>
+                    </li>
                     <li id="nav_support" class="nav-click"><a href="{{ url('/tickets') }}"><i class="fa fa-bug"></i><span class="nav-label">Support</span></a></li>
-                    <li id="nav_about" class="nav-click"><a href="{{ url('/about') }}"><i class="fa fa-group"></i><span class="nav-label">About</span></a></li>
+                    {{-- <li id="nav_about" class="nav-click"><a href="{{ url('/about') }}"><i class="fa fa-group"></i><span class="nav-label">About</span></a></li> --}}
                     <li id="nav_logout" class="nav-click"><a href="{{ url('/logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="fa fa-plug"></i><span class="nav-label">Logout</span></a>
                         <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
                             {{ csrf_field() }}
@@ -92,6 +104,7 @@
         </div>
 
         <div class="wrapper wrapper-content">
+        @include('notifications')
         @yield('content')
        </div>
 <div id="right-sidebar">

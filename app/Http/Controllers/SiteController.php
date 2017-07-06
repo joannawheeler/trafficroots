@@ -8,52 +8,84 @@ use Log;
 use DB;
 use App\Site;
 use App\Category;
+use App\LocationType;
+use Illuminate\Validation\Rule;
 
 class SiteController extends Controller
 {
-    public $categories = '';
     public function __construct()
     {
          $this->middleware('auth');
-         $cats = Category::all();
-         foreach($cats as $cat){
-             $this->categories .= "<option value=\"".$cat->id."\">".$cat->category."</option>";
-         }
     }
     public function index()
     {
         $user = Auth::user();
-        $sites = DB::select('SELECT sites.*, categories.category 
-                             FROM sites 
-                             JOIN categories 
-                             ON sites.site_category = categories.id
-                             WHERE sites.user_id = '.$user->id);
-        //$sites = Site::where('user_id', $user->id)->get();    
-        return view('sites',['user' => $user, 'sites' => $sites, 'categories' => $this->categories]);
+        $sites = Site::with('zones')->where('user_id', $user->id)->get();
+        $categories = Category::all();
+        $locationTypes = LocationType::orderBy('width')->get();
+        return view(
+            'sites',
+            compact('user', 'sites', 'categories', 'locationTypes')
+        );
     }
-    public function postSite(Request $request)
+    public function store(Request $request)
     {
-        try{
-            $user = Auth::user();
-            $data = $request->all();
-            $site = new Site();
-            $site->site_name = $data['site_name'];
-            $site->site_url = $data['site_url'];
-            $site->site_category = $data['site_category'];
-            $site->user_id = $user->id;
-            $site->site_handle = uniqid();
-            $site->save();
-
-            return redirect()->action('HomeController@index');
-        }catch(Exception $e){
-            Log::error($e->getMessage());
-        }
+        $this->validate($request, [
+            'site_name' => [
+                'required',
+                'max:60',
+                Rule::unique('sites')
+                    ->where('user_id', Auth::user()->id)
+            ],
+            'site_url' => 'required|url|unique:sites,site_url',
+            'site_category' => 'required|exists:categories,id'
+        ]);
+        Site::create([
+            'site_name' => $request->site_name,
+            'site_url' => $request->site_url,
+            'site_category' => $request->site_category,
+            'user_id' => Auth::user()->id,
+            'site_handle' => uniqid()
+        ]);
+        session()->flash('status', [
+            'type' => 'success',
+            'message' => 'Site created successfully'
+        ]);
+        return;
     }
     public function getSite($site_id)
     {
         $user = Auth::user();
         $site = Site::where('site_id', $site_id)->get();
         return view('site',['user' => $user, 'site' => $site]);
+    }
+    public function edit(Site $site, Request $request)
+    {
+        $this->validate($request, [
+            'site_name' => [
+                'required',
+                'max:60',
+                Rule::unique('sites')
+                    ->ignore($site->id)
+                    ->where('user_id', Auth::user()->id)
+            ],
+            'site_url' => [
+                'required',
+                'url',
+                Rule::unique('sites')->ignore($site->id)
+            ],
+            'site_category' => 'required|exists:categories,id'
+        ]);
+        $site->site_name = $request->site_name;
+        $site->site_url = $request->site_url;
+        $site->site_category = $request->site_category;
+        $site->save();
+
+        session()->flash('status', [
+            'type' => 'success',
+            'message' => 'Site updated successfully'
+        ]);
+        return;
     }
     public function analyzeSite(Request $request)
     {

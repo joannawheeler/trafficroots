@@ -8,16 +8,16 @@
 <link rel="stylesheet" href="{{ URL::asset('css/animate.css') }}" >
 <link rel="stylesheet" href="{{ URL::asset('css/style.css') }}" >
 <!-- summer editor -->
-<link rel="stylesheet" href="{{ URL::asset('css/plugins/summernote/summernote.css') }}">
-<link rel="stylesheet" href="{{ URL::asset('css/plugins/summernote/summernote-bs3.css') }}">
+{{-- <link rel="stylesheet" href="{{ URL::asset('css/plugins/summernote/summernote.css') }}">
+<link rel="stylesheet" href="{{ URL::asset('css/plugins/summernote/summernote-bs3.css') }}"> --}}
 
 <!-- date pickers -->
-<link rel="stylesheet" href="{{ URL::asset('css/plugins/datapicker/datepicker3.css') }}">
+{{-- <link rel="stylesheet" href="{{ URL::asset('css/plugins/datapicker/datepicker3.css') }}">
 <link rel="stylesheet" href="{{ URL::asset('css/plugins/clockpicker/clockpicker.css') }}">
 <link rel="stylesheet" href="{{ URL::asset('css/plugins/daterangepicker/daterangepicker-bs3.css') }}">
-<link rel="stylesheet" href="{{ URL::asset('css/plugins/jasny/jasny-bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ URL::asset('css/plugins/jasny/jasny-bootstrap.min.css') }}"> --}}
 <!-- jquery steps -->
-<link rel="stylesheet" href="{{ URL::asset('css/plugins/steps/jquery.steps.css') }}">
+{{-- <link rel="stylesheet" href="{{ URL::asset('css/plugins/steps/jquery.steps.css') }}"> --}}
 
 
 <!-- tips styles -->

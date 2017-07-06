@@ -13,61 +13,62 @@ use DB;
 use Log;
 use Auth;
 use Session;
+use Illuminate\Validation\Rule;
+
 class ZoneController extends Controller
 {
     public function __construct()
     {
-        $this->middleware("auth"); 
-   
+        $this->middleware("auth");
     }
+
     public function getZones($site_id)
     {
         $user = Auth::getUser();
-        if($user->user_type == 99){
+        if ($user->user_type == 99) {
             $site = Site::where('id', $site_id)->first();
-        }else{
+        } else {
             $site = Site::where('id', $site_id)->where('user_id', $user->id)->first();
         }
-        if(!sizeof($site)){
+        if (!sizeof($site)) {
             $msg = 'Invalid Site';
             return ($msg);
-        }else{
+        } else {
             $sql = "SELECT DISTINCT(stat_date) FROM site_analysis WHERE site_handle = '".$site->site_handle."'";
             $result = DB::select($sql);
-            if(sizeof($result) < 3){
-                $msg = '<div><p>For all new sites, 72 hours of traffic analysis is required before Zone Creation can be activated.</p><br /><p>Please insert the following image tag on your site`s main index page.  When sufficient data has been gathered, your site can be added to our inventory and you will be able to create zones!</p><br />This code will show a transparent 1x1 GIF image.<br /><br /><code>'.htmlspecialchars('<img alt="Trafficroots Analysis Pixel" src="'.env('APP_URL', 'http://localhost').'/pixel/'.$site->site_handle.'" width: 1px; height: 1px;>');
+            if (sizeof($result) < 3) {
+                $msg = '<div><p>For all new sites, 72 hours of traffic analysis is required before Zone Creation can be activated.</p><br /><p>Please insert the following image tag on your site`s main index page.  When sufficient data has been gathered, your site can be added to our inventory and you will be able to create zones!</p><br />This code will show a transparent 1x1 GIF image.<br /><br /><code>'.htmlspecialchars('<img alt="Trafficroots Analysis Pixel" src="'.env('APP_URL', 'http://localhost').'/pixel/'.$site->site_handle.'" style="display:none;">');
                 $msg .= '</code><br /><br /><a href="/analysis/'.$site->site_handle.'"><button type="button" class="btn-u">View Site Analysis Data</button></a></div>';
                 $msg = $site->site_name .'|'.$msg;
                 return $msg;
-            }else{
-                $msg = '<div><h3>Your Trafficroots Analysis Pixel</h3><code>'.htmlspecialchars('<img alt="Trafficroots Analysis Pixel" src="'.env('APP_URL', 'http://localhost').'/pixel/'.$site->site_handle.'" width: 1px; height: 1px;>');
+            } else {
+                $msg = '<div><h3>Your Trafficroots Analysis Pixel</h3><code>'.htmlspecialchars('<img alt="Trafficroots Analysis Pixel" src="'.env('APP_URL', 'http://localhost').'/pixel/'.$site->site_handle.'" style="display:none;">');
                 $msg .= '</code><br /><br /><a href="/analysis/'.$site->site_handle.'"><button type="button" class="btn-u">View Site Analysis Data</button></a><br /><br />';
-            $zones = Zone::where('site_id', $site_id)
+                $zones = Zone::where('site_id', $site_id)
                      ->join('location_types', 'zones.location_type', '=', 'location_types.id')
-                     ->select('zones.id','zones.handle','zones.description','zones.status','zones.location_type','location_types.description as location','location_types.width','location_types.height')
+                     ->select('zones.id', 'zones.handle', 'zones.description', 'zones.status', 'zones.location_type', 'location_types.description as location', 'location_types.width', 'location_types.height')
                      ->get();
-            if(sizeof($zones)){
-                $msg .= '<table class="table table-hover table-border table-striped table-condensed" width="100%" id="zones_table"><thead><tr><th>Zone ID</th><th>Description</th><th>Width</th><th>Height</th><th>Location</th><th>Stats</th></thead><tbody>';
-                foreach($zones as $zone){
-                    $msg .= '<tr><td>'.$zone->id.'</td><td>'.$zone->description.'</td><td>'.$zone->width.'</td><td>'.$zone->height.'</td><td>'.$zone->location.'</td><td><a href="/zonestats/'.$zone->id.'"><i class="fa fa-bar-chart zone-stat" aria-hidden="true"></i></a></td><tr>';
+                if (sizeof($zones)) {
+                    $msg .= '<table class="table table-hover table-border table-striped table-condensed" width="100%" id="zones_table"><thead><tr><th>Zone ID</th><th>Description</th><th>Width</th><th>Height</th><th>Location</th><th>Stats</th></thead><tbody>';
+                    foreach ($zones as $zone) {
+                        $msg .= '<tr><td>'.$zone->id.'</td><td>'.$zone->description.'</td><td>'.$zone->width.'</td><td>'.$zone->height.'</td><td>'.$zone->location.'</td><td><a href="/zonestats/'.$zone->id.'"><i class="fa fa-bar-chart zone-stat" aria-hidden="true"></i></a></td><tr>';
+                    }
+                    $msg .= '</table>';
+                    $msg .= '<br /><br /><a href="/addzone/'.$site_id.'"><button type="button" class="btn-u">Create A Zone on '.$site->site_name.'</button></a></div>';
+                    $msg = $site->site_name .'|'.$msg;
+                    return($msg);
+                } else {
+                    $msg .= '<h4>No Zones Defined on '.$site->site_name.'</h4>';
+                    $msg .= '<br /><br /><a href="/addzone/'.$site_id.'"><button type="button" class="btn-u">Create A Zone on '.$site->site_name.'</button></a></div>';
+                    $msg = $site->site_name .'|'.$msg;
+                    return($msg);
                 }
-                $msg .= '</table>';
-                $msg .= '<br /><br /><a href="/addzone/'.$site_id.'"><button type="button" class="btn-u">Create A Zone on '.$site->site_name.'</button></a></div>';
-                $msg = $site->site_name .'|'.$msg;
-                return($msg);
-            }else{
-                $msg .= '<h4>No Zones Defined on '.$site->site_name.'</h4>';
-                $msg .= '<br /><br /><a href="/addzone/'.$site_id.'"><button type="button" class="btn-u">Create A Zone on '.$site->site_name.'</button></a></div>';
-                $msg = $site->site_name .'|'.$msg;
-                return($msg);
             }
-            }
-
         }
     }
-    private function insertFirstAd($handle,$location_type)
+    private function insertFirstAd($handle, $location_type)
     {
-        try{
+        try {
             $ad = new Ad();
             $data = array();
             $data['zone_handle'] = $handle;
@@ -77,16 +78,14 @@ class ZoneController extends Controller
             $ad->fill($data);
             $ad->save();
             return true;
-        }catch(Exception $e){
+        } catch (Exception $e) {
             Log::error($e->getMessage());
             return false;
-
         }
-
     }
     private function insertPublisherBooking($handle)
     {
-        try{
+        try {
             $zone = Zone::where('handle', $handle)->first();
             $booking = new PublisherBooking();
             $data = array();
@@ -97,61 +96,100 @@ class ZoneController extends Controller
             $data['end_date'] = date('Y-m-d', strtotime('last day of this month'));
             $booking->fill($data);
             $booking->save();
-            return true;       
-
-
-        }catch(Exception $e){
+            return true;
+        } catch (Exception $e) {
             Log::error($e->getMessage());
             return false;
         }
-
     }
-    public function postZone(Request $request)
+    public function dstore(Request $request)
     {
-        try{
+        try {
             $user = Auth::getUser();
             $data = $request->all();
             $site = Site::where('id', $data['site_id'])->
                           where('user_id', $user->id)->
                           first();
-            if(sizeof($site)){
+            if (sizeof($site)) {
                 $zone = new Zone();
                 $data['handle'] = bin2hex(random_bytes(5));
                 $data['pub_id'] = $user->id;
                 $zone->fill($data);
                 $zone->save();
-                $this->insertFirstAd($data['handle'],$data['location_type']);
+                $this->insertFirstAd($data['handle'], $data['location_type']);
                 $this->insertPublisherBooking($data['handle']);
                 Session::flash('status', 'Zone Creation was Successful');
                 return redirect()->action('HomeController@index');
-            }else{
+            } else {
                 Log::error('zone creation failed - invalid site');
-            }       
-        }catch(Exception $e){
+            }
+        } catch (Exception $e) {
             Log::error($e->getMessage());
         }
     }
+
+    public function store(Site $site, Request $request)
+    {
+        $this->validate($request, [
+            'description' => [
+                'required',
+                'max:128',
+                Rule::unique('zones')
+                    ->where('pub_id', Auth::user()->id)
+                    ->where('site_id', $site->id)
+            ],
+            'location_type' => 'required|exists:location_types,id'
+        ]);
+        $site->addZone($request->description, $request->location_type);
+        session()->flash('status', [
+            'type' => 'success',
+            'message' => 'Zone added successfully'
+        ]);
+        return;
+    }
+
+    public function edit(Zone $zone, Request $request)
+    {
+        $this->validate($request, [
+            'description' => [
+                'required',
+                'max:128',
+                Rule::unique('zones')
+                    ->ignore($zone->id)
+                    ->where('pub_id', Auth::user()->id)
+                    ->where('site_id', $zone->site_id)
+            ]        
+        ]);
+        $zone->description = $request->description;
+        $zone->save();
+        session()->flash('status', [
+            'type' => 'success',
+            'message' => 'Zone updated successfully'
+        ]);
+        return;
+    }
+
     public function addZone($site_id)
     {
-        try{
+        try {
             $user = Auth::getUser();
             $site = Site::where('id', $site_id)->
                           where('user_id', $user->id)->
                           first();
-            if(sizeof($site)){
-               $module_types = ModuleType::all();
-               $location_types = LocationType::all(); 
-               $locations = $modules = '';
-               foreach($location_types as $loc){
-                   $locations .= "<option value=\"".$loc->id."\">".$loc->description." - ".$loc->width."x".$loc->height."</option>";
-               }
-               foreach($module_types as $mod){
-                   $modules .= "<option value=\"".$mod->id."\">".$mod->description."</option>";
-               }
-               return view('addzone',['site' => $site, 'location_types' => $locations, 'module_types' => $modules]);
+            if (sizeof($site)) {
+                $module_types = ModuleType::all();
+                $location_types = LocationType::all();
+                $locations = $modules = '';
+                foreach ($location_types as $loc) {
+                    $locations .= "<option value=\"".$loc->id."\">".$loc->description." - ".$loc->width."x".$loc->height."</option>";
+                }
+                foreach ($module_types as $mod) {
+                    $modules .= "<option value=\"".$mod->id."\">".$mod->description."</option>";
+                }
+                return view('addzone', ['site' => $site, 'location_types' => $locations, 'module_types' => $modules]);
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             Log::error($e->getMessage());
-        }   
+        }
     }
 }
