@@ -9,7 +9,7 @@
         <div class="col-md-8 col-md-offset-2">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Login</h5>
+                    <h5></h5>
                 </div>
                 <div class="ibox-content">
                     <form class="form-horizontal" role="form" method="POST" action="{{ url('/register') }}">
@@ -61,6 +61,14 @@
                                 <button class="btn btn-sm btn-white" type="submit">Register</button>
                             </div>
                         </div>
+    <hr>
+    <div class="form-group">
+        <div class="col-md-6 col-md-offset-3 text-center">
+            <h4>or...login with</h4>
+            <a href="{{ url('/auth/google') }}" class="btn btn-google"><i class="fa fa-google"></i> Google</a>
+            <a href="{{ url('/auth/facebook') }}" class="btn btn-facebook"><i class="fa fa-facebook"></i> Facebook</a>
+        </div>
+    </div>
                     </form>
                 </div>
             </div>
@@ -140,6 +148,14 @@
                                 </button>
                             </div>
                         </div>
+    <hr>
+    <div class="form-group">
+        <div class="col-md-6 col-md-offset-3 text-center">
+            <h4>or...login with</h4>
+            <a href="{{ url('/auth/google') }}" class="btn btn-google"><i class="fa fa-google"></i> Google</a>
+            <a href="{{ url('/auth/facebook') }}" class="btn btn-facebook"><i class="fa fa-facebook"></i> Facebook</a>
+        </div>
+    </div>
                     </form>
                 </div>
             </div>

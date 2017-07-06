@@ -10,10 +10,26 @@
 | to using a Closure or controller method. Build something great!
 |
 */
+
+// OAuth Routes
+Route::get('auth/{driver}', ['as' => 'socialAuth', 'uses' => 'Auth\SocialController@redirectToProvider']);
+Route::get('auth/{driver}/callback', ['as' => 'socialAuthCallback', 'uses' => 'Auth\SocialController@handleProviderCallback']);
+
+$landing = function() {
+    Route::get('/', 'PublicController@getLandingPage');
+    Route::post('/buyer_subscribe', 'PublicController@subscribeUser');
+    Route::post('/pub_subscribe', 'PublicController@subscribeUser');
+};
+Route::group(['domain' => 'www.trafficroots.com'], $landing);
+Route::group(['domain' => 'trafficroots.com'], $landing);
+
 Route::get('/', function () {
     return redirect('/home');
 });
-
+Route::post('/subscribe', 'PublicController@subscribeUser');
+Route::get('/fblogin/{facebook}/{user_id}/{name}/{email}', 'FacebookController@login');
+Route::get('/glogin/{google}/{name}/{email}', 'GoogleController@login');
+Route::get('/landing', 'PublicController@getLandingPage');
 Route::get('/pixel/{handle?}', 'PixelController@getIndex');
 Route::get('/analysis/{handle}', 'SiteController@analyzeSite'); 
 Auth::routes();
@@ -51,3 +67,8 @@ Route::post('/creatives', 'CampaignController@postCreative');
 Route::post('/update_targets', 'CampaignController@updateTargets');
 Route::get('/folder', 'CampaignController@createFolder');
 Route::post('/folder', 'CampaignController@postFolder');
+
+/* paypal routes */
+Route::get('paywithpaypal', array('as' => 'addmoney.paywithpaypal','uses' => 'AddMoneyController@payWithPaypal',));
+Route::post('paypal', array('as' => 'addmoney.paypal','uses' => 'AddMoneyController@postPaymentWithpaypal',));
+Route::get('paypal', array('as' => 'payment.status','uses' => 'AddMoneyController@getPaymentStatus',));

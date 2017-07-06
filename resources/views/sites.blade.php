@@ -14,11 +14,18 @@
 
 @section('js')
     <script src="{{ URL::asset('js/plugins/footable/footable.all.min.js') }}"></script>
-    <script>
+        <script>
+        $.fn.goTo = function() {
+            $('html, body').animate({
+                scrollTop: $(this).offset().top + 'px'
+            }, 'fast');
+            return this;
+        }
+
         function showSiteZones(site_id) {
             $('.zones').addClass('hide');
             $('#zones' + site_id).removeClass('hide');
-            location.hash = '#zones' + site_id;
+            $('#zones' + site_id).goTo();
         }
         $(document).ready(function() {
             $('.footable').footable();
@@ -41,21 +48,20 @@
                 });
             })
 
-             $('.site-zones').click(function(){
+             $('.site-zones').click(function(e){
+                e.preventDefault()
                 var site_id = $(this).parents('td').first().data('site_id');
                 showSiteZones(site_id);
             });
-            $('.site-stats').click(function(){
-                var $el = $(this);
-                alert('Stats: site#' + $el.parents('td').first().data('site_id'));
+            $('.site-edit').click(function(e){
+                e.preventDefault()
+                // var site_id = $(this).parents('td').first().data('site_id');
+                // $('#editSite' + site_id).modal('show');
             });
-            $('.site-edit').click(function(){
-                var site_id = $(this).parents('td').first().data('site_id');
-                $('#editSite' + site_id).modal('show');
-            });
-            $('.zone-edit').click(function(){
-                var zone_id = $(this).parents('td').first().data('zone_id');
-                $('#editZone' + zone_id).modal('show');
+            $('.zone-edit').click(function(e){
+                e.preventDefault()
+                // var zone_id = $(this).parents('td').first().data('zone_id');
+                // $('#editZone' + zone_id).modal('show');
             });
         });
     </script>
@@ -132,13 +138,13 @@
                                 <td>{{ $site->site_url }}</td>
                                 <td>{{ $categories->where('id',$site->site_category)->first()->category }}</td>
                                 <td data-site_id="{{ $site->id }}">
-                                    <a href="#zones{{ $site->id }}" class="site-zones">
+                                    <a href="#" class="site-zones">
                                         <span class="label label-success">Zones</span>
                                     </a>
-                                    <a href="#" class="site-stats">
+                                    <a href="{{ url("stats/site/$site->id/1") }}" class="site-stats">
                                         <span class="label label-info">Stats</span>
                                     </a>
-                                    <a href="#" class="site-edit">
+                                    <a href="#" class="site-edit" data-toggle="modal" data-target="#editSite{{ $site->id }}">
                                         <span class="label">Edit</span>
                                     </a>
                                 </td>
@@ -164,8 +170,8 @@
                     <div class="ibox-title">
                         <h5>{{ $site->site_name }}</h5>
                         <div class="pull-right">
-                            <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#addZone">Add Zone</button>
-                            <div class="modal inmodal" id="addZone" tabindex="-1" role="dialog" aria-hidden="true">
+                            <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#addZone{{ $site->id }}">Add Zone</button>
+                            <div class="modal inmodal" id="addZone{{ $site->id }}" tabindex="-1" role="dialog" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content animated fadeIn">
                                         <div class="modal-header">
@@ -226,14 +232,10 @@
                                     <td>{{ $locationTypes->where('id',$zone->location_type)->first()->description }} </td>
                                     <td>{{ $locationTypes->where('id',$zone->location_type)->first()->width . 'x' . $locationTypes->where('id',$zone->location_type)->first()->height }} </td>
                                     <td data-zone_id="{{ $zone->id }}">
-                                        {{--
-                                        <a href="#" class="site-zones">
-                                            <span class="label label-success">Zones</span>
-                                        </a> --}}
                                         <a href="/stats/zone/{{ $zone->id }}/1" class="zone-stats">
                                             <span class="label label-info">Stats</span>
                                         </a>
-                                        <a href="#" class="zone-edit">
+                                        <a href="#" class="zone-edit" data-toggle="modal" data-target="#editZone{{ $zone->id }}">
                                             <span class="label">Edit</span>
                                         </a>
                                     </td>

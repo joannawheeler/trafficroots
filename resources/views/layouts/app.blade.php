@@ -485,7 +485,7 @@
         </div>
     </div>
 </div>
-<img alt="Trafficroots Analysis Pixel" src="https://publishers.trafficroots.com/pixel/58daaf821381f" width: 1px; height: 1px;>
+<img alt="Trafficroots Analysis Pixel" src="https://publishers.trafficroots.com/pixel/58daaf821381f" style="display: none;">
 </body>
 
 </html>
