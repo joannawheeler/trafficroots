@@ -30,4 +30,10 @@ class User extends Authenticatable
     protected $casts = [
         'settings' => 'array'
     ];
+
+
+    public function zone()
+    {
+        $this->hasMany('App\Zone','pub_id');
+    }
 }
