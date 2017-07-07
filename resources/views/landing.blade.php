@@ -10,7 +10,7 @@
             <div class="container">
                 <div class="carousel-caption">
                     <h1>Traffic Roots</h1>
-                    <p>Ad Network for Cannabis Lifestyles</p>
+                    <p>Ad Network for Modern Lifestyles</p>
                 </div>
                 <div class="carousel-image wow zoomIn">
                     <img src="img/landing/laptop.png" alt="laptop"/>
@@ -24,7 +24,7 @@
             <div class="container">
                 <div class="carousel-caption blank">
                     <h1>Better Visibility Means <br /> Higher Traffic and Fatter Profits!.</h1>
-                    <p>Traffic Roots connects the gap between digital display advertising and the cannabis industry.<br /> We empower you to scale your digital advertising efforts by reaching more consumers,<br /> on reputable websites, and with minimum effort. <br />We built the bridge to infinite digital marketing opportunities – and we’re going to help you scale it, too.</p>
+                    <p>Traffic Roots connects the gap between digital display advertising and the modern lifestyle.<br /> We empower you to scale your digital advertising efforts by reaching more consumers,<br /> on reputable websites, and with minimum effort. <br />We built the bridge to infinite digital marketing opportunities – and we’re going to help you scale it, too.</p>
                     <p><a class="btn btn-lg btn-primary" href="#" role="button">Learn more</a></p>
                 </div>
             </div>
@@ -106,7 +106,7 @@
             <div class="col-lg-12 text-center">
                 <div class="navy-line"></div>
                 <h1>Our Team</h1>
-                <p>Traffic Roots is built by a team of industry veterans who know what it is like to count daily impressions in the billions.  We bring together Executive Management, Systems Architecture and Javascript Wizardry. We built our self service platform to meet the needs of a wide variety of publishing and media verticals - from traditional, web based campaigns to in-dispensary, closed circuit displays to emerging video ads and streaming television markets.  We can monetize your traffic.  If you've got a product or service to market, we can get you in front of the right eyeballs and drive your conversions like never before.  If you need help breaking into digital marketing for the first time, our support team can guide you and train you on our system.  If you are an expert, ready to start your own affiliate program on our network, we've got the tools and support for you, too.</p>
+                <p>Traffic Roots is built by a team of industry veterans who know what it is like to count daily impressions in the billions.  We bring together Executive Management, Systems Architecture and Javascript Wizardry. We built our self service platform to meet the needs of a wide variety of publishing and media verticals - from traditional, web based campaigns to closed circuit displays to emerging video ads and streaming television markets.  We can monetize your traffic.  If you've got a product or service to market, we can get you in front of the right eyeballs and drive your conversions like never before.  If you need help breaking into digital marketing for the first time, our support team can guide you and train you on our system.  If you are an expert, ready to start your own affiliate program on our network, we've got the tools and support for you, too.</p>
             </div>
         </div>
         <div class="row">
@@ -134,7 +134,7 @@
             <div class="col-lg-12 text-center">
                 <div class="navy-line"></div>
                 <h1>We want YOUR Traffic!</h1>
-                <p>Join our network and access exclusive features, while adding your own distinctiveness to our environment.  The bigger we get, the better you will do.  Our sales team are relentlessly pursuing all Cannabis related sites and products in an effort to present the most diverse lifestyle network in this space. Signup today and receive a limited time offer in your inbox! </p>
+                <p>Join our network and access exclusive features, while adding your own distinctiveness to our environment.  The bigger we get, the better you will do.  Our sales team are relentlessly pursuing all related sites and products in an effort to present the most diverse lifestyle network in this space. Signup today and receive a limited time offer in your inbox! </p>
             </div>
         </div>
         <div class="row features-block">
@@ -142,16 +142,16 @@
                 <h2>Publishers</h2>
                 <p>Traffic Roots provides publishers with the unique opportunity to monetize their website by getting in front of thousands of advertisers, instantly. We cooked up an algorithm that will generate relevant, high quality ads on your website, specifically chosen for your audience. Whether you’re a leader of the masses or the meeting post for the niche, Traffic Roots provides ads that your visitors will find useful (and your wallet won’t mind it, either).
 </p>
-                <div><a href="" class="btn btn-primary" data-toggle="modal" data-target="#pubModal">Learn more</a></div>
+                <div><a href="" class="btn btn-primary" data-toggle="modal" data-target="#pubModal">Sign Up</a></div>
             </div>
             <div class="col-lg-6 text-right">
                 <img src="img/landing/iphone.jpg" class="img-responsive" alt="dashboard">
             </div>
             <div class="col-lg-3 features-text text-right wow fadeInRight">
                 <h2>Advertisers</h2>
-                <p>Get a first-hand introduction to the largest audience of prospective buyers and clients in the cannabis industry. We meticulously developed our ad software to connect you to sites and consumers with the biggest buying potential for you, earning you more money without ever breaking a sweat. Running a digital ad campaign across a multi-channel network is easy and affordable with Traffic Roots.
+                <p>Get a first-hand introduction to the largest audience of prospective buyers and clients. We meticulously developed our ad software to connect you to sites and consumers with the biggest buying potential for you, earning you more money without ever breaking a sweat. Running a digital ad campaign across a multi-channel network is easy and affordable with Traffic Roots.
 </p>
-                <div><a href="" class="btn btn-primary" data-toggle="modal" data-target="#buyerModal">Learn more</a></div>
+                <div><a href="" class="btn btn-primary" data-toggle="modal" data-target="#buyerModal">Sign Up</a></div>
             </div>
         </div>
     </div>
@@ -176,7 +176,7 @@
                                                     <div class="form-group"><label>Email</label> <input type="email" name="email" id="email" placeholder="Enter your email" class="form-control" required></div>
                                         </div>
                                         <input type="hidden" name="list_id" id="list_id" value="1">
-                                        <div class="modal-footer">
+                                        <div class="modal-footer" id="pub_footer">
                                             <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
                                             <button type="submit" id="subscribePublisher" class="btn btn-primary">Submit</button>
                                         </div>
@@ -204,7 +204,7 @@
                                         
                                         </div>
                                         <input type="hidden" name="list_id" id="list_id" value="2">
-                                        <div class="modal-footer">
+                                        <div class="modal-footer" id="buyer_footer">
                                             <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
                                             <button type="submit" id="subscribeBuyer" class="btn btn-primary">Submit</button>
                                         </div>
@@ -226,7 +226,7 @@
         <div class="row features-block">
             <div class="col-lg-6 features-text wow fadeInLeft">
                 <h2>U.S. Traffic!</h2>
-                <p>Traffic Breakdown: Top 20 Cannabis Friendly States</p>
+                <p>Traffic Breakdown: Top 20 States</p>
                 {!! $us_display !!}
             </div>
             <div class="col-lg-6 features-text wow fadeInRight">
@@ -296,6 +296,7 @@
                     var response = JSON.parse(data);
                     if((response.response.success) && (response.response.success == "Subscriber added successfully")){
                         $('#buyer_body').fadeOut(function(){
+                            $('#buyer_footer').html('');
                             $('#buyer_body').html('<h1>Thank You!</h1>');
                                 $('#buyer_body').fadeIn(function(){
                                     setTimeout(function(){ $('#buyerModal').modal('hide'); }, 2000);
@@ -315,6 +316,7 @@
                     var response = JSON.parse(data);
                     if((response.response.success) && (response.response.success == "Subscriber added successfully")){
                         $('#pub_body').fadeOut(function(){
+                            $('#pub_footer').html('');
                             $('#pub_body').html('<h1>Thank You!</h1>');
                                 $('#pub_body').fadeIn(function(){
                                     setTimeout(function(){ $('#pubModal').modal('hide'); }, 2000);
