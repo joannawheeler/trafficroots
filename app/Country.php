@@ -7,4 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Country extends Model
 {
     protected $fillable = ['country_short','country_name'];
+
+    
 }

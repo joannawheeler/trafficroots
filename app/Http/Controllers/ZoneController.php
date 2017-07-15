@@ -14,6 +14,10 @@ use Log;
 use Auth;
 use Session;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ZoneCreated;
+
+
 
 class ZoneController extends Controller
 {
@@ -153,6 +157,7 @@ class ZoneController extends Controller
             'type' => 'success',
             'message' => 'Zone added successfully'
         ]);
+        Mail::to(Auth::user()->email)->send(new ZoneCreated());
         return;
     }
 

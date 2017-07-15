@@ -141,7 +141,7 @@
                                     <a href="#" class="site-zones">
                                         <span class="label label-success">Zones</span>
                                     </a>
-                                    <a href="{{ url("stats/site/$site->id/1") }}" class="site-stats">
+                                    <a href="{{ url("stats/site/$site->id") }}" class="site-stats">
                                         <span class="label label-info">Stats</span>
                                     </a>
                                     <a href="#" class="site-edit" data-toggle="modal" data-target="#editSite{{ $site->id }}">
@@ -232,7 +232,7 @@
                                     <td>{{ $locationTypes->where('id',$zone->location_type)->first()->description }} </td>
                                     <td>{{ $locationTypes->where('id',$zone->location_type)->first()->width . 'x' . $locationTypes->where('id',$zone->location_type)->first()->height }} </td>
                                     <td data-zone_id="{{ $zone->id }}">
-                                        <a href="/stats/zone/{{ $zone->id }}/1" class="zone-stats">
+                                        <a href="/stats/zone/{{ $zone->id }}" class="zone-stats">
                                             <span class="label label-info">Stats</span>
                                         </a>
                                         <a href="#" class="zone-edit" data-toggle="modal" data-target="#editZone{{ $zone->id }}">

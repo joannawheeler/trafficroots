@@ -22,9 +22,12 @@ class Zone extends Model
     {
     	return $this->belongsTo('App\Site');
     }
-
     public function pub()
     {
     	return $this->belongsTo('App\User');
+    }
+    public function stats()
+    {
+        return $this->hasMany('App\Stat');
     }
 }
