@@ -32,7 +32,7 @@ class PublicController extends Controller
              $targeted_traffic += $row->impressions;
 
          }
-         $us_display = '<table id="us_table" class="table table-border table-hover table-stripe"><thead><tr><th>Chunk</th><th>State</th></tr></thead><tbody>';
+         $us_display = '<table id="us_table" class="table table-border table-hover table-stripe"><thead><tr><th>%</th><th>State</th></tr></thead><tbody>';
          foreach($result as $row){
              $factor = round(($row->impressions / $targeted_traffic) * 100, 2);
              $us_display .= '<tr><td>'.$factor.' %</td><td>'.$row->state.'</td></tr>';
@@ -53,7 +53,7 @@ class PublicController extends Controller
              $targeted_traffic += $row->impressions;
 
          }
-         $geo_display = '<table id="geo_table" class="table table-border table-hover table-stripe"><thead><tr><th>Chunk</th><th>Country</th></tr></thead><tbody>';
+         $geo_display = '<table id="geo_table" class="table table-border table-hover table-stripe"><thead><tr><th>%</th><th>Country</th></tr></thead><tbody>';
          foreach($result as $row){
              $factor = round(($row->impressions / $targeted_traffic) * 100, 2);
              $geo_display .= '<tr><td>'.$factor.' %</td><td>'.$row->country_name.'</td></tr>';

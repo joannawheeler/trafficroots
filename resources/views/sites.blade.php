@@ -47,7 +47,9 @@
                     });
                 });
             })
-
+             $('.site-pixel').click(function(e){
+                e.preventDefault()
+            });
              $('.site-zones').click(function(e){
                 e.preventDefault()
                 var site_id = $(this).parents('td').first().data('site_id');
@@ -147,6 +149,9 @@
                                     <a href="#" class="site-edit" data-toggle="modal" data-target="#editSite{{ $site->id }}">
                                         <span class="label">Edit</span>
                                     </a>
+                                     <a href="#" class="site-pixel" data-toggle="modal" data-target="#sitePixel{{ $site->id }}">
+                                        <span class="label label-success">Pixel</span>
+                                    </a>                               
                                 </td>
                             </tr>
                             @endforeach
@@ -252,6 +257,24 @@
                         </table>
                     </div>
                 </div>
+            </div>
+            <div class="modal inmodal" id="sitePixel{{ $site->id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content animated fadeIn">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                                <span class="sr-only">Close</span>
+                            </button>
+                            <h4 class="modal-title">Site Analysis Pixel</h4>
+                        </div>
+                        <div class="modal-body">
+                        <h3>Your Traffic Roots Analysis Pixel</h3>
+                        <code>
+                      {{ htmlspecialchars('<img alt="Traffic Roots Pixel" src="'.env('APP_URL', 'http://localhost').'/pixel/'.$site->site_handle.'" style="display:none;">') }}
+                        </code>
+                        </div>
+                 </div>
             </div>
             <div class="modal inmodal" id="editSite{{ $site->id }}" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog">

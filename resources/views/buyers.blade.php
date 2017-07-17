@@ -148,7 +148,23 @@
                     <div class="panel panel-default">
                         <div class="panel-heading" id="acct_heading">My Account</div>
                         <div class="panel-body table-responsive" id="account_div">
+                            @if(is_array($bank))
+                            <div class="row">
+                            <div class="col-md-3"><strong>Balance:</strong></div><div class="col-md-9"><strong>$</strong>&nbsp;{{ $bank[0]->running_balance }}</div>
+                            </div>
+                            <div class="row">
+                            <div class="col-md-3"><strong>Last Transaction:</strong></div><div class="col-md-9"><strong>$</strong>&nbsp;{{ $bank[0]->transaction_amount }}</div>
+                            </div>
+                            <div class="row">
+                            <div class="col-md-3"><strong>Last Transaction Time:</strong></div><div class="col-md-9">{{ $bank[0]->created_at }}</div>
+                            </div>
+                            @else
                             <h3>No Account Defined</h3>
+                            @endif
+                            <div id="paypal_div"><hr><br />
+                            <a href="javascript:void" id="paypal_payment"><span class="label label-success">Deposit Funds With Paypal</span></a>&nbsp;
+                            <input type="text" name="paypal_amount" id="paypal_amount" placeholder="Amount To Deposit">
+                            </div>
                         </div>
                     </div>
                     </div>
@@ -181,6 +197,17 @@
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
         $.noConflict();
+        $('#paypal_payment').click(function(){
+            var deposit = $('#paypal_amount').val();
+            if(parseFloat(deposit) >= 25.00){
+              if(confirm('Deposit $' + deposit + '?')){
+                  window.location.href = "/paywithpaypal/" + deposit;   
+              }
+            }else{
+              alert('Minimum Deposit $25 - you entered ' + deposit);
+            }
+            return false;
+        });
         $('.camp_row').click(function(){
             var str =  $(this).attr('id');
             var res = str.split("_");

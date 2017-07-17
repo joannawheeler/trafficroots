@@ -1,9 +1,9 @@
 <?php
 return array(
 /** set your paypal credential **/
-'client_id' =>'cary_api1.carywhite.net',
-'secret' => 'WMKF8FMJGK26CACV',
-'signature' => 'AiPC9BjkCyDFQXbSkoZcgqH3hpacAbfRaYEJRKTzZH55HyBuzqQfc5ni',
+'client_id' => env('PAYPAL_API_CLIENT', ''),
+'secret' => env('PAYPAL_API_SECRET', ''),
+'signature' => '',
 /**
 * SDK configuration 
 */
@@ -11,7 +11,7 @@ return array(
 /**
 * Available option 'sandbox' or 'live'
 */
-'mode' => 'sandbox',
+'mode' => 'live',
 /**
 * Specify the max request time in seconds
 */

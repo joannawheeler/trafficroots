@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Auth;
 use App\Site;
+use App\Bank;
 use App\User;
 use App\LocationType;
 use App\Category;
@@ -44,7 +45,6 @@ class HomeController extends Controller
        $location = array();
        $width = array();
        $height = array();
-
        foreach($location_types as $type){
            $location[$type['id']] = $type['description'] . ' - ' . $type['width'] .'x'. $type['height'];
            $width[$type['id']] = $type['width'] + 50;
@@ -59,8 +59,19 @@ class HomeController extends Controller
        $media = DB::select('select * from media where user_id = '.$user->id);
        $folders = DB::select('select * from folders where user_id = '.$user->id);
        $links = DB::select('select * from links where user_id = '.$user->id);
-
+       $bank = DB::select('SELECT * FROM bank WHERE user_id = '.$user->id.' ORDER BY id DESC LIMIT 1;');
+       if(!sizeof($bank)){
+           $data = array();
+           $data['user_id'] = $user->id;
+           $data['transaction_amount'] = 0.00;
+           $data['running_balance'] = 0.00;
+           $newbank = new Bank();
+           $newbank->fill($data);
+           $newbank->save();
+           $bank = DB::select('SELECT * FROM bank WHERE user_id = '.$user->id.' ORDER BY id DESC LIMIT 1;');
+       }
         return view('buyers', ['user' => $user,
+                            'bank' => $bank,
                             'campaigns' => $res,
                             'media' => $media,
                             'links' => $links,
