@@ -161,9 +161,7 @@
                             @else
                             <h3>No Account Defined</h3>
                             @endif
-                            <div id="paypal_div"><hr><br />
-                            <a href="javascript:void" id="paypal_payment"><span class="label label-success">Deposit Funds With Paypal</span></a>&nbsp;
-                            <input type="text" name="paypal_amount" id="paypal_amount" placeholder="Amount To Deposit">
+                            <a href="paywithpaypal" id="paypal_payment"><span class="label label-success">Deposit Funds With Paypal</span></a>
                             </div>
                         </div>
                     </div>
@@ -197,17 +195,6 @@
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
         $.noConflict();
-        $('#paypal_payment').click(function(){
-            var deposit = $('#paypal_amount').val();
-            if(parseFloat(deposit) >= 25.00){
-              if(confirm('Deposit $' + deposit + '?')){
-                  window.location.href = "/paywithpaypal/" + deposit;   
-              }
-            }else{
-              alert('Minimum Deposit $25 - you entered ' + deposit);
-            }
-            return false;
-        });
         $('.camp_row').click(function(){
             var str =  $(this).attr('id');
             var res = str.split("_");
@@ -229,7 +216,7 @@
         $('.tr-iframe').click(function(){
             var str =  $(this).attr('id');
             var res = str.split("_");
-            var url = 'https://buyers.trafficroots.com' + res[4];
+            var url = 'https://publishers.trafficroots.com' + res[4];
             $('#mybody').html('<iframe width="100%" height="100%" frameborder="0" src="' + url + '"></iframe>');
             $('#mybody').height(res[3]);
             $('#mybody').width(res[2]);

@@ -10,6 +10,7 @@ use Input;
 use App\Bank;
 use Auth;
 use DB;
+use Log;
 /** All Paypal Details class **/
 use PayPal\Rest\ApiContext;
 use PayPal\Auth\OAuthTokenCredential;
@@ -158,6 +159,8 @@ class AddMoneyController extends HomeController
             
             /** it's all right **/
             /** Here Write your database logic like that insert record or value in database if you want **/
+            Log::info(print_r($result,true));
+            $this->amount = $result->transactions[0]->amount->total - $result->transactions[0]->related_resources[0]->sale->transaction_fee->value; 
             $this->depositFunds($payment_id);
             \Session::put('success','Payment success');
             return Redirect::route('addmoney.paywithpaypal');
@@ -167,6 +170,7 @@ class AddMoneyController extends HomeController
     }
     public function depositFunds($payment_id)
     {
+      try{
         $user = Auth::getUser();
         $balance = $this->getBalance();
         $running_balance = ($balance + $this->amount);
@@ -177,6 +181,10 @@ class AddMoneyController extends HomeController
         $sql = "INSERT INTO trafficroots.paypal (id,paypal_id,bank_id,created_at,updated_at) VALUES(NULL,'$payment_id',".$bank->id.",NOW(),NOW());";
         DB::insert($sql);
         return true;
+      }catch(Exception $e){
+          Log::error($e->getMessage());
+          return false;
+      }
 
     }
   }
