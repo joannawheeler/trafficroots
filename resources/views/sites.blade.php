@@ -1,6 +1,6 @@
 @extends('layouts.app')
-
 @section('css')
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
     <link href="{{ URL::asset('css/plugins/footable/footable.core.css') }}" rel="stylesheet">
     <style type="text/css">
         .footable th:last-child .footable-sort-indicator {
@@ -13,7 +13,9 @@
 @endsection
 
 @section('js')
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
     <script src="{{ URL::asset('js/plugins/footable/footable.all.min.js') }}"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
         <script>
         $.fn.goTo = function() {
             $('html, body').animate({
@@ -28,6 +30,7 @@
             $('#zones' + site_id).goTo();
         }
         $(document).ready(function() {
+            
             $('.footable').footable();
             $('.alert').delay(3000).fadeOut();
 
@@ -121,6 +124,7 @@
                     </div>
                 </div>
                 <div class="ibox-content">
+                    <div style="overflow-wrap: break-word;">
                     <input type="text" class="form-control input-sm m-b-xs" id="filter" placeholder="Search in table">
 
                     <table class="footable table table-stripped" data-page-size="8" data-filter=#filter>
@@ -164,6 +168,7 @@
                             </tr>
                         </tfoot>
                     </table>
+                  </div>
                 </div>
             </div>
         </div>
@@ -270,9 +275,10 @@
                         </div>
                         <div class="modal-body">
                         <h3>Your Traffic Roots Analysis Pixel</h3>
-                        <code>
-                      {{ htmlspecialchars('<img alt="Traffic Roots Pixel" src="'.env('APP_URL', 'http://localhost').'/pixel/'.$site->site_handle.'" style="display:none;">') }}
-                        </code>
+                        <div style="overflow-wrap: break-word;">
+                        <pre><code class="html">{{ htmlspecialchars('<img alt="Traffic Roots Pixel" src="'.env('APP_URL', 'http://localhost').'/pixel/'.$site->site_handle.'" style="display:none;">') }}
+                        </code></pre>
+                        </div>
                         </div>
                  </div>
             </div>
