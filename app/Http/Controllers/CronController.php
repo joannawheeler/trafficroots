@@ -31,23 +31,28 @@ class CronController extends Controller
 
     public function bidRoller()
     {
+        Log::info("Bid Roller Running");
         //function to match zones to active campaigns
         $pairs = array();
         $zones = Zone::where('status', 1)->get();
         foreach($zones as $zone){
+            Log::info("Checking zone ".$zone->handle);
             $categories = DB::select('select category from site_category where site_id = '.$zone->site_id);
             $allowed = array();
+            if(sizeof($categories)){
             foreach($categories as $cat){
                 $allowed[] = $cat->category;
             }
             $in = implode($allowed, ",")."\n";
-            $campaigns = DB::select("select * 
-                                     from buyers.campaigns
-                                     join buyers.campaign_targets 
-                                     on buyers.campaigns.id = buyers.campaign_targets.campaign_id 
-                                     where status = 1 
+            $sql = "select *
+                                     from campaigns
+                                     join campaign_targets
+                                     on campaigns.id = campaign_targets.campaign_id
+                                     where status = 1
                                      and location_type = ".$zone->location_type."
-                                     and campaign_category in ($in)");
+                                     and campaign_category in ($in)";
+            Log::info($sql);
+            $campaigns = DB::select($sql);
             
             foreach($campaigns as $camp){
                 $pairs[] = "(NULL,'"
@@ -65,6 +70,9 @@ class CronController extends Controller
                            .$camp->browsers."','"
                            .$camp->keywords."',NOW(),NOW())";
                  
+            }
+            }else{
+                Log::info("No Categories found for zone ".$zone->handle);
             }
         }
         if(sizeof($pairs)){

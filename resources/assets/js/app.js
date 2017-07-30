@@ -1,6 +1,11 @@
 /* globals require */
 require('./bootstrap');
 
-if (document.title.includes('Publisher Stats')) {
+let { title } = document;
+
+if (title.includes('Publisher Stats')) {
     require('./pages/pub-stats');
+}
+if (title.includes('Sites')) {
+    require('./pages/sites');
 }

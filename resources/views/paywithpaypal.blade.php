@@ -20,9 +20,7 @@
                 @endif
                 <div class="panel-heading">Add funds with Paypal</div>
                 <div class="panel-body">
-                    <blockquote>
-                    <p>You will be redirected to PayPal's site to complete the transaction.<br />Funds are available immediately.<br />Your current balance is $ {{ $balance }}</p> 
-                    </blockquote>
+                    <p>You will be redirected to PayPal's site to complete the transaction.<br />Your current balance is $ {{ $balance }}</p> 
                     <form class="form-horizontal" method="POST" id="payment-form" role="form" action="{!! URL::route('addmoney.paypal') !!}" >
                         {{ csrf_field() }}
                         <div class="form-group{{ $errors->has('amount') ? ' has-error' : '' }}">

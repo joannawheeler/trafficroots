@@ -9,6 +9,8 @@ use Redirect;
 use Input;
 use App\Bank;
 use Auth;
+use DB;
+use Log;
 /** All Paypal Details class **/
 use PayPal\Rest\ApiContext;
 use PayPal\Auth\OAuthTokenCredential;
@@ -132,23 +134,24 @@ class AddMoneyController extends HomeController
         \Session::put('error','Unknown error occurred');
         return Redirect::route('addmoney.paywithpaypal');
     }
-    public function getPaymentStatus()
+    public function getPaymentStatus(Request $request)
     {
         /** Get the payment ID before session clear **/
         $payment_id = Session::get('paypal_payment_id');
         /** clear the session payment ID **/
         Session::forget('paypal_payment_id');
-        if (empty(Input::get('PayerID')) || empty(Input::get('token'))) {
+        if (empty($request->PayerID) || empty($request->token)) {
             \Session::put('error','Payment failed');
             return Redirect::route('addmoney.paywithpaypal');
         }
+        if(is_null($payment_id)) $payment_id = $request->paymentId;
         $payment = Payment::get($payment_id, $this->_api_context);
         /** PaymentExecution object includes information necessary **/
         /** to execute a PayPal account payment. **/
         /** The payer_id is added to the request query parameters **/
         /** when the user is redirected from paypal back to your site **/
         $execution = new PaymentExecution();
-        $execution->setPayerId(Input::get('PayerID'));
+        $execution->setPayerId($request->PayerID);
         /**Execute the payment **/
         $result = $payment->execute($execution, $this->_api_context);
         /** dd($result);exit; /** DEBUG RESULT, remove it later **/
@@ -156,6 +159,8 @@ class AddMoneyController extends HomeController
             
             /** it's all right **/
             /** Here Write your database logic like that insert record or value in database if you want **/
+            Log::info(print_r($result,true));
+            $this->amount = $result->transactions[0]->amount->total - $result->transactions[0]->related_resources[0]->sale->transaction_fee->value; 
             $this->depositFunds($payment_id);
             \Session::put('success','Payment success');
             return Redirect::route('addmoney.paywithpaypal');
@@ -165,6 +170,7 @@ class AddMoneyController extends HomeController
     }
     public function depositFunds($payment_id)
     {
+      try{
         $user = Auth::getUser();
         $balance = $this->getBalance();
         $running_balance = ($balance + $this->amount);
@@ -175,6 +181,10 @@ class AddMoneyController extends HomeController
         $sql = "INSERT INTO trafficroots.paypal (id,paypal_id,bank_id,created_at,updated_at) VALUES(NULL,'$payment_id',".$bank->id.",NOW(),NOW());";
         DB::insert($sql);
         return true;
+      }catch(Exception $e){
+          Log::error($e->getMessage());
+          return false;
+      }
 
     }
   }

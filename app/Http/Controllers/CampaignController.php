@@ -112,14 +112,15 @@ class CampaignController extends Controller
         $data['user_id'] = $user->id;
         $campaign->fill($data);
         $campaign->save();
-        
+        $id = $campaign->id;
         $targets = array();
         $targets['campaign_id'] = $campaign->id;
         $targets['user_id'] = $user->id;
         $target = new CampaignTarget();
         $target->fill($targets);
         $target->save();
-        return redirect('/home');
+        
+        return redirect('/manage_campaign/'.$id);
     }
     public function createCreative(Request $request)
     {

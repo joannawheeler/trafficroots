@@ -148,7 +148,21 @@
                     <div class="panel panel-default">
                         <div class="panel-heading" id="acct_heading">My Account</div>
                         <div class="panel-body table-responsive" id="account_div">
+                            @if(is_array($bank))
+                            <div class="row">
+                            <div class="col-md-3"><strong>Balance:</strong></div><div class="col-md-9"><strong>$</strong>&nbsp;{{ $bank[0]->running_balance }}</div>
+                            </div>
+                            <div class="row">
+                            <div class="col-md-3"><strong>Last Transaction:</strong></div><div class="col-md-9"><strong>$</strong>&nbsp;{{ $bank[0]->transaction_amount }}</div>
+                            </div>
+                            <div class="row">
+                            <div class="col-md-3"><strong>Last Transaction Time:</strong></div><div class="col-md-9">{{ $bank[0]->created_at }}</div>
+                            </div>
+                            @else
                             <h3>No Account Defined</h3>
+                            @endif
+                            <a href="paywithpaypal" id="paypal_payment"><span class="label label-success">Deposit Funds With Paypal</span></a>
+                            </div>
                         </div>
                     </div>
                     </div>
@@ -202,7 +216,7 @@
         $('.tr-iframe').click(function(){
             var str =  $(this).attr('id');
             var res = str.split("_");
-            var url = 'https://buyers.trafficroots.com' + res[4];
+            var url = 'https://publishers.trafficroots.com' + res[4];
             $('#mybody').html('<iframe width="100%" height="100%" frameborder="0" src="' + url + '"></iframe>');
             $('#mybody').height(res[3]);
             $('#mybody').width(res[2]);

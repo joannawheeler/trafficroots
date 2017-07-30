@@ -36,7 +36,7 @@ Auth::routes();
 Route::get('/charge', 'ChargeController@index');
 Route::get('/about', 'PublicController@aboutUs');
 Route::get('/home', 'HomeController@index');
-Route::get('/buyers', 'HomeController@buyers');
+Route::get('/buyers/{tab?}', 'HomeController@buyers');
 Route::get('/sites', 'SiteController@index');
 Route::post('/sites', 'SiteController@store');
 Route::patch('/sites/{site}', 'SiteController@edit');
@@ -72,6 +72,6 @@ Route::get('/folder', 'CampaignController@createFolder');
 Route::post('/folder', 'CampaignController@postFolder');
 
 /* paypal routes */
-Route::get('paywithpaypal', array('as' => 'addmoney.paywithpaypal','uses' => 'AddMoneyController@payWithPaypal',));
+Route::get('/paywithpaypal', array('as' => 'addmoney.paywithpaypal','uses' => 'AddMoneyController@payWithPaypal',));
 Route::post('paypal', array('as' => 'addmoney.paypal','uses' => 'AddMoneyController@postPaymentWithpaypal',));
 Route::get('paypal', array('as' => 'payment.status','uses' => 'AddMoneyController@getPaymentStatus',));

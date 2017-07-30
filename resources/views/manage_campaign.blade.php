@@ -10,8 +10,11 @@
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
-                <div class="panel-heading">Campaign Management</div>
-
+                <div class="panel-heading">Campaign Management
+                <div class="pull-right">
+                <a href="/buyers"><span class="label label-success">Return To Menu</span></a>
+                </div>
+                </div>
                 <div class="panel-body">
                     <div class="panel panel-default">
                         <div class="panel-heading">Campaign {{ $campaign->id }}</div>
@@ -82,13 +85,12 @@
                         @if (count($creatives))
                             <table class="table table-hover table-border table-striped table-condensed" name="creative_table" id="creative_table" width="100%">
                             <thead>
-                            <tr><th>Description</th><th>Weight</th><th>Media</th><th>Link</th><th>Folder</th><th>Status</th><th>Date Created</th></tr>
+                            <tr><th>Description</th><th>Media</th><th>Link</th><th>Folder</th><th>Status</th><th>Date Created</th></tr>
                             </thead>
                             <tbody>
                             @foreach ($creatives as $file)
                                 <tr class="creative_row" id="creative_row_{{ $file->id }}">
                                     <td>{{ $file->description }} </td>
-                                    <td> {{ $file->weight }} </td>
                                     <td> {{ $file->media_id }} </td>
                                     <td> {{ $file->link_id }} </td>
                                     <td> {{ $file->folder_id }} </td>
