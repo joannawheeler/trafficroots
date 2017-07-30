@@ -9,126 +9,183 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'TrafficRoots') }}-@yield('title', '')</title>
 
     <!-- Scripts -->
     <script>
-    window.Laravel = <?php echo json_encode([
-            'csrfToken' => csrf_token(),
-        ]); ?>
+    window.Laravel = {
+        'csrfToken': "{{ csrf_token() }}",
+    }
     </script>
     <!-- Global and page level js -->
-    @include('_styles')
+    @include('_styles') 
     @include('_scripts')
 </head>
 
 <body class="no-skin-config">
     <div id="wrapper">
-    <nav class="navbar-default navbar-static-side" role="navigation">
-        <div class="sidebar-collapse">
-            <ul class="nav metismenu" id="side-menu">
-                <li class="nav-header">
-                    <div class="dropdown profile-element">
-                        <!-- Branding Image -->
-                        <div>
-                            <a href="{{ url('/') }}">
-                               <div class="logo-style">
-                               <img src="{{ url('/logo.png') }}"  alt="TrafficRoots" width="50" height="52">
-                               </div>
-                            </a>
-                        </div>
-                        <div class="logo-element">
-                            <img src="{{ url('/logo.png') }}" alt="TrafficRoots" width="40" height="42">
-                        </div>
+        <nav class="navbar-default navbar-static-side" role="navigation">
+            <div class="sidebar-collapse">
+                <ul class="nav metismenu" id="side-menu">
+                    <li class="nav-header">
+                        <div class="dropdown profile-element">
+                            <!-- Branding Image -->
+                            <div>
+                                <a href="{{ url('/') }}">
+                                    <div class="logo-style">
+                                        <img src="{{ url('/logo.png') }}" alt="TrafficRoots" width="50" height="52">
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="logo-element">
+                                <img src="{{ url('/logo.png') }}" alt="TrafficRoots" width="40" height="42">
+                            </div>
                     </li>
                     <!-- Authentication Links -->
                     @if (Auth::guest())
-                    <li id="nav_login" class="active nav-click"><a href="{{ url('/login') }}"><i class="fa fa-sign-in"></i><span class="nav-label">Login</span></a></li>
-                    <li id="nav_register" class="nav-click"><a href="{{ url('/register') }}"><i class="fa fa-pencil"></i><span class="nav-label">Register</span></a></li>
-                    {{-- <li id="nav_about" class="nav-click"><a href="{{ url('/about') }}"><i class="fa fa-group"></i><span class="nav-label">About</span></a></li> --}}
-                    @else
+                    <li id="nav_login" class="active nav-click">
+                        <a href="{{ url('/login') }}">
+                            <i class="fa fa-sign-in"></i>
+                            <span class="nav-label">Login</span>
+                        </a>
+                    </li>
+                    <li id="nav_register" class="nav-click">
+                        <a href="{{ url('/register') }}">
+                            <i class="fa fa-pencil"></i>
+                            <span class="nav-label">Register</span>
+                        </a>
+                    </li>
+                    {{--
+                    <li id="nav_about" class="nav-click">
+                        <a href="{{ url('/about') }}">
+                            <i class="fa fa-group"></i>
+                            <span class="nav-label">About</span>
+                        </a>
+                    </li> --}} @else
                     <li id="nav_pub" class="nav-click">
-                        <a href="{{ url('/home') }}"><i class="fa fa-globe"></i><span class="nav-label">Publisher</span><span class="fa arrow"></span></a>
+                        <a href="{{ url('/home') }}">
+                            <i class="fa fa-globe"></i>
+                            <span class="nav-label">Publisher</span>
+                            <span class="fa arrow"></span>
+                        </a>
                         <ul class="nav nav-second-level collapse">
-                            <li><a href="{{ URL::to('home') }}">Dashboard</a></li>
-                            <li><a href="{{ URL::to('sites') }}">Sites</a></li>
-                            <li><a href="{{ URL::to('zones') }}">Zones</a></li>
+                            <li>
+                                <a href="{{ URL::to('home') }}">Dashboard</a>
+                            </li>
+                            <li>
+                                <a href="{{ URL::to('sites') }}">Sites</a>
+                            </li>
+                            <li>
+                                <a href="{{ URL::to('stats/pub') }}">Stats</a>
+                            </li>
                         </ul>
                     </li>
                     <li id="nav_buyer" class="nav-click">
-                        <a href="{{ url('/buyers') }}"><i class="fa fa-diamond"></i><span class="nav-label">Advertiser</span><span class="fa arrow"></span></a>
+                        <a href="{{ url('/buyers') }}">
+                            <i class="fa fa-diamond"></i>
+                            <span class="nav-label">Advertiser</span>
+                            <span class="fa arrow"></span>
+                        </a>
                         <ul class="nav nav-second-level collapse">
-                            <li><a href="{{URL::to('buyers')}}">Dashboard</a></li>
+                            <li>
+                                <a href="{{URL::to('buyers')}}">Dashboard</a>
+                            </li>
                         </ul>
                     </li>
-                    <li id="nav_support" class="nav-click"><a href="{{ url('/tickets') }}"><i class="fa fa-bug"></i><span class="nav-label">Support</span></a></li>
-                    {{-- <li id="nav_about" class="nav-click"><a href="{{ url('/about') }}"><i class="fa fa-group"></i><span class="nav-label">About</span></a></li> --}}
-                    <li id="nav_logout" class="nav-click"><a href="{{ url('/logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="fa fa-plug"></i><span class="nav-label">Logout</span></a>
-                        <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
-                            {{ csrf_field() }}
-                        </form>
-                    </li>
-                    @endif
-
-                </ul>
-            </div>
-    </div>
-    </nav>
-    <div id="page-wrapper" class="gray-bg">
-        <div class="row border-bottom">
-            <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
-                <div class="navbar-header">
-                    <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i></a>
-                </div>
-                <ul class="nav navbar-top-links navbar-right">
-                    @if(!Auth::guest())
-                    <li>
-                        <span class="m-r-sm text-muted welcome-message">{{ Auth::user()->name }}</span>
-                    </li>
-
-                    <li>
-                        <a href="{{ url('/logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><i class="fa fa-plug"></i><span class="nav-label">Logout</span></a>
-                        <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
-                            {{ csrf_field() }}
-                        </form>
-                    </li>
-                    <li>
-                        <a class="right-sidebar-toggle">
-                            <i class="fa fa-tasks"></i>
+                    <li id="nav_support" class="nav-click">
+                        <a href="{{ url('/tickets') }}">
+                            <i class="fa fa-bug"></i>
+                            <span class="nav-label">Support</span>
                         </a>
                     </li>
+                    {{--
+                    <li id="nav_about" class="nav-click">
+                        <a href="{{ url('/about') }}">
+                            <i class="fa fa-group"></i>
+                            <span class="nav-label">About</span>
+                        </a>
+                    </li> --}}
+                    <li id="nav_logout" class="nav-click">
+                        <a href="{{ url('/logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                            <i class="fa fa-plug"></i>
+                            <span class="nav-label">Logout</span>
+                        </a>
+                        <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+                            {{ csrf_field() }}
+                        </form>
+                    </li>
                     @endif
                 </ul>
+                </div>
+            </div>
+        </nav>
+        <div id="page-wrapper" class="gray-bg">
+            <div class="row border-bottom">
+                <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
+                    <div class="navbar-header">
+                        <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#">
+                            <i class="fa fa-bars"></i>
+                        </a>
+                    </div>
+                    <ul class="nav navbar-top-links navbar-right">
+                        @if(!Auth::guest())
+                        <li>
+                            <span class="m-r-sm text-muted welcome-message">{{ Auth::user()->name }}</span>
+                        </li>
 
-            </nav>
-        </div>
+                        <li>
+                            <a href="{{ url('/logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                                <i class="fa fa-plug"></i>
+                                <span class="nav-label">Logout</span>
+                            </a>
+                            <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+                                {{ csrf_field() }}
+                            </form>
+                        </li>
+                        {{-- <li>
+                            <a class="right-sidebar-toggle">
+                                <i class="fa fa-tasks"></i>
+                            </a>
+                        </li> --}}
+                        @endif
+                    </ul>
 
-        <div class="wrapper wrapper-content">
-        @include('notifications')
-        @yield('content')
-       </div>
-<div id="right-sidebar">
+                </nav>
+            </div>
+
+            <div class="wrapper wrapper-content">
+                @include('notifications') 
+                @yield('content')
+            </div>
+            {{-- <div id="right-sidebar">
                 <ul class="nav nav-tabs navs-3">
 
-                    <li class="active"><a data-toggle="tab" href="#tab-1">
-                        Notes
-                    </a></li>
-                    <li><a data-toggle="tab" href="#tab-2">
-                        Projects
-                    </a></li>
-                    <li class=""><a data-toggle="tab" href="#tab-3">
-                        <i class="fa fa-gear"></i>
-                    </a></li>
+                    <li class="active">
+                        <a data-toggle="tab" href="#tab-1">
+                            Notes
+                        </a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#tab-2">
+                            Projects
+                        </a>
+                    </li>
+                    <li class="">
+                        <a data-toggle="tab" href="#tab-3">
+                            <i class="fa fa-gear"></i>
+                        </a>
+                    </li>
                 </ul>
 
                 <div class="tab-content">
 
-
                     <div id="tab-1" class="tab-pane active">
 
                         <div class="sidebar-title">
-                            <h3> <i class="fa fa-comments-o"></i> Latest Notes</h3>
-                            <small><i class="fa fa-tim"></i> You have 10 new message.</small>
+                            <h3>
+                                <i class="fa fa-comments-o"></i> Latest Notes</h3>
+                            <small>
+                                <i class="fa fa-tim"></i> You have 10 new message.</small>
                         </div>
 
                         <div>
@@ -256,8 +313,10 @@
                     <div id="tab-2" class="tab-pane">
 
                         <div class="sidebar-title">
-                            <h3> <i class="fa fa-cube"></i> Latest projects</h3>
-                            <small><i class="fa fa-tim"></i> You have 14 projects. 10 not completed.</small>
+                            <h3>
+                                <i class="fa fa-cube"></i> Latest projects</h3>
+                            <small>
+                                <i class="fa fa-tim"></i> You have 14 projects. 10 not completed.</small>
                         </div>
 
                         <ul class="sidebar-list">
@@ -363,14 +422,16 @@
                     <div id="tab-3" class="tab-pane">
 
                         <div class="sidebar-title">
-                            <h3><i class="fa fa-gears"></i> Settings</h3>
-                            <small><i class="fa fa-tim"></i> You have 14 projects. 10 not completed.</small>
+                            <h3>
+                                <i class="fa fa-gears"></i> Settings</h3>
+                            <small>
+                                <i class="fa fa-tim"></i> You have 14 projects. 10 not completed.</small>
                         </div>
 
                         <div class="setings-item">
-                    <span>
-                        Show notifications
-                    </span>
+                            <span>
+                                Show notifications
+                            </span>
                             <div class="switch">
                                 <div class="onoffswitch">
                                     <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox" id="example">
@@ -382,9 +443,9 @@
                             </div>
                         </div>
                         <div class="setings-item">
-                    <span>
-                        Disable Chat
-                    </span>
+                            <span>
+                                Disable Chat
+                            </span>
                             <div class="switch">
                                 <div class="onoffswitch">
                                     <input type="checkbox" name="collapsemenu" checked class="onoffswitch-checkbox" id="example2">
@@ -396,9 +457,9 @@
                             </div>
                         </div>
                         <div class="setings-item">
-                    <span>
-                        Enable history
-                    </span>
+                            <span>
+                                Enable history
+                            </span>
                             <div class="switch">
                                 <div class="onoffswitch">
                                     <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox" id="example3">
@@ -410,9 +471,9 @@
                             </div>
                         </div>
                         <div class="setings-item">
-                    <span>
-                        Show charts
-                    </span>
+                            <span>
+                                Show charts
+                            </span>
                             <div class="switch">
                                 <div class="onoffswitch">
                                     <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox" id="example4">
@@ -424,9 +485,9 @@
                             </div>
                         </div>
                         <div class="setings-item">
-                    <span>
-                        Offline users
-                    </span>
+                            <span>
+                                Offline users
+                            </span>
                             <div class="switch">
                                 <div class="onoffswitch">
                                     <input type="checkbox" checked name="collapsemenu" class="onoffswitch-checkbox" id="example5">
@@ -438,9 +499,9 @@
                             </div>
                         </div>
                         <div class="setings-item">
-                    <span>
-                        Global search
-                    </span>
+                            <span>
+                                Global search
+                            </span>
                             <div class="switch">
                                 <div class="onoffswitch">
                                     <input type="checkbox" checked name="collapsemenu" class="onoffswitch-checkbox" id="example6">
@@ -452,9 +513,9 @@
                             </div>
                         </div>
                         <div class="setings-item">
-                    <span>
-                        Update everyday
-                    </span>
+                            <span>
+                                Update everyday
+                            </span>
                             <div class="switch">
                                 <div class="onoffswitch">
                                     <input type="checkbox" name="collapsemenu" class="onoffswitch-checkbox" id="example7">
@@ -469,23 +530,18 @@
                         <div class="sidebar-content">
                             <h4>Settings</h4>
                             <div class="small">
-                                I belive that. Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                                And typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.
-                                Over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                                I belive that. Lorem Ipsum is simply dummy text of the printing and typesetting industry. And typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s. Over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
                             </div>
                         </div>
 
                     </div>
                 </div>
 
-            </div>
-
-
+            </div> --}}
 
         </div>
     </div>
-</div>
-<img alt="Trafficroots Analysis Pixel" src="https://publishers.trafficroots.com/pixel/58daaf821381f" style="display: none;">
+    <img alt="Trafficroots Analysis Pixel" src="https://publishers.trafficroots.com/pixel/58daaf821381f" style="display: none;">
 </body>
 
 </html>

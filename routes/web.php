@@ -44,6 +44,8 @@ Route::patch('/zones/{zone}', 'ZoneController@edit');
 Route::get('/stats/site/{site}', 'StatsController@site');
 Route::get('/stats/zone/{zone}', 'StatsController@zone');
 Route::post('sites/{site}/zones', 'ZoneController@store');
+Route::get('/stats/pub', 'StatsController@pub');
+Route::post('/stats/pub', 'StatsController@filtered');
 Route::get('/getzones/{site_id}', 'ZoneController@getZones');
 Route::post('/getzones', 'ZoneController@postGetZones');
 Route::get('/addzone/{site_id}', 'ZoneController@addZone');
