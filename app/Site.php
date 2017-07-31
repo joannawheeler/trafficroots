@@ -23,10 +23,17 @@ class Site extends Model
     {
     	return $this->belongsTo('App\User');
     }
+    
     public function addZone($description, $location_type)
     {
         $pub_id = $this->user_id;
         $handle = bin2hex(random_bytes(5));
         $this->zones()->create(compact('description','location_type','pub_id','handle'));
     }
+
+    public function stats()
+    {
+        return $this->hasMany('App\Stat');
+    }
+    
 }

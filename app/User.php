@@ -32,8 +32,13 @@ class User extends Authenticatable
     ];
 
 
-    public function zone()
+    public function zones()
     {
-        $this->hasMany('App\Zone','pub_id');
+        return $this->hasMany('App\Zone','pub_id');
+    }
+
+    public function sites()
+    {
+        return $this->hasMany('App\Site');
     }
 }

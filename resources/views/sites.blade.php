@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title','Sites')
 @section('css')
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
     <link href="{{ URL::asset('css/plugins/footable/footable.core.css') }}" rel="stylesheet">
@@ -16,60 +17,6 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
     <script src="{{ URL::asset('js/plugins/footable/footable.all.min.js') }}"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-        <script>
-        $.fn.goTo = function() {
-            $('html, body').animate({
-                scrollTop: $(this).offset().top + 'px'
-            }, 'fast');
-            return this;
-        }
-
-        function showSiteZones(site_id) {
-            $('.zones').addClass('hide');
-            $('#zones' + site_id).removeClass('hide');
-            $('#zones' + site_id).goTo();
-        }
-        $(document).ready(function() {
-            
-            $('.footable').footable();
-            $('.alert').delay(3000).fadeOut();
-
-            $('form').submit(function(event){
-                event.preventDefault();
-                var $form = $(this);
-                $.post($form.prop('action'), $form.serialize(), 'json')
-                .done(function(response){
-                    location.reload();
-                })
-                .error(function(response){
-                    var errors = response.responseJSON;
-                    $.each(errors, function(name,message){
-                    $form.find('input[name="' + name +'"] + .error')
-                        .removeClass('hide')
-                        .text(message);
-                    });
-                });
-            })
-             $('.site-pixel').click(function(e){
-                e.preventDefault()
-            });
-             $('.site-zones').click(function(e){
-                e.preventDefault()
-                var site_id = $(this).parents('td').first().data('site_id');
-                showSiteZones(site_id);
-            });
-            $('.site-edit').click(function(e){
-                e.preventDefault()
-                // var site_id = $(this).parents('td').first().data('site_id');
-                // $('#editSite' + site_id).modal('show');
-            });
-            $('.zone-edit').click(function(e){
-                e.preventDefault()
-                // var zone_id = $(this).parents('td').first().data('zone_id');
-                // $('#editZone' + zone_id).modal('show');
-            });
-        });
-    </script>
 @endsection
 @section('content')
     <div class="row">
@@ -147,7 +94,7 @@
                                     <a href="#" class="site-zones">
                                         <span class="label label-success">Zones</span>
                                     </a>
-                                    <a href="{{ url("stats/site/$site->id/1") }}" class="site-stats">
+                                    <a href="{{ url("stats/site/$site->id") }}" class="site-stats">
                                         <span class="label label-info">Stats</span>
                                     </a>
                                     <a href="#" class="site-edit" data-toggle="modal" data-target="#editSite{{ $site->id }}">
@@ -242,7 +189,7 @@
                                     <td>{{ $locationTypes->where('id',$zone->location_type)->first()->description }} </td>
                                     <td>{{ $locationTypes->where('id',$zone->location_type)->first()->width . 'x' . $locationTypes->where('id',$zone->location_type)->first()->height }} </td>
                                     <td data-zone_id="{{ $zone->id }}">
-                                        <a href="/stats/zone/{{ $zone->id }}/1" class="zone-stats">
+                                        <a href="/stats/zone/{{ $zone->id }}" class="zone-stats">
                                             <span class="label label-info">Stats</span>
                                         </a>
                                         <a href="#" class="zone-edit" data-toggle="modal" data-target="#editZone{{ $zone->id }}">
