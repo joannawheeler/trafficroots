@@ -41,25 +41,15 @@ class StatsController extends Controller
         $endDate = Carbon::parse($dateRange[1]);
         $sites = $request->has('sites') ? $request->get('sites') : Auth::getUser()->sites->pluck('id');
         $stats = Stat::whereIn('site_id', $sites);
+        
         if ($request->has('countries')) {
             $stats->whereIn('country_id', $request->get('countries'));
         }
-        // dd([
-        //     'stats' => $stats->get()->pluck('site_id'),
-        //     'start' => Carbon::parse($startDate)->toDateString(),
-        //     'end' => Carbon::parse($endDate)->toDateString(),
-        //     'countries' => $countries,
-        //     'sites' => $sites
-        // ]);
         $stats = $stats
             ->where('stat_date', '>=', $startDate->toDateString())
             ->where('stat_date', '<=', $endDate->toDateString())
             ->get();
-            // dd([
-            //     'sum' => $stats->sum('impressions'),
-            //     'dates' => [$startDate->toDateString(), $endDate->toDateString()],
-            //     'sites' => $sites
-            // ]);
+
         return view('pub-stats', compact('stats', 'startDate', 'endDate'));
     }
     public function pub($startDate = null, $endDate = null)

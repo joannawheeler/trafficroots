@@ -81,7 +81,7 @@
                                     </tr>
                             </thead>
                             <tbody>
-                                @foreach ($stats->unique('stat_date') as $day)
+                                @foreach ($stats->groupBy('stat_date') as $day)
                                 <tr>
                                     <td>{{ $day->first()->stat_date }} </td>
                                     <td>{{ $stats->where('stat_date', $day->first()->stat_date)->sum('impressions') }}</td>
