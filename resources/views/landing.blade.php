@@ -157,6 +157,41 @@
     </div>
 
 <!-- modal windows -->
+<!-- delayed pop modal -->
+                            <div class="modal inmodal" id="popModal" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog">
+                                <div class="modal-content animated bounceInLeft">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                            <i class="fa fa-laptop modal-icon"></i>
+                                            <h4 class="modal-title">Publishers/Advertisers</h4>
+                                            <small class="font-bold">Join us today!</small>
+                                        </div>
+                                        <form name="pop_form" id="pop_form" action="" method="POST">
+                                        {{ csrf_field() }}
+                                        <div id="pop_body" class="modal-body">
+                                            <p>Sign up for our newsletter and find out how to maximize your earnings with the Traffic Roots Ad Network</p>
+                                            <p>Register as a User at <a href="https://trafficroots.com/register" target="_blank">trafficroots.com</a> and get Bonus Cash added to your account!</p>
+                                                    <div class="form-group"><label>First Name</label> <input type="text" name="first_name" id="first_name" placeholder="First name" class="form-control" required></div>
+                                                    <div class="form-group"><label>Last Name</label> <input type="text" name="last_name" id="last_name" placeholder="Last name" class="form-control" required></div>
+                                                    <div class="form-group"><label>Email</label> <input type="email" name="email" id="email" placeholder="Enter your email" class="form-control" required></div>
+                                                    <div class="form-group"><label>About Me:</label> 
+                                                        <select name="list_id" id="list_id" class="form-control listid" required>
+                                                        <option value="">Choose One</option>
+                                                        <option value="1">I'm a Publisher</option>
+                                                        <option value="2">I'm an Advertiser</option>
+                                                        </select>                                         
+                                                    </div>
+                                        </div>
+                                        <div class="modal-footer" id="pop_footer">
+                                            <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                                            <button type="submit" id="subscribePop" class="btn btn-primary">Submit</button>
+                                        </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="modal inmodal" id="pubModal" tabindex="-1" role="dialog" aria-hidden="true">
                                 <div class="modal-dialog">
                                 <div class="modal-content animated bounceInRight">
@@ -288,7 +323,12 @@
 
    <script type="text/javascript">
        jQuery(document).ready(function ($) {
-
+        setTimeout(function(){ 
+            var reg = readCookie('subscribed');
+            if(reg == null){
+                $('#popModal').modal('show');
+            } 
+        }, 10000);
         $('#buyer_form').submit(function(){
             var formdata = $('#buyer_form').serialize();
             $.post( "/buyer_subscribe", formdata)
@@ -299,6 +339,7 @@
                             $('#buyer_footer').html('');
                             $('#buyer_body').html('<h1>Thank You!</h1>');
                                 $('#buyer_body').fadeIn(function(){
+                                    createCookie('subscribed','true');
                                     setTimeout(function(){ $('#buyerModal').modal('hide'); }, 2000);
                                 });
                             
@@ -319,6 +360,7 @@
                             $('#pub_footer').html('');
                             $('#pub_body').html('<h1>Thank You!</h1>');
                                 $('#pub_body').fadeIn(function(){
+                                    createCookie('subscribed','true');
                                     setTimeout(function(){ $('#pubModal').modal('hide'); }, 2000);
                                 });
 
@@ -329,6 +371,32 @@
                 });
             return false;
         });
+        $('#pop_form').submit(function() {
+            var formdata = $('#pop_form').serialize();
+            var list = $(this).find('.listid').val();
+            var url = "";
+            if(list == 1) url = "/pub_subscribe";
+            if(list == 2) url = "/buyer_subscribe";
+            if(url == "") return false; 
+            $.post(url, formdata)
+                .done(function( data ) {
+                    var response = JSON.parse(data);
+                    if((response.response.success) && (response.response.success == "Subscriber added successfully")){
+                        $('#pop_body').fadeOut(function(){
+                            $('#pop_footer').html('');
+                            $('#pop_body').html('<h1>Thank You!</h1>');
+                                $('#pop_body').fadeIn(function(){
+                                    createCookie('subscribed','true');
+                                    setTimeout(function(){ $('#popModal').modal('hide'); }, 2000);
+                                });
+
+                        });
+                    }else{
+                      alert(data);
+                    }
+                });
+            return false;
+        });        
         $('body').scrollspy({
             target: '.navbar-fixed-top',
             offset: 80
@@ -376,6 +444,31 @@
 
     // Activate WOW.js plugin for animation on scrol
     new WOW().init();
-       
+        // Cookies
+        function createCookie(name, value, days) {
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                var expires = "; expires=" + date.toGMTString();
+            }
+            else var expires = "";               
+
+            document.cookie = name + "=" + value + expires + "; path=/";
+        }
+
+        function readCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        function eraseCookie(name) {
+            createCookie(name, "", -1);
+        }       
    </script>
 @endsection

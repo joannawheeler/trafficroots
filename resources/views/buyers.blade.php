@@ -147,7 +147,8 @@
                     <div class="tab-pane table-responsive" id="bank-tab">
                     <div class="panel panel-default">
                         <div class="panel-heading" id="acct_heading">My Account</div>
-                        <div class="panel-body table-responsive" id="account_div">
+                        <div class="panel-body" id="account_div">
+                            <div class="container">
                             @if(is_array($bank))
                             <div class="row">
                             <div class="col-md-3"><strong>Balance:</strong></div><div class="col-md-9"><strong>$</strong>&nbsp;{{ $bank[0]->running_balance }}</div>
@@ -161,7 +162,13 @@
                             @else
                             <h3>No Account Defined</h3>
                             @endif
+                            <div class="row">
+                            <div class="col-md-12">
+                            <br />
                             <a href="paywithpaypal" id="paypal_payment"><span class="label label-success">Deposit Funds With Paypal</span></a>
+                            </div>
+                            </div>
+                            </div>
                             </div>
                         </div>
                     </div>

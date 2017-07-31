@@ -20,6 +20,7 @@ class PublisherBookings extends Migration
             $table->integer('pub_id');
             $table->date('start_date');
             $table->date('end_date');
+            $table->integer('commission_tier');
             $table->integer('impressions_delivered');
             $table->decimal('cost',12,2);
             $table->decimal('revenue',12,2);

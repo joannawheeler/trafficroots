@@ -26,6 +26,8 @@ class GatherKeysController extends Controller
     {
         $this->gatherSiteKeys();
         $this->gatherImpressions();
+        $this->gatherClicks();
+        $this->gatherSales();
     }
     public function gatherSiteKeys()
     {
@@ -125,9 +127,62 @@ class GatherKeysController extends Controller
         return $data;
 
     }
+    public function gatherSales()
+    {
+        Log::info("Processing bid sales keys");
+        $count = 0;
+        do{
+            $keyname = Redis::spop('KEYS_SALES'); 
+            Log::info("Keyname: $keyname");  
+            // 'SALE|'.$bid->campaign_type.'|'.$bid->id.'|'.$bid->bid
+            $val = Redis::get($keyname);
+            Redis::del($keyname);
+            $stuff = explode("|", $keyname);
+            if(count($stuff) > 4){
+                $sale = 0;
+                if($stuff[2] == 1){
+                    /* CPM sale */
+                    $sale = ($val / 1000) * floatval($stuff[4]);
+                    Log::info("Sale Amount: $".$sale);
+                }
+                if($stuff[2] == 2){
+                    /* CPC sale */
+                    $sale = $val * floatval($stuff[4]);
+                    Log::info("Sale Amount: $".$sale);
+                }
+                $user_id = $stuff[1];
+                if($sale) $this->processBankTransaction($sale, $user_id);
+            }else{
+                Log::info("Invalid Key");
+            }     
+            $count += 1;       
+        }while(!$keyname == '');
+        Log::info("gatherSales completed processing $count keys");
+    }
+    public function processBankTransaction($amount, $user_id)
+    {
+        if($amount && $user_id){
+            /* get current balance */
+            $sql = "SELECT * 
+                    FROM bank
+                    WHERE user_id = $user_id
+                    ORDER BY id DESC 
+                    LIMIT 1";
+            $result = DB::select($sql);
+            if(count($result)){
+                $new_balance = $result[0]->running_balance - $amount;
+                $transaction_amount = $amount * -1;
+                $sql = "INSERT INTO bank (user_id, transaction_amount, running_balance, created_at, updated_at)
+                        VALUES($user_id, $transaction_amount, $new_balance, CURDATE(), CURDATE())";
+                DB::insert($sql);
+
+            }
+
+        }
+    }
     public function gatherImpressions()
     {
-        // 'IMPRESSION|'.date('Y-m-d').'|'.$this->handle.'|'.$this->ad_id.'|'.$creative->id.'|'.serialize($this->visitor);
+        // 'IMPRESSION|'.date('Y-m-d').'|'.$this->handle.'|'.$this->ad_id.'|'.$this->bid_id.'|'.$creative->id.'|'.$ad->bid.'|'.serialize($this->visitor);
         /* get impression keys */
         $pairs = array();
         do{
@@ -136,14 +191,16 @@ class GatherKeysController extends Controller
                 $val = Redis::get($keyname);
                 Redis::del($keyname);
                 $stuff = explode("|", $keyname);
-                $visitor = unserialize($stuff[5]);
+                $visitor = unserialize($stuff[7]);
                 $zone = Zone::where('handle', $stuff[2])->first();
           
                 $data = $this->transposeUser($visitor);
                 $pair = '('.$zone->site_id.','
-                        .$zone->id.",'"
-                        .$stuff[3]."',"
+                        .$zone->id.","
+                        .$stuff[3].","
                         .$stuff[4].','
+                        .$stuff[5].','
+                        .$stuff[6].','
                         .$data['country'].','
                         .$data['state'].','
                         .$data['city'].','
@@ -156,7 +213,7 @@ class GatherKeysController extends Controller
             }
         }while(!$keyname == '');
         if(sizeof($pairs)){
-        $prefix = "INSERT INTO stats (`site_id`,`zone_id`,`ad_id`,`ad_creative_id`,
+        $prefix = "INSERT INTO stats (`site_id`,`zone_id`,`ad_id`,`bid_id`,`ad_creative_id`,`cpm`,
                    `country_id`,`state_code`,`city_code`,`platform`,`os`,`browser`,`impressions`,`stat_date`) VALUES";
         $suffix = " ON DUPLICATE KEY UPDATE `impressions` = `impressions` + VALUES(`impressions`);";
         $query = $prefix.implode(",",$pairs).$suffix;
@@ -164,5 +221,55 @@ class GatherKeysController extends Controller
         Log::info($query);
         }
         Log::info('Impressions Gathered');
+    }
+    public function gatherClicks()
+    {
+        // 'CLICK|'.date('Y-m-d').'|'.$zone_id.'|'.$ad_id.'|'.$bid_id.'|'.$creative.'|'.serialize($this->visitor);
+        $pairs = array();
+        do{
+            $keyname = Redis::spop('KEYS_CLICKS');
+            Log::info($keyname);
+            if(strlen(trim($keyname))){
+                $val = Redis::get($keyname);
+                Redis::del($keyname);
+                $stuff = explode("|", $keyname);
+                $visitor = unserialize($stuff[6]);
+                $zone = Zone::where('handle', $stuff[2])->first();
+                if($zone){
+                $data = $this->transposeUser($visitor);
+                $pair = '('.$zone->site_id.','
+                        .$zone->id.","
+                        .$stuff[3].","
+                        .$stuff[4].','
+                        .$stuff[5].','
+                        .$data['country'].','
+                        .$data['state'].','
+                        .$data['city'].','
+                        .$data['platform'].','
+                        .$data['os'].','
+                        .$data['browser'].','
+                        .$val.",'"
+                        .$stuff[1]."')";
+                 $pairs[] = $pair;
+                 }else{
+                     Log::info('Zone Handle '.$stuff[2].' not found!');
+                 }
+            }
+        }while(!$keyname == '');
+        if(sizeof($pairs)){
+        $prefix = "INSERT INTO stats (`site_id`,`zone_id`,`ad_id`,`bid_id`,`ad_creative_id`,
+                   `country_id`,`state_code`,`city_code`,`platform`,`os`,`browser`,`clicks`,`stat_date`) VALUES";
+        $suffix = " ON DUPLICATE KEY UPDATE `clicks` = `clicks` + VALUES(`clicks`);";
+        $query = $prefix.implode(",",$pairs).$suffix;
+        DB::insert($query);
+        Log::info($query);
+        }
+        $keys = Redis::keys('CLICK*');
+        foreach($keys as $key => $val){
+            Redis::del($val);
+            Log::info('Deleted stray click key: '.$val);
+        }
+        Log::info('Clicks Gathered');
+
     }
 }
