@@ -73,3 +73,7 @@ Route::post('/folder', 'CampaignController@postFolder');
 Route::get('/paywithpaypal', array('as' => 'addmoney.paywithpaypal','uses' => 'AddMoneyController@payWithPaypal',));
 Route::post('paypal', array('as' => 'addmoney.paypal','uses' => 'AddMoneyController@postPaymentWithpaypal',));
 Route::get('paypal', array('as' => 'payment.status','uses' => 'AddMoneyController@getPaymentStatus',));
+
+/* velocity routes */
+Route::get('/addfunds', array('as' => 'addmoney.paybycceft', 'uses' => 'CreditAchController@getIndex',));
+Route::post('/addfunds', array('as' => 'addmoney.postcceft', 'uses' => 'CreditAchController@postMoney',));

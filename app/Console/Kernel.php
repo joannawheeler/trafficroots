@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\GatherKeys::class,
         Commands\BidRoller::class,
+        Commands\CalculateEarnings::class,
     ];
 
     /**

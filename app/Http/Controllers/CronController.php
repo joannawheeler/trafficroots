@@ -51,7 +51,7 @@ class CronController extends Controller
                                      where status = 1
                                      and location_type = ".$zone->location_type."
                                      and campaign_category in ($in)";
-            Log::info($sql);
+            //Log::info($sql);
             $campaigns = DB::select($sql);
             
             foreach($campaigns as $camp){
@@ -90,9 +90,9 @@ class CronController extends Controller
                     updated_at = NOW();";
         $result = DB::insert($prefix.implode($pairs,",").$suffix);           
         if(!$result){
-            echo DB::error();
+            Log::error(DB::error());
         } else {
-            echo "Complete!\n";
+            Log::info("Bid Roller Complete!");
         }
         }
     }
