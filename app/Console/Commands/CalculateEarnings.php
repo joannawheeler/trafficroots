@@ -38,7 +38,7 @@ class CalculateEarnings extends Command
      */
     public function handle()
     {
-        $thread = new EarningsController('2017-07-21');
+        $thread = new EarningsController(date('Y-m-d'));
         $thread->processEarnings(); 
     }
 }

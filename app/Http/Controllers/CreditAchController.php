@@ -24,12 +24,14 @@ class CreditAchController extends Controller
         $this->middleware('auth');
     }   
     
-    public function getIndex()
+    public function getIndex(Request $request)
     {
         /* show the page to add funds via CC or EFT */
+        $amount = isset($request->deposit) ? intval($request->deposit) : 0.00;
         $balance = $this->getBalance();
-         
-        return view('addfunds',['balance' => $balance]);
+        $user = Auth::getUser();
+        $user_invoice = $user->id . "_" . uniqid();
+        return view('addfunds',['balance' => $balance, 'user_invoice' => $user_invoice, 'user' => $user, 'amount' => $amount]);
 
     }
   
