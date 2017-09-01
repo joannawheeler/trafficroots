@@ -90,6 +90,9 @@
                             <li>
                                 <a href="{{URL::to('buyers')}}">Dashboard</a>
                             </li>
+                            <li>
+                                <a href="{{URL::to('campaigns')}}">Campaigns</a>
+                            </li>
                         </ul>
                     </li>
                     <li id="nav_support" class="nav-click">

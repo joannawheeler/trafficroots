@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Http\Controllers\CUtil;
 use Illuminate\Http\Request;
 use App\Ad;
@@ -29,6 +30,7 @@ use Auth;
 use Validator;
 use Input;
 use Session;
+use Carbon\Carbon;
 
 class CampaignController extends Controller
 {
@@ -38,48 +40,50 @@ class CampaignController extends Controller
     }
     public function updateTargets(Request $request)
     {
-        try{
-        $user = Auth::getUser();
-        $data = array();
-        if(is_array($request->states)){
-            $data['states'] = implode("|",$request->states);
-        }else{
-            $data['states'] = ''.$request->states;
-        }
-        if(is_array($request->platform_targets)){
-            $data['platforms'] = implode("|",$request->platform_targets);
-        }else{
-            $data['platforms'] = ''.$request->platform_targets;
-        }
-        if(is_array($request->operating_systems)){
-            $data['operating_systems'] = implode("|",$request->operating_systems);
-        }else{
-            $data['operating_systems'] = ''.$request->operating_systems;
-        }
-        if(is_array($request->browser_targets)){
-            $data['browsers'] = implode("|",$request->browser_targets);
-        }else{
-            $data['browsers'] = ''.$request->browser_targets;
-        }
-        if(strlen(trim($request->keyword_targets))){
-            $data['keywords'] = str_replace(",","|",$request->keyword_targets);
-        }else{
-            $data['keywords'] = '';
-        }
-        foreach($data as $key => $value){
-            if(is_null($value)) $data[$key] = '0';
-        }
-        DB::table('campaign_targets')->where('campaign_id', intval($request->campaign_id))->update($data);
-        return('All Changes Saved');
-        }catch(Exception $e){
+        try {
+            $user = Auth::getUser();
+            $data = array();
+            if (is_array($request->states)) {
+                $data['states'] = implode("|", $request->states);
+            } else {
+                $data['states'] = ''.$request->states;
+            }
+            if (is_array($request->platform_targets)) {
+                $data['platforms'] = implode("|", $request->platform_targets);
+            } else {
+                $data['platforms'] = ''.$request->platform_targets;
+            }
+            if (is_array($request->operating_systems)) {
+                $data['operating_systems'] = implode("|", $request->operating_systems);
+            } else {
+                $data['operating_systems'] = ''.$request->operating_systems;
+            }
+            if (is_array($request->browser_targets)) {
+                $data['browsers'] = implode("|", $request->browser_targets);
+            } else {
+                $data['browsers'] = ''.$request->browser_targets;
+            }
+            if (strlen(trim($request->keyword_targets))) {
+                $data['keywords'] = str_replace(",", "|", $request->keyword_targets);
+            } else {
+                $data['keywords'] = '';
+            }
+            foreach ($data as $key => $value) {
+                if (is_null($value)) {
+                    $data[$key] = '0';
+                }
+            }
+            DB::table('campaign_targets')->where('campaign_id', intval($request->campaign_id))->update($data);
+            return('All Changes Saved');
+        } catch (Exception $e) {
             return ($e->getMessage);
-        }          
+        }
     }
     public function getCreatives(Request $request)
     {
         $creatives = Creative::where('campaign_id', $request->campaign_id);
-        return $creatives;        
-    } 
+        return $creatives;
+    }
     public function createCampaign()
     {
         $campaign_types = CampaignType::all();
@@ -93,7 +97,7 @@ class CampaignController extends Controller
         $location_types = LocationType::all();
         $module_types = ModuleType::all();
 
-        return view('campaign_create',['campaign_types' => $campaign_types, 
+        return view('campaign_create', ['campaign_types' => $campaign_types,
                                        'categories' => $categories,
                                        'browsers' => $browsers,
                                        'platforms' => $platforms,
@@ -102,7 +106,7 @@ class CampaignController extends Controller
                                        'states' => $states,
                                        'countries' => $countries,
                                        'location_types' => $location_types,
-                                       'module_types' => $module_types]);   
+                                       'module_types' => $module_types]);
     }
     public function postCampaign(Request $request)
     {
@@ -130,24 +134,26 @@ class CampaignController extends Controller
         $media = Media::where([['status', 1],['location_type', $campaign->location_type],['user_id', $user->id]])->get();
         $folders = Folder::where([['status', 1],['location_type', $campaign->location_type],['user_id', $user->id]])->get();
         $links = Links::where([['status', 1],['user_id', $user->id]])->get();
-        return view('new_creative',['campaign' => $campaign, 'media' => $media, 'links' => $links, 'folders' => $folders]);
+        return view('new_creative', ['campaign' => $campaign, 'media' => $media, 'links' => $links, 'folders' => $folders]);
     }
     public function postCreative(Request $request)
     {
         $user = Auth::getUser();
         $data = $request->all();
         $data['user_id'] = $user->id;
-        if(isset($data['folder_id'])) $data['folder_id'] = intval($data['folder_id']);
+        if (isset($data['folder_id'])) {
+            $data['folder_id'] = intval($data['folder_id']);
+        }
         $current = Creative::where([['campaign_id', $data['campaign_id']],['user_id', $user->id],['status', 1]])->get();
         $ads = sizeof($current);
-        if($ads){
+        if ($ads) {
             $weight = (100 / ($ads + 1));
             $creative = new Creative();
             $creative->fill($data);
             $creative->save();
             Creative::where([['campaign_id', $data['campaign_id']],['user_id', $user->id],['status', 1]])->update(['weight' => $weight]);
-        }else{
-            $data['weight'] = 100; 
+        } else {
+            $data['weight'] = 100;
             $creative = new Creative();
             $creative->fill($data);
             $creative->save();
@@ -165,17 +171,17 @@ class CampaignController extends Controller
     public function postMedia(Request $request)
     {
         $data = $request->all();
-           $media = new Media();
-           $user = Auth::getUser();
-           $destination = 'uploads/'.$user->id;
-           $path = $request->file('image_file')->store($destination);
-           $data['user_id'] = $user->id;
-           $data['file_location'] = $path;
-           $media->fill($data);
-           $media->save();
+        $media = new Media();
+        $user = Auth::getUser();
+        $destination = 'uploads/'.$user->id;
+        $path = $request->file('image_file')->store($destination);
+        $data['user_id'] = $user->id;
+        $data['file_location'] = $path;
+        $media->fill($data);
+        $media->save();
            // sending back with message
-           Session::flash('success', 'Upload completed!'); 
-           return redirect('/home');
+           Session::flash('success', 'Upload completed!');
+        return redirect('/home');
     }
 
     public function createFolder()
@@ -188,22 +194,22 @@ class CampaignController extends Controller
     public function postFolder(Request $request)
     {
         $data = $request->all();
-           $folder = new Folder();
-           $user = Auth::getUser();
-           $destination = 'uploads/'.$user->id;
-           $path = $request->file('zfile')->store($destination);
-           $data['user_id'] = $user->id;
-           $data['file_location'] = $path;
-           $folder->fill($data);
-           $folder->save();
+        $folder = new Folder();
+        $user = Auth::getUser();
+        $destination = 'uploads/'.$user->id;
+        $path = $request->file('zfile')->store($destination);
+        $data['user_id'] = $user->id;
+        $data['file_location'] = $path;
+        $folder->fill($data);
+        $folder->save();
            // sending back with message
            Session::flash('success', 'Upload completed!');
-           return redirect('/home');
+        return redirect('/home');
     }
     public function createLink()
     {
         $categories = Category::all();
-        return view('create_link',['categories' => $categories]);
+        return view('create_link', ['categories' => $categories]);
     }
 
     public function postLink(Request $request)
@@ -221,38 +227,60 @@ class CampaignController extends Controller
         $user = Auth::getUser();
         $CUtil = new CUtil();
         $campaign = DB::select('select * from campaigns where id = '.$request->id.' and user_id = '.$user->id);
-        if($campaign){
+        if ($campaign) {
             $campaign_types = $CUtil->getCampaignTypes();
             $category = $CUtil->getCategories();
             $status_types = $CUtil->getStatusTypes();
             $location = $CUtil->getLocationTypes();
-            foreach($campaign as $camp){
+            foreach ($campaign as $camp) {
                 $states = $CUtil->getStates($camp->id);
                 $os_targets = $CUtil->getOperatingSystems($camp->id);
                 $platforms = $CUtil->getPlatforms($camp->id);
-                $browser_targets = $CUtil->getBrowsers($camp->id);            
-               $creatives = Creative::where('campaign_id', $camp->id)->get();
-                if(!$creatives) $creatives = array();
+                $browser_targets = $CUtil->getBrowsers($camp->id);
+                $creatives = Creative::where('campaign_id', $camp->id)->get();
+                if (!$creatives) {
+                    $creatives = array();
+                }
                 $row = DB::table('campaign_targets')->where('campaign_id', $camp->id)->first();
                 $media = DB::select('select * from media where user_id = '.$user->id.' and location_type = '.$camp->location_type);
-                $links = DB::select('select * from links where user_id = '.$user->id.' and category = '.$camp->campaign_category);    
-                return view('manage_campaign',['campaign' => $camp, 
-                                               'media' => $media, 
-                                               'links' => $links, 
-                                               'campaign_types' => $campaign_types, 
-                                               'categories' => $category, 
-                                               'status_types' => $status_types, 
-                                               'location_types' => $location, 
-                                               'creatives' => $creatives,
-                                               'states' => $states,
-                                               'os_targets' => $os_targets,
-                                               'browser_targets' => $browser_targets,
-                                               'platforms' => $platforms,
-                                               'keywords' => str_replace("|",",",$row->keywords),
-                                               'user_id' => $user->id]);
+                $links = DB::select('select * from links where user_id = '.$user->id.' and category = '.$camp->campaign_category);
+                return view('manage_campaign', [
+                    'campaign' => $camp,
+                    'media' => $media,
+                    'links' => $links,
+                    'campaign_types' => $campaign_types,
+                    'categories' => $category,
+                    'status_types' => $status_types,
+                    'location_types' => $location,
+                    'creatives' => $creatives,
+                    'states' => $states,
+                    'os_targets' => $os_targets,
+                    'browser_targets' => $browser_targets,
+                    'platforms' => $platforms,
+                    'keywords' => str_replace("|", ",", $row->keywords),
+                    'user_id' => $user->id
+                ]);
             }
         }
-
-
+    }
+    public function campaigns()
+    {
+        $user = Auth::user();
+        $startDate = Carbon::now()->firstOfMonth()->toDateString();
+        $endDate = Carbon::now()->endOfMonth()->toDateString();
+        $startDate = new Carbon('first day of July');
+        $endDate = new Carbon('last day of July');
+        $campaigns = Campaign::with(['stats' => function ($query) use ($startDate, $endDate) {
+            $query
+                ->where('stat_date', '>=', $startDate)
+                ->where('stat_date', '<=', $endDate);
+        },'status_type','category','type'])
+            ->where('user_id', $user->id)
+            ->get();
+        
+        return view(
+            'advertiser.campaigns',
+            compact('campaigns', 'startDate', 'endDate')
+        );
     }
 }

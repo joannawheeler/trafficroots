@@ -12,6 +12,7 @@ use App\Zone;
 use App\Browser;
 use App\Platform;
 use App\OperatingSystem;
+use App\Campaign;
 use Carbon\Carbon;
 
 class StatsController extends Controller
@@ -52,19 +53,56 @@ class StatsController extends Controller
 
         return view('pub-stats', compact('stats', 'startDate', 'endDate'));
     }
-    public function pub($startDate = null, $endDate = null)
+    public function pub()
     {
-        $user = Auth::getUser();
-        $stats = Stat::whereIn('site_id', $user->sites->pluck('id'));
         $startDate = Carbon::now()->firstOfMonth();
         $endDate = Carbon::now()->endOfMonth();
-        $stats = $stats
+        $stats = Stat::whereIn(
+                'site_id',
+                Auth::getUser()->sites->pluck('id')
+            )
             ->where('stat_date', '>=', $startDate->toDateString())
             ->where('stat_date', '<=', $endDate->toDateString())
             ->get();
         
         return view('pub-stats', compact('stats', 'startDate', 'endDate'));
     }
+    public function filteredCampaigns(Request $request)
+    {
+        $dateRange = explode(' - ', $request->daterange);
+        $startDate = Carbon::parse($dateRange[0]);
+        $endDate = Carbon::parse($dateRange[1]);
+        $sites = $request->has('sites') ? $request->get('sites') : Auth::getUser()->sites->pluck('id');
+        $stats = Stat::whereIn('site_id', $sites);
+        
+        if ($request->has('countries')) {
+            $stats->whereIn('country_id', $request->get('countries'));
+        }
+        $stats = $stats
+            ->where('stat_date', '>=', $startDate->toDateString())
+            ->where('stat_date', '<=', $endDate->toDateString())
+            ->get();
+
+        return view('pub-stats', compact('stats', 'startDate', 'endDate'));
+    }
+    public function campaign($campaign)
+    {
+        // $this->authorize('view', $campaign);
+        // $startDate = Carbon::now()->firstOfMonth()->toDateString();
+        // $endDate = Carbon::now()->endOfMonth()->toDateString();
+        $startDate = new Carbon('first day of July');
+        $endDate = new Carbon('last day of July');
+        $campaign = Campaign::with(['stats' => function ($query) use ($startDate, $endDate) {
+            $query
+                ->with(['city','country','state','platformType','operatingSystem','browserType'])
+                ->where('stat_date', '>=', $startDate)
+                ->where('stat_date', '<=', $endDate);
+        },'category','type'])
+            ->where('id', $campaign)
+            ->first();
+        return view('campaign-stats', compact('campaign'));
+    }
+
     public function zone(Zone $zone)
     {
         // $this->authorize('view', $zone);

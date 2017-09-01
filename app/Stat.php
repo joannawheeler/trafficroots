@@ -25,16 +25,46 @@ class Stat extends Model
     
     public function site()
     {
-    	return $this->blongsTo('App\Site');
+    	return $this->belongsTo('App\Site');
     }
     
     public function zone()
     {
-    	return $this->blongsTo('App\Zone');
+    	return $this->belongsTo('App\Zone');
     }
     
     public function ad()
     {
-    	return $this->blongsTo('App\Ad');
+    	return $this->belongsTo('App\Ad');
+    }
+
+    public function country()
+    {
+        return $this->belongsTo('App\Country');
+    }
+
+    public function state()
+    {
+        return $this->belongsTo('App\State', 'state_code');
+    }
+
+    public function platformType()
+    {
+        return $this->belongsTo('App\Platform', 'platform');
+    }
+
+    public function operatingSystem()
+    {
+        return $this->belongsTo('App\OperatingSystem', 'os');
+    }
+
+    public function browserType()
+    {
+        return $this->belongsTo('App\Browser', 'browser');
+    }
+
+    public function city()
+    {
+        return $this->belongsTo('App\City', 'city_code');
     }
 }

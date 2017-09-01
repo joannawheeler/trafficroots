@@ -24,6 +24,10 @@ class HomeController extends Controller
     {
         $this->middleware('auth');
     }
+    public function advertiser()
+    {
+        return view('advertiser.dashboard');
+    }
     /**
      * Show the advertiser`s dashboard.
      *
@@ -70,18 +74,20 @@ class HomeController extends Controller
            $newbank->save();
            $bank = DB::select('SELECT * FROM bank WHERE user_id = '.$user->id.' ORDER BY id DESC LIMIT 1;');
        }
-        return view('buyers', ['user' => $user,
-                            'bank' => $bank,
-                            'campaigns' => $res,
-                            'media' => $media,
-                            'links' => $links,
-                            'location_types' => $location,
-                            'categories' => $category,
-                            'campaign_types' => $campaign_types,
-                            'folders' => $folders,
-                            'width' => $width,
-                            'height' => $height,
-                            'status_types' => $status_types]);
+        return view('buyers', [
+            'user' => $user,
+            'bank' => $bank,
+            'campaigns' => $res,
+            'media' => $media,
+            'links' => $links,
+            'location_types' => $location,
+            'categories' => $category,
+            'campaign_types' => $campaign_types,
+            'folders' => $folders,
+            'width' => $width,
+            'height' => $height,
+            'status_types' => $status_types
+        ]);
     }
     /**
      * Show the publisher`s dashboard.
@@ -91,7 +97,6 @@ class HomeController extends Controller
     public function index()
     {
        $user = Auth::user();
-
         $sql = 'SELECT sites.*, categories.category 
                 FROM sites 
                 JOIN categories 

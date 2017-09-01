@@ -8,7 +8,7 @@
     @endif
 <div class="container">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-11">
             <div class="panel panel-default">
                 <div class="panel-heading">Campaign Management
                 <div class="pull-right">
@@ -128,12 +128,5 @@
             });            
         });
     });
-
 </script>
-   <script type="text/javascript">
-       jQuery(document).ready(function ($) {
-               $('.nav-click').removeClass("active");
-               $('#nav_buyer').addClass("active");
-       });
-   </script>
 @endsection

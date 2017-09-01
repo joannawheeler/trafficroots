@@ -9,3 +9,6 @@ if (title.includes('Publisher Stats')) {
 if (title.includes('Sites')) {
     require('./pages/sites');
 }
+if (title.includes('Campaigns')) {
+    require('./pages/campaigns');
+}
