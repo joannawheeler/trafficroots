@@ -88,10 +88,8 @@ class StatsController extends Controller
     public function campaign($campaign)
     {
         // $this->authorize('view', $campaign);
-        // $startDate = Carbon::now()->firstOfMonth()->toDateString();
-        // $endDate = Carbon::now()->endOfMonth()->toDateString();
-        $startDate = new Carbon('first day of July');
-        $endDate = new Carbon('last day of July');
+        $startDate = Carbon::now()->firstOfMonth()->toDateString();
+        $endDate = Carbon::now()->endOfMonth()->toDateString();
         $campaign = Campaign::with(['stats' => function ($query) use ($startDate, $endDate) {
             $query
                 ->with(['city','country','state','platformType','operatingSystem','browserType'])

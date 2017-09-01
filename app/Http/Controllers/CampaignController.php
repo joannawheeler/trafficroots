@@ -268,8 +268,6 @@ class CampaignController extends Controller
         $user = Auth::user();
         $startDate = Carbon::now()->firstOfMonth()->toDateString();
         $endDate = Carbon::now()->endOfMonth()->toDateString();
-        $startDate = new Carbon('first day of July');
-        $endDate = new Carbon('last day of July');
         $campaigns = Campaign::with(['stats' => function ($query) use ($startDate, $endDate) {
             $query
                 ->where('stat_date', '>=', $startDate)
