@@ -40,16 +40,37 @@ class SiteController extends Controller
             'site_url' => 'required|url|unique:sites,site_url',
             'site_category' => 'required|exists:categories,id'
         ]);
-        Site::create([
+        $newsite = Site::create([
             'site_name' => $request->site_name,
             'site_url' => $request->site_url,
             'site_category' => $request->site_category,
             'user_id' => Auth::user()->id,
             'site_handle' => uniqid()
         ]);
+        
+        /* create standard zones on demand */
+        $msg = '';
+        if($request->has('zone_create')){
+            /* TODO: move this to some config file */
+            $standard_zones = array(
+                'Leaderboard' => 1,
+                'Super Leaderboard' => 7,
+                'Cube A' => 2,
+                'Cube B' => 2,
+                'Cube C' => 2,
+                'Mobile Banner' => 4,
+                'Mobile Footer' => 4,
+                'Footer' => 1,
+                'Large Footer' => 7,
+            );
+            foreach($standard_zones as $key => $value){
+                $newsite->addZone($key, $value);
+            }
+            $msg = "\nStandard Zones Created Successfully!";
+        }
         session()->flash('status', [
             'type' => 'success',
-            'message' => 'Site created successfully'
+            'message' => 'Site created successfully.  Site handle: '.$newsite->site_handle.$msg
         ]);
         return;
     }

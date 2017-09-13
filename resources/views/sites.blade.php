@@ -59,6 +59,11 @@
                                                 </select>
                                                 <label class="error hide" for="site_category"></label>
                                             </div>
+                                            <div class="form-group">
+                                                <label>Automatically create standard Zones for me</label>
+                                                <input type="checkbox" class="form-control" id="zone_create" name="zone_create">
+                                                <label class="error hide" for="zone_create"></label>
+                                            </div>                                            
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-white" data-dismiss="modal">Cancel</button>
