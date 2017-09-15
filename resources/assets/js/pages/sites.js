@@ -14,7 +14,7 @@ $(document).ready(() => {
             .done((response) => {
                 location.reload();
             })
-            .error((response) => {
+            .fail((response) => {
                 var errors = response.responseJSON;
                 $.each(errors, (name, message) => {
                     $form.find('input[name="' + name + '"] + .error')
