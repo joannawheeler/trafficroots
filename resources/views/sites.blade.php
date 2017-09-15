@@ -215,112 +215,112 @@
                     </div>
                 </div>
             </div>
-            <div class="modal inmodal" id="sitePixel{{ $site->id }}" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content animated fadeIn">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">
-                                <span aria-hidden="true">&times;</span>
-                                <span class="sr-only">Close</span>
-                            </button>
-                            <h4 class="modal-title">Site Analysis Pixel</h4>
-                        </div>
-                        <div class="modal-body">
-                        <h3>Your Traffic Roots Analysis Pixel</h3>
-                        <div style="overflow-wrap: break-word;">
-                        <pre><code class="html">{{ htmlspecialchars('<img alt="Traffic Roots Pixel" src="'.env('APP_URL', 'http://localhost').'/pixel/'.$site->site_handle.'" style="display:none;">') }}
-                        </code></pre>
-                        </div>
-                        </div>
-                 </div>
-            </div>
-            <div class="modal inmodal" id="editSite{{ $site->id }}" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content animated fadeIn">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">
-                                <span aria-hidden="true">&times;</span>
-                                <span class="sr-only">Close</span>
-                            </button>
-                            <h4 class="modal-title">Edit Site</h4>
-                        </div>
-                        <form name="site_form" id="site_form" action="{{ url("sites/$site->id") }}" method="POST"> 
-                            {{ method_field('PATCH') }}
-                            <div class="modal-body">
-                                {{ csrf_field() }}
-                                <div class="form-group">
-                                    <label>Name</label>
-                                    <input type="text" placeholder="Enter your site name" value="{{ $site->site_name }}" class="form-control" name="site_name" required>
-
-                                    <label class="error hide" for="site_name"></label>
-                                </div>
-                                <div class="form-group">
-                                    <label>Url</label>
-                                    <input type="text" placeholder="Enter your site url" value="{{ $site->site_url }}" class="form-control" name="site_url" required>
-
-                                    <label class="error hide" for="site_url"></label>
-                                </div>
-                                <div class="form-group">
-                                    <label>Category</label>
-                                    <select class="form-control m-b" value="{{ $site->site_category }}" name="site_category" required>
-                                        @foreach($categories as $category)
-                                        <option @if($category->id == $site->site_category) selected="selected" @endif value="{{ $category->id }}">{{ $category->category }}</option>
-                                        @endforeach
-                                    </select>
-
-                                    <label class="error hide" for="site_category"></label>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-white" data-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-primary">Save changes</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        @foreach($site->zones as $zone)
-            <div class="modal inmodal" id="editZone{{ $zone->id }}" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content animated fadeIn">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">
-                                <span aria-hidden="true">&times;</span>
-                                <span class="sr-only">Close</span>
-                            </button>
-                            <h4 class="modal-title">Edit Zone</h4>
-                        </div>
-                        <form name="site_form" id="site_form" action="{{ url("zones/$zone->id") }}" method="POST"> 
-                            {{ method_field('PATCH') }}
-                            <div class="modal-body">
-                                {{ csrf_field() }}
-                                <div class="form-group">
-                                    <label>Name</label>
-                                    <input type="text" placeholder="Enter your zone name" value="{{ $zone->description }}" class="form-control" name="description" required>
-
-                                    <label class="error hide" for="description"></label>
-                                </div>
-                                <div class="form-group">
-                                    <label>Type</label>
-                                    <div>{{ $locationTypes->where('id',$zone->location_type)->first()->description }}</div>
-                                    <label class="error hide" for="site_category"></label>
-                                </div>
-                                <div class="form-group">
-                                    <label>Size</label>
-                                    <div>{{ $locationTypes->where('id',$zone->location_type)->first()->width . 'x' . $locationTypes->where('id',$zone->location_type)->first()->height }}</div>
-                                    <label class="error hide" for="site_category"></label>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-white" data-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-primary">Save changes</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        @endforeach;
         </div>
-        
+        <div class="modal inmodal" id="sitePixel{{ $site->id }}" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content animated fadeIn">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title">Site Analysis Pixel</h4>
+                    </div>
+                    <div class="modal-body">
+                    <h3>Your Traffic Roots Analysis Pixel</h3>
+                    <div style="overflow-wrap: break-word;">
+                    <pre><code class="html">{{ htmlspecialchars('<img alt="Traffic Roots Pixel" src="'.env('APP_URL', 'http://localhost').'/pixel/'.$site->site_handle.'" style="display:none;">') }}
+                    </code></pre>
+                    </div>
+                    </div>
+             </div>
+        </div>
+        <div class="modal inmodal" id="editSite{{ $site->id }}" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content animated fadeIn">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title">Edit Site</h4>
+                    </div>
+                    <form name="site_form" id="site_form" action="{{ url("sites/$site->id") }}" method="POST"> 
+                        {{ method_field('PATCH') }}
+                        <div class="modal-body">
+                            {{ csrf_field() }}
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" placeholder="Enter your site name" value="{{ $site->site_name }}" class="form-control" name="site_name" required>
+
+                                <label class="error hide" for="site_name"></label>
+                            </div>
+                            <div class="form-group">
+                                <label>Url</label>
+                                <input type="text" placeholder="Enter your site url" value="{{ $site->site_url }}" class="form-control" name="site_url" required>
+
+                                <label class="error hide" for="site_url"></label>
+                            </div>
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select class="form-control m-b" value="{{ $site->site_category }}" name="site_category" required>
+                                    @foreach($categories as $category)
+                                    <option @if($category->id == $site->site_category) selected="selected" @endif value="{{ $category->id }}">{{ $category->category }}</option>
+                                    @endforeach
+                                </select>
+
+                                <label class="error hide" for="site_category"></label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-white" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @foreach($site->zones as $zone)
+        <div class="modal inmodal" id="editZone{{ $zone->id }}" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content animated fadeIn">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title">Edit Zone</h4>
+                    </div>
+                    <form name="site_form" id="site_form" action="{{ url("zones/$zone->id") }}" method="POST"> 
+                        {{ method_field('PATCH') }}
+                        <div class="modal-body">
+                            {{ csrf_field() }}
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" placeholder="Enter your zone name" value="{{ $zone->description }}" class="form-control" name="description" required>
+
+                                <label class="error hide" for="description"></label>
+                            </div>
+                            <div class="form-group">
+                                <label>Type</label>
+                                <div>{{ $locationTypes->where('id',$zone->location_type)->first()->description }}</div>
+                                <label class="error hide" for="site_category"></label>
+                            </div>
+                            <div class="form-group">
+                                <label>Size</label>
+                                <div>{{ $locationTypes->where('id',$zone->location_type)->first()->width . 'x' . $locationTypes->where('id',$zone->location_type)->first()->height }}</div>
+                                <label class="error hide" for="site_category"></label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-white" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endforeach;
+    </div>    
     @endforeach
 @endsection
