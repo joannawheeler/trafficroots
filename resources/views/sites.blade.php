@@ -3,13 +3,14 @@
 @section('css')
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
     <link href="{{ URL::asset('css/plugins/footable/footable.core.css') }}" rel="stylesheet">
+    <link href="{{ URL::asset('css/plugins/iCheck/custom.css') }}" rel="stylesheet">
     <style type="text/css">
         .footable th:last-child .footable-sort-indicator {
             display: none;
         }
-        .hide {
+        /*.hide {
             display: none;
-        }
+        }*/
     </style>
 @endsection
 
@@ -17,6 +18,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
     <script src="{{ URL::asset('js/plugins/footable/footable.all.min.js') }}"></script>
     <script>hljs.initHighlightingOnLoad();</script>
+    <script src="{{ URL::asset('js/plugins/iCheck/icheck.min.js') }}"></script>
 @endsection
 @section('content')
     <div class="row">
@@ -60,10 +62,17 @@
                                                 <label class="error hide" for="site_category"></label>
                                             </div>
                                             <div class="form-group">
+                                                <label>
+                                                    <input type="checkbox" class="i-check" name="zone_create">
+                                                    <i></i> Automatically create standard Zones for me
+                                                </label>
+                                                <label class="error hide" for="zone_create"></label>
+                                            </div>
+                                            {{-- <div class="form-group">
                                                 <label>Automatically create standard Zones for me</label>
                                                 <input type="checkbox" class="form-control" id="zone_create" name="zone_create">
-                                                <label class="error hide" for="zone_create"></label>
-                                            </div>                                            
+                                                
+                                            </div>                                             --}}
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-white" data-dismiss="modal">Cancel</button>

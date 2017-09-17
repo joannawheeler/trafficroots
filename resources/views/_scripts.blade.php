@@ -22,6 +22,7 @@
 
 <!-- Custom and plugin javascript -->
 <script src="{{ URL::asset('js/inspinia.js') }}"></script>
+<script src="{{ URL::asset('js/plugins/iCheck/icheck.min.js') }}"></script>
 {{-- <script src="{{ URL::asset('js/plugins/pace/pace.min.js') }}"></script> --}}
 
 <!-- jQuery UI -->

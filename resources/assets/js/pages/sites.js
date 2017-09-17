@@ -23,11 +23,17 @@ $(document).ready(() => {
                 });
             });
     });
-    $('.site-zones, .site-edit, .zone-edit, .site-pixel').click(e => {
-        e.preventDefault();
-    });
+    // $('.site-zones, .site-edit, .zone-edit, .site-pixel').click(e => {
+    //     e.preventDefault();
+    // });
     $('.site-zones').click(e => {
         var site_id = $(e.currentTarget).parents('td').first().data('site_id');
         showSiteZones(site_id);
     });
+
+    $('.i-check').iCheck({
+        checkboxClass: 'icheckbox_square-green',
+        radioClass: 'iradio_square-green',
+    });
+
 });
