@@ -38,6 +38,24 @@ class CampaignController extends Controller
     {
         $this->middleware('auth');
     }
+    public function updateBid(Request $request)
+    {
+        Log::info('Began updating bid '.$request->camp_id);
+        try{
+            $bid = (float) $request->bid;
+            if($bid){
+                $user = Auth::getUser();
+                $campaign = intval($request->camp_id);
+                Campaign::where('id', $campaign)->where('user_id', $user->id)->update(array('bid' => $bid));
+                return('All Changes Saved');
+            }else{
+                /* bid evaluates to false - invalid */
+                return('Invalid Bid');
+            }
+        }catch(Exception $e){
+            return $e->getMessage();
+        } 
+    }
     public function updateTargets(Request $request)
     {
         try {

@@ -36,8 +36,8 @@
 <div class="row">
     <div class="ibox-title">
         <h5>
-            {{ $site->site_name }}
-            <small class="m-l-sm">Month to date</small>
+            {{ $site_name }}
+            <small class="m-l-sm">Year to date</small>
         </h5>
     </div>
     <div class="tabs-container">

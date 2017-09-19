@@ -11,6 +11,7 @@ use DB;
 use Crypt;
 use Cookie;
 use App\Zone;
+use App\Category;
 use App\Site;
 use App\Ad;
 use App\Bid;
@@ -39,6 +40,7 @@ class CronController extends Controller
             Log::info("Checking zone ".$zone->handle);
             $categories = DB::select('select category from site_category where site_id = '.$zone->site_id);
             $allowed = array();
+            
             if(sizeof($categories)){
             foreach($categories as $cat){
                 $allowed[] = $cat->category;
@@ -73,6 +75,11 @@ class CronController extends Controller
             }
             }else{
                 Log::info("No Categories found for zone ".$zone->handle);
+                foreach(Category::all() as $category){
+                    $insert = array('site_id' => $zone->site_id, 'category' => $category->id);
+                    DB::table('site_category')->insert($insert);         
+                }
+                Log::info("Allowed Categories Created for Site ".$zone->site_id);
             }
         }
         if(sizeof($pairs)){

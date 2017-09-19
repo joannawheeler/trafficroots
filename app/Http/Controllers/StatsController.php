@@ -9,6 +9,7 @@ use DB;
 use App\Site;
 use App\Stat;
 use App\Zone;
+use App\Country;
 use App\Browser;
 use App\Platform;
 use App\OperatingSystem;
@@ -24,16 +25,16 @@ class StatsController extends Controller
     public function getIndex()
     {
     }
-    public function site(Site $site)
+    public function site(Request $request)
     {
-        $this->authorize('view', $site);
-        $startDate = Carbon::now()->firstOfMonth()->toDateString();
-        $endDate = Carbon::now()->endOfMonth()->toDateString();
-        $stats = $site->stats
-          ->where('stat_date', '>=', $startDate)
-          ->where('stat_date', '<=', $endDate);
-
-        return view('site-stats', compact('site', 'stats'));
+        $site = new Site();
+        $mysite = $site->where('id', $request->site)->first();
+        $startDate = Carbon::now()->firstOfYear();
+        $endDate = Carbon::now()->endOfMonth();
+        $stats = $mysite->getStats()
+                ->where('stat_date', '>=', $startDate)
+                ->where('stat_date', '<=', $endDate)->get();
+        return view('site-stats', ['site' => $mysite, 'site_name' => $mysite['site_name'], 'stats' => $stats]);
     }
     public function filtered(Request $request)
     {

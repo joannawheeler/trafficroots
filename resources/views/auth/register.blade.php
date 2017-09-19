@@ -33,11 +33,11 @@
                             </div>
                         </div>
                         <div class="form-group {{ $errors->has('phone') ? ' has-error' : '' }}">
-                            <label for="phone" class="col-lg-2 control-label">SMS</label>
+                            <label for="company" class="col-lg-2 control-label">Company</label>
                             <div class="col-lg-10">
-                                <input id="phone" type="phone" placeholder="SMS" name="phone" class="form-control">
-                                @if ($errors->has('phone'))
-                                <span class="help-block m-b-none">{{ $errors->first('phone') }}</span> 
+                                <input id="company" type="text" placeholder="Company Name" name="company" class="form-control">
+                                @if ($errors->has('company'))
+                                <span class="help-block m-b-none">{{ $errors->first('company') }}</span> 
                                 @endif
                             </div>
                         </div>

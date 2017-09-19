@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
+use App\Bank;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -63,12 +64,20 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'phone' => $data['phone'],
-            'user_type' => 1,
+            'company' => $data['company'],
+            'user_type' => 0,
             'password' => bcrypt($data['password']),
         ]);
+            $data = array();
+            $data['user_id'] = $user->id;
+            $data['transaction_amount'] = 20.00;
+            $data['running_balance'] = 20.00;
+            $bank = new Bank();
+            $bank->fill($data);
+            $bank->save();
+        return $user;
     }
 }

@@ -9,7 +9,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'TrafficRoots') }}-@yield('title', '')</title>
+    <title>{{ config('app.name', 'TrafficRoots') }} - @yield('title', '')</title>
 
     <!-- Scripts -->
     <script>
@@ -45,32 +45,32 @@
                     @if (Auth::guest())
                     <li id="nav_login" class="active nav-click">
                         <a href="{{ url('/login') }}">
-                            <i class="fa fa-sign-in"></i>
+                            <i class="fa fa-sign-in fa-2x"></i>
                             <span class="nav-label">Login</span>
                         </a>
                     </li>
                     <li id="nav_register" class="nav-click">
                         <a href="{{ url('/register') }}">
-                            <i class="fa fa-pencil"></i>
+                            <i class="fa fa-pencil fa-2x"></i>
                             <span class="nav-label">Register</span>
                         </a>
                     </li>
                     {{--
                     <li id="nav_about" class="nav-click">
                         <a href="{{ url('/about') }}">
-                            <i class="fa fa-group"></i>
+                            <i class="fa fa-group fa-2x"></i>
                             <span class="nav-label">About</span>
                         </a>
                     </li> --}} @else
                     <li id="nav_pub" class="nav-click">
                         <a href="{{ url('/home') }}">
-                            <i class="fa fa-globe"></i>
+                            <i class="fa fa-desktop fa-2x"></i>
                             <span class="nav-label">Publisher</span>
                             <span class="fa arrow"></span>
                         </a>
                         <ul class="nav nav-second-level collapse">
                             <li>
-                                <a href="{{ URL::to('home') }}">Dashboard</a>
+                                <a href="{{ URL::to('home?type=1') }}">Dashboard</a>
                             </li>
                             <li>
                                 <a href="{{ URL::to('sites') }}">Sites</a>
@@ -82,13 +82,16 @@
                     </li>
                     <li id="nav_buyer" class="nav-click">
                         <a href="{{ url('/buyers') }}">
-                            <i class="fa fa-diamond"></i>
+                            <i class="fa fa-bullhorn fa-2x"></i>
                             <span class="nav-label">Advertiser</span>
                             <span class="fa arrow"></span>
                         </a>
                         <ul class="nav nav-second-level collapse">
                             <li>
-                                <a href="{{URL::to('buyers')}}">Dashboard</a>
+                                <a href="{{URL::to('buyers')}}">Admin</a>
+                            </li>
+                            <li>
+                                <a href="{{URL::to('home?type=2')}}">Dashboard</a>
                             </li>
                             <li>
                                 <a href="{{URL::to('campaigns')}}">Campaigns</a>
@@ -97,20 +100,20 @@
                     </li>
                     <li id="nav_support" class="nav-click">
                         <a href="{{ url('/tickets') }}">
-                            <i class="fa fa-bug"></i>
+                            <i class="fa fa-bug fa-2x"></i>
                             <span class="nav-label">Support</span>
                         </a>
                     </li>
                     {{--
                     <li id="nav_about" class="nav-click">
                         <a href="{{ url('/about') }}">
-                            <i class="fa fa-group"></i>
+                            <i class="fa fa-group fa-2x"></i>
                             <span class="nav-label">About</span>
                         </a>
                     </li> --}}
                     <li id="nav_logout" class="nav-click">
                         <a href="{{ url('/logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                            <i class="fa fa-plug"></i>
+                            <i class="fa fa-plug fa-2x"></i>
                             <span class="nav-label">Logout</span>
                         </a>
                         <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">

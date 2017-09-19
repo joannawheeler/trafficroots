@@ -68,11 +68,6 @@
                                                 </label>
                                                 <label class="error hide" for="zone_create"></label>
                                             </div>
-                                            {{-- <div class="form-group">
-                                                <label>Automatically create standard Zones for me</label>
-                                                <input type="checkbox" class="form-control" id="zone_create" name="zone_create">
-                                                
-                                            </div>                                             --}}
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-white" data-dismiss="modal">Cancel</button>
@@ -191,7 +186,7 @@
                                 <tr>
                                     <tr>
                                         <th>Zone Name</th>
-                                        <th>Category</th>
+                                        <th>Location Type</th>
                                         <th>Size</th>
                                         <th>Links</th>
                                     </tr>
@@ -208,6 +203,9 @@
                                         </a>
                                         <a href="#" class="zone-edit" data-toggle="modal" data-target="#editZone{{ $zone->id }}">
                                             <span class="label">Edit</span>
+                                        </a>
+                                        <a href="#" class="zone-code" data-toggle="modal" data-target="#zoneCode{{ $zone->id }}">
+                                            <span class="label label-success">Code</span>
                                         </a>
                                     </td>
                                 </tr>
@@ -290,6 +288,9 @@
             </div>
         </div>
     @foreach($site->zones as $zone)
+        <?php $width = $locationTypes->where('id',$zone->location_type)->first()->width; 
+              $height = $locationTypes->where('id',$zone->location_type)->first()->height;
+        ?>
         <div class="modal inmodal" id="editZone{{ $zone->id }}" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content animated fadeIn">
@@ -328,6 +329,25 @@
                     </form>
                 </div>
             </div>
+        </div>
+        <div class="modal inmodal" id="zoneCode{{ $zone->id }}" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content animated fadeIn">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title">Zone Invocation Code</h4>
+                    </div>
+                    <div class="modal-body">
+                    <h3>Place this code in your site's layout:</h3>
+                    <div style="overflow-wrap: break-word;">
+                    <pre><code class="html">{{ htmlspecialchars('<iframe name="Trafficroots - '.$zone->description.'" src="http://service.trafficroots.com/service/'.$zone->handle.'" style="border: 0px; margin: 0px;" width="'.$width.'" height="'.$height.'" frameborder="0"></iframe>') }}
+                    </code></pre>
+                    </div>
+                    </div>
+             </div>
         </div>
     @endforeach;
     </div>    

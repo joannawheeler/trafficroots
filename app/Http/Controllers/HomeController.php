@@ -28,6 +28,23 @@ class HomeController extends Controller
     {
         return view('advertiser.dashboard');
     }
+    public function whoAmI()
+    {
+        $categories = Category::all();
+        return view('whoami',array('categories' => $categories));
+    }
+    public function pubType()
+    {
+        $user = Auth::getUser();
+        User::where('id', $user->id)->update(array('user_type' => 1));
+        return redirect('sites');
+    }
+    public function buyerType()
+    {
+        $user = Auth::getUser();
+        User::where('id', $user->id)->update(array('user_type' => 2));
+        return redirect('media');
+    }
     /**
      * Show the advertiser`s dashboard.
      *
@@ -97,6 +114,9 @@ class HomeController extends Controller
     public function index()
     {
        $user = Auth::user();
+       if(!$user->user_type){
+           return view('whoami');
+       }
         $sql = 'SELECT sites.*, categories.category 
                 FROM sites 
                 JOIN categories 

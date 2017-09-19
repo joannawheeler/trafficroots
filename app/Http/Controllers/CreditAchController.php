@@ -50,8 +50,8 @@ class CreditAchController extends Controller
         if(!$bank){
             $data = array();
             $data['user_id'] = $user->id;
-            $data['transaction_amount'] = 0;
-            $data['running_balance'] = 0;
+            $data['transaction_amount'] = 20.00;
+            $data['running_balance'] = 20.00;
             $bank = new Bank();
             $bank->fill($data);
             $bank->save();

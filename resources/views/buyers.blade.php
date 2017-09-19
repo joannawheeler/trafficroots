@@ -9,10 +9,10 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">Advertiser Dashboard</div>
-
-                <div class="panel-body">
+            <div class="ibox">
+                <div class="ibox-title">Advertiser Dashboard</div>
+            
+                <div class="ibox-content">
                             <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
                                 <li class="active"><a href="#campaign-tab" data-toggle="tab">Campaigns</a></li>
                                 <li><a href="#media-tab" data-toggle="tab">Media</a></li>
@@ -22,9 +22,9 @@
                             </ul>
                             <div id="my-tab-content" class="tab-content">
                             <div class="tab-pane table-responsive active" id="campaign-tab">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">My Campaigns</div>
-                        <div class="panel-body table-responsive">
+                    <div class="ibox">
+                        <div class="ibox-title">My Campaigns</div>
+                        <div class="ibox-content table-responsive">
                         @if (count($campaigns))
                             <table class="table table-hover table-border table-striped table-condensed" name="campaigns_table" id="campaigns_table" width="100%">
                             <thead>
@@ -55,9 +55,9 @@
                     </div>
                     </div>
                     <div class="tab-pane table-responsive" id="media-tab">
-                    <div class="panel panel-default">
-                        <div class="panel-heading" id="creative_heading">My Media</div>
-                        <div class="panel-body table-responsive" id="media_div">
+                    <div class="ibox">
+                        <div class="ibox-title" id="creative_heading">My Media</div>
+                        <div class="ibox-content table-responsive" id="media_div">
                         @if (count($media))
                             <table class="table table-hover table-border table-striped table-condensed" name="media_table" id="media_table" width="100%">
                             <thead>
@@ -85,9 +85,9 @@
                     </div>
                     </div>
                     <div class="tab-pane table-responsive" id="folder-tab">
-                    <div class="panel panel-default">
-                        <div class="panel-heading" id="creative_heading">My Folders</div>
-                        <div class="panel-body table-responsive" id="folder_div">
+                    <div class="ibox">
+                        <div class="ibox-title" id="creative_heading">My Folders</div>
+                        <div class="ibox-content table-responsive" id="folder_div">
                         @if (count($folders))
                             <table class="table table-hover table-border table-striped table-condensed" name="folders_table" id="folders_table" width="100%">
                             <thead>
@@ -115,9 +115,9 @@
                     </div>
                     </div>
                     <div class="tab-pane table-responsive" id="link-tab">
-                    <div class="panel panel-default">
-                        <div class="panel-heading" id="links_heading">My Links</div>
-                        <div class="panel-body table-responsive" id="links_div">
+                    <div class="ibox">
+                        <div class="ibox-title" id="links_heading">My Links</div>
+                        <div class="ibox-content table-responsive" id="links_div">
                         @if (count($links))
                            <table class="table table-hover table-border table-striped table-condensed" name="links_table" id="links_table" width="100%">
                             <thead>
@@ -145,9 +145,9 @@
                     </div>
                     </div>
                     <div class="tab-pane table-responsive" id="bank-tab">
-                    <div class="panel panel-default">
-                        <div class="panel-heading" id="acct_heading">My Account</div>
-                        <div class="panel-body" id="account_div">
+                    <div class="ibox">
+                        <div class="ibox-title" id="acct_heading">My Account</div>
+                        <div class="ibox-content" id="account_div">
                             <div class="container">
                             @if(is_array($bank))
                             <div class="row">

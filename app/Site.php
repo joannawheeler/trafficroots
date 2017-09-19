@@ -31,7 +31,7 @@ class Site extends Model
         $this->zones()->create(compact('description','location_type','pub_id','handle'));
     }
 
-    public function stats()
+    public function getStats()
     {
         return $this->hasMany('App\Stat');
     }

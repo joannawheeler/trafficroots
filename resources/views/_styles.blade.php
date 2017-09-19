@@ -25,6 +25,10 @@
     .logo-style{
     width: 70px; height: 70px; border-radius: 50%; background-color: #19aa8d; display:table-cell; vertical-align:middle; text-align:center;
     }
+.panel-default > .panel-heading {
+  background: #1AB394;
+  color: white;
+}
 </style>
 <!-- end globals -->
 <!-- page level styles -->

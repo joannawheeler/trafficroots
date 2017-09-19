@@ -24,9 +24,12 @@ Route::group(['domain' => 'trafficroots.com'], $landing);
 Route::get('/', function () {
     return redirect('/home');
 });
+Route::get('/pub_type', 'HomeController@pubType');
+Route::get('/buyer_type', 'HomeController@buyerType');
+Route::get('/both_type', 'HomeController@bothType');
 Route::post('/subscribe', 'PublicController@subscribeUser');
-Route::get('/fblogin/{facebook}/{user_id}/{name}/{email}', 'FacebookController@login');
-Route::get('/glogin/{google}/{name}/{email}', 'GoogleController@login');
+//Route::get('/fblogin/{facebook}/{user_id}/{name}/{email}', 'FacebookController@login');
+//Route::get('/glogin/{google}/{name}/{email}', 'GoogleController@login');
 Route::get('/landing', 'PublicController@getLandingPage');
 Route::get('/pixel/{handle?}', 'PixelController@getIndex');
 Route::get('/analysis/{handle}', 'SiteController@analyzeSite'); 
@@ -70,8 +73,10 @@ Route::get('manage_campaign/{id}', 'CampaignController@editCampaign');
 Route::get('/creatives/{id}', 'CampaignController@createCreative');
 Route::post('/creatives', 'CampaignController@postCreative');
 Route::post('/update_targets', 'CampaignController@updateTargets');
+Route::post('/update_bid', 'CampaignController@updateBid');
 Route::get('/folder', 'CampaignController@createFolder');
 Route::post('/folder', 'CampaignController@postFolder');
+Route::get('/whoami', 'HomeController@whoAmI');
 
 /* paypal routes */
 Route::get('/paywithpaypal', array('as' => 'addmoney.paywithpaypal','uses' => 'AddMoneyController@payWithPaypal',));
