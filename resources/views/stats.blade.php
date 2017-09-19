@@ -4,10 +4,10 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">{{ $site->site_name }} - {{ $site->site_url }}</div>
+            <div class="ibox">
+                <div class="ibox-title">{{ $site->site_name }} - {{ $site->site_url }}</div>
 
-                <div class="panel-body">
+                <div class="ibox-content">
                     <p>Aggregate Statistics - {{ $range }}</p>
                     <div class="row"><div class="col-md-3">Impressions</div><div class="col-md-9">{{ $imps }}</div></div>
                     <div class="row"><div class="col-md-3">Clicks</div><div class="col-md-9">{{ $clicks }}</div></div>

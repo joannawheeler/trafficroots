@@ -80,9 +80,9 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">Publisher Registration</div>
-                <div class="panel-body">
+            <div class="ibox">
+                <div class="ibox-title">Publisher Registration</div>
+                <div class="ibox-content">
                     <form class="form-horizontal" role="form" method="POST" action="{{ url('/register') }}">
                         {{ csrf_field() }}
 

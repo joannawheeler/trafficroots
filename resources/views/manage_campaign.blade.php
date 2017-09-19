@@ -9,17 +9,17 @@
 <div class="container">
     <div class="row">
         <div class="col-md-11">
-            <div class="panel panel-default">
-                <div class="panel-heading"><i class="fa fa-sitemap"></i>&nbsp;Campaign Management
+            <div class="ibox">
+                <div class="ibox-title"><i class="fa fa-sitemap"></i>&nbsp;Campaign Management
                 <div class="pull-right">
                 <a href="/buyers"><span class="label label-success"><i class="fa fa-bolt"></i>&nbsp;Return To Menu</span></a>
                 </div>
                 </div>
-                <div class="panel-body">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">Campaign {{ $campaign->id }}</div>
-                        <div class="panel-body" id="bid_status_div"></div>
-                        <div class="panel-body table-responsive">
+                <div class="ibox-content">
+                    <div class="ibox">
+                        <div class="ibox-title">Campaign {{ $campaign->id }}</div>
+                        <div class="ibox-content" id="bid_status_div"></div>
+                        <div class="ibox-content table-responsive">
                             <table class="table table-hover table-border table-striped table-condensed" name="campaigns_table" id="campaigns_table" width="100%">
                             <thead>
                             <tr><th>Campaign Name</th><th>Type</th><th>Category</th><th>Status</th><th>Location Type</th><th>Date Created</th><th>Bid</th><th>Option</th></tr>
@@ -49,47 +49,47 @@
                             </table>
                         </div>
                     </div>
-                    <div class="panel panel-default">
+                    <div class="ibox">
                         <form name="target_form" id="target_form" role="form" class="form-horizontal" target="#" method="POST">
                          {{ csrf_field() }}                    
                        <input type="hidden" id="campaign_id" name="campaign_id" value="{{ $campaign->id }}"> 
-                       <div class="panel-heading"><i class="fa fa-crosshairs"></i>&nbsp;Campaign Targeting Options</div>
-                        <div class="panel-body">
-                            <div class="panel-body" id="status_div"></div>
-                            <div class="panel-body">
+                       <div class="ibox-title"><i class="fa fa-crosshairs"></i>&nbsp;Campaign Targeting Options</div>
+                        <div class="ibox-content">
+                            <div class="ibox-content" id="status_div"></div>
+                            <div class="ibox-content">
                              <p>State Targeting</p>
                              <select id="states[]" name="states[]" class="form-control" multiple>
                              {!! $states !!}
                              </select>
                             </div>
-                            <div class="panel-body">
+                            <div class="ibox-content">
                             <p>Platform Targeting</p>
                                 <select name="platform_targets[]" id="platform_targets[]" class="form-control" multiple>
                                 {!! $platforms !!}
                                 </select>
                             </div>
-                            <div class="panel-body">
+                            <div class="ibox-content">
                              <p>OS Targeting</p>
                              <select id="operating_systems[]" name="operating_systems[]" class="form-control" multiple>
                              {!! $os_targets !!}
                              </select>
                             </div>
-                            <div class="panel-body">
+                            <div class="ibox-content">
                              <p>Browser Targeting</p>
                              <select id="browser_targets[]" name="browser_targets[]" class="form-control" multiple>
                              {!! $browser_targets !!}
                              </select>
                             </div>
-                            <div class="panel-body">
+                            <div class="ibox-content">
                              <p>Keyword Targeting</p><small>Use commas to separate</small>
                              <input name="keyword_targets" id="keyword_targets" class="form-control" type="text" value="{!! $keywords !!}">
                             </div>
                             </form>
                         </div>
                     </div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading" id="creative_heading">Creatives</div>
-                        <div class="panel-body table-responsive" id="creative_div">
+                    <div class="ibox">
+                        <div class="ibox-title" id="creative_heading">Creatives</div>
+                        <div class="ibox-content table-responsive" id="creative_div">
                         @if (count($creatives))
                             <table class="table table-hover table-border table-striped table-condensed" name="creative_table" id="creative_table" width="100%">
                             <thead>

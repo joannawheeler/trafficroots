@@ -9,10 +9,10 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">Create a Campaign</div>
+            <div class="ibox">
+                <div class="ibox-title">Create a Campaign</div>
 
-                <div class="panel-body">
+                <div class="ibox-content">
                 <form name="campaign_form" id="campaign_form" class="form-horizontal" role="form" method="POST" action="{{ url('/campaign') }}">
                 {{ csrf_field() }}
 

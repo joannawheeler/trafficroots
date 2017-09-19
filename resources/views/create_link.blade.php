@@ -9,10 +9,10 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">Create Link</div>
+            <div class="ibox">
+                <div class="ibox-title">Create Link</div>
 
-                <div class="panel-body">
+                <div class="ibox-content">
                 <form name="media_form" id="media_form" class="form-horizontal" role="form" method="POST" action="{{ url('/links') }}">
                 {{ csrf_field() }}
                         <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">

@@ -3,32 +3,32 @@
 @section('content')
 <div class="row">
     <div class="col-md-12">
-    <div class="panel panel-default">
-    <div class="panel-heading">Site Analysis:  <div class="pull-right"><strong> {{ $site->site_name }} </strong>- <a href="{{ $site->site_url }}" target="_blank">{{ $site->site_url }}</a></div></div>
+    <div class="ibox">
+    <div class="ibox-title">Site Analysis:  <div class="pull-right"><strong> {{ $site->site_name }} </strong>- <a href="{{ $site->site_url }}" target="_blank">{{ $site->site_url }}</a></div></div>
     <div class="row">
         <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">Countries</div>
+            <div class="ibox">
+                <div class="ibox-title">Countries</div>
 
-                <div class="panel-body">
+                <div class="ibox-content">
                 {!! $geo_table !!}
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">US States</div>
+            <div class="ibox">
+                <div class="ibox-title">US States</div>
 
-                <div class="panel-body">
+                <div class="ibox-content">
                 {!! $state_table !!}
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">US Cities</div>
+            <div class="ibox">
+                <div class="ibox-title">US Cities</div>
 
-                <div class="panel-body">
+                <div class="ibox-content">
                 {!! $city_table !!}
                 </div>
             </div>
@@ -38,28 +38,28 @@
        </div>
        <div class="row">
         <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">Devices</div>
+            <div class="ibox">
+                <div class="ibox-title">Devices</div>
 
-                <div class="panel-body">
+                <div class="ibox-content">
                 {!! $device_table !!}
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">Operating Systems</div>
+            <div class="ibox">
+                <div class="ibox-title">Operating Systems</div>
 
-                <div class="panel-body">
+                <div class="ibox-content">
                 {!! $os_table !!}
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">Browsers</div>
+            <div class="ibox">
+                <div class="ibox-title">Browsers</div>
 
-                <div class="panel-body">
+                <div class="ibox-content">
                 {!! $browser_table !!}
                 </div>
             </div>

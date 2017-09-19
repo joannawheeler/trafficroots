@@ -4,9 +4,9 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-            <div class="panel-heading">Add a New Zone on {{ $site->site_name }}</div>
-            <div class="panel-body">
+            <div class="ibox">
+            <div class="ibox-title">Add a New Zone on {{ $site->site_name }}</div>
+            <div class="ibox-content">
             <form name="zone_form" id="zone_form" action="" method="POST">
        <div class="control-group">
             <label class="control-label" for="description">Zone Description</label>

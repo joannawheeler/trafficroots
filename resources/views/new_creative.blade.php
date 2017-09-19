@@ -9,10 +9,10 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">New Creative for Campaign {{ $campaign->id }} - {{ $campaign->campaign_name }}</div>
+            <div class="ibox">
+                <div class="ibox-title">New Creative for Campaign {{ $campaign->id }} - {{ $campaign->campaign_name }}</div>
 
-                <div class="panel-body">
+                <div class="ibox-content">
                 <p>A Creative can be a Folder or a combination of Media and Link ids</p>
                 <form name="creative_form" id="creative_form" class="form-horizontal" role="form" method="POST" action="{{ url('/creatives') }}">
                 {{ csrf_field() }}<input type="hidden" name="campaign_id" id="campaign_id" value="{{ $campaign->id }}">

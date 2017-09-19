@@ -66,7 +66,7 @@
         </ul>
         <div class="tab-content">
             <div id="dates" class="tab-pane active">
-                <div class="panel-body">
+                <div class="ibox-content">
                     <div class="ibox-content">
                         <input type="text" class="form-control input-sm m-b-xs" id="filter" placeholder="Search in table">
 
@@ -102,7 +102,7 @@
                 </div>
             </div>
             <div id="countries" class="tab-pane">
-                <div class="panel-body">
+                <div class="ibox-content">
                     <div class="ibox-content">
                         <input type="text" class="form-control input-sm m-b-xs" id="filter" placeholder="Search in table">
 
@@ -140,7 +140,7 @@
                 </div>
             </div>
             <div id="states" class="tab-pane">
-                <div class="panel-body">
+                <div class="ibox-content">
                     <div class="ibox-content">
                         <input type="text" class="form-control input-sm m-b-xs" id="filter" placeholder="Search in table">
 
@@ -178,7 +178,7 @@
                 </div>
             </div>
             <div id="cities" class="tab-pane">
-                <div class="panel-body">
+                <div class="ibox-content">
                     <div class="ibox-content">
                         <input type="text" class="form-control input-sm m-b-xs" id="filter" placeholder="Search in table">
 
@@ -216,7 +216,7 @@
                 </div>
             </div>
             <div id="platforms" class="tab-pane">
-                <div class="panel-body">
+                <div class="ibox-content">
                     <div class="ibox-content">
                         <input type="text" class="form-control input-sm m-b-xs" id="filter" placeholder="Search in table">
 
@@ -254,7 +254,7 @@
                 </div>
             </div>
             <div id="os" class="tab-pane">
-                <div class="panel-body">
+                <div class="ibox-content">
                     <div class="ibox-content">
                         <input type="text" class="form-control input-sm m-b-xs" id="filter" placeholder="Search in table">
 
@@ -292,7 +292,7 @@
                 </div>
             </div>
             <div id="browsers" class="tab-pane">
-                <div class="panel-body">
+                <div class="ibox-content">
                     <div class="ibox-content">
                         <input type="text" class="form-control input-sm m-b-xs" id="filter" placeholder="Search in table">
 

@@ -9,10 +9,10 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">My Profile</div>
+            <div class="ibox">
+                <div class="ibox-title">My Profile</div>
 
-                <div class="panel-body">
+                <div class="ibox-content">
                 <form name="profile_form" id="profile_form" class="form-horizontal" role="form" method="POST" action="#">
                 {{ csrf_field() }}
                         <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">

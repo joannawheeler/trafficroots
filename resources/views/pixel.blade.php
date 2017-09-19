@@ -4,10 +4,10 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">Pixel Data</div>
+            <div class="ibox">
+                <div class="ibox-title">Pixel Data</div>
 
-                <div class="panel-body">
+                <div class="ibox-content">
                     <pre>{{ var_dump($md) }} </pre><br /><br />
                     <pre>
                     {{ var_dump($result) }}

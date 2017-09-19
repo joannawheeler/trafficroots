@@ -9,10 +9,10 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">Upload Media</div>
+            <div class="ibox">
+                <div class="ibox-title">Upload Media</div>
 
-                <div class="panel-body">
+                <div class="ibox-content">
                 <form name="media_form" id="media_form" class="form-horizontal" enctype="multipart/form-data" role="form" method="POST" action="{{ url('/folder') }}">
                 {{ csrf_field() }}
                         <div class="col-md-2">&nbsp;</div><div class="col-md-10">

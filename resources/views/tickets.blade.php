@@ -4,9 +4,9 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-        <div class="panel panel-default">
-            <div class="panel-heading">My Tickets</div>
-            <div class="panel-body table-responsive">
+        <div class="ibox">
+            <div class="ibox-title">My Tickets</div>
+            <div class="ibox-content table-responsive">
             <table width="100%" class="table table-border table-hover">
             <thead><tr><th>Ticket ID</th><th>Subject</th><th>Type</th><th>Status</th><th>Date Created</th><th>Date Update</th><th>Details</th></tr></thead>
             <tbody>
@@ -18,9 +18,9 @@
             </table>
             </div>
         </div>
-            <div class="panel panel-default">
-            <div class="panel-heading">Create Support Ticket</div>
-            <div class="panel-body">
+            <div class="ibox">
+            <div class="ibox-title">Create Support Ticket</div>
+            <div class="ibox-content">
             <form name="ticket_form" id="ticket_form" action="" method="POST">
        <div class="control-group">
             <label class="control-label" for="subject">Ticket Subject</label>

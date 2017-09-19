@@ -3,7 +3,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
+            <div class="ibox">
                 @if ($message = Session::get('success'))
                 <div class="custom-alerts alert alert-success fade in">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
@@ -18,8 +18,8 @@
                 </div>
                 <?php Session::forget('error');?>
                 @endif
-                <div class="panel-heading">Add funds with Paypal</div>
-                <div class="panel-body">
+                <div class="ibox-title">Add funds with Paypal</div>
+                <div class="ibox-content">
                     <p>You will be redirected to PayPal's site to complete the transaction.<br />Your current balance is $ {{ $balance }}</p> 
                     <form class="form-horizontal" method="POST" id="payment-form" role="form" action="{!! URL::route('addmoney.paypal') !!}" >
                         {{ csrf_field() }}
