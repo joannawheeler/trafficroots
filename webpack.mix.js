@@ -1,8 +1,9 @@
 let mix = require('laravel-mix');
 
 mix
+	.js('resources/assets/js/service.js', 'js/')
     .js('resources/assets/js/app.js', 'mix/')
-    // .less()
+    .stylus('resources/assets/stylus/app.styl', 'mix/');
 
 if (mix.inProduction) {
     mix.version();
