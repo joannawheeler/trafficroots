@@ -145,8 +145,7 @@ hljs.initHighlightingOnLoad();
                                        class="site-zones">
                                         <span class="label label-success">Zones</span>
                                     </a>
-                                    <a href="{{ url("
-                                       stats/site/$site->id") }}" class="site-stats">
+                                    <a href="{{ url("stats/site/".$site->id) }}" class="site-stats">
                                         <span class="label label-info">Stats</span>
                                     </a>
                                     <a href="#"
@@ -491,7 +490,7 @@ hljs.initHighlightingOnLoad();
                     <div class="modal-body">
                         <h3>Place this code in your site's layout:</h3>
                         <div style="overflow-wrap: break-word;">
-                            <pre><code class="html">{{ htmlspecialchars('<iframe name="Trafficroots - '.$zone->description.'" src="http://service.trafficroots.com/service/'.$zone->handle.'" style="border: 0px; margin: 0px;" width="'.$width.'" height="'.$height.'" frameborder="0"></iframe>') }}
+                            <pre><code class="html">{{ htmlspecialchars('<div id="tr_'.$zone->handle.'" data-width="'.$width.'" data-height="'.$height.'"><script>var tr_handle = "'.$zone->handle.'";</script><script src="https://service.trafficroots.com/js/service.js"></script></div>') }}
                             </code></pre>
                         </div>
                     </div>

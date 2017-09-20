@@ -199,7 +199,7 @@ class CampaignController extends Controller
         $media->save();
            // sending back with message
            Session::flash('success', 'Upload completed!');
-        return redirect('/home');
+        return redirect('/buyers');
     }
 
     public function createFolder()
@@ -222,7 +222,7 @@ class CampaignController extends Controller
         $folder->save();
            // sending back with message
            Session::flash('success', 'Upload completed!');
-        return redirect('/home');
+        return redirect('/buyers');
     }
     public function createLink()
     {
@@ -238,7 +238,7 @@ class CampaignController extends Controller
         $link = new Links();
         $link->fill($data);
         $link->save();
-        return redirect('/home');
+        return redirect('/buyers');
     }
     public function editCampaign(Request $request)
     {
