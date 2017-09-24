@@ -7,6 +7,7 @@ use Auth;
 use App\Site;
 use App\Bank;
 use App\User;
+use App\Faq;
 use App\LocationType;
 use App\Category;
 use App\StatusType;
@@ -27,6 +28,15 @@ class HomeController extends Controller
     public function advertiser()
     {
         return view('advertiser.dashboard');
+    }
+    public function advertiserFaq()
+    {
+        $faqs = Faq::where('faq_type', 1)->get();
+        return view('faq_advertiser', array('faqs' => $faqs));
+    }
+    public function publisherFaq()
+    {
+        return view('faq_publisher');
     }
     public function whoAmI()
     {

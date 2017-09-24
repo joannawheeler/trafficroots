@@ -78,6 +78,8 @@ Route::get('/folder', 'CampaignController@createFolder');
 Route::post('/folder', 'CampaignController@postFolder');
 Route::get('/whoami', 'HomeController@whoAmI');
 
+Route::get('/faq_advertiser', 'HomeController@advertiserFaq');
+Route::get('/faq_publisher', 'HomeController@publisherFaq');
 /* paypal routes */
 Route::get('/paywithpaypal', array('as' => 'addmoney.paywithpaypal','uses' => 'AddMoneyController@payWithPaypal',));
 Route::post('paypal', array('as' => 'addmoney.paypal','uses' => 'AddMoneyController@postPaymentWithpaypal',));
