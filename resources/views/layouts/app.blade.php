@@ -96,6 +96,9 @@
                             <li>
                                 <a href="{{URL::to('campaigns')}}">Campaigns</a>
                             </li>
+                            <li>
+                                <a href="{{URL::to('faq_advertiser')}}">FAQ</a>
+                            </li>
                         </ul>
                     </li>
                     <li id="nav_support" class="nav-click">
