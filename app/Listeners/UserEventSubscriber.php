@@ -11,7 +11,8 @@ class UserEventSubscriber
      */
     public function onUserLogin($event) {
         $user = Auth::getUser();
-        Log::info('User '.$user->name.' logged in.');
+        $info = print_r($event, true);
+        Log::info("User $info logged in.");
     }
 
     /**
