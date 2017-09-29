@@ -130,9 +130,9 @@ WHERE publisher_bookings.booking_date = CURDATE()
 AND publisher_bookings.pub_id = $id
 GROUP BY commission_tiers.publisher_factor;";
         $result = DB::select($sql);
-        $data['earned_today'] = is_null($result[0]->earned) ? 0.00 : $result[0]->earned;
-        $data['impressions_today'] = is_null($result[0]->impressions) ? 0 : $result[0]->impressions;
-        $data['clicks_today'] = is_null($result[0]->clicks) ? 0 : $result[0]->clicks;
+        $data['earned_today'] = sizeof($result) ? $result[0]->earned : 0.00;
+        $data['impressions_today'] = sizeof($result) ? $result[0]->impressions : 0;
+        $data['clicks_today'] = sizeof($result) ? $result[0]->clicks : 0;
         
 
 $sql = "SELECT 
