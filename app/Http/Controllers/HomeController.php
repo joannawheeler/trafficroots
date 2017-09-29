@@ -196,6 +196,31 @@ GROUP BY commission_tiers.publisher_factor;";
             $data['clicks_this_year'] += is_null($row->clicks) ? 0 : $row->clicks;            
         }
         $data['cpm_this_year'] = $data['impressions_this_year'] ? ($data['earned_this_year'] / ($data['impressions_this_year'] / 1000)) : 0.00;
+
+        $data['last_thirty_days'] = array();        
+for($i = 30; $i >= 0; $i--){
+    $mydate = date('Y-m-d', strtotime("-$i days"));
+
+$sql = "SELECT 
+SUM(publisher_bookings.revenue) * commission_tiers.publisher_factor AS earned,
+SUM(publisher_bookings.impressions) as impressions,
+SUM(publisher_bookings.clicks) as clicks,
+commission_tiers.publisher_factor
+FROM publisher_bookings
+JOIN commission_tiers
+ON publisher_bookings.commission_tier = commission_tiers.id
+WHERE publisher_bookings.booking_date = $mydate
+AND publisher_bookings.pub_id = $id
+GROUP BY commission_tiers.booking_date
+ORDER BY publisher_bookings.booking_date;";
+        $data['last_thirty_days'][$mydate] = array('impressions' => 0, 'clicks' => 0, 'earnings' => 0);
+        foreach(DB::select($sql) as $row){
+            $earnings = is_null($row->earned) ? 0.00 : $row->earned;
+            $impressions = is_null($row->impressions) ? 0 : $row->impressions;
+            $clicks = is_null($row->clicks) ? 0 : $row->clicks;
+            $data['last_thirty_days'][$row->booking_date] = array('impressions' => $impressions, 'clicks' => $clicks, 'earnings' => $earnings);
+        } 
+}
         return $data;
     }    /**
      * Show the publisher`s dashboard.
