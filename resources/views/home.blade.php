@@ -5,7 +5,6 @@
     <h2>{{ Session::get('success') }}</h2>
 </div>
 @endif  --}}
-@if($user->user_type < 2)
 <div class="row">
     <div class="col-lg-3">
         <div class="ibox float-e-margins">
@@ -14,13 +13,13 @@
                 <h5>Today</h5>
             </div>
             <div class="ibox-content">
-                <div class="stat-percent font-bold text-success">$ {{ $pub_data['impressions_today'] }} <i class="fa fa-bolt"></i></div>
-                <small>Impressions</small>
-                <div class="stat-percent font-bold text-success">$ {{ $pub_data['clicks_today'] }} <i class="fa fa-bolt"></i></div>
-                <small>Clicks</small>                
-                <div class="stat-percent font-bold text-success">$ {{ $pub_data['earned_today'] }} <i class="fa fa-bolt"></i></div>
-                <small>Earnings</small>
-                <div class="stat-percent font-bold text-success">$ {{ $pub_data['earned_today'] / ($pub_data['impressions_today'] / 1000) }} <i class="fa fa-bolt"></i></div>
+                <div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['impressions_today']) }}</div>
+                <small>Impressions</small><br />
+                <div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['clicks_today']) }}</div>
+                <small>Clicks</small><br />                
+                <div class="stat-percent font-bold text-success pull-right">$ {{ $pub_data['earned_today'] }}</div>
+                <small>Earnings</small><br />
+                <div class="stat-percent font-bold text-success">$ {{ $pub_data['cpm_today'] }}</div>
                 <small>CPM</small>                
             </div>
         </div>
@@ -28,17 +27,17 @@
     <div class="col-lg-3">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <span class="label label-info pull-right">{{ Carbon\Carbon::now()->format('F') }}</span>
+                <span class="label label-success pull-right">{{ Carbon\Carbon::now()->format('F') }}</span>
                 <h5>This Month</h5>
             </div>
             <div class="ibox-content">
-                <div class="stat-percent font-bold text-success">$ {{ $pub_data['impressions_this_month'] }} <i class="fa fa-bolt"></i></div>
-                <small>Impressions</small>
-                <div class="stat-percent font-bold text-success">$ {{ $pub_data['clicks_this_month'] }} <i class="fa fa-bolt"></i></div>
-                <small>Clicks</small>                
-                <div class="stat-percent font-bold text-success">$ {{ $pub_data['earned_this_month'] }} <i class="fa fa-bolt"></i></div>
-                <small>Earnings</small>
-                <div class="stat-percent font-bold text-success">$ {{ $pub_data['earned_this_month'] / ($pub_data['impressions_this_month'] / 1000) }} <i class="fa fa-bolt"></i></div>
+                <div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['impressions_this_month']) }}</div>
+                <small>Impressions</small><br />
+                <div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['clicks_this_month']) }}</div>
+                <small>Clicks</small><br />                
+                <div class="stat-percent font-bold text-success pull-right">$ {{ $pub_data['earned_this_month'] }}</div>
+                <small>Earnings</small><br />
+                <div class="stat-percent font-bold text-success pull-right">$ {{ $pub_data['cpm_this_month'] }}</div>
                 <small>CPM</small>  
             </div>
         </div>
@@ -46,17 +45,17 @@
     <div class="col-lg-3">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <span class="label label-info pull-right">{{ date('F', strtotime('last month')) }}</span>
+                <span class="label label-success pull-right">{{ date('F', strtotime('last month')) }}</span>
                 <h5>Last Month</h5>
             </div>
             <div class="ibox-content">
-                <div class="stat-percent font-bold text-success">$ {{ $pub_data['impressions_last_month'] }} <i class="fa fa-bolt"></i></div>
-                <small>Impressions</small>
-                <div class="stat-percent font-bold text-success">$ {{ $pub_data['clicks_last_month'] }} <i class="fa fa-bolt"></i></div>
-                <small>Clicks</small>                
-                <div class="stat-percent font-bold text-success">$ {{ $pub_data['earned_last_month'] }} <i class="fa fa-bolt"></i></div>
-                <small>Earnings</small>
-                <div class="stat-percent font-bold text-success">$ {{ $pub_data['earned_last_month'] / ($pub_data['impressions_last_month'] / 1000) }} <i class="fa fa-bolt"></i></div>
+                <div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['impressions_last_month']) }}</div>
+                <small>Impressions</small><br />
+                <div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['clicks_last_month']) }}</div>
+                <small>Clicks</small><br />                
+                <div class="stat-percent font-bold text-success pull-right">$ {{ $pub_data['earned_last_month'] }}</div>
+                <small>Earnings</small><br />
+                <div class="stat-percent font-bold text-success pull-right">$ {{ $pub_data['cpm_last_month'] }}</div>
                 <small>CPM</small>  
             </div>
         </div>
@@ -64,17 +63,17 @@
     <div class="col-lg-3">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <span class="label label-info pull-right">Daily</span>
+                <span class="label label-success pull-right">{{ date('Y') }}</span>
                 <h5>This Year</h5>
             </div>
             <div class="ibox-content">
-                <div class="stat-percent font-bold text-success">$ {{ $pub_data['impressions_this_year'] }} <i class="fa fa-bolt"></i></div>
-                <small>Impressions</small>
-                <div class="stat-percent font-bold text-success">$ {{ $pub_data['clicks_this_year'] }} <i class="fa fa-bolt"></i></div>
-                <small>Clicks</small>                
-                <div class="stat-percent font-bold text-success">$ {{ $pub_data['earned_this_year'] }} <i class="fa fa-bolt"></i></div>
-                <small>Earnings</small>
-                <div class="stat-percent font-bold text-success">$ {{ $pub_data['earned_this_year'] / ($pub_data['impressions_this_year'] / 1000) }} <i class="fa fa-bolt"></i></div>
+                <div class="stat-percent font-bold text-success">{{ number_format($pub_data['impressions_this_year']) }}</div>
+                <small>Impressions</small><br />
+                <div class="stat-percent font-bold text-success">{{ number_format($pub_data['clicks_this_year']) }}</div>
+                <small>Clicks</small><br />                
+                <div class="stat-percent font-bold text-success">$ {{ $pub_data['earned_this_year'] }}</div>
+                <small>Earnings</small><br />
+                <div class="stat-percent font-bold text-success">$ {{ $pub_data['cpm_this_year'] }}</div>
                 <small>CPM</small>  
             </div>
         </div>
@@ -178,161 +177,6 @@
         </div>
     </div>
 </div>
-@endif
-@if($user->user_type > 1)
-<div class="row">
-    <div class="col-lg-3">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <span class="label label-success pull-right">{{ Carbon\Carbon::now()->format('F') }}</span>
-                <h5>Impressions</h5>
-            </div>
-            <div class="ibox-content">
-                <h1 class="no-margins">$420</h1>
-                <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div>
-                <small>Current Earnings</small>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <span class="label label-info pull-right">Daily</span>
-                <h5>Today</h5>
-            </div>
-            <div class="ibox-content">
-                <h1 class="no-margins">$4.20</h1>
-                <div class="stat-percent font-bold text-info">20% <i class="fa fa-level-up"></i></div>
-                <small>Todays revenue</small>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <span class="label label-info pull-right">Revenue</span>
-                <h5>Today</h5>
-            </div>
-            <div class="ibox-content">
-                <h1 class="no-margins">$4.20</h1>
-                <div class="stat-percent font-bold text-info">20% <i class="fa fa-level-up"></i></div>
-                <small>Todays revenue</small>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <span class="label label-info pull-right">Daily</span>
-                <h5>Today</h5>
-            </div>
-            <div class="ibox-content">
-                <h1 class="no-margins">$4.20</h1>
-                <div class="stat-percent font-bold text-info">20% <i class="fa fa-level-up"></i></div>
-                <small>Todays revenue</small>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-lg-12">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>Daily Stats</h5>
-                <div ibox-tools></div>
-            </div>
-            <div class="ibox-content">
-                <div>
-                    <canvas id="lineChart" height="70"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-lg-12">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>Basic Table</h5>
-            </div>
-            <div class="ibox-content">
-
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Impressions</th>
-                            <th>Clicks</th>
-                            <th>CPM</th>
-                            <th>CPC</th>
-                            <th>Earnings</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>5/25</td>
-                            <td>120,000</td>
-                            <td>950</td>
-                            <td>4.20</td>
-                            <td>.20</td>
-                            <td><span class="label label-primary">$420</span></td>
-                        </tr>
-                        <tr>
-                            <td>5/24</td>
-                            <td>110,000</td>
-                            <td>899</td>
-                            <td>4.20</td>
-                            <td>.20</td>
-                            <td><span class="label label-primary">$420</span></td>
-                        </tr>
-                        <tr>
-                            <td>5/23</td>
-                            <td>123,000</td>
-                            <td>1,000</td>
-                            <td>4.20</td>
-                            <td>.20</td>
-                            <td><span class="label label-primary">$420</span></td>
-                        </tr>
-                        <tr>
-                            <td>5/22</td>
-                            <td>123,000</td>
-                            <td>1,000</td>
-                            <td>4.20</td>
-                            <td>.20</td>
-                            <td><span class="label label-primary">$420</span></td>
-                        </tr>
-                        <tr>
-                            <td>5/21</td>
-                            <td>123,000</td>
-                            <td>1,000</td>
-                            <td>4.20</td>
-                            <td>.20</td>
-                            <td><span class="label label-primary">$420</span></td>
-                        </tr>
-                        <tr>
-                            <td>5/20</td>
-                            <td>123,000</td>
-                            <td>1,000</td>
-                            <td>4.20</td>
-                            <td>.20</td>
-                            <td><span class="label label-primary">$420</span></td>
-                        </tr>
-                        <tr>
-                            <td>5/19</td>
-                            <td>123,000</td>
-                            <td>1,000</td>
-                            <td>4.20</td>
-                            <td>.20</td>
-                            <td><span class="label label-primary">$420</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-
-            </div>
-        </div>
-    </div>
-</div>
-@endif
 @endsection
 @section('js')
 @if($user->user_type < 2)
