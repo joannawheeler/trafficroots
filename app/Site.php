@@ -11,7 +11,8 @@ class Site extends Model
     	'site_url',
     	'site_category',
     	'user_id',
-    	'site_handle'
+    	'site_handle',
+        'status_type'
     ];
 
     public function zones()

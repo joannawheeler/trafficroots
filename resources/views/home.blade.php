@@ -10,13 +10,54 @@
     <div class="col-lg-3">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <span class="label label-success pull-right">{{ Carbon\Carbon::now()->format('F') }}</span>
-                <h5>Impressions</h5>
+                <span class="label label-success pull-right">{{ Carbon\Carbon::now()->format('F jS') }}</span>
+                <h5>Today</h5>
             </div>
             <div class="ibox-content">
-                <h1 class="no-margins">$420</h1>
-                <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div>
-                <small>Current Earnings</small>
+                <div class="stat-percent font-bold text-success">$ {{ $pub_data['impressions_today'] }} <i class="fa fa-bolt"></i></div>
+                <small>Impressions</small>
+                <div class="stat-percent font-bold text-success">$ {{ $pub_data['clicks_today'] }} <i class="fa fa-bolt"></i></div>
+                <small>Clicks</small>                
+                <div class="stat-percent font-bold text-success">$ {{ $pub_data['earned_today'] }} <i class="fa fa-bolt"></i></div>
+                <small>Earnings</small>
+                <div class="stat-percent font-bold text-success">$ {{ $pub_data['earned_today'] / ($pub_data['impressions_today'] / 1000) }} <i class="fa fa-bolt"></i></div>
+                <small>CPM</small>                
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <span class="label label-info pull-right">{{ Carbon\Carbon::now()->format('F') }}</span>
+                <h5>This Month</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="stat-percent font-bold text-success">$ {{ $pub_data['impressions_this_month'] }} <i class="fa fa-bolt"></i></div>
+                <small>Impressions</small>
+                <div class="stat-percent font-bold text-success">$ {{ $pub_data['clicks_this_month'] }} <i class="fa fa-bolt"></i></div>
+                <small>Clicks</small>                
+                <div class="stat-percent font-bold text-success">$ {{ $pub_data['earned_this_month'] }} <i class="fa fa-bolt"></i></div>
+                <small>Earnings</small>
+                <div class="stat-percent font-bold text-success">$ {{ $pub_data['earned_this_month'] / ($pub_data['impressions_this_month'] / 1000) }} <i class="fa fa-bolt"></i></div>
+                <small>CPM</small>  
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <span class="label label-info pull-right">{{ date('F', strtotime('last month')) }}</span>
+                <h5>Last Month</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="stat-percent font-bold text-success">$ {{ $pub_data['impressions_last_month'] }} <i class="fa fa-bolt"></i></div>
+                <small>Impressions</small>
+                <div class="stat-percent font-bold text-success">$ {{ $pub_data['clicks_last_month'] }} <i class="fa fa-bolt"></i></div>
+                <small>Clicks</small>                
+                <div class="stat-percent font-bold text-success">$ {{ $pub_data['earned_last_month'] }} <i class="fa fa-bolt"></i></div>
+                <small>Earnings</small>
+                <div class="stat-percent font-bold text-success">$ {{ $pub_data['earned_last_month'] / ($pub_data['impressions_last_month'] / 1000) }} <i class="fa fa-bolt"></i></div>
+                <small>CPM</small>  
             </div>
         </div>
     </div>
@@ -24,38 +65,17 @@
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <span class="label label-info pull-right">Daily</span>
-                <h5>Today</h5>
+                <h5>This Year</h5>
             </div>
             <div class="ibox-content">
-                <h1 class="no-margins">$4.20</h1>
-                <div class="stat-percent font-bold text-info">20% <i class="fa fa-level-up"></i></div>
-                <small>Todays revenue</small>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <span class="label label-info pull-right">Revenue</span>
-                <h5>Today</h5>
-            </div>
-            <div class="ibox-content">
-                <h1 class="no-margins">$4.20</h1>
-                <div class="stat-percent font-bold text-info">20% <i class="fa fa-level-up"></i></div>
-                <small>Todays revenue</small>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <span class="label label-info pull-right">Daily</span>
-                <h5>Today</h5>
-            </div>
-            <div class="ibox-content">
-                <h1 class="no-margins">$4.20</h1>
-                <div class="stat-percent font-bold text-info">20% <i class="fa fa-level-up"></i></div>
-                <small>Todays revenue</small>
+                <div class="stat-percent font-bold text-success">$ {{ $pub_data['impressions_this_year'] }} <i class="fa fa-bolt"></i></div>
+                <small>Impressions</small>
+                <div class="stat-percent font-bold text-success">$ {{ $pub_data['clicks_this_year'] }} <i class="fa fa-bolt"></i></div>
+                <small>Clicks</small>                
+                <div class="stat-percent font-bold text-success">$ {{ $pub_data['earned_this_year'] }} <i class="fa fa-bolt"></i></div>
+                <small>Earnings</small>
+                <div class="stat-percent font-bold text-success">$ {{ $pub_data['earned_this_year'] / ($pub_data['impressions_this_year'] / 1000) }} <i class="fa fa-bolt"></i></div>
+                <small>CPM</small>  
             </div>
         </div>
     </div>

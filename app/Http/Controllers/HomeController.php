@@ -116,7 +116,81 @@ class HomeController extends Controller
             'status_types' => $status_types
         ]);
     }
-    /**
+    public function getPubInfo($id) {
+        $data = array();
+        $sql = "SELECT 
+SUM(publisher_bookings.revenue) * commission_tiers.publisher_factor AS earned,
+SUM(publisher_bookings.impressions) as impressions,
+SUM(publisher_bookings.clicks) as clicks,
+commission_tiers.publisher_factor
+FROM publisher_bookings
+JOIN commission_tiers
+ON publisher_bookings.commission_tier = commission_tiers.id
+WHERE publisher_bookings.booking_date = CURDATE()
+AND publisher_bookings.pub_id = $id
+GROUP BY commission_tiers.publisher_factor;";
+        $result = DB::select($sql);
+        $data['earned_today'] = is_null($result[0]->earned) ? 0.00 : $result[0]->earned;
+        $data['impressions_today'] = is_null($result[0]->impressions) ? 0 : $result[0]->impressions;
+        $data['clicks_today'] = is_null($result[0]->clicks) ? 0 : $result[0]->clicks;
+        
+
+$sql = "SELECT 
+SUM(publisher_bookings.revenue) * commission_tiers.publisher_factor AS earned,
+SUM(publisher_bookings.impressions) as impressions,
+SUM(publisher_bookings.clicks) as clicks,
+commission_tiers.publisher_factor
+FROM publisher_bookings
+JOIN commission_tiers
+ON publisher_bookings.commission_tier = commission_tiers.id
+WHERE publisher_bookings.booking_date >= '".date('Y-m-d', strtotime('first day of this month'))."'
+AND publisher_bookings.pub_id = $id
+GROUP BY commission_tiers.publisher_factor;";
+        foreach(DB::select($sql) as $row){
+            $data['earned_this_month'] += is_null($row->earned) ? 0.00 : $row->earned;
+            $data['impressions_this_month'] += is_null($row->impressions) ? 0 : $row->impressions;
+            $data['clicks_this_month'] += is_null($row->clicks) ? 0 : $row->clicks;
+        } 
+        
+$sql = "SELECT 
+SUM(publisher_bookings.revenue) * commission_tiers.publisher_factor AS earned,
+SUM(publisher_bookings.impressions) as impressions,
+SUM(publisher_bookings.clicks) as clicks,
+commission_tiers.publisher_factor
+FROM publisher_bookings
+JOIN commission_tiers
+ON publisher_bookings.commission_tier = commission_tiers.id
+WHERE publisher_bookings.booking_date BETWEEN '".date('Y-m-d', strtotime('first day of last month'))."'
+AND '".date('Y-m-d', strtotime('last day of last month'))."'
+AND publisher_bookings.pub_id = $id
+GROUP BY commission_tiers.publisher_factor;";
+        
+        foreach(DB::select($sql) as $row){
+            $data['earned_last_month'] += is_null($row->earned) ? 0.00 : $row->earned;
+            $data['impressions_last_month'] += is_null($row->impressions) ? 0 : $row->impressions;
+            $data['clicks_last_month'] += is_null($row->clicks) ? 0 : $row->clicks;            
+        }
+        
+$sql = "SELECT 
+SUM(publisher_bookings.revenue) * commission_tiers.publisher_factor AS earned,
+SUM(publisher_bookings.impressions) as impressions,
+SUM(publisher_bookings.clicks) as clicks,
+commission_tiers.publisher_factor
+FROM publisher_bookings
+JOIN commission_tiers
+ON publisher_bookings.commission_tier = commission_tiers.id
+WHERE publisher_bookings.booking_date >= '".date('Y-m-d', strtotime('first day of this year'))."'
+AND publisher_bookings.pub_id = $id
+GROUP BY commission_tiers.publisher_factor;";
+        
+        foreach(DB::select($sql) as $row){
+            $data['earned_this_year'] += is_null($row->earned) ? 0.00 : $row->earned;
+            $data['impressions_this_year'] += is_null($row->impressions) ? 0 : $row->impressions;
+            $data['clicks_this_year'] += is_null($row->clicks) ? 0 : $row->clicks;            
+        }
+        
+        return $data;
+    }    /**
      * Show the publisher`s dashboard.
      *
      * @return \Illuminate\Http\Response
@@ -133,8 +207,9 @@ class HomeController extends Controller
                 ON sites.site_category = categories.id
                 WHERE sites.user_id = '.$user->id;
         $sites = DB::select($sql); 
+        $pub_data = $this->getPubInfo($user->id);
         return view('home', ['user' => $user,
-                            'sites' => $sites]);
+                            'sites' => $sites, 'pub_data' => $pub_data]);
     }
     public function aboutUs()
     {
