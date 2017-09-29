@@ -17,9 +17,9 @@
                 <small>Impressions</small><br />
                 <div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['clicks_today']) }}</div>
                 <small>Clicks</small><br />                
-                <div class="stat-percent font-bold text-success pull-right">$ {{ $pub_data['earned_today'] }}</div>
+                <div class="stat-percent font-bold text-success pull-right">$ {{ round($pub_data['earned_today'],2) }}</div>
                 <small>Earnings</small><br />
-                <div class="stat-percent font-bold text-success">$ {{ $pub_data['cpm_today'] }}</div>
+                <div class="stat-percent font-bold text-success">$ {{ round($pub_data['cpm_today'],2) }}</div>
                 <small>CPM</small>                
             </div>
         </div>
@@ -35,9 +35,9 @@
                 <small>Impressions</small><br />
                 <div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['clicks_this_month']) }}</div>
                 <small>Clicks</small><br />                
-                <div class="stat-percent font-bold text-success pull-right">$ {{ $pub_data['earned_this_month'] }}</div>
+                <div class="stat-percent font-bold text-success pull-right">$ {{ round($pub_data['earned_this_month'],2) }}</div>
                 <small>Earnings</small><br />
-                <div class="stat-percent font-bold text-success pull-right">$ {{ $pub_data['cpm_this_month'] }}</div>
+                <div class="stat-percent font-bold text-success pull-right">$ {{ round($pub_data['cpm_this_month'],2) }}</div>
                 <small>CPM</small>  
             </div>
         </div>
@@ -53,9 +53,9 @@
                 <small>Impressions</small><br />
                 <div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['clicks_last_month']) }}</div>
                 <small>Clicks</small><br />                
-                <div class="stat-percent font-bold text-success pull-right">$ {{ $pub_data['earned_last_month'] }}</div>
+                <div class="stat-percent font-bold text-success pull-right">$ {{ round($pub_data['earned_last_month'],2) }}</div>
                 <small>Earnings</small><br />
-                <div class="stat-percent font-bold text-success pull-right">$ {{ $pub_data['cpm_last_month'] }}</div>
+                <div class="stat-percent font-bold text-success pull-right">$ {{ round($pub_data['cpm_last_month'],2) }}</div>
                 <small>CPM</small>  
             </div>
         </div>
@@ -71,9 +71,9 @@
                 <small>Impressions</small><br />
                 <div class="stat-percent font-bold text-success">{{ number_format($pub_data['clicks_this_year']) }}</div>
                 <small>Clicks</small><br />                
-                <div class="stat-percent font-bold text-success">$ {{ $pub_data['earned_this_year'] }}</div>
+                <div class="stat-percent font-bold text-success">$ {{ round($pub_data['earned_this_year'],2) }}</div>
                 <small>Earnings</small><br />
-                <div class="stat-percent font-bold text-success">$ {{ $pub_data['cpm_this_year'] }}</div>
+                <div class="stat-percent font-bold text-success">$ {{ round($pub_data['cpm_this_year'],2) }}</div>
                 <small>CPM</small>  
             </div>
         </div>
@@ -98,14 +98,15 @@
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <h5>Basic Table</h5>
+                <h5>Sites - {{ date('F') }}</h5>
             </div>
             <div class="ibox-content">
 
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Date</th>
+                            <th>Site</th>
+                            <th>Days Active</th>
                             <th>Impressions</th>
                             <th>Clicks</th>
                             <th>CPM</th>
@@ -114,62 +115,17 @@
                         </tr>
                     </thead>
                     <tbody>
+                    @foreach($pub_data['sites'] as $site)
                         <tr>
-                            <td>5/25</td>
-                            <td>120,000</td>
-                            <td>950</td>
-                            <td>4.20</td>
-                            <td>.20</td>
-                            <td><span class="label label-primary">$420</span></td>
+                            <td>{{ $site->site_name }}</td>
+                            <td>{{ $site->days }} </td>
+                            <td>{{ $site->impressions }}</td>
+                            <td>{{ $site->clicks }}</td>
+                            <td>{{ round($site->earned / ($site->impressions / 1000),2) }}</td>
+                            <td>{{ round($site->earned / $site->clicks,2) }}</td>
+                            <td>{{ money_format('%(#10n',$site->earned) }}</td>
                         </tr>
-                        <tr>
-                            <td>5/24</td>
-                            <td>110,000</td>
-                            <td>899</td>
-                            <td>4.20</td>
-                            <td>.20</td>
-                            <td><span class="label label-primary">$420</span></td>
-                        </tr>
-                        <tr>
-                            <td>5/23</td>
-                            <td>123,000</td>
-                            <td>1,000</td>
-                            <td>4.20</td>
-                            <td>.20</td>
-                            <td><span class="label label-primary">$420</span></td>
-                        </tr>
-                        <tr>
-                            <td>5/22</td>
-                            <td>123,000</td>
-                            <td>1,000</td>
-                            <td>4.20</td>
-                            <td>.20</td>
-                            <td><span class="label label-primary">$420</span></td>
-                        </tr>
-                        <tr>
-                            <td>5/21</td>
-                            <td>123,000</td>
-                            <td>1,000</td>
-                            <td>4.20</td>
-                            <td>.20</td>
-                            <td><span class="label label-primary">$420</span></td>
-                        </tr>
-                        <tr>
-                            <td>5/20</td>
-                            <td>123,000</td>
-                            <td>1,000</td>
-                            <td>4.20</td>
-                            <td>.20</td>
-                            <td><span class="label label-primary">$420</span></td>
-                        </tr>
-                        <tr>
-                            <td>5/19</td>
-                            <td>123,000</td>
-                            <td>1,000</td>
-                            <td>4.20</td>
-                            <td>.20</td>
-                            <td><span class="label label-primary">$420</span></td>
-                        </tr>
+                    @endforeach
                     </tbody>
                 </table>
 
@@ -181,11 +137,12 @@
 @section('js')
 <script>
     $(document).ready(function() {
+		var timeFormat = 'MM/DD/YYYY HH:mm';
 
 
                 var lineData = {
         labels: [@foreach($pub_data['last_thirty_days'] as $key => $value)
-                    {{ $key.',' }}
+                    new Date('{{ $key }}').toLocaleDateString(),
                  @endforeach
                 ],
         datasets: [
@@ -230,12 +187,32 @@
         datasetStrokeWidth: 2,
         datasetFill: true,
         responsive: true,
+                                scales: {
+                                        xAxes: [{
+                                                type: "time",
+                                                time: {
+                                                        format: timeFormat,
+                                                        // round: 'day'
+                                                        tooltipFormat: 'MMM D'
+                                                },
+                                                scaleLabel: {
+                                                        display: true,
+                                                        labelString: 'Date'
+                                                }
+                                        }, ],
+                                        yAxes: [{
+                                                scaleLabel: {
+                                                        display: true,
+                                                        labelString: 'value'
+                                                }
+                                        }]
+                                },
     };
 
 
     var ctx = document.getElementById("lineChart").getContext("2d");
     var myNewChart = new Chart(ctx).Line(lineData, lineOptions);
 
-        });
+    });
 </script>
 @endsection

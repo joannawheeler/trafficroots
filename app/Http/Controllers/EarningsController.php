@@ -55,7 +55,7 @@ GROUP BY site_id, zone_id, pub_id, bid_id, cpm;";
                 $earnings = $row->cpm * $row->clicks;
             }
             $zones[$row->zone_id] = isset($zones[$row->zone_id]) ? ($zones[$row->zone_id] + $earnings) : $earnings;
-            $impressions[$row->zone_id] = isset($impressionss[$row->zone_id]) ? ($impressions[$row->zone_id] + $row->impressions) : $row->impressions;
+            $impressions[$row->zone_id] = isset($impressions[$row->zone_id]) ? ($impressions[$row->zone_id] + $row->impressions) : $row->impressions;
             $clicks[$row->zone_id] = isset($clicks[$row->zone_id]) ? ($clicks[$row->zone_id] + $row->clicks) : $row->clicks;
         }
 

@@ -13,6 +13,7 @@ use App\Category;
 use App\StatusType;
 use App\Folders;
 use DB;
+use Log;
 
 class HomeController extends Controller
 {
@@ -24,6 +25,7 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        setlocale(LC_MONETARY, 'en_US.utf8');
     }
     public function advertiser()
     {
@@ -209,18 +211,38 @@ commission_tiers.publisher_factor
 FROM publisher_bookings
 JOIN commission_tiers
 ON publisher_bookings.commission_tier = commission_tiers.id
-WHERE publisher_bookings.booking_date = $mydate
+WHERE publisher_bookings.booking_date = '$mydate'
 AND publisher_bookings.pub_id = $id
-GROUP BY commission_tiers.booking_date
+GROUP BY commission_tiers.publisher_factor, publisher_bookings.booking_date
 ORDER BY publisher_bookings.booking_date;";
-        $data['last_thirty_days'][$mydate] = array('impressions' => 0, 'clicks' => 0, 'earnings' => 0);
+        //Log::info($sql);
+        $data['last_thirty_days'][date('m/d/Y',strtotime($mydate))] = array('impressions' => 0, 'clicks' => 0, 'earnings' => 0);
         foreach(DB::select($sql) as $row){
-            $earnings = is_null($row->earned) ? 0.00 : $row->earned;
-            $impressions = is_null($row->impressions) ? 0 : $row->impressions;
-            $clicks = is_null($row->clicks) ? 0 : $row->clicks;
-            $data['last_thirty_days'][$row->booking_date] = array('impressions' => $impressions, 'clicks' => $clicks, 'earnings' => $earnings);
+            $earnings = $row->earned;
+            $impressions = $row->impressions;
+            $clicks = $row->clicks;
+            $data['last_thirty_days'][date('m/d/Y',strtotime($mydate))] = array('impressions' => $impressions, 'clicks' => $clicks, 'earnings' => $earnings);
         } 
 }
+        $data['sites'] = array();
+$sql = "SELECT
+SUM(publisher_bookings.revenue) * commission_tiers.publisher_factor AS earned,
+SUM(publisher_bookings.impressions) as impressions,
+SUM(publisher_bookings.clicks) as clicks,
+commission_tiers.publisher_factor,
+sites.site_name,
+COUNT(*) as days
+FROM publisher_bookings
+JOIN commission_tiers
+ON publisher_bookings.commission_tier = commission_tiers.id
+JOIN sites
+ON publisher_bookings.site_id = sites.id
+WHERE publisher_bookings.booking_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+AND publisher_bookings.pub_id = $id
+GROUP BY commission_tiers.publisher_factor, publisher_bookings.site_id;";
+        foreach(DB::select($sql) as $row){
+            $data['sites'][] = $row;
+        }
         return $data;
     }    /**
      * Show the publisher`s dashboard.
