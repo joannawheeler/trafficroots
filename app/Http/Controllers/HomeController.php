@@ -119,6 +119,7 @@ class HomeController extends Controller
         ]);
     }
     public function getPubInfo($id) {
+        DB::statement("SET sql_mode = '';");
         $data = array();
         $sql = "SELECT 
 SUM(publisher_bookings.revenue) * commission_tiers.publisher_factor AS earned,
@@ -178,7 +179,7 @@ GROUP BY commission_tiers.publisher_factor;";
             $data['clicks_last_month'] += is_null($row->clicks) ? 0 : $row->clicks;            
         }
         $data['cpm_last_month'] = $data['impressions_last_month'] ? ($data['earned_last_month'] / ($data['impressions_last_month'] / 1000)) : 0.00;
-$sql = "SELECT 
+$sql2 = "SELECT 
 SUM(publisher_bookings.revenue) * commission_tiers.publisher_factor AS earned,
 SUM(publisher_bookings.impressions) as impressions,
 SUM(publisher_bookings.clicks) as clicks,
@@ -186,16 +187,16 @@ commission_tiers.publisher_factor
 FROM publisher_bookings
 JOIN commission_tiers
 ON publisher_bookings.commission_tier = commission_tiers.id
-WHERE publisher_bookings.booking_date >= '".date('Y-m-d', strtotime('first day of this year'))."'
+WHERE publisher_bookings.booking_date >= '".date('Y')."-01-01'
 AND publisher_bookings.pub_id = $id
 GROUP BY commission_tiers.publisher_factor;";
         $data['earned_this_year'] = 0.00;
         $data['impressions_this_year'] = 0;
         $data['clicks_this_year'] = 0;
-        foreach(DB::select($sql) as $row){
-            $data['earned_this_year'] += is_null($row->earned) ? 0.00 : $row->earned;
-            $data['impressions_this_year'] += is_null($row->impressions) ? 0 : $row->impressions;
-            $data['clicks_this_year'] += is_null($row->clicks) ? 0 : $row->clicks;            
+        foreach(DB::select($sql2) as $row2){
+            $data['earned_this_year'] += is_null($row2->earned) ? 0.00 : $row2->earned;
+            $data['impressions_this_year'] += is_null($row2->impressions) ? 0 : $row2->impressions;
+            $data['clicks_this_year'] += is_null($row2->clicks) ? 0 : $row2->clicks;            
         }
         $data['cpm_this_year'] = $data['impressions_this_year'] ? ($data['earned_this_year'] / ($data['impressions_this_year'] / 1000)) : 0.00;
 
@@ -229,22 +230,23 @@ $sql = "SELECT
 SUM(publisher_bookings.revenue) * commission_tiers.publisher_factor AS earned,
 SUM(publisher_bookings.impressions) as impressions,
 SUM(publisher_bookings.clicks) as clicks,
-commission_tiers.publisher_factor,
 sites.site_name,
-COUNT(*) as days
+COUNT(publisher_bookings.booking_date) as days_active
 FROM publisher_bookings
 JOIN commission_tiers
 ON publisher_bookings.commission_tier = commission_tiers.id
 JOIN sites
 ON publisher_bookings.site_id = sites.id
 WHERE publisher_bookings.booking_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
-AND publisher_bookings.pub_id = $id
-GROUP BY commission_tiers.publisher_factor, publisher_bookings.site_id;";
+AND publisher_bookings.pub_id = $id;";
         foreach(DB::select($sql) as $row){
             $data['sites'][] = $row;
         }
+        Log::info(print_r($data,true));
         return $data;
-    }    /**
+    }
+
+    /**
      * Show the publisher`s dashboard.
      *
      * @return \Illuminate\Http\Response

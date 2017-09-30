@@ -118,7 +118,7 @@
                     @foreach($pub_data['sites'] as $site)
                         <tr>
                             <td>{{ $site->site_name }}</td>
-                            <td>{{ $site->days }} </td>
+                            <td>{{ $site->days_active }} </td>
                             <td>{{ $site->impressions }}</td>
                             <td>{{ $site->clicks }}</td>
                             <td>{{ round($site->earned / ($site->impressions / 1000),2) }}</td>
