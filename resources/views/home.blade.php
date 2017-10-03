@@ -121,8 +121,8 @@
                             <td>{{ $site->days_active }} </td>
                             <td>{{ $site->impressions }}</td>
                             <td>{{ $site->clicks }}</td>
-                            <td>{{ round($site->earned / ($site->impressions / 1000),2) }}</td>
-                            <td>{{ round($site->earned / $site->clicks,2) }}</td>
+                            <td>{{ $cpm = $site->impressions ? round($site->earned / ($site->impressions / 1000),2) : 0 }}</td>
+                            <td>{{ $cpc = $site->clicks ? round($site->earned / $site->clicks,2): 0 }}</td>
                             <td>{{ money_format('%(#10n',$site->earned) }}</td>
                         </tr>
                     @endforeach
