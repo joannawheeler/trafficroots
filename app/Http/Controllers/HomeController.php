@@ -138,7 +138,7 @@ GROUP BY commission_tiers.publisher_factor;";
         $data['clicks_today'] = sizeof($result) ? $result[0]->clicks : 0;
         $data['cpm_today'] = $data['impressions_today'] ? ($data['earned_today'] / ($data['impressions_today'] / 1000)) : 0.00;        
 
-$sql = "SELECT 
+        $sql = "SELECT 
 SUM(publisher_bookings.revenue) * commission_tiers.publisher_factor AS earned,
 SUM(publisher_bookings.impressions) as impressions,
 SUM(publisher_bookings.clicks) as clicks,
@@ -248,11 +248,12 @@ AND publisher_bookings.pub_id = $id;";
 
     /**
      * Show the publisher`s dashboard.
-     *
+     * @author Cary White
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+       $input = $request->all();
        $user = Auth::user();
        if(!$user->user_type){
            return view('whoami');
@@ -262,11 +263,157 @@ AND publisher_bookings.pub_id = $id;";
                 JOIN categories 
                 ON sites.site_category = categories.id
                 WHERE sites.user_id = '.$user->id;
-        $sites = DB::select($sql); 
-        $pub_data = $this->getPubInfo($user->id);
-        return view('home', ['user' => $user,
-                            'sites' => $sites, 'pub_data' => $pub_data]);
+        $sites = DB::select($sql);
+        $view_type = isset($input['type']) ? intval($input['type']) : 0;
+        if(!$view_type) $view_type = $user->user_type;
+        if($view_type == 1 || $view_type == 3){ 
+            $pub_data = $this->getPubInfo($user->id);
+            return view('home', ['user' => $user,
+                            'sites' => $sites, 'pub_data' => $pub_data, 'view_type' => $view_type]);
+        }
+        if($view_type == 2){
+            $buyer_data = $this->getBuyerInfo($user);
+            return view('home', ['user' => $user, 'buyer_data' => $buyer_data, 'view_type' => $view_type]);
+        }
     }
+
+    /**
+     * Get buyer data
+     * @author Cary White
+     * @return array
+     * @access public
+     */
+    public function getBuyerInfo($user)
+    {
+        DB::statement("SET sql_mode = '';");
+        $data = array();
+        /* balance */ 
+        $sql = "SELECT running_balance AS balance FROM bank WHERE user_id = ? ORDER BY id DESC LIMIT 1";
+        $data['current_balance'] = sizeof($bank = DB::select($sql, array($user->id))) ? $bank[0]->balance : 0.00; 
+        /* today */
+        $sql = "SELECT SUM(stats.impressions) AS impressions, SUM(stats.clicks) AS clicks, stats.stat_date
+                FROM stats
+                JOIN bids ON stats.bid_id = bids.id
+                JOIN users ON users.id = bids.buyer_id
+                WHERE users.id = ?
+                AND stats.stat_date = CURDATE();";
+        $result = DB::select($sql, array($user->id));
+        $data['impressions_today'] = sizeof($result) ? $result[0]->impressions : 0;
+        $data['clicks_today'] = sizeof($result) ? $result[0]->clicks : 0;
+
+        $sql = "SELECT SUM(transaction_amount) AS spend FROM bank WHERE user_id = ? AND created_at = CURDATE() AND transaction_amount < 0";
+        $result = DB::select($sql, array($user->id));
+        $data['spent_today'] = sizeof($result) ? $result[0]->spend * -1 : 0;
+
+        $sql = "SELECT DISTINCT(campaigns.id)
+                FROM stats
+                JOIN bids ON stats.bid_id = bids.id
+                JOIN campaigns ON bids.campaign_id = campaigns.id
+                WHERE campaigns.user_id = ?
+                AND stats.stat_date = CURDATE();";
+        $result = DB::select($sql, array($user->id));
+        $data['active_campaigns_yesterday'] = sizeof($result);
+
+
+        /* yesterday */
+        $sql = "SELECT SUM(stats.impressions) AS impressions, SUM(stats.clicks) AS clicks, stats.stat_date
+                FROM stats
+                JOIN bids ON stats.bid_id = bids.id
+                JOIN users ON users.id = bids.buyer_id
+                WHERE users.id = ?
+                AND stats.stat_date = DATE_SUB(CURDATE(), INTERVAL 1 DAY);";
+        $result = DB::select($sql, array($user->id));
+        $data['impressions_yesterday'] = sizeof($result) ? $result[0]->impressions : 0;
+        $data['clicks_yesterday'] = sizeof($result) ? $result[0]->clicks : 0;
+
+        $sql = "SELECT SUM(transaction_amount) AS spend FROM bank WHERE user_id = ? AND created_at = DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND transaction_amount < 0";
+        $result = DB::select($sql, array($user->id));
+        $data['spent_yesterday'] = sizeof($result) ? $result[0]->spend * -1 : 0;
+
+        $sql = "SELECT DISTINCT(campaigns.id)
+                FROM stats
+                JOIN bids ON stats.bid_id = bids.id
+                JOIN campaigns ON bids.campaign_id = campaigns.id
+                WHERE campaigns.user_id = ?
+                AND stats.stat_date = DATE_SUB(CURDATE(), INTERVAL 1 DAY);";
+        $result = DB::select($sql, array($user->id));
+        $data['active_campaigns_yesterday'] = sizeof($result);
+
+        /* this month */
+        $sql = "SELECT SUM(stats.impressions) AS impressions, SUM(stats.clicks) AS clicks, stats.stat_date
+                FROM stats
+                JOIN bids ON stats.bid_id = bids.id
+                JOIN users ON users.id = bids.buyer_id
+                WHERE users.id = ?
+                AND stats.stat_date >= '".date('Y-m-d', strtotime('first day of this month'))."';";
+        $result = DB::select($sql, array($user->id));
+        $data['impressions_this_month'] = sizeof($result) ? $result[0]->impressions : 0;
+        $data['clicks_this_month'] = sizeof($result) ? $result[0]->clicks : 0;
+
+        $sql = "SELECT SUM(transaction_amount) AS spend FROM bank WHERE user_id = ? AND created_at >= '".date('Y-m-d', strtotime('first day of this month'))."' AND transaction_amount < 0";
+        $result = DB::select($sql, array($user->id));
+        $data['spent_this_month'] = sizeof($result) ? $result[0]->spend * -1: 0;
+
+        $sql = "SELECT DISTINCT(campaigns.id)
+                FROM stats
+                JOIN bids ON stats.bid_id = bids.id
+                JOIN campaigns ON bids.campaign_id = campaigns.id
+                WHERE campaigns.user_id = ?
+                AND stats.stat_date >= '".date('Y-m-d', strtotime('first day of this month'))."'";
+        $result = DB::select($sql, array($user->id));
+        $data['active_campaigns_this_month'] = sizeof($result);
+
+        /* last month */
+        $sql = "SELECT SUM(stats.impressions) AS impressions, SUM(stats.clicks) AS clicks, stats.stat_date
+                FROM stats
+                JOIN bids ON stats.bid_id = bids.id
+                JOIN users ON users.id = bids.buyer_id
+                WHERE users.id = ?
+                AND stats.stat_date >= '".date('Y-m-d', strtotime('first day of last month'))."'
+                AND stats.stat_date < '".date('Y-m-d', strtotime('first day of this month'))."';";
+        $result = DB::select($sql, array($user->id));
+        $data['impressions_last_month'] = sizeof($result) ? $result[0]->impressions : 0;
+        $data['clicks_last_month'] = sizeof($result) ? $result[0]->clicks : 0;
+
+        $sql = "SELECT SUM(transaction_amount) AS spend FROM bank WHERE user_id = ? 
+                AND bank.created_at >= '".date('Y-m-d', strtotime('first day of last month'))."'
+                AND bank.created_at < '".date('Y-m-d', strtotime('first day of this month'))."' AND transaction_amount < 0";
+        $result = DB::select($sql, array($user->id));
+        $data['spent_last_month'] = sizeof($result) ? $result[0]->spend * -1 : 0;
+
+        $sql = "SELECT DISTINCT(campaigns.id)
+                FROM stats
+                JOIN bids ON stats.bid_id = bids.id
+                JOIN campaigns ON bids.campaign_id = campaigns.id
+                WHERE campaigns.user_id = ?
+                AND stats.stat_date >= '".date('Y-m-d', strtotime('first day of last month'))."'
+                AND stats.stat_date < '".date('Y-m-d', strtotime('first day of this month'))."';";
+        $result = DB::select($sql, array($user->id));
+        $data['active_campaigns_last_month'] = sizeof($result);
+
+        /* last thirty days */
+        $data['last_thirty_days'] = array();
+        for($i = 30; $i >= 0; $i--){
+            $mydate = date('Y-m-d', strtotime("-$i days"));
+
+            $sql = "SELECT SUM(stats.impressions) AS impressions, SUM(stats.clicks) AS clicks, stats.stat_date 
+                FROM stats
+                JOIN bids ON stats.bid_id = bids.id
+                JOIN users ON users.id = bids.buyer_id
+                WHERE users.id = ?
+                AND stats.stat_date = ?;";
+               $data['last_thirty_days'][date('m/d/Y',strtotime($mydate))] = array('impressions' => 0, 'clicks' => 0, 'spend' => 0);
+            foreach(DB::select($sql, array($user->id, $mydate)) as $row){
+                $sql = "SELECT SUM(transaction_amount) AS spend FROM bank WHERE user_id = ? AND created_at LIKE '$mydate%' AND transaction_amount < 0";
+                $spend = sizeof($daily = DB::select($sql, array($user->id))) ? $daily[0]->spend * -1 : 0.00;
+                $impressions = intval($row->impressions);
+                $clicks = intval($row->clicks);
+                $data['last_thirty_days'][date('m/d/Y',strtotime($mydate))] = array('impressions' => $impressions, 'clicks' => $clicks, 'spend' => $spend);
+            }
+        }
+        $data['campaigns'] = array();
+        return $data;
+    }  
     public function aboutUs()
     {
         return view('about');

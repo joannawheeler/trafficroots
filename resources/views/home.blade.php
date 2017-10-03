@@ -280,7 +280,7 @@
                 <small>Impressions</small><br />
                 <div class="stat-percent font-bold text-success pull-right">{{ number_format($buyer_data['clicks_last_month']) }}</div>
                 <small>Clicks</small><br />                
-                <div class="stat-percent font-bold text-success pull-right">$ {{ round($buyer_data['spend_last_month'],2) }}</div>
+                <div class="stat-percent font-bold text-success pull-right">$ {{ round($buyer_data['spent_last_month'],2) }}</div>
                 <small>Spend</small><br />
             </div>
         </div>
