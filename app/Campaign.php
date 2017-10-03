@@ -12,12 +12,18 @@ class Campaign extends Model
     {
     	return $this->hasManyThrough(
     		'App\Stat', 'App\Creative', 
-    		'campaign_id', 'ad_creative_id');
+    		'campaign_id', 'ad_creative_id'
+        );
     }
 
     public function status_type()
     {
     	return $this->belongsTo('App\StatusType', 'status');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
     }
 
     public function category()

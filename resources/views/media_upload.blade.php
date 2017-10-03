@@ -1,138 +1,121 @@
-@extends('layouts.app')
-
-@section('content')
-    @if(Session::has('success'))
-        <div class="alert alert-success">
-            <h2>{{ Session::get('success') }}</h2>
-        </div>
-    @endif
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="ibox">
-                <div class="ibox-title">Upload Media</div>
-
-                <div class="ibox-content">
-                <form name="media_form" id="media_form" class="form-horizontal" enctype="multipart/form-data" role="form" method="POST" action="{{ url('/media') }}">
-                {{ csrf_field() }}
-                        <p>To avoid duplication, we offer a media library feature.  Upload and categorize your images here and they will be avaliable across your campaigns.</p>
-                        <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
-                            <label for="campaign_name" class="col-md-4 control-label">Media Name</label>
-
-                            <div class="col-md-6">
-                                <input id="media_name" type="text" class="form-control" name="media_name" value="{{ old('media_name') }}" required autofocus>
-
-                                @if ($errors->has('media_name'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('media_name') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>                
-
-                        <div class="form-group{{ $errors->has('campaign_category') ? ' has-error' : '' }}">
-                            <label for="category" class="col-md-4 control-label">Category</label>
-
-                            <div class="col-md-6">
-                                <select id="category" class="form-control" name="category" required>
-                                <option value="">Choose</option>
-                                @foreach($categories as $type)
-                                    <option value="{{ $type->id }}">{{$type->category}}</option>
-
-                                @endforeach
-                                </select>
-                          
-                                @if ($errors->has('category'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('category') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="form-group{{ $errors->has('location_type') ? ' has-error' : '' }}">
-                            <label for="location_type" class="col-md-4 control-label">Location Type</label>
-
-                            <div class="col-md-6">
-                                <select id="location_type" class="form-control" name="location_type" required>
-                                <option value="">Choose</option>
-                                @foreach($location_types as $type)
-                                    <option value="{{ $type->id }}">{{$type->description}} - {{$type->width}}x{{$type->height}}</option>
-
-                                @endforeach
-                                </select>
-
-
-                                @if ($errors->has('location_type'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('location_type') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-                       <div class="form-group{{ $errors->has('image') ? ' has-error' : '' }}">
-                            <label for="image" class="col-md-4 control-label">Image File</label>
-
-                            <div class="col-md-6">
-                                <input type="file" name="image_file" id="image_file" accept="image/*" required />     
-                                @if ($errors->has('image'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('image') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-                       <div class="form-group">
-                            <label for="submit" class="col-md-4 control-label">Submit File</label>
-                            <div class="col-md-6">
-                                <input type="submit" name="submit" id="submit" />
-                            </div>
-                        </div>
-                </form>
-<p id="error1" style="display:none; color:#FF0000;">
-Invalid Image Format! Image Format Must Be JPG, JPEG, PNG or GIF.
-</p>
-<p id="error2" style="display:none; color:#FF0000;">
-Maximum File Size Limit is 300kB.
-</p> 
-
-               </div>
+<button type="button"
+        class="btn btn-xs btn-primary"
+        data-toggle="modal"
+        data-target="#addMedia">Add Image</button>
+<div class="modal inmodal"
+     id="addMedia"
+     tabindex="-1"
+     role="dialog"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header">
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title">New Image</h4>
             </div>
+            <form name="media_form"
+                  id="media_form"
+                  class="form-horizontal"
+                  enctype="multipart/form-data"
+                  role="form"
+                  method="POST"
+                  action="{{ url('/media') }}">
+                {{ csrf_field() }}
+                <div class="modal-body">
+                    <p>
+                        <strong>To avoid duplication</strong>, we offer a media library feature. Upload and categorize your images here and they will be avaliable across your campaigns.
+                    </p>
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text"
+                               placeholder="Enter your image name"
+                               value="{{ old('media_name') }}"
+                               class="form-control"
+                               name="media_name"
+                               required>
+
+                        <label class="error hide"
+                               for="media_name"></label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select class="form-control m-b"
+                                name="category"
+                                required>
+                            <option value="">Choose Site Category</option>
+                            @foreach(App\Category::all() as $category)
+                            <option value="{{ $category->id }}">{{ $category->category }}</option>
+                            @endforeach
+                        </select>
+                        <label class="error hide"
+                               for="category"></label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select class="form-control m-b"
+                                value=""
+                                name="location_type"
+                                required>
+                            <option value="">Choose zone type</option>
+                            @foreach(App\LocationType::all() as $locationType)
+                            <option value="{{ $locationType->id }}">{{ $locationType->width . 'x' . $locationType->height . ' ' . $locationType->description }}</option>
+                            @endforeach
+                        </select>
+
+                        <label class="error hide"
+                               for="location_type"></label>
+                    </div>
+                    <div class="form-group">
+                        <label class="btn btn-success btn-block"
+                               for="image_file">
+                            <i class="fa fa-upload"></i>&nbsp;&nbsp;
+                            <span class="bold">Upload</span>
+                        </label>
+                        <input type="file"
+                               name="file"
+                               id="image_file"
+                               accept="image/*"
+                               required
+                               class="hide"
+                               hidden/>
+                        <label class="error mt-10"
+                               style="display: none;"
+                               for="file">
+                            <i class="text-danger fa fa-exclamation-triangle"></i>&nbsp;&nbsp;
+                            <span class="text-danger"></span>
+                        </label>
+                        <label class="success mt-10"
+                               style="display: none;"
+                               for="file">
+                            <p>
+                                <i class="text-success fa fa-check"></i>&nbsp;&nbsp;
+                                <span class="text-primary"></span>
+                            </p>
+                            <div class="ibox-content w-160">
+                                <img src=""
+                                     alt="preview"
+                                     width="120"
+                                     height="120">
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-white"
+                            data-dismiss="modal">Cancel</button>
+                    <button type="submit"
+                            name="submit"
+                            class="btn btn-primary">Submit</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-<script type="text/javascript">
-    jQuery(document).ready(function($){
-$('#image').bind('change', function() {
-if ($('input:submit').attr('disabled',false)){
-	$('input:submit').attr('disabled',true);
-	}
-var ext = $('#image').val().split('.').pop().toLowerCase();
-if ($.inArray(ext, ['gif','png','jpg','jpeg']) == -1){
-	$('#error1').slideDown("slow");
-	$('#error2').slideUp("slow");
-	a=0;
-	}else{
-	var picsize = (this.files[0].size);
-	if (picsize > 300000){
-	$('#error2').slideDown("slow");
-	a=0;
-	}else{
-	a=1;
-	$('#error2').slideUp("slow");
-	}
-	$('#error1').slideUp("slow");
-	if (a==1){
-		$('input:submit').attr('disabled',false);
-		}
-}
-});
-    });
-
-</script>
-   <script type="text/javascript">
-       jQuery(document).ready(function ($) {
-               $('.nav-click').removeClass("active");
-               $('#nav_buyer').addClass("active");
-       });
-   </script>
-@endsection

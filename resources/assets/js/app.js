@@ -1,4 +1,4 @@
-/* globals require */
+/* globals require, $ */
 require('./bootstrap');
 
 let { title } = document;
@@ -11,4 +11,12 @@ if (title.includes('Sites')) {
 }
 if (title.includes('Campaigns')) {
     require('./pages/campaigns');
+}
+
+// if (title.includes('Create Campaign')) {
+//     require('./pages/create_campaign');
+// }
+
+if (title.includes('Buyers')) {
+    require('./pages/buyers');
 }

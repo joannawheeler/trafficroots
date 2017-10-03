@@ -44,7 +44,7 @@
 {{-- <script src="{{ URL::asset('js/plugins/toastr/toastr.min.js') }}"></script> --}}
 
 <!-- jQuerySteps -->
-{{-- <script src="{{ URL::asset('js/plugins/staps/jquery.steps.min.js') }}"></script> --}}
+<script src="{{ URL::asset('js/plugins/staps/jquery.steps.min.js') }}"></script>
 
 <script type="text/javascript">
 // toastr.options = {

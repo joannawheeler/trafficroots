@@ -226,7 +226,7 @@ hljs.initHighlightingOnLoad();
                                             <div class="form-group">
                                                 <label>Type</label>
                                                 <select class="form-control m-b"
-                                                        value="{{ old('site_category') }}"
+                                                        value="{{ old('location_type') }}"
                                                         name="location_type"
                                                         required>
                                                     <option value="">Choose zone type</option>

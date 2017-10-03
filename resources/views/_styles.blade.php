@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="{{ URL::asset('js/plugins/gritter/jquery.gritter.css') }}" >
 <link rel="stylesheet" href="{{ URL::asset('css/animate.css') }}" >
 <link rel="stylesheet" href="{{ URL::asset('css/style.css') }}" >
+<link rel="stylesheet" href="{{ mix('mix/app.css') }}" >
 <!-- summer editor -->
 {{-- <link rel="stylesheet" href="{{ URL::asset('css/plugins/summernote/summernote.css') }}">
 <link rel="stylesheet" href="{{ URL::asset('css/plugins/summernote/summernote-bs3.css') }}"> --}}
@@ -17,7 +18,7 @@
 <link rel="stylesheet" href="{{ URL::asset('css/plugins/daterangepicker/daterangepicker-bs3.css') }}">
 <link rel="stylesheet" href="{{ URL::asset('css/plugins/jasny/jasny-bootstrap.min.css') }}"> --}}
 <!-- jquery steps -->
-{{-- <link rel="stylesheet" href="{{ URL::asset('css/plugins/steps/jquery.steps.css') }}"> --}}
+<link rel="stylesheet" href="{{ URL::asset('css/plugins/steps/jquery.steps.css') }}">
 
 
 <!-- tips styles -->

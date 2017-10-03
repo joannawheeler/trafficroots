@@ -1,7 +1,11 @@
 let mix = require('laravel-mix');
 
 mix
-	.js('resources/assets/js/service.js', 'js/')
+    // .autoload({
+    //     jquery: ['$', 'window.jQuery', 'jQuery'],
+    //     moment: 'moment'
+    // })
+    .js('resources/assets/js/service.js', 'js/')
     .js('resources/assets/js/app.js', 'mix/')
     .stylus('resources/assets/stylus/app.styl', 'mix/');
 
