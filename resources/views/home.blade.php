@@ -5,6 +5,7 @@
     <h2>{{ Session::get('success') }}</h2>
 </div>
 @endif  --}}
+@if($view_type == 1 || $view_type == 3)
 <div class="row">
     <div class="col-lg-3">
         <div class="ibox float-e-margins">
@@ -215,4 +216,6 @@
 
     });
 </script>
+@endif
+
 @endsection
