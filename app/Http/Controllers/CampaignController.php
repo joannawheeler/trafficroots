@@ -188,18 +188,25 @@ class CampaignController extends Controller
 
     public function postMedia(Request $request)
     {
+        $this->validate($request, [
+            'media_name' => 'required|string',
+            'category' => 'required|exists:categories,id',
+            'location_type' => 'required|exists:location_types,id',
+            'file' => 'required|mimes:jpeg,gif,png|max:300'
+        ]);
         $data = $request->all();
         $media = new Media();
         $user = Auth::getUser();
         $destination = 'uploads/'.$user->id;
-        $path = $request->file('image_file')->store($destination);
+        $path = $request->file('file')->store($destination);
         $data['user_id'] = $user->id;
         $data['file_location'] = $path;
         $media->fill($data);
         $media->save();
-           // sending back with message
-           Session::flash('success', 'Upload completed!');
-        return redirect('/buyers');
+        Session::flash('success', 'Upload completed!');
+        return response()->json([
+            'success' => true
+        ]);
     }
 
     public function createFolder()
