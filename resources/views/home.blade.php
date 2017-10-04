@@ -305,7 +305,10 @@
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
-                <h5>Campaigns - {{ date('F') }}</h5>
+                <h5 id="table_this_month" class="thismonth">Campaigns - {{ date('F') }}</h5>
+                <h5 id="table_this_month" class="lastmonth" style="display:none">Campaigns - {{ date('F',strtotime('last month')) }}</h5>
+                <a href="javascript:void" onclick="return showThisMonth();" class="lastmonth"><span class="label label-info pull-right lastmonth" style="display:none">Show This Month</span></a>
+                <a href="javascript:void" onclick="return showLastMonth();" class="thismonth"><span class="label label-info pull-right thismonth">Show Last Month</button></a>
             </div>
             <div class="ibox-content">
 
@@ -316,19 +319,26 @@
                             <th>Days Active</th>
                             <th>Impressions</th>
                             <th>Clicks</th>
-                            <th>Earnings</th>
+                            <th>Spend</th>
                         </tr>
                     </thead>
                     <tbody>
-                    @foreach($buyer_data['campaigns'] as $campaign)
-                        <tr>
-                            <td>{{ $site->site_name }}</td>
-                            <td>{{ $site->days_active }} </td>
-                            <td>{{ $site->impressions }}</td>
-                            <td>{{ $site->clicks }}</td>
-                            <td>{{ $cpm = $site->impressions ? round($site->earned / ($site->impressions / 1000),2) : 0 }}</td>
-                            <td>{{ $cpc = $site->clicks ? round($site->earned / $site->clicks,2): 0 }}</td>
-                            <td>{{ money_format('%(#10n',$site->earned) }}</td>
+                    @foreach($buyer_data['campaigns']['thismonth'] as $key => $campaign)
+                        <tr class='thismonth'>
+                            <td>{{ $key }}</td>
+                            <td>{{ $campaign['days_active'] }} </td>
+                            <td>{{ $campaign['impressions'] }}</td>
+                            <td>{{ $campaign['clicks'] }}</td>
+                            <td>{{ money_format('%(#10n',$campaign['spend']) }}</td>
+                        </tr>
+                    @endforeach
+                    @foreach($buyer_data['campaigns']['lastmonth'] as $key => $campaign)
+                        <tr class='lastmonth' style="display:none">
+                            <td>{{ $key }}</td>
+                            <td>{{ $campaign['days_active'] }} </td>
+                            <td>{{ $campaign['impressions'] }}</td>
+                            <td>{{ $campaign['clicks'] }}</td>
+                            <td>{{ money_format('%(#10n',$campaign['spend']) }}</td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -341,6 +351,16 @@
 @endsection
 @section('js')
 <script>
+    function showThisMonth(){
+        $(".lastmonth").hide();
+        $(".thismonth").show();
+        return false;
+    }
+    function showLastMonth(){
+        $(".thismonth").hide();
+        $(".lastmonth").show();
+        return false;
+    }
     $(document).ready(function() {
 		var timeFormat = 'MM/DD/YYYY HH:mm';
 

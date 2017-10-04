@@ -411,7 +411,53 @@ AND publisher_bookings.pub_id = $id;";
                 $data['last_thirty_days'][date('m/d/Y',strtotime($mydate))] = array('impressions' => $impressions, 'clicks' => $clicks, 'spend' => $spend);
             }
         }
-        $data['campaigns'] = array();
+        /* campaigns - this month */
+        $data['campaigns']['thismonth'] = array();
+        $data['campaigns']['lastmonth'] = array();
+        $sql = "SELECT campaigns.campaign_name, campaigns.campaign_type, campaigns.bid, SUM(stats.impressions) AS impressions, SUM(stats.clicks) AS clicks, COUNT(DISTINCT(stats.stat_date)) AS days_active 
+                FROM stats
+                JOIN bids ON stats.bid_id = bids.id
+                JOIN campaigns ON bids.campaign_id = campaigns.id
+                JOIN users ON users.id = bids.buyer_id
+                WHERE users.id = ?
+                AND stats.stat_date >= ?
+                GROUP BY campaign_name, bid;";
+        foreach(DB::select($sql,array($user->id,date('Y-m-d',strtotime('first day of this month')))) as $camp){
+            $data['campaigns']['thismonth'][$camp->campaign_name]['impressions'] = isset($data['campaigns']['thismonth'][$camp->campaign_name]['impressions']) ? $data['campaigns']['thismonth'][$camp->campaign_name]['impressions'] + $camp->impressions : $camp->impressions;
+            $data['campaigns']['thismonth'][$camp->campaign_name]['clicks'] = isset($data['campaigns']['thismonth'][$camp->campaign_name]['clicks']) ? $data['campaigns']['thismonth'][$camp->campaign_name]['clicks'] + $camp->clicks : $camp->clicks;
+            $data['campaigns']['thismonth'][$camp->campaign_name]['days_active'] = isset($data['campaigns']['thismonth'][$camp->campaign_name]['days_active']) ? $data['campaigns']['thismonth'][$camp->campaign_name]['days_active'] + $camp->days_active : $camp->days_active;
+            $spent = 0;
+            if($camp->campaign_type == 1){
+                $spent = ($camp->impressions / 1000) * $camp->bid;
+            }
+            if($camp->campaign_type == 2){
+                $spent = $camp->clicks * $camp->bid;
+            }
+            $data['campaigns']['thismonth'][$camp->campaign_name]['spend'] = isset($data['campaigns']['thismonth'][$camp->campaign_name]['spend']) ? $data['campaigns']['thismonth'][$camp->campaign_name]['spend'] + $spent : $spent;
+        }
+
+        /* campaigns - last month */
+        $sql = "SELECT campaigns.campaign_name, campaigns.campaign_type, campaigns.bid, SUM(stats.impressions) AS impressions, SUM(stats.clicks) AS clicks, COUNT(DISTINCT(stats.stat_date)) AS days_active
+                FROM stats
+                JOIN bids ON stats.bid_id = bids.id
+                JOIN campaigns ON bids.campaign_id = campaigns.id
+                JOIN users ON users.id = bids.buyer_id
+                WHERE users.id = ?
+                AND stats.stat_date BETWEEN ? AND ?
+                GROUP BY campaign_name, bid;";
+        foreach(DB::select($sql,array($user->id,date('Y-m-d',strtotime('first day of last month')),date('Y-m-d',strtotime('first day of this month')))) as $camp){
+            $data['campaigns']['lastmonth'][$camp->campaign_name]['impressions'] = isset($data['campaigns']['lastmonth'][$camp->campaign_name]['impressions']) ? $data['campaigns']['lastmonth'][$camp->campaign_name]['impressions'] + $camp->impressions : $camp->impressions;
+            $data['campaigns']['lastmonth'][$camp->campaign_name]['clicks'] = isset($data['campaigns']['lastmonth'][$camp->campaign_name]['clicks']) ? $data['campaigns']['lastmonth'][$camp->campaign_name]['clicks'] + $camp->clicks : $camp->clicks;
+            $data['campaigns']['lastmonth'][$camp->campaign_name]['days_active'] = isset($data['campaigns']['lastmonth'][$camp->campaign_name]['days_active']) ? $data['campaigns']['lastmonth'][$camp->campaign_name]['days_active'] + $camp->days_active : $camp->days_active;
+            $spent = 0;
+            if($camp->campaign_type == 1){
+                $spent = ($camp->impressions / 1000) * $camp->bid;
+            }
+            if($camp->campaign_type == 2){
+                $spent = $camp->clicks * $camp->bid;
+            }
+            $data['campaigns']['lastmonth'][$camp->campaign_name]['spend'] = isset($data['campaigns']['lastmonth'][$camp->campaign_name]['spend']) ? $data['campaigns']['lastmonth'][$camp->campaign_name]['spend'] + $spent : $spent;
+        }
         return $data;
     }  
     public function aboutUs()
