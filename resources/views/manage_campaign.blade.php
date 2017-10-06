@@ -1,5 +1,17 @@
 @extends('layouts.app')
 
+@section('css')
+<link rel="stylesheet"
+      href="{{ URL::asset('css/plugins/select2/select2.min.css') }}">
+<link rel="stylesheet"
+      href="{{ URL::asset('css/plugins/chosen/chosen.css') }}">
+@endsection
+
+@section('js')
+<script src="{{ URL::asset('js/plugins/select2/select2.full.min.js') }}"></script>
+<script src="{{ URL::asset('js/plugins/chosen/chosen.jquery.js') }}"></script>
+@endsection
+
 @section('content')
     @if(Session::has('success'))
         <div class="alert alert-success">
@@ -55,28 +67,27 @@
                        <input type="hidden" id="campaign_id" name="campaign_id" value="{{ $campaign->id }}"> 
                        <div class="ibox-title"><i class="fa fa-crosshairs"></i>&nbsp;Campaign Targeting Options</div>
                         <div class="ibox-content">
-                            <div class="ibox-content" id="status_div"></div>
                             <div class="ibox-content">
                              <p>State Targeting</p>
-                             <select id="states[]" name="states[]" class="form-control" multiple>
+                             <select id="states[]" name="states[]" class="chosen-select form-control" data-placeholder="Choose sites..." multiple>
                              {!! $states !!}
                              </select>
                             </div>
                             <div class="ibox-content">
                             <p>Platform Targeting</p>
-                                <select name="platform_targets[]" id="platform_targets[]" class="form-control" multiple>
+                                <select name="platform_targets[]" id="platform_targets[]" class="form-control" data-placeholder="Choose platforms..." multiple>
                                 {!! $platforms !!}
                                 </select>
                             </div>
                             <div class="ibox-content">
                              <p>OS Targeting</p>
-                             <select id="operating_systems[]" name="operating_systems[]" class="form-control" multiple>
+                             <select id="operating_systems[]" name="operating_systems[]" class="form-control" data-placeholder="Choose operating systems..." multiple>
                              {!! $os_targets !!}
                              </select>
                             </div>
                             <div class="ibox-content">
                              <p>Browser Targeting</p>
-                             <select id="browser_targets[]" name="browser_targets[]" class="form-control" multiple>
+                             <select id="browser_targets[]" name="browser_targets[]" class="form-control" data-placeholder="Choose browsers..." multiple>
                              {!! $browser_targets !!}
                              </select>
                             </div>
@@ -122,29 +133,30 @@
     </div>
 </div>
 <script type="text/javascript">
-    jQuery(document).ready(function($){
+$('[multiple]').chosen();
+jQuery(document).ready(function ($) {
         $('[data-toggle="tooltip"]').tooltip();
-        $(".form-control").change(function(){
+        $(".form-control").change(function () {
             var url = "{{ url('/update_targets') }}";
             var mydata = $("#target_form").serialize();
-            $.post(url,mydata, function(data){
-                $("#status_div").show(function(){
-                    $("#status_div").html(data,function(){
-                    });
-                    $("#status_div").fadeOut("slow",function(){ });
+            $.post(url, mydata)
+                .done(function (response) {
+                    toastr.success(response);
+                })
+                .fail(function (response) {
+                    toastr.error(response);
                 });
-            });            
         });
-        $("#bid").change(function(){
+        $("#bid").change(function () {
             var url = "{{ url('/update_bid') }}";
             var mydata = $("#bid_form").serialize();
-            $.post(url,mydata, function(data){
-                $("#status_div").show(function(){
-                    $("#bid_status_div").html(data,function(){
-                    });
-                    $("#bid_status_div").fadeOut("slow",function(){ });
+            $.post(url, mydata)
+                .done(function (response) {
+                    toastr.success(response);
+                })
+                .fail(function (response) {
+                    toastr.error(response);
                 });
-            });
         });
     });
 </script>
