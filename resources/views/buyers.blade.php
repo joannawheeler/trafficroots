@@ -132,7 +132,7 @@
                     </div>
                     <div class="tab-pane table-responsive" id="link-tab">
                     <div class="ibox">
-                        <div class="ibox-title" id="links_heading">My Links</div>
+                        <div class="ibox-title" id="links_heading">My Links<div class="pull-right">@include('link_upload')</div></div>
                         <div class="ibox-content table-responsive" id="links_div">
                         @if (count($links))
                            <table class="table table-hover table-border table-striped table-condensed" name="links_table" id="links_table" width="100%">
@@ -156,7 +156,7 @@
                         @else
                             <h3>No Links Defined</h3>
                         @endif
-                        <br /><br /><a href="/links"><button class="btn-u" type="button" id="add_link">Add Links</button></a>
+                        {{-- <br /><br /><a href="/links"><button class="btn-u" type="button" id="add_link">Add Links</button></a> --}}
                         </div>
                     </div>
                     </div>

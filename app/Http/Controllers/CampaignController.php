@@ -200,12 +200,18 @@ class CampaignController extends Controller
         $destination = 'uploads/'.$user->id;
         $path = $request->file('file')->store($destination);
         $data['user_id'] = $user->id;
+        $data['status'] = 5;
         $data['file_location'] = $path;
         $media->fill($data);
         $media->save();
-        Session::flash('success', 'Upload completed!');
         return response()->json([
-            'success' => true
+            'id' => $media->id,
+            'name' => $media->media_name,
+            'category' => $media->category_type->category,
+            'location_type' => $media->locationType->description,
+            'status' => $media->status_type->description,
+            'date' => Carbon::parse($media->created_at)->toDayDateTimeString(),
+            'url' => asset($path)
         ]);
     }
 
@@ -239,13 +245,25 @@ class CampaignController extends Controller
 
     public function postLink(Request $request)
     {
+        $this->validate($request, [
+            'link_name' => 'required|string',
+            'category' => 'required|exists:categories,id',
+            'url' => 'required|url'
+        ]);
         $data = $request->all();
-        $user = Auth::getUser();
-        $data['user_id'] = $user->id;
+        $data['user_id'] = Auth::getUser()->id;
+        $data['status'] = 5;
         $link = new Links();
         $link->fill($data);
         $link->save();
-        return redirect('/buyers');
+        return response()->json([
+            'id' => $link->id,
+            'name' => $link->link_name,
+            'category' => $link->category_type->category,
+            'url' => $link->url,
+            'status' => $link->status_type->description,
+            'date' => Carbon::parse($link->created_at)->toDayDateTimeString()
+        ]);
     }
     public function editCampaign(Request $request)
     {
