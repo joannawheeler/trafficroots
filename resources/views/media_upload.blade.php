@@ -28,7 +28,7 @@
                 {{ csrf_field() }}
                 <div class="modal-body">
                     <p>
-                        <strong>To avoid duplication</strong>, we offer a media library feature. Upload and categorize your images here and they will be avaliable across your campaigns.
+                        <strong>To avoid duplication</strong>, we offer a media library feature. Upload and categorize your images here and they will be available across your campaigns.
                     </p>
                     <div class="form-group">
                         <label>Name</label>
