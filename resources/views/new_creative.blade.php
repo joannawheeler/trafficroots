@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', '- Creatives')
 @section('content')
     @if(Session::has('success'))
         <div class="alert alert-success">

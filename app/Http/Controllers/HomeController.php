@@ -29,21 +29,21 @@ class HomeController extends Controller
     }
     public function advertiser()
     {
-        return view('advertiser.dashboard');
+        return view('advertiser.dashboard', array('title' => 'Advertisers'));
     }
     public function advertiserFaq()
     {
         $faqs = Faq::where('faq_type', 1)->get();
-        return view('faq_advertiser', array('faqs' => $faqs));
+        return view('faq_advertiser', array('faqs' => $faqs, 'title' => 'Advertiser FAQ'));
     }
     public function publisherFaq()
     {
-        return view('faq_publisher');
+        return view('faq_publisher', array('title' => 'Publisher FAQ'));
     }
     public function whoAmI()
     {
         $categories = Category::all();
-        return view('whoami',array('categories' => $categories));
+        return view('whoami',array('categories' => $categories, 'title' => 'Info'));
     }
     public function pubType()
     {
@@ -115,7 +115,8 @@ class HomeController extends Controller
             'folders' => $folders,
             'width' => $width,
             'height' => $height,
-            'status_types' => $status_types
+            'status_types' => $status_types,
+            'title' => 'Advertisers'
         ]);
     }
     public function getPubInfo($id) {
@@ -268,12 +269,12 @@ AND publisher_bookings.pub_id = $id;";
         if(!$view_type) $view_type = $user->user_type;
         if($view_type == 1 || $view_type == 3){ 
             $pub_data = $this->getPubInfo($user->id);
-            return view('home', ['user' => $user,
+            return view('home', ['user' => $user, 'title' => 'Publishers',
                             'sites' => $sites, 'pub_data' => $pub_data, 'view_type' => $view_type]);
         }
         if($view_type == 2){
             $buyer_data = $this->getBuyerInfo($user);
-            return view('home', ['user' => $user, 'buyer_data' => $buyer_data, 'view_type' => $view_type]);
+            return view('home', ['user' => $user, 'title' => 'Advertisers', 'buyer_data' => $buyer_data, 'view_type' => $view_type]);
         }
     }
 
@@ -462,7 +463,7 @@ AND publisher_bookings.pub_id = $id;";
     }  
     public function aboutUs()
     {
-        return view('about');
+        return view('about', array('title' => 'About Us'));
     }
     public function readZip($filename)
     {
@@ -498,6 +499,6 @@ AND publisher_bookings.pub_id = $id;";
     public function myProfile()
     {
         $user = Auth::getUser();
-        return view('profile', ['user' => $user]);
+        return view('profile', ['user' => $user, 'title' => 'User Profile']);
     }
 }

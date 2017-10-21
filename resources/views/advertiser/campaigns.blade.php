@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title','Campaigns')
+@section('title','- Campaigns')
 @section('css')
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
     <link href="{{ URL::asset('css/plugins/footable/footable.core.css') }}" rel="stylesheet">

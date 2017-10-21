@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title', '- Site Analysis')
 @section('content')
 <div class="row">
     <div class="col-md-12">

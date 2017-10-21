@@ -7,6 +7,7 @@ use App\Bank;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
@@ -56,6 +57,37 @@ class RegisterController extends Controller
         ]);
     }
 
+    /**
+     * cURL Google for reCaptcha validation
+     * @param Request
+     * @return boolean
+     * @author Cary White
+     */
+    protected function reCaptcha(Request $request)
+    {
+        $secret = env('GOOGLE_RECAPTCHA');
+        $url = 'https://www.google.com/recaptcha/api/siteverify';
+        $input = $request->all();
+        $query = 'secret='.$secret.'&response='.$input['g-recaptcha-response'].'&remoteip='.$request->ip();
+        $ch = curl_init();  
+ 
+        curl_setopt($ch,CURLOPT_URL,$url);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($ch,CURLOPT_HEADER, false); 
+        curl_setopt($ch, CURLOPT_POST, count($query));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $query);    
+ 
+        $output=json_decode(curl_exec($ch));
+ 
+        curl_close($ch);
+        
+        if(isset($output['success'])){
+            return $output['success'];
+        }else{
+            return false;
+        }
+
+    }
     /**
      * Create a new user instance after a valid registration.
      *

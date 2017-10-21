@@ -1,5 +1,6 @@
 @extends('layouts.app') 
-@section('content') 
+@section('content')
+@section('title', '- Home') 
 {{-- @if(Session::has('success'))
 <div class="alert alert-success">
     <h2>{{ Session::get('success') }}</h2>

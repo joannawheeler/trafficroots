@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title','Sites')
+@section('title','- Sites')
 
 @section('css')
 <link rel="stylesheet"
@@ -490,7 +490,7 @@ hljs.initHighlightingOnLoad();
                     <div class="modal-body">
                         <h3>Place this code in your site's layout:</h3>
                         <div style="overflow-wrap: break-word;">
-                            <pre><code class="html">{{ htmlspecialchars('<div id="tr_'.$zone->handle.'" data-width="'.$width.'" data-height="'.$height.'"><script>var tr_handle = "'.$zone->handle.'";</script><script src="https://service.trafficroots.com/js/service.js"></script></div>') }}
+                            <pre><code class="html">{{ htmlspecialchars('<div id="tr_'.$zone->handle.'" data-width="'.$width.'" data-height="'.$height.'"><script>var tr_handle = "'.$zone->handle.'";</script><script src="://service.trafficroots.com/js/service.js"></script></div>') }}
                             </code></pre>
                         </div>
                     </div>

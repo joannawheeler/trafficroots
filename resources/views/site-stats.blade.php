@@ -1,5 +1,5 @@
 @extends('layouts.app') 
-
+@section('title', '- Sites')
 @section('css')
 <link href="{{ URL::asset('css/plugins/footable/footable.core.css') }}" rel="stylesheet">
 <style type="text/css">

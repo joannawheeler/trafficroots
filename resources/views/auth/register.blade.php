@@ -1,4 +1,5 @@
-@extends('layouts.app') 
+@extends('layouts.app')
+@section('title', '- Register!') 
 @section('css')
 <link href="css/plugins/iCheck/custom.css" rel="stylesheet"> 
 @endsection 
@@ -9,7 +10,7 @@
         <div class="col-md-8 col-md-offset-2">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5></h5>
+                    <h5>Register</h5>
                 </div>
                 <div class="ibox-content">
                     <form class="form-horizontal" role="form" method="POST" action="{{ url('/register') }}">
@@ -58,7 +59,12 @@
                         </div>
                         <div class="form-group">
                             <div class="col-lg-offset-2 col-lg-10">
-                                <button class="btn btn-sm btn-white" type="submit">Register</button>
+                                <div class="g-recaptcha" data-sitekey="6LfwKzUUAAAAAECCj-_5tID_aAm3-oYxBspUTrw0"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-offset-2 col-lg-10">
+                                <button class="btn btn-sm btn-primary" type="submit">Register</button>
                             </div>
                         </div>
     <hr>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title','Buyers')
+@section('title','- Advertisers')
 
 @section('content')
     @if(Session::has('success'))
