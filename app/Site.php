@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Ad;
 
 class Site extends Model
 {
@@ -25,16 +26,34 @@ class Site extends Model
     	return $this->belongsTo('App\User');
     }
     
+    
     public function addZone($description, $location_type)
     {
         $pub_id = $this->user_id;
         $handle = bin2hex(random_bytes(5));
         $this->zones()->create(compact('description','location_type','pub_id','handle'));
+        $this->insertFirstAd($handle, $location_type);
     }
 
     public function getStats()
     {
         return $this->hasMany('App\Stat');
     }
-    
+    private function insertFirstAd($handle, $location_type)
+    {
+        try {
+            $ad = new Ad();
+            $data = array();
+            $data['zone_handle'] = $handle;
+            $data['location_type'] = $location_type;
+            $data['weight'] = 100;
+            $data['status'] = 1;
+            $ad->fill($data);
+            $ad->save();
+            return true;
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return false;
+        }
+    }    
 }

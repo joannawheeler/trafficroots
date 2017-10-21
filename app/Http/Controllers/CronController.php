@@ -38,6 +38,17 @@ class CronController extends Controller
         $zones = Zone::where('status', 1)->get();
         foreach($zones as $zone){
             Log::info("Checking zone ".$zone->handle);
+            /* make sure there is at least a bid Ad record for this zone */
+            $ad = DB::select('select * from ads where zone_handle = ?', array($zone->handle));
+            if(!sizeof($ad)) {
+                $data['zone_handle'] = $zone->handle;
+                $data['location_type'] = $zone->location_type;
+                $data['weight'] = 100;
+                $data['status'] = 1;
+                $data['created_at'] = DB::raw('NOW()');
+                DB::table('ads')->insert($data);
+            }
+            /* get allowed categories for this site */
             $categories = DB::select('select category from site_category where site_id = '.$zone->site_id);
             $allowed = array();
             
@@ -46,16 +57,19 @@ class CronController extends Controller
                 $allowed[] = $cat->category;
             }
             $in = implode($allowed, ",")."\n";
+   
+            /* get all active campaigns for this location type and among the allowed categories */
             $sql = "select *
-                                     from campaigns
-                                     join campaign_targets
-                                     on campaigns.id = campaign_targets.campaign_id
-                                     where status = 1
-                                     and location_type = ".$zone->location_type."
-                                     and campaign_category in ($in)";
+                    from campaigns
+                    join campaign_targets
+                    on campaigns.id = campaign_targets.campaign_id
+                    where status = 1
+                    and location_type = ".$zone->location_type."
+                    and campaign_category in ($in)";
             //Log::info($sql);
             $campaigns = DB::select($sql);
             
+             
             foreach($campaigns as $camp){
                 $pairs[] = "(NULL,'"
                            .$zone->handle."',"

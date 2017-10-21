@@ -207,8 +207,7 @@ hljs.initHighlightingOnLoad();
                                     </div>
                                     <form name="zone_form"
                                           id="zone_form"
-                                          action="{{ url("
-                                          sites/$site->id/zones") }}" method="POST">
+                                          action="{{ url("sites/$site->id/zones") }}" method="POST">
                                         <div class="modal-body">
                                             {{ csrf_field() }}
                                             <div class="form-group">

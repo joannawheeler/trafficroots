@@ -157,7 +157,8 @@ class ZoneController extends Controller
             'type' => 'success',
             'message' => 'Zone added successfully'
         ]);
-        Mail::to(Auth::user()->email)->send(new ZoneCreated());
+        /* below line of code fails */
+        //Mail::to(Auth::user()->email)->send(new ZoneCreated());
         return;
     }
 
