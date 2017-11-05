@@ -34,7 +34,7 @@
                             <div id="my-tab-content" class="tab-content">
                             <div class="tab-pane table-responsive active" id="campaign-tab">
                     <div class="ibox">
-                        <div class="ibox-title">My Campaigns</div>
+                        <div class="ibox-title">My Campaigns<a href="/campaign" class="btn btn-xs btn-primary pull-right">Add A Campaign</a></div>
                         <div class="ibox-content table-responsive">
                         @if (count($campaigns))
                             <table class="table table-hover table-border table-striped table-condensed" name="campaigns_table" id="campaigns_table" width="100%">
@@ -61,7 +61,6 @@
                             <h3>No Campaigns Defined</h3> 
  
                         @endif
-                        <br /><br /><a href="/campaign"><button class="btn-u" type="button" id="add_site">Add A Campaign</button></a>
                         </div>
                     </div>
                     </div>
@@ -102,7 +101,7 @@
                     </div>
                     <div class="tab-pane table-responsive" id="folder-tab">
                     <div class="ibox">
-                        <div class="ibox-title" id="creative_heading">My Folders</div>
+                        <div class="ibox-title" id="creative_heading">My Folders<a href="/folder" class="btn btn-xs btn-primary pull-right">Upload HTML5 Folder</a></div>
                         <div class="ibox-content table-responsive" id="folder_div">
                         @if (count($folders))
                             <table class="table table-hover table-border table-striped table-condensed" name="folders_table" id="folders_table" width="100%">
@@ -126,7 +125,6 @@
                         @else
                             <h3>No Folders Defined</h3>
                         @endif
-                        <br /><br /><a href="/folder"><button class="btn-u" type="button" id="add_folder">Upload HTML5 Folder</button></a>
                         </div>
                     </div>
                     </div>
@@ -162,7 +160,7 @@
                     </div>
                     <div class="tab-pane table-responsive" id="bank-tab">
                     <div class="ibox">
-                        <div class="ibox-title" id="acct_heading">My Account</div>
+                        <div class="ibox-title" id="acct_heading">My Account <a href="paywithpaypal" id="paypal_payment" class="btn btn-xs btn-primary pull-right">Deposit Funds With Paypal</a></div>
                         <div class="ibox-content" id="account_div">
                             <div class="container">
                             @if(is_array($bank))
@@ -178,12 +176,6 @@
                             @else
                             <h3>No Account Defined</h3>
                             @endif
-                            <div class="row">
-                            <div class="col-md-12">
-                            <br />
-                            <a href="paywithpaypal" id="paypal_payment"><span class="label label-success">Deposit Funds With Paypal</span></a>
-                            </div>
-                            </div>
                             </div>
                             </div>
                         </div>

@@ -87,13 +87,13 @@
                                hidden/>
                         <label class="error mt-10"
                                style="display: none;"
-                               for="file">
+                               for="image_file">
                             <i class="text-danger fa fa-exclamation-triangle"></i>&nbsp;&nbsp;
                             <span class="text-danger"></span>
                         </label>
                         <label class="success mt-10"
                                style="display: none;"
-                               for="file">
+                               for="image_file">
                             <p>
                                 <i class="text-success fa fa-check"></i>&nbsp;&nbsp;
                                 <span class="text-primary"></span>

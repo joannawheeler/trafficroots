@@ -29,7 +29,7 @@
                     <div class="form-group">
                         <label>Name</label>
                         <input type="text"
-                               placeholder="Enter your link name"
+                               placeholder="Link name"
                                class="form-control"
                                name="link_name"
                                required>
@@ -43,7 +43,7 @@
                         <select class="form-control m-b"
                                 name="category"
                                 required>
-                            <option value="">Choose Site Category</option>
+                            <option value="">Choose category</option>
                             @foreach(App\Category::all() as $category)
                             <option value="{{ $category->id }}">{{ $category->category }}</option>
                             @endforeach

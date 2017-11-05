@@ -1,4 +1,4 @@
-/* globals $, alert */
+/* globals $ */
 import displayFormErrors from '../utilities/displayFormErrors';
 import Config from '../config';
 import imageBlob from '../utilities/imageBlob';
@@ -6,6 +6,7 @@ import resetModal from '../utilities/closeAndResetModal';
 let $button = $('.btn[for="image_file"]'),
     $imageInput = $('input#image_file'),
     $form = $('form#media_form'),
+    $submitButton = $form.find('button[type="submit"]'),
     resetButton = () => {
         $button
             .removeClass('btn-outline')
@@ -19,6 +20,7 @@ if (location.hash) {
 $form
     .submit(event => {
         event.preventDefault();
+        $form.find('button[type="submit"]').prop("disabled", true);
 
         $.ajax({
                 url: $form.attr('action'),
@@ -48,8 +50,10 @@ $form
                 window.toastr.success('Image added successfully.');
             })
             .catch(({ responseJSON, status }) => {
+                $submitButton.prop("disabled", false);
                 if (status == 422 && responseJSON) {
                     if (responseJSON.file) {
+                        resetButton();
                         $('.success[for="image_file"]').hide();
                         $('.error[for="image_file"]').show()
                             .find('span').text(responseJSON.file[0]);
@@ -58,10 +62,11 @@ $form
                     displayFormErrors($form, responseJSON);
                     return true;
                 }
-                alert('Error! Please contact support or try again later.');
+                window.toastr.error('Error! Please contact support or try again later.');
             });
     })
     .on('reset', () => {
+        $submitButton.prop("disabled", false);
         $form.find('.error').empty();
         resetButton();
         $imageInput.parent().find('label.success').first().hide();
