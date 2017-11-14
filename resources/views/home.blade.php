@@ -295,9 +295,9 @@
                 <div ibox-tools></div>
             </div>
             <div class="ibox-content">
-                <div>
-                    <canvas id="lineChart" height="70"></canvas>
-                </div>
+                            <div class="flot-chart">
+                                <div class="flot-chart-content" id="flot-line-chart-multi"></div>
+                            </div>
             </div>
         </div>
     </div>
@@ -362,95 +362,60 @@
         $(".lastmonth").show();
         return false;
     }
-    $(document).ready(function() {
-		var timeFormat = 'MM/DD/YYYY HH:mm';
-
-
-                var lineData = {
-        labels: [@foreach($buyer_data['last_thirty_days'] as $key => $value)
-                    new Date('{{ $key }}').toLocaleDateString(),
-                 @endforeach
-                ],
-        datasets: [
-            {
-                label: "Impressions",
-                fillColor: "rgba(220,220,220,0.5)",
-                strokeColor: "rgba(220,220,220,1)",
-                pointColor: "rgba(220,220,220,1)",
-                pointStrokeColor: "#fff",
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: "rgba(220,220,220,1)",
-                data: [@foreach($buyer_data['last_thirty_days'] as $key => $value)
-                    {{ $value['impressions'].',' }}
-                 @endforeach]
+    $(function(){
+    var impressions = [@foreach($buyer_data as $key => $value)[{{$key}},{{$value['impressions']}}],@endforeach];
+    var clicks = [@foreach($buyer_data['last_thirty_days'] as $key => $value)[{{$key}},{{$value['clicks']}}],@endforeach];
+    function doPlot(position) {
+        $.plot($("#flot-line-chart-multi"), [{
+            data: impressions,
+            label: "Impressions"
+        }, {
+            data: clicks,
+            label: "Clicks",
+            yaxis: 2
+        }], {
+            xaxes: [{
+                mode: 'time'
+            }],
+            yaxes: [{
+                min: 0
+            }, {
+                // align if we are to the right
+                alignTicksWithAxis: position == "right" ? 1 : null,
+                position: position
+            }],
+            legend: {
+                position: 'sw'
             },
-            {
-                label: "Clicks",
-                fillColor: "rgba(26,179,148,0.5)",
-                strokeColor: "rgba(26,179,148,0.7)",
-                pointColor: "rgba(26,179,148,1)",
-                pointStrokeColor: "#fff",
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: "rgba(26,179,148,1)",
-                data: [@foreach($buyer_data['last_thirty_days'] as $key => $value)
-                    {{ $value['clicks'].',' }}
-                 @endforeach]
+            colors: ["#1ab394"],
+            grid: {
+                color: "#999999",
+                hoverable: true,
+                clickable: true,
+                tickColor: "#D4D4D4",
+                borderWidth:0,
+                hoverable: true //IMPORTANT! this is needed for tooltip to work,
+
             },
-            {
-                label: "Spend",
-                fillColor: "rgba(66,134,234,0.5)",
-                strokeColor: "rgba(66,134,234,0.7)",
-                pointColor: "rgba(66,134,234,1)",
-                pointStrokeColor: "#fff",
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: "rgba(26,179,148,1)",
-                data: [@foreach($buyer_data['last_thirty_days'] as $key => $value)
-                    {{ $value['spend'].',' }}
-                 @endforeach]
+            tooltip: true,
+            tooltipOpts: {
+                content: "%s for %x was %y",
+                xDateFormat: "%y-%0m-%0d",
+
+                onHover: function(flotItem, $tooltipEl) {
+                    console.log(flotItem, $tooltipEl);
+                }
             }
-        ]
-    };
 
-    var lineOptions = {
-        scaleShowGridLines: true,
-        scaleGridLineColor: "rgba(0,0,0,.05)",
-        scaleGridLineWidth: 1,
-        bezierCurve: true,
-        bezierCurveTension: 0.4,
-        pointDot: true,
-        pointDotRadius: 4,
-        pointDotStrokeWidth: 1,
-        pointHitDetectionRadius: 20,
-        datasetStroke: true,
-        datasetStrokeWidth: 2,
-        datasetFill: true,
-        responsive: true,
-                                scales: {
-                                        xAxes: [{
-                                                type: "time",
-                                                time: {
-                                                        format: timeFormat,
-                                                        // round: 'day'
-                                                        tooltipFormat: 'MMM D'
-                                                },
-                                                scaleLabel: {
-                                                        display: true,
-                                                        labelString: 'Date'
-                                                }
-                                        }, ],
-                                        yAxes: [{
-                                                scaleLabel: {
-                                                        display: true,
-                                                        labelString: 'value'
-                                                }
-                                        }]
-                                },
-    };
+        });
+    }
 
+    doPlot("right");
 
-    var ctx = document.getElementById("lineChart").getContext("2d");
-    var myNewChart = new Chart(ctx).Line(lineData, lineOptions);
-
+    $("button").click(function() {
+        doPlot($(this).text());
+    });
+    
     });
 </script>
 @endif
