@@ -86,5 +86,7 @@ Route::post('paypal', array('as' => 'addmoney.paypal','uses' => 'AddMoneyControl
 Route::get('paypal', array('as' => 'payment.status','uses' => 'AddMoneyController@getPaymentStatus',));
 
 /* velocity routes */
-Route::get('/addfunds', array('as' => 'addmoney.paybycceft', 'uses' => 'CreditAchController@getIndex',));
-Route::post('/addfunds', array('as' => 'addmoney.postcceft', 'uses' => 'CreditAchController@postMoney',));
+Route::get('/addfunds', array('as' => 'addmoney.paybycceftjs', 'uses' => 'CreditAchController@getIndex',));
+Route::post('/deposit', array('as' => 'addmoney.deposit', 'uses' => 'CreditAchController@depositFunds',));
+//Route::get('/addfunds', array('as' => 'addmoney.paybycceft', 'uses' => 'CreditAchController@getIndex',));
+//Route::post('/addfunds', array('as' => 'addmoney.postcceft', 'uses' => 'CreditAchController@postMoney',));

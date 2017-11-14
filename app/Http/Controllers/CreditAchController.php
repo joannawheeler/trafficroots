@@ -9,6 +9,7 @@ use Session;
 use Redirect;
 use Input;
 use App\Bank;
+use App\Transaction;
 use Auth;
 use DB;
 use Log;
@@ -31,8 +32,8 @@ class CreditAchController extends Controller
         $balance = $this->getBalance();
         $user = Auth::getUser();
         $user_invoice = $user->id . "_" . uniqid();
-        return view('addfunds',['balance' => $balance, 'user_invoice' => $user_invoice, 'user' => $user, 'amount' => $amount]);
-
+        $path = $request->path();
+        return view('addfunds_js',['balance' => $balance, 'user_invoice' => $user_invoice, 'user' => $user, 'amount' => $amount, 'request' => $request]);
     }
   
     public function postFunds(Request $request)
@@ -65,22 +66,32 @@ class CreditAchController extends Controller
     public function depositFunds(Request $request)
     {
       try{
-        $user = Auth::getUser();
-        $balance = $this->getBalance();
-        $running_balance = ($balance + $request->amount);
-        $data = array('user_id' => $user->id, 'transaction_amount' => $request->amount, 'running_balance' => $running_balance);
-        $bank = new Bank();
-        $bank->fill($data);
-        $bank->save();
-        
-        /* figure something out here
-        $sql = "INSERT INTO trafficroots.paypal (id,paypal_id,bank_id,created_at,updated_at) VALUES(NULL,'$payment_id',".$bank->id.",NOW(),NOW());";
-        DB::insert($sql);
-        */
-        return true;
+          if(($request->Status == 'Successful') && ($request->CaptureState == 'Captured')){
+
+              $user = Auth::getUser();
+              $balance = $this->getBalance();
+              $running_balance = ($balance + $request->Amount);
+              $data = array('user_id' => $user->id, 'transaction_amount' => $request->Amount, 'running_balance' => $running_balance);
+              $bank = new Bank();
+              $bank->fill($data);
+              $bank->save();
+              
+              $insert = $request->all();
+              $insert['user_id'] = $user->id;
+              $insert['bank_id'] = $bank->id;
+              $insert['transaction_date'] = date('Y-m-d');
+              $insert['created_at'] = date('Y-m-d H:i:s');
+              $transaction = new Transaction();
+              $transaction->fill($insert);
+              $transaction->save();
+              return response('OK!',200);
+           }else{
+              return response('WTF? '.$request->CaptureState,200);
+           }
+         
       }catch(Exception $e){
           Log::error($e->getMessage());
-          return false;
+          return response($e->getMessage(),200);
       }
 
     }
