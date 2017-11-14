@@ -13,6 +13,8 @@
     <link href="css/animate.css" rel="stylesheet">
     <link href="css/plugins/dropzone/basic.css" rel="stylesheet">
     <link href="css/plugins/dropzone/dropzone.css" rel="stylesheet">
+    <link href="css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
+    <link href="css/plugins/codemirror/codemirror.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 
 </head>
@@ -50,7 +52,7 @@
                         <li><a href="dashboard_2.html">Dashboard v.2</a></li>
                         <li><a href="dashboard_3.html">Dashboard v.3</a></li>
                         <li><a href="dashboard_4_1.html">Dashboard v.4</a></li>
-                        <li><a href="dashboard_5.html">Dashboard v.5 <span class="label label-primary pull-right">NEW</span></a></li>
+                        <li><a href="dashboard_5.html">Dashboard v.5 </a></li>
                     </ul>
                 </li>
                 <li>
@@ -64,6 +66,7 @@
                         <li><a href="graph_rickshaw.html">Rickshaw Charts</a></li>
                         <li><a href="graph_chartjs.html">Chart.js</a></li>
                         <li><a href="graph_chartist.html">Chartist</a></li>
+                        <li><a href="c3.html">c3 charts</a></li>
                         <li><a href="graph_peity.html">Peity Charts</a></li>
                         <li><a href="graph_sparkline.html">Sparkline Charts</a></li>
                     </ul>
@@ -91,6 +94,8 @@
                         <li><a href="form_wizard.html">Wizard</a></li>
                         <li class="active"><a href="form_file_upload.html">File Upload</a></li>
                         <li><a href="form_editors.html">Text Editor</a></li>
+                        <li><a href="form_autocomplete.html">Autocomplete</a></li>
+                        <li><a href="form_markdown.html">Markdown</a></li>
                     </ul>
                 </li>
                 <li>
@@ -102,6 +107,7 @@
                         <li><a href="contacts_2.html">Contacts v.2</a></li>
                         <li><a href="projects.html">Projects</a></li>
                         <li><a href="project_detail.html">Project detail</a></li>
+                        <li><a href="activity_stream.html">Activity stream</a></li>
                         <li><a href="teams_board.html">Teams board</a></li>
                         <li><a href="social_feed.html">Social feed</a></li>
                         <li><a href="clients.html">Clients</a></li>
@@ -140,18 +146,29 @@
                         <li><a href="agile_board.html">Agile board</a></li>
                         <li><a href="timeline_2.html">Timeline v.2</a></li>
                         <li><a href="diff.html">Diff</a></li>
+                        <li><a href="pdf_viewer.html">PDF viewer</a></li>
+                        <li><a href="i18support.html">i18 support</a></li>
                         <li><a href="sweetalert.html">Sweet alert</a></li>
                         <li><a href="idle_timer.html">Idle timer</a></li>
+                        <li><a href="truncate.html">Truncate</a></li>
+                        <li><a href="password_meter.html">Password meter</a></li>
                         <li><a href="spinners.html">Spinners</a></li>
+                        <li><a href="spinners_usage.html">Spinners usage</a></li>
                         <li><a href="tinycon.html">Live favicon</a></li>
                         <li><a href="google_maps.html">Google maps</a></li>
+                        <li><a href="datamaps.html">Datamaps</a></li>
+                        <li><a href="social_buttons.html">Social buttons</a></li>
                         <li><a href="code_editor.html">Code editor</a></li>
                         <li><a href="modal_window.html">Modal window</a></li>
+                        <li><a href="clipboard.html">Clipboard</a></li>
+                        <li><a href="text_spinners.html">Text spinners</a></li>
                         <li><a href="forum_main.html">Forum view</a></li>
                         <li><a href="validation.html">Validation</a></li>
                         <li><a href="tree_view.html">Tree view</a></li>
+                        <li><a href="loading_buttons.html">Loading buttons</a></li>
                         <li><a href="chat_view.html">Chat view</a></li>
                         <li><a href="masonry.html">Masonry</a></li>
+                        <li><a href="tour.html">Tour</a></li>
                     </ul>
                 </li>
                 <li>
@@ -159,12 +176,13 @@
                     <ul class="nav nav-second-level collapse">
                         <li><a href="typography.html">Typography</a></li>
                         <li><a href="icons.html">Icons</a></li>
-                        <li><a href="draggable_panels.html">Draggable Panels</a></li>
+                        <li><a href="draggable_panels.html">Draggable Panels</a></li> <li><a href="resizeable_panels.html">Resizeable Panels</a></li>
                         <li><a href="buttons.html">Buttons</a></li>
                         <li><a href="video.html">Video</a></li>
                         <li><a href="tabs_panels.html">Panels</a></li>
                         <li><a href="tabs.html">Tabs</a></li>
                         <li><a href="notifications.html">Notifications & Tooltips</a></li>
+                        <li><a href="helper_classes.html">Helper css classes</a></li>
                         <li><a href="badges_labels.html">Badges, Labels, Progress</a></li>
                     </ul>
                 </li>
@@ -188,6 +206,7 @@
                         <li><a href="ecommerce_product_list.html">Products list</a></li>
                         <li><a href="ecommerce_product.html">Product edit</a></li>
                         <li><a href="ecommerce_product_detail.html">Product detail</a></li>
+                        <li><a href="ecommerce-cart.html">Cart</a></li>
                         <li><a href="ecommerce-orders.html">Orders</a></li>
                         <li><a href="ecommerce_payments.html">Credit Card form</a></li>
                     </ul>
@@ -383,39 +402,144 @@
         <div class="wrapper wrapper-content animated fadeIn">
             <div class="row">
                 <div class="col-lg-12">
-                <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <h5>Dropzone Area</h5>
-                        <div class="ibox-tools">
-                            <a class="collapse-link">
-                                <i class="fa fa-chevron-up"></i>
-                            </a>
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                <i class="fa fa-wrench"></i>
-                            </a>
-                            <ul class="dropdown-menu dropdown-user">
-                                <li><a href="#">Config option 1</a>
-                                </li>
-                                <li><a href="#">Config option 2</a>
-                                </li>
-                            </ul>
-                            <a class="close-link">
-                                <i class="fa fa-times"></i>
-                            </a>
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>File inputs example</h5>
                         </div>
-                    </div>
-                    <div class="ibox-content">
-                        <form id="my-awesome-dropzone" class="dropzone" action="#">
-                            <div class="dropzone-previews"></div>
-                            <button type="submit" class="btn btn-primary pull-right">Submit this form!</button>
-                        </form>
-                        <div>
-                            <div class="m text-right"><small>DropzoneJS is an open source library that provides drag'n'drop file uploads with image previews: <a href="https://github.com/enyo/dropzone" target="_blank">https://github.com/enyo/dropzone</a></small> </div>
+                        <div class="ibox-content">
+                            The file input feature by Jasny allows you to create a visually appealing file or image input widgets based on the Bootstrap style. Additional dropzone.js library gives you drag’n’drop file uploads option.
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Input group example</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                    <i class="fa fa-wrench"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-user">
+                                    <li><a href="#">Config option 1</a>
+                                    </li>
+                                    <li><a href="#">Config option 2</a>
+                                    </li>
+                                </ul>
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                                <div class="form-control" data-trigger="fileinput"><i class="glyphicon glyphicon-file fileinput-exists"></i> <span class="fileinput-filename"></span></div>
+                                <span class="input-group-addon btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists">Change</span><input type="file" name="..."></span>
+                                <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+                            </div>
+                            <p>
+                                HTML markup code for abowe example:
+                            </p>
+<textarea id="code1">
+&lt;div class="fileinput fileinput-new input-group" data-provides="fileinput"&gt;
+    &lt;div class="form-control" data-trigger="fileinput"&gt;
+        &lt;i class="glyphicon glyphicon-file fileinput-exists">&lt;/i&gt;
+    &lt;span class="fileinput-filename"&gt;&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;span class="input-group-addon btn btn-default btn-file"&gt;
+        &lt;span class="fileinput-new"&gt;Select file&lt;/span&gt;
+        &lt;span class="fileinput-exists"&gt;Change&lt;/span&gt;
+        &lt;input type="file" name="..."/&gt;
+    &lt;/span&gt;
+    &lt;a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove&lt;/a&gt;
+&lt;/div&gt; </textarea>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>Button example</h5>
+                            <div class="ibox-tools">
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-up"></i>
+                                </a>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                    <i class="fa fa-wrench"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-user">
+                                    <li><a href="#">Config option 1</a>
+                                    </li>
+                                    <li><a href="#">Config option 2</a>
+                                    </li>
+                                </ul>
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="fileinput fileinput-new" data-provides="fileinput">
+                                <span class="btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists">Change</span><input type="file" name="..."></span>
+                                <span class="fileinput-filename"></span>
+                                <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
+                            </div>
+                            <p>
+                                HTML markup code for abowe example:
+                            </p>
+<textarea id="code2">
+&lt;div class="fileinput fileinput-new" data-provides="fileinput"&gt;
+    &lt;span class="btn btn-default btn-file"&gt;&lt;span class="fileinput-new"&gt;Select file&lt;/span&gt;
+    &lt;span class="fileinput-exists"&gt;Change&lt;/span&gt;&lt;input type="file" name="..."/&gt;&lt;/span&gt;
+    &lt;span class="fileinput-filename"&gt;&lt;/span&gt;
+    &lt;a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;&lt;/a&gt;
+&lt;/div&gt; </textarea>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox">
+                        <div class="ibox-title">
+                            <h5>Dropzone.js</h5>
+                        </div>
+                        <div class="ibox-content">
+
+                            <p>
+                                <strong>Dropzone.js</strong> is a light weight JavaScript library that turns an HTML element into a dropzone. This means that a user can drag and drop a file onto it, and the file gets uploaded to the server via AJAX.
+                            </p>
+
+                            <form action="#" class="dropzone" id="dropzoneForm">
+                                <div class="fallback">
+                                    <input name="file" type="file" multiple />
+                                </div>
+                            </form>
+
+                            <p class="m-t-xs">
+                                HTML markup code for abowe example:
+                            </p>
+<textarea id="code3">
+&lt;form action="#" class="dropzone" id="dropzoneForm"&gt;
+    &lt;div class="fallback"&gt;
+        &lt;input name="file" type="file" multiple /&gt;
+    &lt;/div&gt;
+&lt;/form&gt; </textarea>
+                            <p class="m-t-xs">All avalible options and full documentation you can find: <a href="http://www.dropzonejs.com/#configuration-options">http://www.dropzonejs.com/#configuration-options</a> </p>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+
+
+
+
 
             </div>
             <div class="footer">
@@ -423,7 +547,7 @@
                     10GB of <strong>250GB</strong> Free.
                 </div>
                 <div>
-                    <strong>Copyright</strong> Example Company &copy; 2014-2015
+                    <strong>Copyright</strong> Example Company &copy; 2014-2017
                 </div>
             </div>
 
@@ -433,7 +557,7 @@
 
 
     <!-- Mainly scripts -->
-    <script src="js/jquery-2.1.1.js"></script>
+    <script src="js/jquery-3.1.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
     <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
@@ -442,38 +566,40 @@
     <script src="js/inspinia.js"></script>
     <script src="js/plugins/pace/pace.min.js"></script>
 
+    <!-- Jasny -->
+    <script src="js/plugins/jasny/jasny-bootstrap.min.js"></script>
+
     <!-- DROPZONE -->
     <script src="js/plugins/dropzone/dropzone.js"></script>
 
+    <!-- CodeMirror -->
+    <script src="js/plugins/codemirror/codemirror.js"></script>
+    <script src="js/plugins/codemirror/mode/xml/xml.js"></script>
+
 
     <script>
+        Dropzone.options.dropzoneForm = {
+            paramName: "file", // The name that will be used to transfer the file
+            maxFilesize: 2, // MB
+            dictDefaultMessage: "<strong>Drop files here or click to upload. </strong></br> (This is just a demo dropzone. Selected files are not actually uploaded.)"
+        };
+
         $(document).ready(function(){
 
-            Dropzone.options.myAwesomeDropzone = {
+            var editor_one = CodeMirror.fromTextArea(document.getElementById("code1"), {
+                lineNumbers: true,
+                matchBrackets: true
+            });
 
-                autoProcessQueue: false,
-                uploadMultiple: true,
-                parallelUploads: 100,
-                maxFiles: 100,
+            var editor_two = CodeMirror.fromTextArea(document.getElementById("code2"), {
+                lineNumbers: true,
+                matchBrackets: true
+            });
 
-                // Dropzone settings
-                init: function() {
-                    var myDropzone = this;
-
-                    this.element.querySelector("button[type=submit]").addEventListener("click", function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        myDropzone.processQueue();
-                    });
-                    this.on("sendingmultiple", function() {
-                    });
-                    this.on("successmultiple", function(files, response) {
-                    });
-                    this.on("errormultiple", function(files, response) {
-                    });
-                }
-
-            }
+            var editor_two = CodeMirror.fromTextArea(document.getElementById("code3"), {
+                lineNumbers: true,
+                matchBrackets: true
+            });
 
        });
     </script>

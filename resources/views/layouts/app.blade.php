@@ -88,10 +88,10 @@
                         </a>
                         <ul class="nav nav-second-level collapse">
                             <li>
-                                <a href="{{URL::to('buyers')}}">Admin</a>
+                                <a href="{{URL::to('home?type=2')}}">Dashboard</a>
                             </li>
                             <li>
-                                <a href="{{URL::to('home?type=2')}}">Dashboard</a>
+                                <a href="{{URL::to('buyers')}}">Administration</a>
                             </li>
                             <li>
                                 <a href="{{URL::to('campaigns')}}">Campaigns</a>

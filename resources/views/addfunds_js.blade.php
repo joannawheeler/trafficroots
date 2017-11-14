@@ -18,7 +18,7 @@
                 </div>
                 <?php Session::forget('error');?>
                 @endif
-                <div class="ibox-title"><h1>Add funds with Credit or EFT</h1></div>
+                <div class="ibox-title"><h1>Add funds with a Credit Card</h1></div>
                 <div class="ibox-content">
                        <div><p>Your current balance is $ {{ $balance }}</p></div>
                         Amount to Deposit:<br />
