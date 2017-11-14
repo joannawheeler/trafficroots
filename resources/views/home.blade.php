@@ -363,8 +363,16 @@
         return false;
     }
     $(function(){
-    var impressions = [@foreach($buyer_data as $key => $value)[{{$key}},{{$value['impressions']}}],@endforeach];
-    var clicks = [@foreach($buyer_data['last_thirty_days'] as $key => $value)[{{$key}},{{$value['clicks']}}],@endforeach];
+	    var impressions = [
+		    @foreach($buyer_data['last_thirty_days'] as $key => $value)
+		        [{{$value['timestamp']}},{{$value['impressions']}}],
+		    @endforeach
+	    ];
+	    var clicks = [
+		    @foreach($buyer_data['last_thirty_days'] as $key => $value)
+		        [{{$value['timestamp']}},{{$value['clicks']}}],
+	            @endforeach
+	    ];
     function doPlot(position) {
         $.plot($("#flot-line-chart-multi"), [{
             data: impressions,
@@ -372,7 +380,7 @@
         }, {
             data: clicks,
             label: "Clicks",
-            yaxis: 2
+            yaxis: 1
         }], {
             xaxes: [{
                 mode: 'time'
@@ -387,7 +395,7 @@
             legend: {
                 position: 'sw'
             },
-            colors: ["#1ab394"],
+            colors: ["blue","green"],
             grid: {
                 color: "#999999",
                 hoverable: true,
@@ -399,8 +407,8 @@
             },
             tooltip: true,
             tooltipOpts: {
-                content: "%s for %x was %y",
-                xDateFormat: "%y-%0m-%0d",
+                content: "%s for %x were %y",
+                xDateFormat: "%m-%d-%Y",
 
                 onHover: function(flotItem, $tooltipEl) {
                     console.log(flotItem, $tooltipEl);

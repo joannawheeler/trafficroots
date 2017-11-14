@@ -394,9 +394,9 @@ AND publisher_bookings.pub_id = $id;";
 
         /* last thirty days */
         $data['last_thirty_days'] = array();
-        for($i = 30; $i >= 0; $i--){
+        for($i = 60; $i >= 0; $i--){
             $mydate = date('Y-m-d', strtotime("-$i days"));
-
+            
             $sql = "SELECT SUM(stats.impressions) AS impressions, SUM(stats.clicks) AS clicks, stats.stat_date 
                 FROM stats
                 JOIN bids ON stats.bid_id = bids.id
@@ -409,7 +409,7 @@ AND publisher_bookings.pub_id = $id;";
                 $spend = sizeof($daily = DB::select($sql, array($user->id))) ? $daily[0]->spend * -1 : 0.00;
                 $impressions = intval($row->impressions);
                 $clicks = intval($row->clicks);
-                $data['last_thirty_days'][date('m/d/Y',strtotime($mydate))] = array('impressions' => $impressions, 'clicks' => $clicks, 'spend' => $spend);
+                $data['last_thirty_days'][date('m/d/Y',strtotime($mydate))] = array('timestamp' => strtotime($mydate) * 1000, 'impressions' => $impressions, 'clicks' => $clicks, 'spend' => $spend);
             }
         }
         /* campaigns - this month */
