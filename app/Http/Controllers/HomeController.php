@@ -218,7 +218,7 @@ AND publisher_bookings.pub_id = $id
 GROUP BY commission_tiers.publisher_factor, publisher_bookings.booking_date
 ORDER BY publisher_bookings.booking_date;";
         //Log::info($sql);
-        $data['last_thirty_days'][date('m/d/Y',strtotime($mydate))] = array('impressions' => 0, 'clicks' => 0, 'earnings' => 0);
+        $data['last_thirty_days'][date('m/d/Y',strtotime($mydate))] = array('timestamp' => strtotime($mydate) * 1000, 'impressions' => 0, 'clicks' => 0, 'earnings' => 0);
         foreach(DB::select($sql) as $row){
             $earnings = $row->earned;
             $impressions = $row->impressions;
