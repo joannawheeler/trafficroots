@@ -201,8 +201,16 @@ GROUP BY commission_tiers.publisher_factor;";
         }
         $data['cpm_this_year'] = $data['impressions_this_year'] ? ($data['earned_this_year'] / ($data['impressions_this_year'] / 1000)) : 0.00;
 
+/* get number of days to go back for all traffic ever */
+        $sql = 'SELECT
+                DATEDIFF(MAX(booking_date), MIN(booking_date)) AS totaldiff
+                FROM publisher_bookings
+                WHERE pub_id = ?';
+        foreach(DB::select($sql, array($id)) as $row){
+            $goback = $row->totaldiff;
+        }
         $data['last_thirty_days'] = array();        
-for($i = 30; $i >= 0; $i--){
+for($i = $goback; $i >= 0; $i--){
     $mydate = date('Y-m-d', strtotime("-$i days"));
 
 $sql = "SELECT 
