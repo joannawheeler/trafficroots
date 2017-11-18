@@ -223,7 +223,7 @@ ORDER BY publisher_bookings.booking_date;";
             $earnings = $row->earned;
             $impressions = $row->impressions;
             $clicks = $row->clicks;
-            $data['last_thirty_days'][date('m/d/Y',strtotime($mydate))] = array('impressions' => $impressions, 'clicks' => $clicks, 'earnings' => $earnings);
+            $data['last_thirty_days'][date('m/d/Y',strtotime($mydate))] = array('timestamp' => strtotime($mydate) * 1000, 'impressions' => $impressions, 'clicks' => $clicks, 'earnings' => $earnings);
         } 
 }
         $data['sites'] = array();
