@@ -301,10 +301,13 @@ AND publisher_bookings.pub_id = $id;";
         $result = DB::select($sql, array($user->id));
         $data['impressions_today'] = sizeof($result) ? $result[0]->impressions : 0;
         $data['clicks_today'] = sizeof($result) ? $result[0]->clicks : 0;
-
+        $data['ctr_today'] = (float) $data['clicks_today'] ? round($data['clicks_today'] / $data['impressions_today'], 4) : 0.0000;
         $sql = "SELECT SUM(transaction_amount) AS spend FROM bank WHERE user_id = ? AND created_at = CURDATE() AND transaction_amount < 0";
         $result = DB::select($sql, array($user->id));
         $data['spent_today'] = sizeof($result) ? $result[0]->spend * -1 : 0;
+
+        $data['cpm_today'] = (float) $data['impressions_today'] ? round($data['spent_today'] / ($data['impressions_today'] / 1000), 4) : 0.00;
+        $data['cpc_today'] = (float) $data['clicks_today'] ? round($data['spent_today'] / $data['clicks_today'], 4) : 0.00;
 
         $sql = "SELECT DISTINCT(campaigns.id)
                 FROM stats
@@ -326,10 +329,13 @@ AND publisher_bookings.pub_id = $id;";
         $result = DB::select($sql, array($user->id));
         $data['impressions_yesterday'] = sizeof($result) ? $result[0]->impressions : 0;
         $data['clicks_yesterday'] = sizeof($result) ? $result[0]->clicks : 0;
-
+        $data['ctr_yesterday'] = (float) $data['clicks_yesterday'] ? round($data['clicks_yesterday'] / $data['impressions_yesterday'], 4) : 0.0000;
         $sql = "SELECT SUM(transaction_amount) AS spend FROM bank WHERE user_id = ? AND created_at = DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND transaction_amount < 0";
         $result = DB::select($sql, array($user->id));
         $data['spent_yesterday'] = sizeof($result) ? $result[0]->spend * -1 : 0;
+        
+        $data['cpm_yesterday'] = (float) $data['impressions_yesterday'] ? round($data['spent_yesterday'] / ($data['impressions_yesterday'] / 1000), 4) : 0.00;
+        $data['cpc_yesterday'] = (float) $data['clicks_yesterday'] ? round($data['spent_yesterday'] / $data['clicks_yesterday'], 4) : 0.00;
 
         $sql = "SELECT DISTINCT(campaigns.id)
                 FROM stats
@@ -350,10 +356,14 @@ AND publisher_bookings.pub_id = $id;";
         $result = DB::select($sql, array($user->id));
         $data['impressions_this_month'] = sizeof($result) ? $result[0]->impressions : 0;
         $data['clicks_this_month'] = sizeof($result) ? $result[0]->clicks : 0;
+        $data['ctr_this_month'] = (float) $data['clicks_this_month'] ? round($data['clicks_this_month'] / $data['impressions_this_month'], 4) : 0.0000;
 
         $sql = "SELECT SUM(transaction_amount) AS spend FROM bank WHERE user_id = ? AND created_at >= '".date('Y-m-d', strtotime('first day of this month'))."' AND transaction_amount < 0";
         $result = DB::select($sql, array($user->id));
         $data['spent_this_month'] = sizeof($result) ? $result[0]->spend * -1: 0;
+
+        $data['cpm_this_month'] = (float) $data['impressions_this_month'] ? round($data['spent_this_month'] / ($data['impressions_this_month'] / 1000), 4) : 0.00;
+        $data['cpc_this_month'] = (float) $data['clicks_this_month'] ? round($data['spent_this_month'] / $data['clicks_this_month'], 4) : 0.00;
 
         $sql = "SELECT DISTINCT(campaigns.id)
                 FROM stats
@@ -375,12 +385,16 @@ AND publisher_bookings.pub_id = $id;";
         $result = DB::select($sql, array($user->id));
         $data['impressions_last_month'] = sizeof($result) ? $result[0]->impressions : 0;
         $data['clicks_last_month'] = sizeof($result) ? $result[0]->clicks : 0;
+        $data['ctr_last_month'] = (float) $data['clicks_last_month'] ? round($data['clicks_last_month'] / $data['impressions_last_month'], 4) : 0.0000;
 
         $sql = "SELECT SUM(transaction_amount) AS spend FROM bank WHERE user_id = ? 
                 AND bank.created_at >= '".date('Y-m-d', strtotime('first day of last month'))."'
                 AND bank.created_at < '".date('Y-m-d', strtotime('first day of this month'))."' AND transaction_amount < 0";
         $result = DB::select($sql, array($user->id));
         $data['spent_last_month'] = sizeof($result) ? $result[0]->spend * -1 : 0;
+
+        $data['cpm_last_month'] = (float) $data['impressions_last_month'] ? round($data['spent_last_month'] / ($data['impressions_last_month'] / 1000), 4) : 0.00;
+        $data['cpc_last_month'] = (float) $data['clicks_last_month'] ? round($data['spent_last_month'] / $data['clicks_last_month'], 4) : 0.00;
 
         $sql = "SELECT DISTINCT(campaigns.id)
                 FROM stats

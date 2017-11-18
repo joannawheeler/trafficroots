@@ -68,7 +68,7 @@
     }
     function checkDeposit(){
         var amount = $("#amount").val();
-        if(amount >= 1){
+        if(amount >= 100){
             window.location = window.location.href = '?deposit=' + amount;
             return false;
         }else{
