@@ -24,7 +24,7 @@
             <div class="ibox">
                 <div class="ibox-title"><i class="fa fa-sitemap"></i>&nbsp;Campaign Management
                 <div class="pull-right">
-                <a href="/buyers"><span class="label label-success"><i class="fa fa-bolt"></i>&nbsp;Return To Menu</span></a>
+                <a href="/buyers/campaigns"><span class="label label-success"><i class="fa fa-bolt"></i>&nbsp;Return To Menu</span></a>
                 </div>
                 </div>
                 <div class="ibox-content">
@@ -52,7 +52,13 @@
                                         </form>
                                     </td>
                                     <td>
-                                    <a href="#" data-toggle="tooltip" title="View Campaign Stats" class="camp-stats" id="camp_stats_{{ $campaign->id }}"><i class="fa fa-bar-chart" aria-hidden="true"></i></a>&nbsp;<a href="#" data-toggle="tooltip" title="Start this Campaign" class="camp-start" id="camp_start_{{ $campaign->id }}"><i class="fa fa-play" aria-hidden="true"></i></a>&nbsp;<a href="#" data-toggle="tooltip" title="Pause this Campaign" class="camp-stop" id="camp_stop_{{ $campaign->id }}"><i class="fa fa-pause" aria-hidden="true"></i></a>
+                                    <a href="#" data-toggle="tooltip" title="View Campaign Stats" class="camp-stats" id="camp_stats_{{ $campaign->id }}"><i class="fa fa-bar-chart" aria-hidden="true"></i></a>
+@if( $campaign->status == 3)
+&nbsp;<a href="#" data-toggle="tooltip" title="Start this Campaign" class="camp-start" id="camp_start_{{ $campaign->id }}"><i class="fa fa-play" aria-hidden="true"></i></a>
+@endif
+@if( $campaign->status == 1)
+&nbsp;<a href="#" data-toggle="tooltip" title="Pause this Campaign" class="camp-stop" id="camp_stop_{{ $campaign->id }}"><i class="fa fa-pause" aria-hidden="true"></i></a>
+@endif
                                     </td>
                                 </tr>
                    
@@ -157,6 +163,23 @@ jQuery(document).ready(function ($) {
                 .fail(function (response) {
                     toastr.error(response);
                 });
+        });
+        $('.camp-start').click(function() {
+            if(confirm('Activate this campaign?')){
+                var str =  $(this).attr('id');
+                var res = str.split("_");
+                var url = '/campaign/start/' + res[2];
+                $.get(url)
+                    .done(function (response) {
+                        toastr.success(response);
+                    })
+                    .fail(function (response) {
+                        toastr.error(response);
+                    });
+            }else{
+                return false;
+            }
+            
         });
     });
 </script>

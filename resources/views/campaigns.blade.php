@@ -37,7 +37,7 @@
                                     <td> {{ $status_types[$campaign->status] }} </td>
                                     <td>{{ $location_types[$campaign->location_type] }}</td>
                                     <td> {{ Carbon\Carbon::parse($campaign->created_at)->toDayDateTimeString() }} </td>
-                                    <td><a href="#" class="camp-stats" id="camp_stats_{{ $campaign->id }}"><i class="fa fa-bar-chart" aria-hidden="true"></a></i></td>
+                                    <td><a href="#" class="camp-stats" id="camp_stats_{{ $campaign->id }}"><i class="fa fa-cogs" aria-hidden="true"></a></i></td>
                                 </tr>
                    
                             @endforeach
@@ -75,22 +75,12 @@
 </div>
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
-        // $.noConflict();
-        $('.camp_row').click(function(){
+        $('.camp-stats').click(function(){
             var str =  $(this).attr('id');
             var res = str.split("_");
             var url = '/manage_campaign/' + res[2];
             window.location.assign(url);
-        });
-        $('.camp-stats').click(function(){
-            var str =  $(this).attr('id');
-            var res = str.split("_");
-            var url = '/stats/site/' + res[2] + '/1';
-            window.location.assign(url);
         }); 
-        $('.camp_row').hover(function() {
-            $(this).css('cursor','pointer');
-        });
         $('[data-toggle="popover"]').popover({
             html: true,
         });

@@ -324,4 +324,41 @@ class CampaignController extends Controller
             compact('campaigns', 'startDate', 'endDate')
         );
     }
+    public function startCampaign(Request $request)
+    {
+        $user = Auth::user();
+        if($request->id){
+            $campaign = Campaign::where('id', $request->id)->where('user_id', $user->id)->get();
+            if(sizeof($campaign)){
+                /* campaign belongs to user */
+                $update = array('status' => 1, 'updated_at' => DB::raw('NOW()'));
+                DB::table('campaigns')->where('id', $request->id)->update($update);
+                DB::table('bids')->where('campaign_id', $request->id)->update($update);
+                return('Campaign Activated!');
+            }else{
+                return('Campaign Not Found');
+            }
+        }else{
+            return('Invalid Campaign ID!');           
+        }
+
+    }
+    public function pauseCampaign(Request $request)
+    {
+        $user = Auth::user();
+        if($request->id){
+            $campaign = Campaign::where('id', $request->id)->where('user_id', $user->id)->get();
+            if(sizeof($campaign)){
+                /* campaign belongs to user */
+                $update = array('status' => 3, 'updated_at' => DB::raw('NOW()'));
+                DB::table('campaigns')->where('id', $request->id)->update($update);
+                DB::table('bids')->where('campaign_id', $request->id)->update($update);
+                return('Campaign Paused!');
+            }else{
+                return('Campaign Not Found');
+            }
+        }else{
+            return('Invalid Campaign ID!');
+        }
+    }
 }

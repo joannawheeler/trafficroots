@@ -21,7 +21,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="ibox">
-                        <div class="ibox-title" id="acct_heading">My Account <a href="addfunds" id="addfunds" class="btn btn-xs btn-primary pull-right">Deposit Funds</a></div>
+                        <div class="ibox-title" id="acct_heading">My Account <a href="/addfunds" id="addfunds" class="btn btn-xs btn-primary pull-right">Deposit Funds</a></div>
                         <div class="ibox-content" id="account_div">
                             <div class="container">
                             @if(is_array($bank))

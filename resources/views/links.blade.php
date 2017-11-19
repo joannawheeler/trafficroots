@@ -33,7 +33,7 @@
                                 <tr class="link_row" id="link_row_{{ $link->id }}">
                                     <td>{{ $link->link_name }} </td>
                                     <td> {{ $categories[$link->category] }} </td>
-                                    <td> {{ $link->url }} </td>
+                                    <td> <a href="{{ $link->url }}" target="blank">{{substr($link->url,0,25)}}</a></td>
                                     <td> {{ $status_types[$link->status] }} </td>
                                     <td> {{ Carbon\Carbon::parse($link->created_at)->toDayDateTimeString() }} </td>
                                 </tr>

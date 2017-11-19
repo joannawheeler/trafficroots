@@ -64,7 +64,8 @@
             alert(poststring);
             $.post(url,poststring, function(data){
                 alert(data);
-            });            
+            });
+            window.location = '/buyers/account';            
     }
     function checkDeposit(){
         var amount = $("#amount").val();

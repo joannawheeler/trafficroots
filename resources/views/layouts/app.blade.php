@@ -97,7 +97,7 @@
                                 <a href="{{URL::to('home?type=2')}}">Dashboard</a>
                             </li>
                             <li>
-                                <a href="{{URL::to('buyers/campaigns')}}">Campaigns</a>
+                                <a href="{{URL::to('campaigns')}}">Campaigns</a>
                             </li>
                             <li>
                                 <a href="{{URL::to('buyers/media')}}">Media</a>
@@ -115,6 +115,12 @@
                                 <a href="{{URL::to('faq_advertiser')}}">FAQ</a>
                             </li>
                         </ul>
+                    </li>
+                    <li id="nav_support" class="nav-click">
+                        <a href="{{ url('/profile') }}">
+                            <i class="fa fa-address-book-o fa-2x"></i>
+                            <span class="nav-label">Profile</span>
+                        </a>
                     </li>
                     <li id="nav_support" class="nav-click">
                         <a href="{{ url('/tickets') }}">

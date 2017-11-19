@@ -64,6 +64,8 @@ Route::get('/click/{querystr}', 'AdserverController@clickedMe');
 Route::get('/profile', 'HomeController@myProfile');
 Route::get('/confirm/{handle}', 'ConfirmController@confirm');
 Route::get('/campaign', 'CampaignController@createCampaign');
+Route::get('/campaign/start/{id}', 'CampaignController@startCampaign');
+Route::get('/campaign/pause/{id}', 'CampaignController@pauseCampaign');
 Route::post('/campaign', 'CampaignController@postCampaign');
 Route::get('/media', 'CampaignController@createMedia');
 Route::post('/media', 'CampaignController@postMedia');

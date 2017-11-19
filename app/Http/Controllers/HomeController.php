@@ -62,8 +62,9 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function buyers()
+    public function buyers(Request $request)
     {
+       $tab = $request->tab;
        $status_types = array();
        $status = StatusType::all();
        $status_types[] = 'Pending';
@@ -116,7 +117,7 @@ class HomeController extends Controller
                 $newbank->save();
                 $bank = DB::select('SELECT * FROM bank WHERE user_id = '.$user->id.' ORDER BY id DESC LIMIT 1;');
             }            
-            return view('account_buyers', array('user' => $user, 'bank' => $bank, 'location_types' => $location, 'categories' => $category, 'campaign_types' => $campaign_types, 'width' => $width, 'height' => $height, 'status_types' => $status_types));
+            return view('account_buyer', array('user' => $user, 'bank' => $bank, 'location_types' => $location, 'categories' => $category, 'campaign_types' => $campaign_types, 'width' => $width, 'height' => $height, 'status_types' => $status_types));
         }
 
     }
