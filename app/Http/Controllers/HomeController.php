@@ -83,41 +83,42 @@ class HomeController extends Controller
            $width[$type['id']] = $type['width'] + 50;
            $height[$type['id']] = $type['height'] + 50;
        }
-       $category = array();
-       foreach($categories as $cat){
+        $category = array();
+        foreach($categories as $cat){
            $category[$cat['id']] = $cat['category'];
-       }
-       $user = Auth::user();
-       $res = DB::select('select * from campaigns where user_id = '.$user->id);
-       $media = DB::select('select * from media where user_id = '.$user->id);
-       $folders = DB::select('select * from folders where user_id = '.$user->id);
-       $links = DB::select('select * from links where user_id = '.$user->id);
-       $bank = DB::select('SELECT * FROM bank WHERE user_id = '.$user->id.' ORDER BY id DESC LIMIT 1;');
-       if(!sizeof($bank)){
-           $data = array();
-           $data['user_id'] = $user->id;
-           $data['transaction_amount'] = 0.00;
-           $data['running_balance'] = 0.00;
-           $newbank = new Bank();
-           $newbank->fill($data);
-           $newbank->save();
-           $bank = DB::select('SELECT * FROM bank WHERE user_id = '.$user->id.' ORDER BY id DESC LIMIT 1;');
-       }
-        return view('buyers', [
-            'user' => $user,
-            'bank' => $bank,
-            'campaigns' => $res,
-            'media' => $media,
-            'links' => $links,
-            'location_types' => $location,
-            'categories' => $category,
-            'campaign_types' => $campaign_types,
-            'folders' => $folders,
-            'width' => $width,
-            'height' => $height,
-            'status_types' => $status_types,
-            'title' => 'Advertisers'
-        ]);
+        }
+        $user = Auth::user();
+        if($tab == 'campaigns'){
+            $res = DB::select('select * from campaigns where user_id = '.$user->id);
+            return view('campaigns', array('user' => $user, 'campaigns' => $res, 'location_types' => $location, 'categories' => $category, 'campaign_types' => $campaign_types, 'width' => $width, 'height' => $height, 'status_types' => $status_types));
+        }
+        if($tab == 'media'){
+            $media = DB::select('select * from media where user_id = '.$user->id);
+            return view('media', array('user' => $user, 'media' => $media, 'location_types' => $location, 'categories' => $category, 'campaign_types' => $campaign_types, 'width' => $width, 'height' => $height, 'status_types' => $status_types));
+        }
+        if($tab == 'folders'){
+            $folders = DB::select('select * from folders where user_id = '.$user->id);
+            return view('folders', array('user' => $user, 'folders' => $folders, 'location_types' => $location, 'categories' => $category, 'campaign_types' => $campaign_types, 'width' => $width, 'height' => $height, 'status_types' => $status_types));
+        }
+        if($tab == 'links'){
+            $links = DB::select('select * from links where user_id = '.$user->id);
+            return view('links', array('user' => $user, 'links' => $links, 'location_types' => $location, 'categories' => $category, 'campaign_types' => $campaign_types, 'width' => $width, 'height' => $height, 'status_types' => $status_types));
+        }
+        if($tab == 'account'){
+            $bank = DB::select('SELECT * FROM bank WHERE user_id = '.$user->id.' ORDER BY id DESC LIMIT 1;');
+            if(!sizeof($bank)){
+                $data = array();
+                $data['user_id'] = $user->id;
+                $data['transaction_amount'] = 0.00;
+                $data['running_balance'] = 0.00;
+                $newbank = new Bank();
+                $newbank->fill($data);
+                $newbank->save();
+                $bank = DB::select('SELECT * FROM bank WHERE user_id = '.$user->id.' ORDER BY id DESC LIMIT 1;');
+            }            
+            return view('account_buyers', array('user' => $user, 'bank' => $bank, 'location_types' => $location, 'categories' => $category, 'campaign_types' => $campaign_types, 'width' => $width, 'height' => $height, 'status_types' => $status_types));
+        }
+
     }
     public function getPubInfo($id) {
         DB::statement("SET sql_mode = '';");

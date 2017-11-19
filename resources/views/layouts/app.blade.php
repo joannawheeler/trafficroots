@@ -78,6 +78,12 @@
                             <li>
                                 <a href="{{ URL::to('stats/pub') }}">Stats</a>
                             </li>
+                            <li>
+                                <a href="{{URL::to('account/publisher')}}">Account</a>
+                            </li> 
+                            <li>
+                                <a href="{{URL::to('faq_publisher')}}">FAQ</a>
+                            </li>                            
                         </ul>
                     </li>
                     <li id="nav_buyer" class="nav-click">
@@ -91,11 +97,20 @@
                                 <a href="{{URL::to('home?type=2')}}">Dashboard</a>
                             </li>
                             <li>
-                                <a href="{{URL::to('buyers')}}">Administration</a>
+                                <a href="{{URL::to('buyers/campaigns')}}">Campaigns</a>
                             </li>
                             <li>
-                                <a href="{{URL::to('campaigns')}}">Campaigns</a>
+                                <a href="{{URL::to('buyers/media')}}">Media</a>
+                            </li>  
+                            <li>
+                                <a href="{{URL::to('buyers/links')}}">Links</a>
                             </li>
+                            <li>
+                                <a href="{{URL::to('buyers/folders')}}">Folders</a>
+                            </li>                          
+                            <li>
+                                <a href="{{URL::to('buyers/account')}}">Account</a>
+                            </li>                            
                             <li>
                                 <a href="{{URL::to('faq_advertiser')}}">FAQ</a>
                             </li>
@@ -107,13 +122,6 @@
                             <span class="nav-label">Support</span>
                         </a>
                     </li>
-                    {{--
-                    <li id="nav_about" class="nav-click">
-                        <a href="{{ url('/about') }}">
-                            <i class="fa fa-group fa-2x"></i>
-                            <span class="nav-label">About</span>
-                        </a>
-                    </li> --}}
                     <li id="nav_logout" class="nav-click">
                         <a href="{{ url('/logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                             <i class="fa fa-plug fa-2x"></i>
