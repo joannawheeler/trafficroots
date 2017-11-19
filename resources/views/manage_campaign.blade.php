@@ -171,7 +171,9 @@ jQuery(document).ready(function ($) {
                 var url = '/campaign/start/' + res[2];
                 $.get(url)
                     .done(function (response) {
-                        toastr.success(response);
+                        toastr.success(response, function(){
+                          setTimeout(function(){ window.location.reload(); }, 3000);   
+                        });
                     })
                     .fail(function (response) {
                         toastr.error(response);
@@ -180,6 +182,25 @@ jQuery(document).ready(function ($) {
                 return false;
             }
             
+        });
+        $('.camp-stop').click(function() {
+            if(confirm('Pause this campaign?')){
+                var str =  $(this).attr('id');
+                var res = str.split("_");
+                var url = '/campaign/pause/' + res[2];
+                $.get(url)
+                    .done(function (response) {
+                        toastr.success(response, function(){
+                          setTimeout(function(){ window.location.reload(); }, 3000);
+                        });
+                    })
+                    .fail(function (response) {
+                        toastr.error(response);
+                    });
+            }else{
+                return false;
+            }
+
         });
     });
 </script>

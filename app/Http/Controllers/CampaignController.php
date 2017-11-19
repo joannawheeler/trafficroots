@@ -334,6 +334,7 @@ class CampaignController extends Controller
                 $update = array('status' => 1, 'updated_at' => DB::raw('NOW()'));
                 DB::table('campaigns')->where('id', $request->id)->update($update);
                 DB::table('bids')->where('campaign_id', $request->id)->update($update);
+                Log::info($user->name." Activated Campaign ".$request->id);
                 return('Campaign Activated!');
             }else{
                 return('Campaign Not Found');
@@ -353,6 +354,7 @@ class CampaignController extends Controller
                 $update = array('status' => 3, 'updated_at' => DB::raw('NOW()'));
                 DB::table('campaigns')->where('id', $request->id)->update($update);
                 DB::table('bids')->where('campaign_id', $request->id)->update($update);
+                Log::info($user->name." Paused Campaign ".$request->id);
                 return('Campaign Paused!');
             }else{
                 return('Campaign Not Found');

@@ -43,7 +43,7 @@
                                     <td> {{ $location_types[$file->location_type] }} </td>
                                     <td> {{ $status_types[$file->status] }} </td>
                                     <td> {{ Carbon\Carbon::parse($file->created_at)->toDayDateTimeString() }} </td>
-                                    <td> <a href="#" class="tr-preview" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="" data-content="<img src='{{ $file->file_location }}' width='120' height='120'>" id="view_media_{{ $file->id }}"><i class="fa fa-camera-retro" aria-hidden="true"></a></i> </td>
+                                    <td> <a href="#" class="tr-preview" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="" data-content="<img src='https://publishers.trafficroots.com/{{ $file->file_location }}' width='120' height='120'>" id="view_media_{{ $file->id }}"><i class="fa fa-camera-retro" aria-hidden="true"></a></i> </td>
                                 </tr>
                             @endforeach
                             </tbody>
