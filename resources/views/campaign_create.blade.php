@@ -97,14 +97,15 @@
                 
                     <div>
                         <h3>Campaign:</h3>
-                        [kam <b>peyn</b>] - 
+                        [kam-<b>peyn</b>] - 
                         <i>noun</i>
                         <ul><li>a systematic course of aggressive activities for some specific purpose</li></ul>
                         
                         <div class="well">
                             <ul>
                                 <li>A Trafficroots Campaign is a targeted advertising plan that consists of at least one Creative.</li>
-                                <li>Campaigns target a specific Location Type and all Creatives and their destination Links must conform to the specified Category.</li>
+                                <li>Campaigns target a specific Location Type and all Creatives must conform.</li>
+                                <li>All Creatives and their destination Links must conform to the specified Category.</li>
                                 <li>On this page you are creating a new Campaign by naming it and selecting a Campaign Type, Location Type and Category.</li>
                                 <li>We offer Cost Per Click (CPC) and Cost Per Milli (CPM) Campaign Types. </li>
                                 <li>Once created, additional Campaign targeting options such as City or State, as well as your Bid amount are set on the Campaign Edit page.</li>
