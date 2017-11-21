@@ -63,6 +63,21 @@
                         <label class="error hide"
                                for="url"></label>
                     </div>
+                    <div>
+                        <h3>Link:</h3>
+                        [ lingk ] - 
+                        <i>noun</i>
+                        <ul><li>anything serving to connect one part or thing with another - a bond or tie.</li></ul>
+                        
+                        <div class="well">
+                            <ul>
+                                <li>Links will be validated by Trafficroots staff and are subject to periodic malware/content scans.</li>
+                                <li>To avoid duplication, we offer a Link Library feature.</li>
+                                <li>Name and Categorize your Links here and they will be available across all your campaigns.</li>                 
+                                <li>On this page you are creating a new Link item by naming it, selecting a Category and providing a valid destination url.</li>
+                             </ul>
+                        </div>
+                    </div>                    
                 </div>
                 <div class="modal-footer">
                     <button type="button"
