@@ -26,22 +26,7 @@
                   method="POST"
                   action="{{ url('/media') }}">
                 {{ csrf_field() }}
-                <div class="modal-body">
-                    <div>
-                        <h3>Media:</h3>
-                        [<b>mee</b>-dee-<i>uh</i> ] - 
-                        <i>noun</i>
-                        <ul><li>an intervening agency, means, or instrument by which something is conveyed or accomplished</li></ul>
-                        
-                        <div class="well">
-                            <ul>
-                                <li>Media uploaded must be image files.</li>
-                                <li>To avoid duplication, we offer a Media Library feature.</li>
-                                <li>Upload and Categorize your images here and they will be available across all your campaigns.</li>
-                                <li>On this page you are creating a new Media item by naming it and selecting a Location Type and Category.</li>
-                             </ul>
-                        </div>
-                    </div>                    
+                <div class="modal-body">                    
                     <div class="form-group">
                         <label>Name</label>
                         <input type="text"
@@ -119,6 +104,21 @@
                         </label>
                     </div>
                 </div>
+                    <div>
+                        <h3>Media:</h3>
+                        [<b>mee</b>-dee-<i>uh</i> ] - 
+                        <i>noun</i>
+                        <ul><li>an intervening agency, means, or instrument by which something is conveyed or accomplished</li></ul>
+                        
+                        <div class="well">
+                            <ul>
+                                <li>Media uploaded must be image files.</li>
+                                <li>To avoid duplication, we offer a Media Library feature.</li>
+                                <li>Upload and Categorize your images here and they will be available across all your campaigns.</li>
+                                <li>On this page you are creating a new Media item by naming it and selecting a Location Type and Category.</li>
+                             </ul>
+                        </div>
+                    </div>                 
                 <div class="modal-footer">
                     <button type="button"
                             class="btn btn-white"
