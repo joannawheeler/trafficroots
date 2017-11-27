@@ -8545,7 +8545,7 @@ body.md-skin {
 }
 /* Only demo */
 @media (max-width: 1000px) {
-  .welcome-message {
+  .logout-link {
     display: none;
   }
 }

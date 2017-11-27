@@ -1,6 +1,10 @@
 @extends('layouts.app') 
 @section('content')
-@section('title', '- Home') 
+@if($view_type == 1 || $view_type == 3)
+@section('title', '- Publisher Dashboard') 
+@else
+@section('title', '- Advertiser Dashboard')
+@endif
 {{-- @if(Session::has('success'))
 <div class="alert alert-success">
     <h2>{{ Session::get('success') }}</h2>
@@ -216,7 +220,7 @@
                 <small>Impressions</small><br />
                 <div class="stat-percent font-bold text-success pull-right">{{ number_format($buyer_data['clicks_today']) }}</div>
                 <small>Clicks</small><br />                
-                <div class="stat-percent font-bold text-success pull-right">$ {{ round($buyer_data['ctr_today'],2) }}</div>
+                <div class="stat-percent font-bold text-success pull-right">{{ round($buyer_data['ctr_today'],2) }}</div>
                 <small>CTR</small><br />
                 <div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['spent_today'] }}</div>
                 <small>Spend</small><br />
