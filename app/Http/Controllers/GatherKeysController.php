@@ -62,7 +62,7 @@ class GatherKeysController extends Controller
                
             $impressions = Redis::getset($value, 0);
             if($impressions){
-            Log::info($site['site_name'].' - handle: '.$mydata[1].' Key: '.$value.' has a value of '.$impressions);
+            //Log::info($site['site_name'].' - handle: '.$mydata[1].' Key: '.$value.' has a value of '.$impressions);
             $sql = "INSERT INTO site_analysis (site_handle, stat_date, geo, state, city, device, browser, os, impressions)
                     VALUES('".$mydata[1]."','".$mydata[2]."','".$mydata[3]."','".addslashes($mydata[4])."','".addslashes($mydata[5])."',";
             $device = 0;
@@ -133,7 +133,7 @@ class GatherKeysController extends Controller
         $count = 0;
         do{
             $keyname = Redis::spop('KEYS_SALES'); 
-            Log::info("Keyname: $keyname");  
+            //Log::info("Keyname: $keyname");  
             // 'SALE|'.$bid->campaign_type.'|'.$bid->id.'|'.$bid->bid
             $val = Redis::get($keyname);
             Redis::del($keyname);
@@ -143,12 +143,12 @@ class GatherKeysController extends Controller
                 if($stuff[2] == 1){
                     /* CPM sale */
                     $sale = ($val / 1000) * floatval($stuff[4]);
-                    Log::info("Sale Amount: $".$sale);
+                    //Log::info("Sale Amount: $".$sale);
                 }
                 if($stuff[2] == 2){
                     /* CPC sale */
                     $sale = $val * floatval($stuff[4]);
-                    Log::info("Sale Amount: $".$sale);
+                    //Log::info("Sale Amount: $".$sale);
                 }
                 $user_id = $stuff[1];
                 if($sale) $this->processBankTransaction($sale, $user_id);
@@ -218,7 +218,7 @@ class GatherKeysController extends Controller
         $suffix = " ON DUPLICATE KEY UPDATE `impressions` = `impressions` + VALUES(`impressions`);";
         $query = $prefix.implode(",",$pairs).$suffix;
         DB::insert($query);
-        Log::info($query);
+        //Log::info($query);
         }
         Log::info('Impressions Gathered');
     }
@@ -228,7 +228,7 @@ class GatherKeysController extends Controller
         $pairs = array();
         do{
             $keyname = Redis::spop('KEYS_CLICKS');
-            Log::info($keyname);
+            //Log::info($keyname);
             if(strlen(trim($keyname))){
                 $val = Redis::get($keyname);
                 Redis::del($keyname);
@@ -252,7 +252,7 @@ class GatherKeysController extends Controller
                         .$stuff[1]."')";
                  $pairs[] = $pair;
                  }else{
-                     Log::info('Zone Handle '.$stuff[2].' not found!');
+                     Log::error('Zone Handle '.$stuff[2].' not found!');
                  }
             }
         }while(!$keyname == '');
@@ -262,7 +262,7 @@ class GatherKeysController extends Controller
         $suffix = " ON DUPLICATE KEY UPDATE `clicks` = `clicks` + VALUES(`clicks`);";
         $query = $prefix.implode(",",$pairs).$suffix;
         DB::insert($query);
-        Log::info($query);
+        //Log::info($query);
         }
         $keys = Redis::keys('CLICK*');
         foreach($keys as $key => $val){

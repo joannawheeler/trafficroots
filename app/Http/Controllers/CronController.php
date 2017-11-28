@@ -37,7 +37,7 @@ class CronController extends Controller
         $pairs = array();
         $zones = Zone::where('status', 1)->get();
         foreach($zones as $zone){
-            Log::info("Checking zone ".$zone->handle);
+            //Log::info("Checking zone ".$zone->handle);
             /* make sure there is at least a bid Ad record for this zone */
             $ad = DB::select('select * from ads where zone_handle = ?', array($zone->handle));
             if(!sizeof($ad)) {
