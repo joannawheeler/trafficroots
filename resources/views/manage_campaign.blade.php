@@ -24,7 +24,7 @@
             <div class="ibox">
                 <div class="ibox-title"><i class="fa fa-sitemap"></i>&nbsp;Campaign Management
                 <div class="pull-right">
-                <a href="/buyers/campaigns"><span class="label label-success"><i class="fa fa-bolt"></i>&nbsp;Return To Menu</span></a>
+                <a href="/campaigns"><span class="label label-success"><i class="fa fa-bolt"></i>&nbsp;Return To Menu</span></a>
                 </div>
                 </div>
                 <div class="ibox-content">
