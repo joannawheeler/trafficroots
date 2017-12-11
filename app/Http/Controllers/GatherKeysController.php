@@ -8,6 +8,8 @@ use Cache;
 use DB;
 use Log;
 use App\Zone;
+use App\Campaign;
+use App\Bid;
 use App\Site;
 use App\Browser;
 use App\OperatingSystem;
@@ -27,7 +29,8 @@ class GatherKeysController extends Controller
         $this->gatherSiteKeys();
         $this->gatherImpressions();
         $this->gatherClicks();
-        $this->gatherSales();
+	$this->gatherSales();
+	$this->enforceBudgets();
     }
     public function gatherSiteKeys()
     {
@@ -272,4 +275,86 @@ class GatherKeysController extends Controller
         Log::info('Clicks Gathered');
 
     }
+    public function enforceBudgets()
+    {
+	 Log::info('Checking Budgets...');   
+	 DB::statement("SET sql_mode = ''");
+         /* get active campaigns with budgets */
+	    $sql = "SELECT SUM(stats.impressions) as impressions, 
+		    SUM(stats.clicks) as clicks, 
+                    stats.cpm,
+                    bids.id as bid_id,  
+                    campaigns.id as campaign, 
+		    campaigns.campaign_type,
+		    campaigns.campaign_name,
+                    campaigns.user_id,
+		    campaigns.daily_budget,
+                    campaigns.status
+                    FROM stats
+                    JOIN bids ON stats.bid_id = bids.id
+                    JOIN campaigns ON bids.campaign_id = campaigns.id
+		    WHERE stats.stat_date = '2017-12-11'
+                    AND campaigns.status IN (1,8)
+                    AND campaigns.daily_budget > 0
+		    GROUP BY cpm;";
+            $counter = 0;
+	    foreach(DB::select($sql) as $row){
+                   $counter++;
+                   $spend = 0;
+                   /* get today's spend for this campaign */ 
+                   if($row->campaign_type == 1){
+		       $spend = $row->cpm * ($row->impressions / 1000);
+	           }
+		   if($row->campaign_type == 2){
+                       $spend = $row->cpm * $row->clicks;
+		   }
+		   if($row->status == 1){
+			   /* enforce budget */
+			   Log::info('User '.$row->user_id.' - Campaign '.$row->campaign.': '.$row->campaign_name.' has spent '.$spend.' of $'.$row->daily_budget);
+		   if($spend >= $row->daily_budget){
+                       /* budget exceeded */
+			   $this->suspendCampaign($row->campaign);
+		   }
+		   }
+		   if($row->status == 8){
+                       /* check for budget increase */
+		       if($row->daily_budget > $spend){
+			       /* budget increased, re-activate campaign */
+			       $this->activateCampaign($row->campaign);
+		       }   
+	           }
+	    }   
+	    Log::info("Checked $counter budgeted campaigns");
+	    if(intval(date('H')) == 0 && intval(date('i')) == 1){
+		    $this->reactivateSuspendedCampaigns();
+            }else{
+		    Log::info("It's ".date('H:i A').' UTC');
+	    }
+        
+    }
+    private function suspendCampaign($campaign)
+    {
+	    Log::info('Suspending Campaign '.$campaign.' - daily budget reached.');
+	    $update = array('status' => 8);
+	    Campaign::where('id', $campaign)->update($update);
+	    Bid::where('campaign_id', $campaign)->update($update);
+    }
+
+    private function activateCampaign($campaign)
+    {
+            Log::info('Activating Campaign '.$campaign.' - daily budget increased.');
+            $update = array('status' => 1);
+            Campaign::where('id', $campaign)->update($update);
+            Bid::where('campaign_id', $campaign)->update($update);
+    }
+    
+    private function reactivateSuspendedCampaigns()
+    {
+	    /* reset all campaigns - should only run at midnight */
+	    
+	$update = array('status' => 1);
+	Campaign::where('status', 8)->update($update);
+	Bid::where('status', 8)->update($update);
+    }
+    
 }

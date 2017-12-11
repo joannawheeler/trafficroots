@@ -56,6 +56,24 @@ class CampaignController extends Controller
             return $e->getMessage();
         } 
     }
+    public function updateBudget(Request $request)
+    {
+	$user = Auth::getUser();
+        try{
+            $budget = (float) $request->daily_budget;
+            if($budget){
+                $campaign = intval($request->camp_id);
+		Campaign::where('id', $campaign)->where('user_id', $user->id)->update(array('daily_budget' => $budget));
+		Log::info($user->name.' updated daily budget for campaign '.$request->camp_id.' to $'.$budget);
+                return('All Changes Saved');
+            }else{
+                /* bid evaluates to false - invalid */
+                return('Invalid Budget');
+																		                }
+         }catch(Exception $e){
+                return $e->getMessage();
+ 	 } 
+    }
     public function updateTargets(Request $request)
     {
         try {
@@ -91,7 +109,8 @@ class CampaignController extends Controller
                     $data[$key] = '0';
                 }
             }
-            DB::table('campaign_targets')->where('campaign_id', intval($request->campaign_id))->update($data);
+	    DB::table('campaign_targets')->where('campaign_id', intval($request->campaign_id))->update($data);
+	    Log::info($user->name.' updated targets on campaign '.$request->campaign_id);
             return('All Changes Saved');
         } catch (Exception $e) {
             return ($e->getMessage);

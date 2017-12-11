@@ -34,7 +34,7 @@
                         <div class="ibox-content table-responsive">
                             <table class="table table-hover table-border table-striped table-condensed" name="campaigns_table" id="campaigns_table" width="100%">
                             <thead>
-                            <tr><th>Campaign Name</th><th>Type</th><th>Category</th><th>Status</th><th>Location Type</th><th>Date Created</th><th>Bid</th><th>Option</th></tr>
+                            <tr><th>Campaign Name</th><th>Type</th><th>Category</th><th>Status</th><th>Location Type</th><th>Date Created</th><th>Bid</th><th>Daily Budget</th><th>Option</th></tr>
                             </thead>
                             <tbody>
                                 <tr class="camp_row" id="camp_row_{{ $campaign->id }}">
@@ -52,6 +52,13 @@
                                         </form>
                                     </td>
                                     <td>
+                                        <form name="budget_form" id="budget_form" role="form" class="form-horizontal" action="/update_budget" method="POST">
+                                        {{ csrf_field() }}
+                                        <input type="number" id="daily_budget" name="daily_budget" value="{{ $campaign->daily_budget }}">
+                                        <input type="hidden" id="camp_id" name="camp_id" value="{{ $campaign->id }}">
+                                        </form>
+                                    </td>
+				    <td>
                                     <a href="#" data-toggle="tooltip" title="View Campaign Stats" class="camp-stats" id="camp_stats_{{ $campaign->id }}"><i class="fa fa-bar-chart" aria-hidden="true"></i></a>
 @if( $campaign->status == 3)
 &nbsp;<a href="#" data-toggle="tooltip" title="Start this Campaign" class="camp-start" id="camp_start_{{ $campaign->id }}"><i class="fa fa-play" aria-hidden="true"></i></a>
@@ -163,7 +170,18 @@ jQuery(document).ready(function ($) {
                 .fail(function (response) {
                     toastr.error(response);
                 });
-        });
+	});
+        $("#daily_budget").change(function () {
+	    var url = "{{ url('/update_budget') }}";
+	    var mydata = $("#budget_form").serialize();
+	    $.post(url, mydata)
+		.done(function (response) {
+                    toastr.success(response);
+                })
+                .fail(function (response) {
+		    toastr.error(response);
+                });
+        });		    
         $('.camp-start').click(function() {
             if(confirm('Activate this campaign?')){
                 var str =  $(this).attr('id');
