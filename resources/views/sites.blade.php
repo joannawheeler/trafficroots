@@ -1,3 +1,6 @@
+<?php
+use App\Site;
+?>
 @extends('layouts.app')
 
 @section('title','- Sites')
@@ -86,10 +89,11 @@ hljs.initHighlightingOnLoad();
                                         </div>
                                         <div class="form-group">
                                             <label>Site Category</label>
-                                            <select class="form-control m-b"
-                                                    name="site_category"
-                                                    required>
-                                                <option value="">Choose Site Category</option>
+                                            <select class="form-control m-b chosen-select"
+						    name="site_category"
+                                                    placeholder="Choose this Site's Category"
+						    required>
+                                                <option value="">Choose this Site's Category</option>
                                                 @foreach($categories as $category)
                                                 <option value="{{ $category->id }}">{{ $category->category }}</option>
                                                 @endforeach
@@ -98,19 +102,19 @@ hljs.initHighlightingOnLoad();
                                                    for="site_category"></label>
                                         </div>
                                         <div class="form-group">
-                                            <label for="allowed_category">Categories Allowed</label>
-                                            <select class="form-control m-b"
+                                            <label for="allowed_category[]">Advertising Categories Allowed</label>
+                                            <select class="form-control m-b chosen-select"
                                                     name="allowed_category[]"
-                                                    id="allowed_category[]"
+						    id="allowed_category[]"
+                                                    placeholder="Select Categories Allowed on this Site"
                                                     multiple
                                                     required>
-                                                <option value="">Select Allowed Categories</option>
                                                 @foreach($categories as $category)
                                                 <option value="{{ $category->id }}">{{ $category->category }}</option>
                                                 @endforeach
                                             </select>
                                             <label class="error hide"
-                                                   for="allowed_category"></label>
+                                                   for="allowed_category[]"></label>
                                         </div>
                                         <div class="form-group">
                                             <label>
@@ -245,7 +249,7 @@ hljs.initHighlightingOnLoad();
                                             </div>
                                             <div class="form-group">
                                                 <label>Type</label>
-                                                <select class="form-control m-b"
+                                                <select class="form-control m-b chosen-select"
                                                         value="{{ old('location_type') }}"
                                                         name="location_type"
                                                         required>
@@ -374,8 +378,7 @@ hljs.initHighlightingOnLoad();
                 </div>
                 <form name="site_form"
                       id="site_form"
-                      action="{{ url("
-                      sites/$site->id") }}" method="POST"> {{ method_field('PATCH') }}
+                      action="{{ url("sites/$site->id") }}" method="POST"> {{ method_field('PATCH') }}
                     <div class="modal-body">
                         {{ csrf_field() }}
                         <div class="form-group">
@@ -404,7 +407,7 @@ hljs.initHighlightingOnLoad();
                         </div>
                         <div class="form-group">
                             <label>Category</label>
-                            <select class="form-control m-b"
+                            <select class="form-control m-b chosen-select"
                                     value="{{ $site->site_category }}"
                                     name="site_category"
                                     required>
@@ -415,7 +418,23 @@ hljs.initHighlightingOnLoad();
 
                             <label class="error hide"
                                    for="site_category"></label>
-                        </div>
+			</div>
+
+                                        <div class="form-group">
+                                            <label for="allowed_category[]">Advertising Categories Allowed</label>
+                                            <select class="form-control m-b chosen-select"
+                                                    name="allowed_category[]"
+						    id="allowed_category[]"
+                                                    placeholder="Select Categories Allowed on this Site"
+                                                    multiple
+                                                    required>
+                                                @foreach($categories as $category)
+                                                <option @if(Site::join('site_category', 'sites.id', '=', 'site_category.site_id')->where('sites.id', $site->id)->where('site_category.category', $category->id)->count() > 0) selected="selected" @endif value="{{ $category->id }}">{{ $category->category }}</option>
+                                                @endforeach
+                                            </select>
+                                            <label class="error hide"
+                                                   for="allowed_category[]"></label>
+                                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button"
@@ -451,8 +470,7 @@ hljs.initHighlightingOnLoad();
                     </div>
                     <form name="site_form"
                           id="site_form"
-                          action="{{ url("
-                          zones/$zone->id") }}" method="POST"> {{ method_field('PATCH') }}
+                          action="{{ url("zones/$zone->id") }}" method="POST"> {{ method_field('PATCH') }}
                         <div class="modal-body">
                             {{ csrf_field() }}
                             <div class="form-group">
@@ -518,5 +536,14 @@ hljs.initHighlightingOnLoad();
             </div>
         </div>
     @endforeach
-@endforeach
+    @endforeach
+    
+<script type="text/javascript">
+$("select").chosen({
+                search_contains : true, // kwd can be anywhere
+                max_shown_results : 5, // show only 5 suggestions at a time
+                width: "95%",
+                no_results_text: "Oops, nothing found!"
+            } );
+</script>
 @endsection
