@@ -14,6 +14,10 @@
     display: none;
 }
 </style>
+<link rel="stylesheet"
+      href="{{ URL::asset('css/plugins/select2/select2.min.css') }}">
+<link rel="stylesheet"
+      href="{{ URL::asset('css/plugins/chosen/chosen.css') }}">
 @endsection
 
 @section('js')
@@ -23,6 +27,8 @@
 hljs.initHighlightingOnLoad();
 </script>
 <script src="{{ URL::asset('js/plugins/iCheck/icheck.min.js') }}"></script>
+<script src="{{ URL::asset('js/plugins/select2/select2.full.min.js') }}"></script>
+<script src="{{ URL::asset('js/plugins/chosen/chosen.jquery.js') }}"></script>
 @endsection
 
 @section('content')
@@ -79,7 +85,7 @@ hljs.initHighlightingOnLoad();
                                                    for="site_url"></label>
                                         </div>
                                         <div class="form-group">
-                                            <label>Category</label>
+                                            <label>Site Category</label>
                                             <select class="form-control m-b"
                                                     name="site_category"
                                                     required>
@@ -90,6 +96,21 @@ hljs.initHighlightingOnLoad();
                                             </select>
                                             <label class="error hide"
                                                    for="site_category"></label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="allowed_category">Categories Allowed</label>
+                                            <select class="form-control m-b"
+                                                    name="allowed_category[]"
+                                                    id="allowed_category[]"
+                                                    multiple
+                                                    required>
+                                                <option value="">Select Allowed Categories</option>
+                                                @foreach($categories as $category)
+                                                <option value="{{ $category->id }}">{{ $category->category }}</option>
+                                                @endforeach
+                                            </select>
+                                            <label class="error hide"
+                                                   for="allowed_category"></label>
                                         </div>
                                         <div class="form-group">
                                             <label>
