@@ -81,6 +81,7 @@ Route::get('/folder', 'CampaignController@createFolder');
 Route::post('/folder', 'CampaignController@postFolder');
 Route::get('/whoami', 'HomeController@whoAmI');
 Route::get('/activate_bid/{id}', 'SiteController@activateBid');
+Route::get('/decline_bid/{id}', 'SiteController@declineBid');
 Route::get('/preview/{id}', 'SiteController@previewBid');
 
 Route::get('/faq_advertiser', 'HomeController@advertiserFaq');

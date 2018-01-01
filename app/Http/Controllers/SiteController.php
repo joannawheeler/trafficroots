@@ -209,6 +209,7 @@ class SiteController extends Controller
     /* activate pending bids upon command */
     public function activateBid(Request $request)
     {
+	$id = $request->id;
         $sql = 'SELECT `bids`.* 
         FROM `bids` 
         JOIN `zones`
@@ -219,10 +220,10 @@ class SiteController extends Controller
         $result = DB::select($sql, array($request->id, $user->id));
         if(sizeof($result)){
             $sql = 'UPDATE `bids`
-                    SET `status` = ?
+                    SET `status` = 1,
                     `updated_at` = NOW()
                      WHERE `id` = ?';
-            DB::update($sql,array(1,$id));
+            DB::update($sql,array($id));
             $log = 'User '.$user->id.': '.$user->name.' activated bid '.$id;
             Log::info($log);
             return "Bid $id Activated!";
@@ -233,6 +234,7 @@ class SiteController extends Controller
         /* activate pending bids upon command */
     public function declineBid(Request $request)
     {
+        $id = $request->id;
         $sql = 'SELECT `bids`.* 
         FROM `bids` 
         JOIN `zones`
@@ -243,7 +245,7 @@ class SiteController extends Controller
         $result = DB::select($sql, array($request->id, $user->id));
         if(sizeof($result)){
             $sql = 'UPDATE `bids`
-                    SET `status` = ?
+                    SET `status` = ?,
                     `updated_at` = NOW()
                      WHERE `id` = ?';
             DB::update($sql,array(4,$id));
@@ -290,15 +292,15 @@ class SiteController extends Controller
                     FROM creatives
                     JOIN media
                     ON creatives.media_id = media.id
-                    JOIN links on creatives.link_id = link.id
+                    JOIN links on creatives.link_id = links.id
                     WHERE creatives.campaign_id = ?";
             $creatives = DB::select($sql, array($result[0]->campaign_id));
             if(sizeof($creatives)){
                 $media = array();
                 $links = array();
                 foreach($creatives as $creative){
-                    $media[] = '<img src="{{ $creative->file_location }}" alt="preview"></img>';
-                    $links[] = '<a href="{{ $creative->url }}" target="_blank">Campaign Link</a>';
+                    $media[] = '<img src="/'.$creative->file_location.'" alt="preview"></img>';
+                    $links[] = '<a href="'.$creative->url.'" target="_blank">Campaign Link</a>';
                 }
             }else{
                 $media = array();

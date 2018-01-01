@@ -39,7 +39,7 @@ hljs.initHighlightingOnLoad();
 <div class="row">
     <div class="col-lg-12">
         <div class="ibox">
-            <div class="ibox-title">Pending Campaigns</div>
+            <div class="ibox-title"><h5>Pending Campaigns</h5></div>
             <div class="ibox-content">
                 <div class="row"><div class="col-lg-3">Site</div><div class="col-lg-3">Campaign</div><div class="col-lg-3">Advertiser</div><div class="col-lg-3">Options</div></div>
                 @foreach ($pending as $pend)
@@ -54,7 +54,7 @@ hljs.initHighlightingOnLoad();
                        {{ $pend->name }}
                     </div>
                     <div class="col-lg-3">
-                                <button class="btn btn-xs alert-success activate-bid" id="activate_bid_{{ $pend->id }}"><i class="fa fa-check-square-o"></i> Activate</button>&nbsp;<a href="/preview/{{ $pend->id }}" target="_blank"><button class="btn btn-xs alert-info"><i class="fa fa-camera-retro"></i> Preview</button></a>&nbsp;<button class="btn btn-xs alert-danger decline-bid" id="decline_bid_{{ $pend->id }}"><i class="fa fa-times-square-o"></i> Decline</button>
+                                <button class="btn btn-xs alert-success activate-bid" id="activate_bid_{{ $pend->id }}"><i class="fa fa-check-square-o"></i> Activate</button>&nbsp;<a href="/preview/{{ $pend->id }}" target="_blank"><button class="btn btn-xs alert-info"><i class="fa fa-camera-retro"></i> Preview</button></a>&nbsp;<button class="btn btn-xs alert-danger decline-bid" id="decline_bid_{{ $pend->id }}"><i class="fa fa-times-circle-o"></i> Decline</button>
                     </div>
                 </div>
                 
@@ -71,9 +71,9 @@ hljs.initHighlightingOnLoad();
                 <h5>Sites</h5>
                 <div class="pull-right">
                     <button type="button"
-                            class="btn btn-xs btn-primary"
+                            class="btn btn-xs alert-success"
                             data-toggle="modal"
-                            data-target="#addSite">Add Site</button>
+                            data-target="#addSite"><i class="fa fa-plus-square-o"></i> Add Site</button>
                     <div class="modal inmodal"
                          id="addSite"
                          tabindex="-1"
@@ -197,22 +197,22 @@ hljs.initHighlightingOnLoad();
                                 <td data-site_id="{{ $site->id }}">
                                     <a href="#"
                                        class="site-zones">
-                                        <span class="label label-success">Zones</span>
+                                        <button class="btn btn-xs alert-info"><i class="fa fa-newspaper-o"></i> Zones</button>
                                     </a>
                                     <a href="{{ url("stats/site/".$site->id) }}" class="site-stats">
-                                        <span class="label label-info">Stats</span>
+                                        <button class="btn btn-xs alert-warning"><i class="fa fa-line-chart"></i> Stats</button>
                                     </a>
                                     <a href="#"
                                        class="site-edit"
                                        data-toggle="modal"
                                        data-target="#editSite{{ $site->id }}">
-                                        <span class="label">Edit</span>
+                                        <button class="btn btn-xs alert-success"><i class="fa fa-edit"></i> Edit</button>
                                     </a>
                                     <a href="#"
                                        class="site-pixel"
                                        data-toggle="modal"
                                        data-target="#sitePixel{{ $site->id }}">
-                                        <span class="label label-success">Pixel</span>
+                                        <button class="btn btn-xs alert-info"><i class="fa fa-file-code-o"></i> Pixel</button>
                                     </a>
                                 </td>
                             </tr>
@@ -333,19 +333,19 @@ hljs.initHighlightingOnLoad();
                                 <td data-zone_id="{{ $zone->id }}">
                                     <a href="/stats/zone/{{ $zone->id }}"
                                        class="zone-stats">
-                                        <span class="label label-info">Stats</span>
+                                        <button class="btn btn-xs alert-info"><i class="fa fa-line-chart"></i> Stats</button>
                                     </a>
                                     <a href="#"
                                        class="zone-edit"
                                        data-toggle="modal"
                                        data-target="#editZone{{ $zone->id }}">
-                                        <span class="label">Edit</span>
+                                        <button class="btn btn-xs alert-success"><i class="fa fa-edit"></i> Edit</button>
                                     </a>
                                     <a href="#"
                                        class="zone-code"
                                        data-toggle="modal"
                                        data-target="#zoneCode{{ $zone->id }}">
-                                        <span class="label label-success">Code</span>
+                                        <button class="btn btn-xs alert-info"><i class="fa fa-file-code-o"></i> Code</span>
                                     </a>
                                 </td>
                             </tr>
@@ -372,7 +372,7 @@ hljs.initHighlightingOnLoad();
             <div class="modal-content animated fadeIn">
                 <div class="modal-header">
                     <button type="button"
-                            class="close"
+                            class="btn close"
                             data-dismiss="modal">
                         <span aria-hidden="true">&times;</span>
                         <span class="sr-only">Close</span>
@@ -398,7 +398,7 @@ hljs.initHighlightingOnLoad();
             <div class="modal-content animated fadeIn">
                 <div class="modal-header">
                     <button type="button"
-                            class="close"
+                            class="btn close"
                             data-dismiss="modal">
                         <span aria-hidden="true">&times;</span>
                         <span class="sr-only">Close</span>
