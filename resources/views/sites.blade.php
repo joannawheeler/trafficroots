@@ -88,7 +88,7 @@ hljs.initHighlightingOnLoad();
                                         <span aria-hidden="true">&times;</span>
                                         <span class="sr-only">Close</span>
                                     </button>
-                                    <h4 class="modal-title">New site</h4>
+                                    <h4 class="modal-title"><i class="fa fa-plus-square-o"></i> New site</h4>
                                 </div>
                                 <form name="site_form"
                                       id="site_form"
@@ -257,7 +257,7 @@ hljs.initHighlightingOnLoad();
                                             <span aria-hidden="true">&times;</span>
                                             <span class="sr-only">Close</span>
                                         </button>
-                                        <h4 class="modal-title">New Zone</h4>
+                                        <h4 class="modal-title"><i class="fa fa-plus-square-o"></i> New Zone</h4>
                                     </div>
                                     <form name="zone_form"
                                           id="zone_form"
@@ -377,7 +377,7 @@ hljs.initHighlightingOnLoad();
                         <span aria-hidden="true">&times;</span>
                         <span class="sr-only">Close</span>
                     </button>
-                    <h4 class="modal-title">Site Analysis Pixel</h4>
+                    <h4 class="modal-title"><i class="fa fa-file-code-o"></i> Site Analysis Pixel</h4>
                 </div>
                 <div class="modal-body">
                     <h3>Your Traffic Roots Analysis Pixel</h3>
@@ -403,7 +403,7 @@ hljs.initHighlightingOnLoad();
                         <span aria-hidden="true">&times;</span>
                         <span class="sr-only">Close</span>
                     </button>
-                    <h4 class="modal-title">Edit Site</h4>
+                    <h4 class="modal-title"><i class="fa fa-edit"></i> Edit Site</h4>
                 </div>
                 <form name="site_form"
                       id="site_form"
@@ -495,7 +495,7 @@ hljs.initHighlightingOnLoad();
                             <span aria-hidden="true">&times;</span>
                             <span class="sr-only">Close</span>
                         </button>
-                        <h4 class="modal-title">Edit Zone</h4>
+			<h4 class="modal-title"><i class="fa fa-edit"></i> Edit Zone</h4>
                     </div>
                     <form name="site_form"
                           id="site_form"
@@ -552,7 +552,7 @@ hljs.initHighlightingOnLoad();
                             <span aria-hidden="true">&times;</span>
                             <span class="sr-only">Close</span>
                         </button>
-                        <h4 class="modal-title">Zone Invocation Code</h4>
+                        <h4 class="modal-title"><i class="fa fa-file-code-o"></i> Zone Invocation Code</h4>
                     </div>
                     <div class="modal-body">
                         <h3>Place this code in your site's layout:</h3>
