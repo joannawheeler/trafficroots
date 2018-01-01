@@ -39,7 +39,8 @@ class SiteController extends Controller
                     ->where('user_id', Auth::user()->id)
             ],
             'site_url' => 'required|url|unique:sites,site_url',
-            'site_category' => 'required|exists:categories,id'
+	    'site_category' => 'required|exists:categories,id',
+	    'allowed_category' => 'required'
         ]);
         $newsite = Site::create([
             'site_name' => $request->site_name,
@@ -48,7 +49,12 @@ class SiteController extends Controller
             'user_id' => Auth::user()->id,
             'site_handle' => uniqid()
         ]);
-        
+        if(is_array($request->allowed_category) && count($request->allowed_category)){
+            foreach($request->allowed_category as $k => $v){
+	        $sql = "INSERT INTO trafficroots.site_category (site_id, category) VALUES(?,?);";
+		DB::insert($sql, array($newsite->id, $v));
+            }
+	}	    
         /* create standard zones on demand */
         $msg = '';
         if($request->has('zone_create')){
@@ -96,13 +102,22 @@ class SiteController extends Controller
                 'url',
                 Rule::unique('sites')->ignore($site->id)
             ],
-            'site_category' => 'required|exists:categories,id'
+	    'site_category' => 'required|exists:categories,id',
+	    'allowed_category' => 'required'
         ]);
         $site->site_name = $request->site_name;
         $site->site_url = $request->site_url;
         $site->site_category = $request->site_category;
         $site->save();
-
+	if(is_array($request->allowed_category) && count($request->allowed_category)){
+	    Log::info('Allowed Category exists');
+            $sql = "DELETE FROM trafficroots.site_category WHERE site_id = ?";
+	    DB::delete($sql, array($site->id));
+            foreach($request->allowed_category as $k => $v){
+                $sql = "INSERT INTO trafficroots.site_category (site_id, category) VALUES(?,?);";
+                DB::insert($sql, array($site->id, $v));
+	    }
+	}
         session()->flash('status', [
             'type' => 'success',
             'message' => 'Site updated successfully'
