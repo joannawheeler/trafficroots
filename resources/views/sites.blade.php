@@ -32,6 +32,35 @@ hljs.initHighlightingOnLoad();
 @endsection
 
 @section('content')
+@if(sizeof($pending))
+<div class="row">
+    <div class="col-lg-12">
+        <div class="ibox">
+            <div class="ibox-title">Pending Campaigns</div>
+            <div class="ibox-content">
+                <div class="row"><div class="col-lg-3">Site</div><div class="col-lg-3">Campaign</div><div class="col-lg-3">Advertiser</div><div class="col-lg-3">Options</div></div>
+                @foreach ($pending as $pend)
+                <div class="row">
+                    <div class="col-lg-3">
+                       {{ $pend->site_name }}
+                    </div>
+                    <div class="col-lg-3">
+                       {{ $pend->campaign_name }}
+                    </div>
+                    <div class="col-lg-3">
+                       {{ $pend->name }}
+                    </div>
+                    <div class="col-lg-3">
+                                <button class="btn btn-xs alert-success activate-bid" id="activate_bid_{{ $pend->id }}"><i class="fa fa-check-square-o"></i> Activate</button>&nbsp;<a href="/preview/{{ $pend->id }}" target="_blank"><button class="btn btn-xs alert-info"><i class="fa fa-camera-retro"></i> Preview</button></a>&nbsp;<button class="btn btn-xs alert-danger decline-bid" id="decline_bid_{{ $pend->id }}"><i class="fa fa-times-square-o"></i> Decline</button>
+                    </div>
+                </div>
+                
+                @endforeach
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 <div class="row">
     <div class="col-lg-12">
         <div class="ibox">
@@ -519,4 +548,44 @@ hljs.initHighlightingOnLoad();
         </div>
     @endforeach
 @endforeach
+<script type="text/javascript">
+        $('.activate-bid').click(function() {
+            if(confirm('Activate this campaign?')){
+                var str =  $(this).attr('id');
+                var res = str.split("_");
+                var url = '/activate_bid/' + res[2];
+                $.get(url)
+                    .done(function (response) {
+                        toastr.success(response, function(){
+                          setTimeout(function(){ window.location.reload(); }, 3000);
+                        });
+                    })
+                    .fail(function (response) {
+                        toastr.error(response);
+                    });
+            }else{
+                return false;
+            }
+
+        });    
+        $('.decline-bid').click(function() {
+            if(confirm('Decline this campaign?')){
+                var str =  $(this).attr('id');
+                var res = str.split("_");
+                var url = '/decline_bid/' + res[2];
+                $.get(url)
+                    .done(function (response) {
+                        toastr.success(response, function(){
+                          setTimeout(function(){ window.location.reload(); }, 3000);
+                        });
+                    })
+                    .fail(function (response) {
+                        toastr.error(response);
+                    });
+            }else{
+                return false;
+            }
+
+        });
+</script>
 @endsection

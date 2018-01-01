@@ -33,6 +33,7 @@ class CronController extends Controller
     public function bidRoller()
     {
         Log::info("Bid Roller Running");
+        $this->activatePending();
         //function to match zones to active campaigns
         $pairs = array();
         $zones = Zone::where('status', 1)->get();
@@ -71,9 +72,9 @@ class CronController extends Controller
             
              
             foreach($campaigns as $camp){
-                $pairs[] = "(NULL,'"
+                $pairs[] = "('"
                            .$zone->handle."',"
-                           .$zone->location_type.",1,"
+                           .$zone->location_type.",5,"
                            .$camp->user_id.","
                            .$camp->id.","
                            .$camp->bid.",'"
@@ -97,7 +98,7 @@ class CronController extends Controller
             }
         }
         if(sizeof($pairs)){
-        $prefix = "INSERT INTO bids (id,zone_handle,location_type,status,buyer_id,campaign_id,bid,country_id,state_id,city_id,category_id,device_id,os_id,browser_id,keywords,created_at,updated_at) VALUES";
+        $prefix = "INSERT INTO bids (zone_handle,location_type,status,buyer_id,campaign_id,bid,country_id,state_id,city_id,category_id,device_id,os_id,browser_id,keywords,created_at,updated_at) VALUES";
         $suffix = " ON DUPLICATE KEY UPDATE 
                     bid = VALUES(`bid`), 
                     country_id = VALUES(`country_id`), 
@@ -115,6 +116,31 @@ class CronController extends Controller
         } else {
             Log::info("Bid Roller Complete!");
         }
+        }
+    }
+    
+    /* activate any pending bids after 36 hours */
+    public function activatePending()
+    {
+        $mydate = date('Y-m-d H:i:s',strtotime("-36 hours"));
+        $sql = "SELECT `bids`.* 
+                FROM `bids`
+                JOIN `campaigns`
+                ON `bids`.`campaign_id` = `campaigns`.`id`
+                WHERE `campaigns`.`status` = ?  
+                AND `bids`.`status` = ?
+                AND `bids`.`created_at` < ?;";
+        $result = DB::select($sql, array(1, 5, $mydate));
+        if(sizeof($result)){
+            Log::info(sizeof($result).' Pending Bids to Activate');
+            foreach($result as $row){
+                $sql = 'UPDATE `bids` SET `status` = ? WHERE `id` = ?';
+                DB::update($sql, array(1, $row->id));
+                $info = 'Campaign '.$row->campaign_id.' Activated on Zone '.$row->zone_handle;
+                Log::info($info);                
+            }
+        }else{
+            Log::info('No Pending Bids to Activate.');
         }
     }
 }

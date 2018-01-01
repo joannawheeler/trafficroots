@@ -80,6 +80,8 @@ Route::post('/update_budget', 'CampaignController@updateBudget');
 Route::get('/folder', 'CampaignController@createFolder');
 Route::post('/folder', 'CampaignController@postFolder');
 Route::get('/whoami', 'HomeController@whoAmI');
+Route::get('/activate_bid/{id}', 'SiteController@activateBid');
+Route::get('/preview/{id}', 'SiteController@previewBid');
 
 Route::get('/faq_advertiser', 'HomeController@advertiserFaq');
 Route::get('/faq_publisher', 'HomeController@publisherFaq');
