@@ -30,13 +30,10 @@
                     <li class="nav-header">
                         <div class="dropdown profile-element">
                             <!-- Branding Image -->
-                            <div>
+                            <div class="text-center">
                                 <a href="{{ url('/') }}">
-                                        <img src="{{ url('/white_tree_logo.png') }}" alt="TrafficRoots" width="50" height="52">
+                                        <img src="{{ url('/img/white_tree_logo.png') }}" alt="TrafficRoots" width="100" height="104">
                                 </a>
-                            </div>
-                            <div class="logo-element">
-                                <img src="{{ url('/logo.png') }}" alt="TrafficRoots" width="40" height="42">
                             </div>
                     </li>
                     <!-- Authentication Links -->

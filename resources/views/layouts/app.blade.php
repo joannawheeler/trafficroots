@@ -30,15 +30,13 @@
                     <li class="nav-header">
                         <div class="dropdown profile-element">
                             <!-- Branding Image -->
-                            <div>
+                            <div class="text-center">
                                 <a href="{{ url('/') }}">
-                                    <div class="logo-style">
-                                        <img src="{{ url('/logo.png') }}" alt="TrafficRoots" width="50" height="52">
-                                    </div>
+                                        <img src="{{ url('/img/white_tree_logo.png') }}" alt="TrafficRoots" width="100" height="104">
                                 </a>
                             </div>
-                            <div class="logo-element">
-                                <img src="{{ url('/logo.png') }}" alt="TrafficRoots" width="40" height="42">
+			    <div class="logo-element">
+                                <img src="{{ url('/img/white_tree_logo.png') }}" alt="TrafficRoots" width="40" height="42">
                             </div>
                     </li>
                     <!-- Authentication Links -->
@@ -78,9 +76,6 @@
                             <li>
                                 <a href="{{ URL::to('stats/pub') }}">Stats</a>
                             </li>
-                            <li>
-                                <a href="{{URL::to('account/publisher')}}">Account</a>
-                            </li> 
                             <li>
                                 <a href="{{URL::to('faq_publisher')}}">FAQ</a>
                             </li>                            
