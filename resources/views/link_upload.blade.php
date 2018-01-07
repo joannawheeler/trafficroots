@@ -1,7 +1,7 @@
 <button type="button"
         class="btn btn-xs btn-primary"
         data-toggle="modal"
-        data-target="#addLink">Add Link</button>
+        data-target="#addLink"><i class="fa fa-plus-square-o"></i>&nbsp;&nbsp;Add Link</button>
 <div class="modal inmodal"
      id="addLink"
      tabindex="-1"

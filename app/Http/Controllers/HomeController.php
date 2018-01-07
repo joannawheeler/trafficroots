@@ -97,7 +97,8 @@ class HomeController extends Controller
             $allow_folders = false;
             $folders = array();
         }
-        return view('library', array('location_types' => $location, 
+	return view('library', array('user' => $user,
+		                     'location_types' => $location, 
                                      'categories' => $category, 
                                      'campaign_types' => $campaign_types, 
                                      'width' => $width, 

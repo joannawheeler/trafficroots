@@ -1,7 +1,7 @@
 <button type="button"
         class="btn btn-xs btn-primary"
         data-toggle="modal"
-        data-target="#addMedia">Add Image</button>
+        data-target="#addMedia"><i class="fa fa-plus-square-o"></i>&nbsp;Add Image</button>
 <div class="modal inmodal"
      id="addMedia"
      tabindex="-1"

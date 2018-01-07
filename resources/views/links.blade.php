@@ -46,42 +46,4 @@
 
   </div>
 </div>
-<script type="text/javascript">
-    jQuery(document).ready(function ($) {
-        // $.noConflict();
-        $('.camp_row').click(function(){
-            var str =  $(this).attr('id');
-            var res = str.split("_");
-            var url = '/manage_campaign/' + res[2];
-            window.location.assign(url);
-        });
-        $('.camp-stats').click(function(){
-            var str =  $(this).attr('id');
-            var res = str.split("_");
-            var url = '/stats/site/' + res[2] + '/1';
-            window.location.assign(url);
-        }); 
-        $('.camp_row').hover(function() {
-            $(this).css('cursor','pointer');
-        });
-        $('[data-toggle="popover"]').popover({
-            html: true,
-        });
-        $('.tr-iframe').click(function(){
-            var str =  $(this).attr('id');
-            var res = str.split("_");
-            var url = 'https://publishers.trafficroots.com' + res[4];
-            $('#mybody').html('<iframe width="100%" height="100%" frameborder="0" src="' + url + '"></iframe>');
-            $('#mybody').height(res[3]);
-            $('#mybody').width(res[2]);
-        });
-        if($('#alert_div'))
-        {
-            $('#alert_div').fadeOut(1600, function(){
-
-             });
-        }
-    });
-
-</script>
 

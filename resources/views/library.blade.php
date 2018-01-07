@@ -32,14 +32,14 @@
                     </ul>
                     <div id="my-tab-content" class="tab-content">
                     <div class="tab-pane table-responsive active" id="media-tab">
-                        @include('media',['user' => $user, 'media' => $media, 'location_types' => $location, 'categories' => $category, 'campaign_types' => $campaign_types, 'width' => $width, 'height' => $height, 'status_types' => $status_types])
+                        @include('media',['user' => $user, 'media' => $media, 'location_types' => $location_types, 'categories' => $categories, 'campaign_types' => $campaign_types, 'width' => $width, 'height' => $height, 'status_types' => $status_types])
                     </div>
                     <div class="tab-pane table-responsive active" id="link-tab">
-                        @include('links',['user' => $user, 'links' => $links, 'location_types' => $location, 'categories' => $category, 'campaign_types' => $campaign_types, 'width' => $width, 'height' => $height, 'status_types' => $status_types])
+                        @include('links',['user' => $user, 'links' => $links, 'location_types' => $location_types, 'categories' => $categories, 'campaign_types' => $campaign_types, 'width' => $width, 'height' => $height, 'status_types' => $status_types])
                     </div> 
                     @if($allow_folders)
                     <div class="tab-pane table-responsive active" id="folder-tab">
-                        @include('folders',['user' => $user, 'folders' => $folders, 'location_types' => $location, 'categories' => $category, 'campaign_types' => $campaign_types, 'width' => $width, 'height' => $height, 'status_types' => $status_types]);
+                        @include('folders',['user' => $user, 'folders' => $folders, 'location_types' => $location_types, 'categories' => $categories, 'campaign_types' => $campaign_types, 'width' => $width, 'height' => $height, 'status_types' => $status_types]);
                     </div> 
                     @endif
                     </div>

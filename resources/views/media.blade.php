@@ -1,4 +1,3 @@
-
             <div class="ibox">
                 <div class="ibox-title" id="creative_heading">My Media <div class="pull-right">@include('media_upload')</div></div>
                 <div class="ibox-content table-responsive" id="media_div">
@@ -59,20 +58,6 @@
         $('[data-toggle="popover"]').popover({
             html: true,
         });
-        $('.tr-iframe').click(function(){
-            var str =  $(this).attr('id');
-            var res = str.split("_");
-            var url = 'https://publishers.trafficroots.com' + res[4];
-            $('#mybody').html('<iframe width="100%" height="100%" frameborder="0" src="' + url + '"></iframe>');
-            $('#mybody').height(res[3]);
-            $('#mybody').width(res[2]);
-        });
-        if($('#alert_div'))
-        {
-            $('#alert_div').fadeOut(1600, function(){
-
-             });
-        }
     });
 
 </script>
