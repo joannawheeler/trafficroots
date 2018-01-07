@@ -1,6 +1,3 @@
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
             <div class="ibox">
                         <div class="ibox-title" id="creative_heading">My Folders<a href="/folder" class="btn btn-xs btn-primary pull-right">Upload HTML5 Folder</a></div>
                         <div class="ibox-content table-responsive" id="folder_div">
@@ -28,9 +25,7 @@
                         @endif
                         </div>
             </div>
-        </div>
-    </div>
-</div>
+
 <!-- Modal -->
 <div id="myModal" class="modal fade" role="dialog">
   <div class="modal-dialog modal-lg">

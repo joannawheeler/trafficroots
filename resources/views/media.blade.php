@@ -1,6 +1,4 @@
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
+
             <div class="ibox">
                 <div class="ibox-title" id="creative_heading">My Media <div class="pull-right">@include('media_upload')</div></div>
                 <div class="ibox-content table-responsive" id="media_div">
@@ -35,9 +33,6 @@
                 </div>
                 
             </div>
-        </div>
-    </div>
-</div>
 
 <!-- Modal -->
 <div id="myModal" class="modal fade" role="dialog">

@@ -1,6 +1,3 @@
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
             <div class="ibox">
                         <div class="ibox-title" id="links_heading">My Links<div class="pull-right">@include('link_upload')</div></div>
                         <div class="ibox-content table-responsive" id="links_div">
@@ -29,9 +26,6 @@
                         {{-- <br /><br /><a href="/links"><button class="btn-u" type="button" id="add_link">Add Links</button></a> --}}
                         </div>
             </div>
-        </div>
-    </div>
-</div>
 <!-- Modal -->
 <div id="myModal" class="modal fade" role="dialog">
   <div class="modal-dialog modal-lg">
