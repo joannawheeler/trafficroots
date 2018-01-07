@@ -1,22 +1,3 @@
-@extends('layouts.app')
-
-@section('title','- Advertisers')
-
-@section('content')
-    @if(Session::has('success'))
-        <div id="alert_div" class="alert alert-success">
-            <h4>{{ Session::get('success') }}</h4>
-        </div>
-    @endif
-    @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -29,14 +10,14 @@
                             <tr><th>Folder Name</th><th>Category</th><th>Location Type</th><th>Status</th><th>Date Uploaded</th><th>Preview</th></tr>
                             </thead>
                             <tbody>
-                            @foreach ($folders as $file)
-                                <tr class="media_row" id="media_row_{{ $file->id }}">
-                                    <td>{{ $file->folder_name }} </td>
-                                    <td> {{ $categories[$file->category] }} </td>
-                                    <td> {{ $location_types[$file->location_type] }} </td>
-                                    <td> {{ $status_types[$file->status] }} </td>
-                                    <td> {{ Carbon\Carbon::parse($file->created_at)->toDayDateTimeString() }} </td>
-                                    <td> <a href="#" class="tr-iframe" data-toggle="modal" data-target="#myModal" id="view_folder_{{ $width[$file->location_type] }}_{{ $height[$file->location_type] }}_{{ $file->file_location }}"><i class="fa fa-camera-retro" aria-hidden="true"></a></i></td>
+                            @foreach ($folders as $folder)
+                                <tr class="media_row" id="media_row_{{ $folder->id }}">
+                                    <td>{{ $folder->folder_name }} </td>
+                                    <td> {{ $categories[$folder->category] }} </td>
+                                    <td> {{ $location_types[$folder->location_type] }} </td>
+                                    <td> {{ $status_types[$folder->status] }} </td>
+                                    <td> {{ Carbon\Carbon::parse($folder->created_at)->toDayDateTimeString() }} </td>
+                                    <td> <a href="#" class="tr-iframe" data-toggle="modal" data-target="#myModal" id="view_folder_{{ $width[$folder->location_type] }}_{{ $height[$folder->location_type] }}_{{ $folder->file_location }}"><i class="fa fa-camera-retro" aria-hidden="true"></a></i></td>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -92,4 +73,3 @@
     });
 
 </script>
-@endsection

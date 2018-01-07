@@ -68,16 +68,16 @@
                         </a>
                         <ul class="nav nav-second-level collapse">
                             <li>
-                                <a href="{{ URL::to('home?type=1') }}">Dashboard</a>
+                                <a href="{{ URL::to('/home?type=1') }}">Dashboard</a>
                             </li>
                             <li>
-                                <a href="{{ URL::to('sites') }}">Sites</a>
+                                <a href="{{ URL::to('/sites') }}">Sites</a>
                             </li>
                             <li>
-                                <a href="{{ URL::to('stats/pub') }}">Stats</a>
+                                <a href="{{ URL::to('/stats/pub') }}">Stats</a>
                             </li>
                             <li>
-                                <a href="{{URL::to('faq_publisher')}}">FAQ</a>
+                                <a href="{{URL::to('/faq_publisher')}}">FAQ</a>
                             </li>                            
                         </ul>
                     </li>
@@ -89,23 +89,14 @@
                         </a>
                         <ul class="nav nav-second-level collapse">
                             <li>
-                                <a href="{{URL::to('home?type=2')}}">Dashboard</a>
+                                <a href="{{URL::to('/home?type=2')}}">Dashboard</a>
                             </li>
                             <li>
-                                <a href="{{URL::to('campaigns')}}">Campaigns</a>
+                                <a href="{{URL::to('/campaigns')}}">Campaigns</a>
                             </li>
                             <li>
-                                <a href="{{URL::to('buyers/media')}}">Media</a>
-                            </li>  
-                            <li>
-                                <a href="{{URL::to('buyers/links')}}">Links</a>
-                            </li>
-                            <li>
-                                <a href="{{URL::to('buyers/folders')}}">Folders</a>
-                            </li>                          
-                            <li>
-                                <a href="{{URL::to('buyers/account')}}">Account</a>
-                            </li>                            
+                                <a href="{{URL::to('/library')}}">Library</a>
+                            </li>                             
                             <li>
                                 <a href="{{URL::to('faq_advertiser')}}">FAQ</a>
                             </li>

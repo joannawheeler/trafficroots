@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name','addr','city','state','zip','tax_id','country_code','email','password','phone','user_type','settings','token_expires','created_at','updated_at'
+        'name','addr','city','state','zip','tax_id','country_code','email','password','phone','user_type','allow_folders','settings','token_expires','created_at','updated_at'
     ];
 
     /**
@@ -45,5 +45,20 @@ class User extends Authenticatable
     public function campaigns()
     {
         return $this->hasMany('App\Campaign');
+    }
+    
+    public function getMedia()
+    {
+        return $this->hasMany('App\Media');
+    }
+    
+    public function getLinks()
+    {
+        return $this->hasMany('App\Links');
+    }
+    
+    public function getFolders()
+    {
+        return $this->hasMany('App\Folder');
     }
 }

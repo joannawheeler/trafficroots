@@ -58,6 +58,57 @@ class HomeController extends Controller
         return redirect('media');
     }
     /**
+     * Show the advertiser`s library.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getLibrary(Request $request)
+    {
+       $status_types = array();
+       $status = StatusType::all();
+       $status_types[] = 'Pending';
+       foreach($status as $s){
+           $status_types[$s->id] = $s->description;
+       }
+       $campaign_types = array();
+       $campaign_types[1] = 'CPM';
+       $campaign_types[2] = 'CPC';
+       $location_types = LocationType::all();
+       $categories = Category::all();
+       $location = array();
+       $width = array();
+       $height = array();
+       foreach($location_types as $type){
+           $location[$type['id']] = $type['description'] . ' - ' . $type['width'] .'x'. $type['height'];
+           $width[$type['id']] = $type['width'] + 50;
+           $height[$type['id']] = $type['height'] + 50;
+       }
+        $category = array();
+        foreach($categories as $cat){
+           $category[$cat['id']] = $cat['category'];
+        }
+        $user = Auth::user();
+        $media = $user->getMedia();
+        $links = $user->getLinks();
+        if($user->folders){
+            $allow_folders = true;
+            $folders = $user->getFolders();
+        }else{
+            $allow_folders = false;
+            $folders = array();
+        }
+        return view('library', array('location_types' => $location, 
+                                     'categories' => $category, 
+                                     'campaign_types' => $campaign_types, 
+                                     'width' => $width, 
+                                     'height' => $height, 
+                                     'status_types' => $status_types, 
+                                     'media' => $media, 
+                                     'links' => $links, 
+                                     'allow_folders' => $allow_folders, 
+                                     'folders' => $folders));
+    }    
+    /**
      * Show the advertiser`s dashboard.
      *
      * @return \Illuminate\Http\Response
