@@ -123,7 +123,7 @@
                     @if($allow_folders)
                     <div class="tab-pane table-responsive active" id="folder-tab">
                     <div class="ibox">
-                                <div class="ibox-title" id="creative_heading">My Folders<a href="/folder" class="btn btn-xs btn-primary pull-right">Upload HTML5 Folder</a></div>
+                                <div class="ibox-title" id="creative_heading">My Folders<a href="/folder" class="btn btn-xs btn-primary pull-right"><i class="fa fa-plus-square-o"></i>&nbsp;Upload HTML5 Folder</a></div>
                                 <div class="ibox-content table-responsive" id="folder_div">
                                 @if (count($folders))
                                     <table class="table table-hover table-border table-striped table-condensed" name="folders_table" id="folders_table" width="100%">

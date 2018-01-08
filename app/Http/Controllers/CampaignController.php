@@ -180,8 +180,10 @@ class CampaignController extends Controller
         $platform_targets = '<option value="0">All Platforms</option>';
         foreach($platforms as $row){
             $platform_targets .= '<option value="'.$row->id.'">'.$row->platform.'</option>';
-        }        
-        return view('campaign_create', ['campaign_types' => $campaign_types,
+	}
+        $user = Auth::getUser();	
+	return view('campaign_create', ['user' => $user,
+		                       'campaign_types' => $campaign_types,
                                        'categories' => $categories,
                                        'browsers' => $browsers,
                                        'platforms' => $platforms,
@@ -191,9 +193,9 @@ class CampaignController extends Controller
                                        'countries' => $countries,
                                        'location_types' => $location_types,
                                        'module_types' => $module_types,
-                                       'platform_targets' => $platform_targets,
+                                       'platforms' => $platform_targets,
                                        'browser_targets' => $browser_targets,
-                                       'operating_systems' => $operating_systems,
+                                       'os_targets' => $operating_systems,
                                        'states' => $states]);
     }
     public function postCampaign(Request $request)

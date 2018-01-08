@@ -1,11 +1,33 @@
 @extends('layouts.app')
 @section('title', '- Campaigns')
+@section('css')
+<link rel="stylesheet"
+      href="{{ URL::asset('css/plugins/select2/select2.min.css') }}">
+<link rel="stylesheet"
+      href="{{ URL::asset('css/plugins/chosen/chosen.css') }}">
+@endsection
+
+@section('js')
+<script src="{{ URL::asset('js/plugins/select2/select2.full.min.js') }}"></script>
+<script src="{{ URL::asset('js/plugins/chosen/chosen.jquery.js') }}"></script>
+@endsection
 @section('content')
     @if(Session::has('success'))
         <div class="alert alert-success">
             <h2>{{ Session::get('success') }}</h2>
         </div>
-    @endif
+	@endif
+<style>
+.wizard .content {
+    min-height: 100px;
+}
+.wizard .content > .body {
+    width: 100%;
+    height: auto;
+    padding: 15px;
+    position: relative;
+}
+</style>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -18,7 +40,7 @@
                 {{ csrf_field() }}
                 <div id="wizard">
                     <h1>Campaign Details</h1>
-                    <div class="step-content">
+		    <div class="steps-content">
                         <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
                             <label for="campaign_name" class="col-md-4 control-label">Campaign Name</label>
 
@@ -89,7 +111,7 @@
                                     </span>
                                 @endif
                             </div>
-                        </div>
+			</div>
                     </div>
 
                     <h1>Advanced Targeting</h1>
@@ -120,7 +142,7 @@
                             </div>
                             <div class="ibox-content">
                              <p>Keyword Targeting</p><small>Use commas to separate</small>
-                             <input name="keyword_targets" id="keyword_targets" class="form-control" type="text" value="{!! $keywords !!}">
+                             <input name="keyword_targets" id="keyword_targets" class="form-control" type="text" value="">
                             </div>
 
                     </div>
@@ -140,7 +162,7 @@
                                 @endif
                             </div>
                         </div>  
-                        @if ($user->allow_folders && count($folders))              
+                        @if ($user->allow_folders)              
                         <div class="form-group{{ $errors->has('media') ? ' has-error' : '' }}">
                             <label for="folder_id" class="col-md-4 control-label">Folder</label>
 
@@ -200,13 +222,6 @@
                         
                     </div>                    
                 </div>
-                
-                        <div class="form-group">
-                            <label for="submit" class="col-md-4 control-label">Submit Campaign</label>
-                            <div class="col-md-6">
-                                <input type="submit" class="btn btn-primary" name="submit" id="submit" /></form>&nbsp;&nbsp;<a href="/campaigns"><button type="button" class="btn btn-white">Cancel</button></a> 
-                            </div>
-                        </div>
                 </form>
             <div>
                         <h3>Campaign:</h3>
@@ -222,14 +237,26 @@
                                 <li>We offer Cost Per Click (CPC) and Cost Per Milli (CPM) Campaign Types. </li>
                              </ul>
                         </div>
-                    </div>
-                </div>
+            </div>
             </div>
         </div>
     </div>
 </div>
 <script type="text/javascript">
+    $('[multiple]').chosen();
     jQuery(document).ready(function($){
+        $("#wizard").steps({
+                transitionEffect: "fade",
+                autoFocus: true,    
+                onFinishing: function (event, currentIndex)
+	                    {
+		                        var form = $(this);
+		            },
+                onFinished: function (event, currentIndex)
+		            {
+		               $('#campaign_form').submit();
+		            }			
+        });
         $('#folder_id').change(function(){
             var check = parseInt($(this).val());
             if(check){
