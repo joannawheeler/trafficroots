@@ -29,7 +29,7 @@
                                 @endif
                             </div>
                         </div>  
-                        @if (count($folders))              
+                        @if ($user->allow_folders && count($folders))              
                         <div class="form-group{{ $errors->has('media') ? ' has-error' : '' }}">
                             <label for="folder_id" class="col-md-4 control-label">Folder</label>
 

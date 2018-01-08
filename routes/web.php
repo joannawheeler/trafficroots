@@ -69,6 +69,7 @@ Route::get('/campaign/pause/{id}', 'CampaignController@pauseCampaign');
 Route::post('/campaign', 'CampaignController@postCampaign');
 Route::get('/media', 'CampaignController@createMedia');
 Route::post('/media', 'CampaignController@postMedia');
+Route::get('/getmedia', 'CampaignController@getUserMedia');
 Route::get('/links', 'CampaignController@createLink');
 Route::post('/links', 'CampaignController@postLink');
 Route::get('manage_campaign/{id}', 'CampaignController@editCampaign');

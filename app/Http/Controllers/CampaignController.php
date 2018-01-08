@@ -38,6 +38,30 @@ class CampaignController extends Controller
     {
         $this->middleware('auth');
     }
+    public function getUserMedia(Request $request)
+    {
+        $user = Auth::getUser();
+        if($request->has('category') && intval($request->category) && $request->has('location_type') && intval($request->location_type)){
+            $response = array();
+            if($user->allow_folders){
+                $response['folders'] = "<option value=''>Choose One</option>";
+                foreach(Media::where('user_id', $user->id)->where('location_type', intval($request->location_type))->where('category', intval($request->category))->get() as $folder){
+                    $response['folders'] .= "<option value='".$folder->id."'>".$folder->description."</option>";
+                }
+            }else{
+                $response['folders'] = '';
+            }
+            $response['media'] = "<option value=''>Choose One</option>";
+            $response['links'] = "<option value=''>Choose One</option>";
+            foreach(Media::where('user_id', $user->id)->where('location_type', intval($request->location_type))->where('category', intval($request->category))->get() as $media){
+                $response['media'] .= "<option value='".$media->id."'>".$media->description."</option>";
+            }
+            foreach(Links::where('user_id', $user->id)->where('location_type', intval($request->location_type))->where('category', intval($request->category))->get() as $link){
+                $response['links'] .= "<option value='".$link->id."'>".$link->description."</option>";
+            }            
+            return response()->json($response); 
+        }
+    }
     public function updateBid(Request $request)
     {
         Log::info('Began updating bid '.$request->camp_id);
@@ -171,7 +195,7 @@ class CampaignController extends Controller
         $media = Media::where([['status', 1],['location_type', $campaign->location_type],['user_id', $user->id]])->get();
         $folders = Folder::where([['status', 1],['location_type', $campaign->location_type],['user_id', $user->id]])->get();
         $links = Links::where([['status', 1],['user_id', $user->id]])->get();
-        return view('new_creative', ['campaign' => $campaign, 'media' => $media, 'links' => $links, 'folders' => $folders]);
+        return view('new_creative', ['user' => $user, 'campaign' => $campaign, 'media' => $media, 'links' => $links, 'folders' => $folders]);
     }
     public function postCreative(Request $request)
     {
