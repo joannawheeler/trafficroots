@@ -87,12 +87,12 @@ class HomeController extends Controller
         foreach($categories as $cat){
            $category[$cat['id']] = $cat['category'];
         }
-        $user = Auth::user();
-        $media = $user->getMedia();
-        $links = $user->getLinks();
-        if($user->folders){
+	$user = Auth::user();
+        $media = DB::select('select * from media where user_id = '.$user->id);
+	$links = DB::select('select * from links where user_id = '.$user->id);
+        if($user->allow_folders){
             $allow_folders = true;
-            $folders = $user->getFolders();
+            $folders = DB::select('select * from folders where user_id = '.$user->id);
         }else{
             $allow_folders = false;
             $folders = array();

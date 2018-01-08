@@ -17,4 +17,8 @@ class Links extends Model
     {
         return $this->belongsTo('App\StatusType', 'status');
     }
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 }

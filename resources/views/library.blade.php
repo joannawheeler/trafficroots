@@ -24,7 +24,7 @@
                 <div class="ibox-title">Library</div>
                 <div class="ibox-content">
                     <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
-                        <li><a href="#media-tab" data-toggle="tab">Media</a></li>
+                        <li><a id="media_tab" href="#media-tab" data-toggle="tab">Media</a></li>
                         <li><a href="#link-tab" data-toggle="tab">Links</a></li>
                         @if($allow_folders)
                         <li><a href="#folder-tab" data-toggle="tab">Folders</a></li>
@@ -35,7 +35,7 @@
                     <div class="ibox">
                         <div class="ibox-title" id="creative_heading">My Media <div class="pull-right">@include('media_upload')</div></div>
                         <div class="ibox-content table-responsive" id="media_div">
-                                @if (count($media))
+			@if (count($media))
                                     <table class="table table-hover table-border table-striped table-condensed" name="media_table" id="media_table" width="100%">
                                     <thead>
                                         <tr>
@@ -77,7 +77,7 @@
                                     <tr><th>Link Name</th><th>Category</th><th>URL</th><th>Status</th><th>Date Created</th></tr>
                                     </thead>
                                     <tbody>
-                                    @foreach ($user->getLinks() as $link)
+                                    @foreach ($links as $link)
                                         <tr class="link_row" id="link_row_{{ $link->id }}">
                                             <td>{{ $link->link_name }} </td>
                                             <td> {{ $categories[$link->category] }} </td>
@@ -157,5 +157,10 @@
             </div>
         </div>
     </div>
-</div>    
+</div>   
+<script type="text/javascript">
+    jQuery(document).ready(function ($) {
+   	    $('#media_tab').click();
+    });
+</script>  
 @endsection
