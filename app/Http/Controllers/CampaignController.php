@@ -157,7 +157,30 @@ class CampaignController extends Controller
         $countries = Country::all();
         $location_types = LocationType::all();
         $module_types = ModuleType::all();
+        
+        $states = '<option value="0">All States</option>';
+        $result = State::all();
+        foreach($result as $row){
+            $states .= '<option value="'.$row->state_short.'">'.$row->state_name.'</option>';
+        }
+        
+        $systems = OperatingSystem::all();
+        $operating_systems = '<option value="0">All Operating Systems</option>';
+        foreach($systems as $row){
+            $operating_systems .= '<option value="'.$row->id.'">'.$row->os.'</option>';
+        }
+        
+        $browsers = Browser::all();
+        $browser_targets = '<option value="0">All Browsers</option>';
+        foreach($browsers as $row){
+            $browser_targets .= '<option value="'.$row->id.'">'.$row->browser.'</option>';
+        }
 
+        $platforms = Platform::all();
+        $platform_targets = '<option value="0">All Platforms</option>';
+        foreach($platforms as $row){
+            $platform_targets .= '<option value="'.$row->id.'">'.$row->platform.'</option>';
+        }        
         return view('campaign_create', ['campaign_types' => $campaign_types,
                                        'categories' => $categories,
                                        'browsers' => $browsers,
@@ -167,7 +190,11 @@ class CampaignController extends Controller
                                        'states' => $states,
                                        'countries' => $countries,
                                        'location_types' => $location_types,
-                                       'module_types' => $module_types]);
+                                       'module_types' => $module_types,
+                                       'platform_targets' => $platform_targets,
+                                       'browser_targets' => $browser_targets,
+                                       'operating_systems' => $operating_systems,
+                                       'states' => $states]);
     }
     public function postCampaign(Request $request)
     {
