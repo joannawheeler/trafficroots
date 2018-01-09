@@ -575,6 +575,7 @@ AND publisher_bookings.pub_id = $id;";
     public function myProfile()
     {
         $user = Auth::getUser();
-        return view('profile', ['user' => $user, 'title' => 'User Profile']);
+        $countries = Country::all();
+        return view('profile', ['user' => $user, 'title' => 'User Profile', 'countries' => $countries]);
     }
 }
