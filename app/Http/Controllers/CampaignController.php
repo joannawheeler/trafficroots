@@ -45,8 +45,8 @@ class CampaignController extends Controller
             $response = array();
             if($user->allow_folders){
                 $response['folders'] = "<option value=''>Choose One</option>";
-                foreach(Media::where('user_id', $user->id)->where('location_type', intval($request->location_type))->where('category', intval($request->category))->get() as $folder){
-                    $response['folders'] .= "<option value='".$folder->id."'>".$folder->description."</option>";
+                foreach(Folder::where('user_id', $user->id)->where('location_type', intval($request->location_type))->where('category', intval($request->category))->get() as $folder){
+                    $response['folders'] .= "<option value='".$folder->id."'>".$folder->folder_name."</option>";
                 }
             }else{
                 $response['folders'] = '';
@@ -54,10 +54,10 @@ class CampaignController extends Controller
             $response['media'] = "<option value=''>Choose One</option>";
             $response['links'] = "<option value=''>Choose One</option>";
             foreach(Media::where('user_id', $user->id)->where('location_type', intval($request->location_type))->where('category', intval($request->category))->get() as $media){
-                $response['media'] .= "<option value='".$media->id."'>".$media->description."</option>";
+                $response['media'] .= "<option value='".$media->id."'>".$media->media_name."</option>";
             }
-            foreach(Links::where('user_id', $user->id)->where('location_type', intval($request->location_type))->where('category', intval($request->category))->get() as $link){
-                $response['links'] .= "<option value='".$link->id."'>".$link->description."</option>";
+            foreach(Links::where('user_id', $user->id)->where('category', intval($request->category))->get() as $link){
+                $response['links'] .= "<option value='".$link->id."'>".$link->link_name."</option>";
             }            
             return response()->json($response); 
         }
@@ -158,26 +158,26 @@ class CampaignController extends Controller
         $location_types = LocationType::all();
         $module_types = ModuleType::all();
         
-        $states = '<option value="0">All States</option>';
+        $states = '<option value="0" selected>All States</option>';
         $result = State::all();
         foreach($result as $row){
             $states .= '<option value="'.$row->state_short.'">'.$row->state_name.'</option>';
         }
         
         $systems = OperatingSystem::all();
-        $operating_systems = '<option value="0">All Operating Systems</option>';
+        $operating_systems = '<option value="0" selected>All Operating Systems</option>';
         foreach($systems as $row){
             $operating_systems .= '<option value="'.$row->id.'">'.$row->os.'</option>';
         }
         
         $browsers = Browser::all();
-        $browser_targets = '<option value="0">All Browsers</option>';
+        $browser_targets = '<option value="0" selected>All Browsers</option>';
         foreach($browsers as $row){
             $browser_targets .= '<option value="'.$row->id.'">'.$row->browser.'</option>';
         }
 
         $platforms = Platform::all();
-        $platform_targets = '<option value="0">All Platforms</option>';
+        $platform_targets = '<option value="0" selected>All Platforms</option>';
         foreach($platforms as $row){
             $platform_targets .= '<option value="'.$row->id.'">'.$row->platform.'</option>';
 	}

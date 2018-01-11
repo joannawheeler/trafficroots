@@ -87,6 +87,7 @@ Route::get('/preview/{id}', 'SiteController@previewBid');
 Route::get('/library', 'HomeController@getLibrary');
 Route::get('/faq_advertiser', 'HomeController@advertiserFaq');
 Route::get('/faq_publisher', 'HomeController@publisherFaq');
+Route::post('/update_profile', 'HomeController@updateProfile');
 /* paypal routes */
 Route::get('/paywithpaypal', array('as' => 'addmoney.paywithpaypal','uses' => 'AddMoneyController@payWithPaypal',));
 Route::post('paypal', array('as' => 'addmoney.paypal','uses' => 'AddMoneyController@postPaymentWithpaypal',));

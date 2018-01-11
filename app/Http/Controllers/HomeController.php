@@ -12,8 +12,10 @@ use App\LocationType;
 use App\Category;
 use App\StatusType;
 use App\Folders;
+use App\Country;
 use DB;
 use Log;
+use Session;
 
 class HomeController extends Controller
 {
@@ -577,5 +579,22 @@ AND publisher_bookings.pub_id = $id;";
         $user = Auth::getUser();
         $countries = Country::all();
         return view('profile', ['user' => $user, 'title' => 'User Profile', 'countries' => $countries]);
+    }
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::getUser();
+	User::where('id', $user->id)->update(array('name' => $request->name, 
+		                                   'company' => $request->company,
+						   'addr' => $request->addr,
+						   'addr2' => $request->addr2,
+						   'city' => $request->city,
+						   'state' => $request->state,
+						   'zip' => $request->zip,
+						   'phone' => $request->phone,
+						   'country_code' => $request->country,
+						   'email' => $request->email));
+	Log::info('User '.$user->id.': '.$user->name.' updated their profile.');
+	Session::flash('success', 'All Changes Saved!');
+	return redirect('/profile');
     }
 }

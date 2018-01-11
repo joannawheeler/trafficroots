@@ -116,31 +116,31 @@
 
                     <h1>Advanced Targeting</h1>
                     <div class="step-content">
-                            <div class="ibox-content">
+                            <div class="col-md-6">
                              <p>State Targeting</p>
-                             <select id="states[]" name="states[]" class="chosen-select form-control" data-placeholder="Choose sites..." multiple>
+                             <select id="states[]" name="states[]" class="chosen-select form-control" multiple>
                              {!! $states !!}
                              </select>
                             </div>
-                            <div class="ibox-content">
+                            <div class="col-md-6">
                             <p>Platform Targeting</p>
-                                <select name="platform_targets[]" id="platform_targets[]" class="form-control" data-placeholder="Choose platforms..." multiple>
+                                <select name="platform_targets[]" id="platform_targets[]" class="chosen-select form-control" multiple>
                                 {!! $platforms !!}
                                 </select>
                             </div>
-                            <div class="ibox-content">
+                            <div class="col-md-6"><br />
                              <p>OS Targeting</p>
-                             <select id="operating_systems[]" name="operating_systems[]" class="form-control" data-placeholder="Choose operating systems..." multiple>
+                             <select id="operating_systems[]" name="operating_systems[]" class="chosen-select form-control"  multiple>
                              {!! $os_targets !!}
                              </select>
                             </div>
-                            <div class="ibox-content">
+                            <div class="col-md-6"><br />
                              <p>Browser Targeting</p>
-                             <select id="browser_targets[]" name="browser_targets[]" class="form-control" data-placeholder="Choose browsers..." multiple>
+                             <select id="browser_targets[]" name="browser_targets[]" class="chosen-select form-control"  multiple>
                              {!! $browser_targets !!}
                              </select>
                             </div>
-                            <div class="ibox-content">
+			    <div class="col-md-12"><br />  
                              <p>Keyword Targeting</p><small>Use commas to separate</small>
                              <input name="keyword_targets" id="keyword_targets" class="form-control" type="text" value="">
                             </div>
@@ -148,7 +148,7 @@
                     </div>
                     <h1>Media</h1>
                     <div class="step-content">
-                        <h2>Add A Creative</h2>
+                        <h4>Add A Creative</h4>
                         <div class="form-group{{ $errors->has('description') ? ' has-error' : '' }}">
                             <label for="description" class="col-md-4 control-label">Description</label>
 
@@ -195,7 +195,7 @@
                                     </span>
                                 @endif
                             </div>
-                            <div class="pull-right">@include('media_upload')</div>
+                            <div class="col-md-2">@include('media_upload')</div>
                         </div>
                         <div class="form-group{{ $errors->has('link_id') ? ' has-error' : '' }}">
                             <label for="link_id" class="col-md-4 control-label">Link</label>
@@ -211,12 +211,12 @@
                                     </span>
                                 @endif
                             </div>
-                            <div class="pull-right">@include('link_upload')</div>
+                            <div class="col-md-2">@include('link_upload')</div>
                         </div>                        
                         
                     </div>
                     <h1>Overview</h1>
-                    <div class="step-content">
+                    <div id="overview" class="step-content">
 
                         
                         
@@ -243,18 +243,21 @@
     </div>
 </div>
 <script type="text/javascript">
-    $('[multiple]').chosen();
+    //$('[multiple]').chosen();
     jQuery(document).ready(function($){
-        $("#wizard").steps({
+                
+	    $("#wizard").steps({
                 transitionEffect: "fade",
                 autoFocus: true,    
                 onFinishing: function (event, currentIndex)
 	                    {
-		                        var form = $(this);
+		               var form = $(this);
+			       alert('Finishing!');
 		            },
                 onFinished: function (event, currentIndex)
 		            {
-		               $('#campaign_form').submit();
+				    $('#campaign_form').submit();
+				    alert('Finished');
 		            }			
         });
         $('#folder_id').change(function(){
@@ -273,8 +276,8 @@
     });
 
     function reloadMedia(){
-        var category = $('#campaign_category').val().parseInt();
-        var location_type = $('#location_type').val().parseInt();
+        var category = parseInt($('#campaign_category').val());
+	var location_type = parseInt($('#location_type').val());
         if(category && location_type){
             var url = '/getmedia?category=' + category + '&location_type=' + location_type;
             $.getJSON(url, function(data){

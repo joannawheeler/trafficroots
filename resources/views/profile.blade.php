@@ -13,7 +13,7 @@
                 <div class="ibox-title">My Profile</div>
 
                 <div class="ibox-content">
-                <form name="profile_form" id="profile_form" class="form-horizontal" role="form" method="POST" action="#">
+                <form name="profile_form" id="profile_form" class="form-horizontal" role="form" method="POST" action="update_profile">
                 {{ csrf_field() }}
                         <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
                             <label for="name" class="col-md-4 control-label">Name</label>
