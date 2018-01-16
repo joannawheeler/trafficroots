@@ -26,7 +26,7 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <h5>Campaigns</h5>
-                    <a href="{{ URL::to('campaign') }}" class="btn btn-xs btn-primary pull-right">New Campaign</a>
+                    <a href="{{ URL::to('campaign') }}" class="btn btn-xs alert-success pull-right"><i class="fa fa-plus-square-o"></i>&nbsp;New Campaign</a>
                 </div>
                 <div class="ibox-content">
                     <div style="overflow-wrap: break-word;">
@@ -74,11 +74,9 @@
                                         ) }}</td>
                                 <td>{{ $campaign->status_type->description }} </td>
                                 <td>
-                                    <a href="{{ url("stats/campaign/$campaign->id") }}" class="campaign-stats">
-                                        <span class="label label-info">Stats</span>
+                                    <a href="{{ url("stats/campaign/$campaign->id") }}" class="campaign-stats btn btn-xs alert-info"><i class="fa fa-line-chart"></i>&nbsp;Stats
                                     </a>
-                                    <a href="{{ URL::to("/manage_campaign/$campaign->id") }}">
-                                        <span class="label">Edit</span>
+                                    <a href="{{ URL::to("/manage_campaign/$campaign->id") }}" class="btn btn-xs alert-success"><i class="fa fa-edit"></i>&nbsp;Edit
                                     </a>
                                 </td>
                             </tr>

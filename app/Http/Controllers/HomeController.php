@@ -266,7 +266,7 @@ GROUP BY commission_tiers.publisher_factor;";
             $goback = $row->totaldiff;
         }
         $data['last_thirty_days'] = array();        
-for($i = $goback; $i >= 0; $i--){
+for($i = $goback; $i > 0; $i--){
     $mydate = date('Y-m-d', strtotime("-$i days"));
 
 $sql = "SELECT 

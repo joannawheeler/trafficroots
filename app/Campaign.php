@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Campaign extends Model
 {
-    protected $fillable = ['user_id','campaign_type','campaign_category','location_type','campaign_name','status','bid','daily_budget'];
+    protected $fillable = ['user_id','campaign_type','campaign_category','location_type','campaign_name','status','bid','daily_budget','frequency_capping'];
 
     public function stats()
     {

@@ -132,9 +132,13 @@ class CampaignController extends Controller
                 if (is_null($value)) {
                     $data[$key] = '0';
                 }
-            }
-	    DB::table('campaign_targets')->where('campaign_id', intval($request->campaign_id))->update($data);
+	    }
+	    if(isset($request->frequency_capping)) $data['frequency_capping'] = intval($request->frequency_capping);
+	    $result = DB::select('SELECT * FROM campaign_targets WHERE campaign_id = '.$request->campaign_id);
+	    if(!sizeof($result)) Log::info("WTF? No record yet??");
+	    if(DB::table('campaign_targets')->where('campaign_id', intval($request->campaign_id))->update($data))
 	    Log::info($user->name.' updated targets on campaign '.$request->campaign_id);
+	    Log::info(print_r($data, true));
             return('All Changes Saved');
         } catch (Exception $e) {
             return ($e->getMessage);
@@ -149,15 +153,15 @@ class CampaignController extends Controller
     {
         $campaign_types = CampaignType::all();
         $categories = Category::all();
-        $browsers = Browser::all();
-        $platforms = Platform::all();
-        $operating_systems = OperatingSystem::all();
-        $cities = City::all();
-        $states = State::all();
-        $countries = Country::all();
         $location_types = LocationType::all();
         $module_types = ModuleType::all();
         
+        $countries = '<option value="0" selected>All Countries</option><option value="840">US - United States of America</option><option value="124">CA - Canada</option>';
+        $nations = Country::all();
+        foreach($nations as $nation){
+	    $countries .= '<option value="'.$nation->id.'">'.$nation->country_short.' - '.$nation->country_name.'</option>';
+        }
+
         $states = '<option value="0" selected>All States</option>';
         $result = State::all();
         foreach($result as $row){
@@ -183,12 +187,12 @@ class CampaignController extends Controller
 	}
         $user = Auth::getUser();	
 	return view('campaign_create', ['user' => $user,
+		                       'countries' => $countries,
 		                       'campaign_types' => $campaign_types,
                                        'categories' => $categories,
                                        'browsers' => $browsers,
                                        'platforms' => $platforms,
                                        'operating_systems' => $operating_systems,
-                                       'cities' => $cities,
                                        'states' => $states,
                                        'countries' => $countries,
                                        'location_types' => $location_types,
@@ -200,21 +204,59 @@ class CampaignController extends Controller
     }
     public function postCampaign(Request $request)
     {
+	try{
         $user = Auth::getUser();
         $campaign = new Campaign();
-        $data = $request->all();
+	$data = $request->all();
+	Log::info(print_r($data,true));
         $data['user_id'] = $user->id;
         $campaign->fill($data);
         $campaign->save();
-        $id = $campaign->id;
+	$id = $campaign->id;
+	$request->campaign_id = $id;
         $targets = array();
         $targets['campaign_id'] = $campaign->id;
         $targets['user_id'] = $user->id;
         $target = new CampaignTarget();
-        $target->fill($targets);
+	$target->fill($targets);
         $target->save();
+	$this->updateTargets($request);  
         
-        return redirect('/manage_campaign/'.$id);
+        /* look for creatives */
+        foreach($data as $key => $value){
+            if(strpos($key, 'creative') === 0){
+                $info = explode('_', $key);
+                $size = sizeof($info);
+		if($size == 3){
+			/* it's a banner */
+			$sql = "INSERT INTO creatives (campaign_id, user_id, description, media_id, link_id) VALUES(?,?,?,?,?);";
+			DB::insert($sql, array($id, $user->id, $value, $info[1], $info[2]));
+
+		}
+		if($size == 2){
+                    /* it's a folder */
+                        $sql = "INSERT INTO creatives (campaign_id, user_id, description, folder_id) VALUES(?,?,?,?);";
+			DB::insert($sql, array($id, $user->id, $value, $info[1]));
+		}
+            }
+	}	
+	$this->balanceCreatives($id);
+        Session::flash('success', 'Campaign Created!'); 	
+	return json_encode(array('status' => 'OK'));
+	}catch(Exception $e){
+            Log::error($e->getMessage());
+	}
+    }
+    private function balanceCreatives($id)
+    {
+	$sql = "SELECT COUNT(*) AS records FROM creatives WHERE campaign_id = $id";
+	$result = DB::select($sql);
+	$count = $result[0]->records;
+	$weight = round(100 / $count);
+	$sql = "UPDATE creatives SET weight = ? WHERE campaign_id = ?";
+	Log::info($sql);
+	DB::update($sql, array($weight, $id));
+	return true;
     }
     public function createCreative(Request $request)
     {
