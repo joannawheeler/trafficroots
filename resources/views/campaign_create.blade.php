@@ -323,9 +323,15 @@
        }
        if(confirm("Submit this campaign?")){
 	       var data = $('#campaign_form').serialize();
-	   $.post('/campaign', data).done(function(info){
-	       alert(info);
-               window.location = '/campaigns';
+	       $.post('/campaign', data).done(function(result){
+		   info = JSON.parse(result);
+		   if(info.result == 'OK'){
+			   toastr.success("Campaign Created!", function(){
+				   setTimeout(function(){ window.location = '/campaigns'; }, 2000);
+			   });
+	           }else{
+			   toastr.error(info);
+	           }
 	   });
        }
        return true;

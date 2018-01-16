@@ -241,8 +241,7 @@ class CampaignController extends Controller
             }
 	}	
 	$this->balanceCreatives($id);
-        Session::flash('success', 'Campaign Created!'); 	
-	return json_encode(array('status' => 'OK'));
+	return json_encode(array('result' => 'OK'));
 	}catch(Exception $e){
             Log::error($e->getMessage());
 	}
