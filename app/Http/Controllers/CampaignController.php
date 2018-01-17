@@ -102,7 +102,12 @@ class CampaignController extends Controller
     {
         try {
             $user = Auth::getUser();
-            $data = array();
+	    $data = array();
+	    if(is_array($request->countries)){
+		$data['countries'] = implode("|",$request->countries);
+	    }else{
+		$data['countries'] = ''.$request->countries;
+            }
             if (is_array($request->states)) {
                 $data['states'] = implode("|", $request->states);
             } else {
@@ -429,7 +434,8 @@ class CampaignController extends Controller
                 ->where('stat_date', '>=', $startDate)
                 ->where('stat_date', '<=', $endDate);
         },'status_type','category','type'])
-            ->where('user_id', $user->id)
+		->where('user_id', $user->id)
+		->orderby('campaigns.created_at', 'DESC')
             ->get();
         
         return view(
@@ -475,5 +481,38 @@ class CampaignController extends Controller
         }else{
             return('Invalid Campaign ID!');
         }
+    }
+    public function getBidTips(Request $request)
+    {
+        $post = $request->all();
+	$return = array('minimum' => 0.00, 'topbid' => 0.00);
+                
+        if($post['campaign_type'] == 1){
+            /* cpm campaign */
+
+	}
+	if($post['campaign_type'] == 2){
+            /* cpc campaign */
+
+	}
+	$return['topbid'] = $this->getTopBid($post['location_type']);
+	return response()->json($return);
+    }
+    public function getTopBid($location_type)
+    {
+	    try{
+	        $sql = "SELECT COALESCE(MAX(bid), 0.00) as topbid 
+		    FROM bids 
+		    JOIN stats
+                    ON bids.id = stats.bid_id
+                    WHERE bids.location_type = $location_type 
+                    AND bids.`status` = 1
+                    AND stats.stat_date = CURDATE();";
+                $result = DB::select($sql);
+                return $result[0]->topbid;
+	    }catch(Exception $e){
+                return 0.00;
+            }
+
     }
 }

@@ -247,16 +247,14 @@
                     <div id="overview" class="step-content">
                         <div id="overview_content" style="padding:3px;">
                         </div>
-                                        <div class="form-group">
-					    <label for="bid" class="col-md-3 control-label">Bid</label>
-                                            <div class="col-md-6">
-					    <input type="text" id="bid" name="bid" value="4.20">
-
-                                            <label class="error hide"
-						   for="bid"></label>
-                                            </div>
-                                        </div>			
-                        
+			<div class="row">
+                            <div id="bid-tips" class="col-md-6"></div>
+			    <div class="col-md-4">
+                                <h4>Place Your Bid</h4>
+			        <input type="text" id="bid" name="bid" value="4.20">
+				<label class="error hide" for="bid"></label>
+			    </div>
+                        </div>               
                     </div>                    
                 </div>
                 </form>
@@ -337,9 +335,12 @@
        return true;
     }
     function updateOverview(){
-	    var myhtml = '<h4>Campaign Overview</h4><div class="ibox-content"><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Campaign Name:</strong></h6></div><div class="col-md-6"><h6>' + $('#campaign_name').val() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Campaign Type:</strong></h6></div><div class="col-md-6"><h6>' + $('#campaign_type option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Campaign Category:</strong></div><div class="col-md-6"><h6>' + $('#campaign_category option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Location Type:</strong></div><div class="col-md-6"><h6>' + $('#location_type option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Frequency Capping:</strong></div><div class="col-md-6"><h6>' + $('#frequency_capping option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Country/Geo Targeting:</strong></div><div class="col-md-6"><h6>' + $('#countries option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>State Targeting:</strong></div><div class="col-md-6"><h6>' + $('#states option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Platform Targeting:</strong></div><div class="col-md-6"><h6>' + $('#platform_targets option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>OS Targeting:</strong></div><div class="col-md-6"><h6>' + $('#operating_systems option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Browser Targeting:</strong></div><div class="col-md-6"><h6>' + $('#browser_targets option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Keyword Targeting:</strong></div><div class="col-md-6"><h6>' + $('#keyword_targets').val() + '</h6></div></div></div><!--ends here --></div>';
-            $('#overview_content').html(myhtml);
-
+	    var creatives = 0;
+	    $(".creative").each(function(){
+	        creatives ++;
+	    });	    
+	    var myhtml = '<h4>Campaign Overview</h4><div class="ibox-content"><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Campaign Name:</strong></h6></div><div class="col-md-6"><h6>' + $('#campaign_name').val() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Campaign Type:</strong></h6></div><div class="col-md-6"><h6>' + $('#campaign_type option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Campaign Category:</strong></div><div class="col-md-6"><h6>' + $('#campaign_category option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Location Type:</strong></div><div class="col-md-6"><h6>' + $('#location_type option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Frequency Capping:</strong></div><div class="col-md-6"><h6>' + $('#frequency_capping option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Country/Geo Targeting:</strong></div><div class="col-md-6"><h6>' + $('#countries option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>State Targeting:</strong></div><div class="col-md-6"><h6>' + $('#states option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Platform Targeting:</strong></div><div class="col-md-6"><h6>' + $('#platform_targets option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>OS Targeting:</strong></div><div class="col-md-6"><h6>' + $('#operating_systems option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Browser Targeting:</strong></div><div class="col-md-6"><h6>' + $('#browser_targets option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Keyword Targeting:</strong></div><div class="col-md-6"><h6>' + $('#keyword_targets').val() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Creatives:</strong></div><div class="col-md-6"><h6>' + creatives + '</h6></div></div></div><!--ends here --></div>';
+	    $('#overview_content').html(myhtml);
     }
     function reloadMedia(){
         var category = parseInt($('#campaign_category').val());
@@ -383,7 +384,7 @@
 		    alert("This creative already exists.");
 		    return false;
             }
-	    var this_creative = '<div class="row" id="row_' + media_id + '_' + link_id + '" style="padding:2px;"><div class="col-md-3">&nbsp;</div><div class="col-md-6"><input name="creative_' + media_id + '_' + link_id + '" id="creative_' + media_id + '_' + link_id + '" type="hidden" value="' + description + '">' + description + ':   ' + media_option + ' - ' + link_option + '</div><div class="col-md-3"><button class="btn btn-xs btn-danger" onclick="$(this).parent().parent().remove();"><i class="fa fa-remove"></i>&nbsp;Remove</button></div></div>';
+	    var this_creative = '<div class="row" id="row_' + media_id + '_' + link_id + '" style="padding:2px;"><div class="col-md-3">&nbsp;</div><div class="col-md-6"><input class="creative" name="creative_' + media_id + '_' + link_id + '" id="creative_' + media_id + '_' + link_id + '" type="hidden" value="' + description + '">' + description + ':   ' + media_option + ' - ' + link_option + '</div><div class="col-md-3"><button class="btn btn-xs btn-danger" onclick="$(this).parent().parent().remove();"><i class="fa fa-remove"></i>&nbsp;Remove</button></div></div>';
 	   $('#creatives').html(current_creatives + this_creative); 
 	return false;
     }
