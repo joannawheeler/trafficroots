@@ -173,7 +173,7 @@
                             </div>
 
                     </div>
-                    <h1>Media</h1>
+                    <h1>Creatives</h1>
                     <div class="step-content">
                         <h4>Add A Creative</h4>
                         <div class="form-group{{ $errors->has('description') ? ' has-error' : '' }}">
@@ -257,8 +257,13 @@
                         </div>               
                     </div>                    
                 </div>
-                </form>
-            <div>
+		</form>
+                <br />
+                <div class="ibox-content">
+                    <h5>Add New Media or Links Here:</h5>
+                    <div>@include('media_upload')</div><br /><div>@include('link_upload')</div>
+                </div>
+            <div><br /><br />
                         <h3>Campaign:</h3>
                         [kam-<b>peyn</b>] - 
                         <i>noun</i>
@@ -280,7 +285,10 @@
 <script type="text/javascript">
     //$('[multiple]').chosen();
     jQuery(document).ready(function($){
-            $('#campaign_name').focus();    
+	    $('#campaign_name').focus();
+	    $(document).on('hidden.bs.modal', function(){
+	        reloadMedia();
+	    });    
 	    $("#wizard").steps({
                 transitionEffect: "fade",
 		autoFocus: true,

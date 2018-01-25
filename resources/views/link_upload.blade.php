@@ -1,7 +1,7 @@
 <button type="button"
         class="btn btn-xs btn-primary"
         data-toggle="modal"
-        data-target="#addLink"><i class="fa fa-plus-square-o"></i>&nbsp;&nbsp;Add Link</button>
+        data-target="#addLink"><i class="fa fa-plus-square-o"></i>&nbsp;&nbsp;Add Link&nbsp;&nbsp;&nbsp;&nbsp;</button>
 <div class="modal inmodal"
      id="addLink"
      tabindex="-1"
@@ -22,7 +22,10 @@
                   id="link_form"
                   class="form-horizontal"
                   role="form"
-                  method="POST"
+		  method="POST"
+                  @if( $_SERVER['REQUEST_URI'] == '/campaign')
+		  onsubmit="return submitLinkForm();"
+                  @endif
                   action="{{ url('/links') }}">
                 {{ csrf_field() }}
                 <div class="modal-body">
@@ -59,7 +62,14 @@
                                class="form-control"
                                name="url"
                                required>
-
+                        <input type="hidden" 
+                               name="return_url"
+                               id="return_url"
+			@if( $_SERVER['REQUEST_URI'] == '/campaign')
+                               value="campaign">
+                        @else
+                               value="library">
+	                @endif
                         <label class="error hide"
                                for="url"></label>
                     </div>
@@ -87,7 +97,23 @@
                             name="submit"
                             class="btn btn-primary">Submit</button>
                 </div>
-            </form>
+	    </form>
         </div>
     </div>
 </div>
+@if($_SERVER['REQUEST_URI'] == '/campaign')
+<script type="text/javascript">
+function submitLinkForm(){
+	$.post('/links', $('#link_form').serialize())
+		.done(function (response) {
+			toastr.success('Link Added Successfully!');
+			$('#addLink').modal('hide');
+                  })
+                .fail(function (response) {
+			toastr.error('Failed to add Link!');
+			$('addLink').modal('hide');
+		 });
+    return false;
+}
+</script>
+@endif

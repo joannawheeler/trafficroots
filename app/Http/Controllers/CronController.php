@@ -78,7 +78,7 @@ class CronController extends Controller
                            .$camp->user_id.","
                            .$camp->id.","
                            .$camp->bid.",'"
-                           .$camp->geos."','"
+                           .$camp->countries."','"
                            .$camp->states."','"
                            .$camp->cities."',"
                            .$camp->campaign_category.",'"

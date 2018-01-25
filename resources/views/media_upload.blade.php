@@ -1,7 +1,7 @@
 <button type="button"
         class="btn btn-xs btn-primary"
         data-toggle="modal"
-        data-target="#addMedia"><i class="fa fa-plus-square-o"></i>&nbsp;Add Image</button>
+        data-target="#addMedia"><i class="fa fa-plus-square-o"></i>&nbsp;&nbsp;Add Image</button>
 <div class="modal inmodal"
      id="addMedia"
      tabindex="-1"
@@ -23,7 +23,10 @@
                   class="form-horizontal"
                   enctype="multipart/form-data"
                   role="form"
-                  method="POST"
+		  method="POST"
+                  @if( $_SERVER['REQUEST_URI'] == '/campaign')
+                  onsubmit="return submitMediaForm();"
+                  @endif
                   action="{{ url('/media') }}">
                 {{ csrf_field() }}
                 <div class="modal-body">                    
@@ -125,9 +128,61 @@
                             data-dismiss="modal">Cancel</button>
                     <button type="submit"
                             name="submit"
+                            id="btnSubmit"
                             class="btn btn-primary">Submit</button>
-                </div>
+		</div>
+                        <input type="hidden"
+                               name="return_url"
+                               id="return_url"
+                        @if( $_SERVER['REQUEST_URI'] == '/campaign')
+                               value="campaign">
+                        @else
+                               value="library">
+                        @endif
             </form>
         </div>
     </div>
 </div>
+@if($_SERVER['REQUEST_URI'] == '/campaign')
+<script type="text/javascript">
+function submitMediaForm(){
+        // Get form
+        var form = $('#media_form')[0];
+
+		// Create an FormData object
+        var data = new FormData(form);
+
+		// If you want to add an extra field for the FormData
+        //data.append("CustomField", "This is some extra data, testing");
+
+		// disabled the submit button
+        $("#btnSubmit").prop("disabled", true);
+
+        $.ajax({
+            type: "POST",
+            enctype: 'multipart/form-data',
+            url: "/media",
+            data: data,
+            processData: false,
+            contentType: false,
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+                console.log("SUCCESS : ", data);
+                $("#btnSubmit").prop("disabled", false);
+                $("#addMedia").modal('hide');
+                toastr.success('Upload Complete!');
+                reloadMedia();
+            },
+            error: function (e) {
+
+                toastr.error(e.responseText);
+                console.log("ERROR : ", e);
+                $("#btnSubmit").prop("disabled", false);
+
+            }
+        });	
+		    return false;
+}
+</script>
+@endif

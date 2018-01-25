@@ -306,6 +306,7 @@ class CampaignController extends Controller
 
     public function postMedia(Request $request)
     {
+        try{
         $this->validate($request, [
             'media_name' => 'required|string',
             'category' => 'required|exists:categories,id',
@@ -322,15 +323,18 @@ class CampaignController extends Controller
         $data['file_location'] = $path;
         $media->fill($data);
         $media->save();
-        return response()->json([
-            'id' => $media->id,
-            'name' => $media->media_name,
-            'category' => $media->category_type->category,
-            'location_type' => $media->locationType->description,
-            'status' => $media->status_type->description,
-            'date' => Carbon::parse($media->created_at)->toDayDateTimeString(),
-            'url' => asset($path)
-        ]);
+        if($request->return_url == 'library'){
+            $url = '/' . $request->return_url;
+            return redirect($url);
+        }else{
+            return response()->json([
+            'result' => 'OK',
+            ]);
+        }
+        }catch(Throwable $t){
+            Log::error($t->getMessage());
+            return response()->json(['result' => $t->getMessage()]);
+        }
     }
 
     public function createFolder()
@@ -373,15 +377,16 @@ class CampaignController extends Controller
         $data['status'] = 5;
         $link = new Links();
         $link->fill($data);
-        $link->save();
-        return response()->json([
-            'id' => $link->id,
-            'name' => $link->link_name,
-            'category' => $link->category_type->category,
-            'url' => $link->url,
-            'status' => $link->status_type->description,
-            'date' => Carbon::parse($link->created_at)->toDayDateTimeString()
-        ]);
+	$link->save();
+	if($request->return_url == 'library'){
+	    $url = '/' . $request->return_url;
+	    return redirect($url);
+	}else{
+            return response()->json([
+            'newid' => $link->id,
+            'result' => 'OK',
+            ]);
+	}
     }
     public function editCampaign(Request $request)
     {
