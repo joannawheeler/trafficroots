@@ -13,6 +13,8 @@ use App\Category;
 use App\StatusType;
 use App\Folders;
 use App\Country;
+use App\Transaction;
+use App\Payment;
 use DB;
 use Log;
 use Session;
@@ -578,7 +580,61 @@ AND publisher_bookings.pub_id = $id;";
     {
         $user = Auth::getUser();
         $countries = Country::all();
-        return view('profile', ['user' => $user, 'title' => 'User Profile', 'countries' => $countries]);
+        $payments = array();
+        $invoices = array();
+        $earnings = array();
+        $spend = array();
+        $balance = 0;
+        /* is user a publisher? */
+        $pub = false;
+        $sites = Site::where('user_id', $user->id)->count();
+        if($sites){
+            /* yes, user is a publisher */
+            $pub = true;
+            /* get payout history */
+            $payments = Payment::where('user_id', $user->id)
+                               ->where('status', 1)
+                               ->where('amount', '>', 0.00)
+                               ->orderby('transaction_date', 'desc')->get();
+            /* get current unpaid earnings */
+            $sql = 'SELECT SUM(pb.revenue) as revenue, (SUM(pb.revenue) * ct.publisher_factor) AS earnings, pb.commission_tier, sites.site_name
+                    FROM publisher_bookings pb 
+                    JOIN commission_tiers ct
+                    ON pb.commission_tier = ct.id
+                    JOIN sites 
+                    ON pb.site_id = sites.id
+                    WHERE pb.pub_id = ?
+                    AND pb.cost = 0.00
+                    GROUP BY pb.site_id, pb.commission_tier;';
+            $earnings = DB::select($sql, array($user->id));
+        }
+        /* is user an advertiser? */
+        $buyer = false;
+        $campaigns = Campaign::where('user_id', $user->id)->count();
+        if($campaigns){
+            /* yes, user is an advertiser */
+            $buyer = true;
+            /* get deposit history */
+            $invoices = Transaction::where('user_id', $user->id)
+                                   ->where('Status', 'Successful')
+                                   ->where('CaptureState', 'Captured')
+                                   ->where('TransactionState', 'Captured')
+                                   ->where('Amount', '>', 0.00)
+                                   ->orderby('transaction_date', 'DESC')->get();
+            /* get current balance */
+            $sql = "SELECT running_balance AS balance FROM bank WHERE user_id = ? ORDER BY id DESC LIMIT 1";
+            $balance = sizeof($bank = DB::select($sql, array($user->id))) ? $bank[0]->balance : 0.00; 
+            
+        }
+        return view('profile', ['user' => $user, 
+                                'title' => 'User Profile', 
+                                'countries' => $countries,
+                                'pub' => $pub,
+                                'buyer' => $buyer,
+                                'payments' => $payments,
+                                'invoices' => $invoices,
+                                'earnings' => $earnings,
+                                'balance' => $balance]);
     }
     public function updateProfile(Request $request)
     {
