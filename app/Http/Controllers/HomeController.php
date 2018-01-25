@@ -15,6 +15,7 @@ use App\Folders;
 use App\Country;
 use App\Transaction;
 use App\Payment;
+use App\Campaign;
 use DB;
 use Log;
 use Session;

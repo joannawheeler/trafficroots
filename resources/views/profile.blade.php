@@ -16,16 +16,15 @@
                     <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
                         <li><a id="account_tab" href="#account-tab" data-toggle="tab">Account</a></li>
                         @if($pub)
-                        <li><a href="#pub-tab" data-toggle="tab">Earnings</a></li>
+                        <li><a id="pub_tab" href="#pub-tab" data-toggle="tab">Earnings</a></li>
                         @endif
                         @if($buyer)
-                        <li><a href="#buyer-tab" data-toggle="tab">Invoices</a></li>
+                        <li><a id="account_tab" href="#buyer-tab" data-toggle="tab">Invoices</a></li>
                         @endif
                     </ul>
                 <div id="my-tab-content" class="tab-content">
                     <div class="tab-pane table-responsive active" id="account-tab">
                     <div class="ibox">
-                        <div class="ibox-title"></div>
                         <div class="ibox-content">
                 <form name="profile_form" id="profile_form" class="form-horizontal" role="form" method="POST" action="update_profile">
                 {{ csrf_field() }}
@@ -177,19 +176,28 @@
             </div>            
             <div class="tab-pane table-responsive" id="pub-tab">
                 <div class="ibox">
-                <div class="ibox-title"></div>
                 <div class="ibox-content">
                 @if($pub)
-                @if(sizeof($payments))
+		@if(sizeof($payments))
+                <h3>Payouts</h3>
                 <div class="row"><div class="col-md-2"><h4>Transaction Date</h4></div>
                     <div class="col-md-2"><h4>Transaction Amount</h4></div></div>
                 @foreach($payments as $payment)
                 <div class="row"><div class="col-md-2">{{ $payment->transaction_date }}</div>
                     <div class="col-md-2">$ {{ $payment->amount }}</div></div>
+	        @endforeach
+		@endif
+		@if(sizeof($earnings))
+		<h3>Current Unpaid Earnings</h3>
+                <div class="row"><div class="col-md-2 alert-success"><h4>Site Name</h4></div>
+                    <div class="col-md-2 alert-success"><h4>Earnings</h4></div></div>
+		@foreach($earnings as $earning)
+                <div class="row"><div class="col-md-2">{{ $earning->site_name }}</div>
+                    <div class="col-md-2">$ {{ $earning->earnings }}</div></div>
                 @endforeach
                 @endif
                 @else
-                <a href="/sites"><h4>Add Your Sites and Start Earning!</h4></a>
+                <a href="/sites"><h3>Add Your Sites and Start Earning!</h3></a>
                 
                 @endif
                 </div>
@@ -197,21 +205,21 @@
             </div>
             <div class="tab-pane table-responsive" id="buyer-tab">
                 <div class="ibox">
-                <div class="ibox-title"></div>
                 <div class="ibox-content">
                 @if($buyer)
                 @if(sizeof($invoices))
                 <h3>Invoices</h3>
-                <div class="row"><div class="col-md-2"><h4>Transaction Date</h4></div>
-                    <div class="col-md-2"><h4>Deposit Amount</h4></div></div>
+                <div class="row"><div class="col-md-2 alert-info"><h4>Transaction Date</h4></div>
+                    <div class="col-md-2 alert-info"><h4>Deposit Amount</h4></div></div>
                 @foreach($invoices as $invoice)
                 <div class="row"><div class="col-md-2">{{ $invoice->transaction_date }}</div>
                     <div class="col-md-2">$ {{ $invoice->Amount }}</div></div>
                 @endforeach
                 @endif                
                 @else
-                <a href="/campaigns"><h4>Start A Campaign!</h4>
-                @endif
+                <a href="/campaigns"><h4>Start A Campaign!</h4></a>
+		@endif
+		<div class="row"><br /><br /><hr></div>
                 <div class="row"><div class="col-md-3">Your Current Balance Is:</div><div class="col-md-3">$ {{$balance}}</div></div>
                 <div class="text-center"><a href="/addfunds"><button class="btn btn-primary">Fund Your Account!</button></a></div> 
                 </div>
@@ -223,7 +231,8 @@
     </div>
 </div>
 <script type="text/javascript">
-    $(document).ready(function(){
+$(document).ready(function(){
+	$('#account_tab').click();
     });
 
 </script>
