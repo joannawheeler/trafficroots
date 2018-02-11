@@ -8,6 +8,7 @@ use Cache;
 use DB;
 use Log;
 use App\Zone;
+use App\DefaultAd;
 use App\Campaign;
 use App\Bid;
 use App\Site;
@@ -28,9 +29,55 @@ class GatherKeysController extends Controller
     {
         $this->gatherSiteKeys();
         $this->gatherImpressions();
+        $this->gatherDefaultImpressions();
         $this->gatherClicks();
 	$this->gatherSales();
 	$this->enforceBudgets();
+    }
+    public function gatherDefaultImpressions()
+    {
+         // 'DEFAULT|'.date('Y-m-d').'|'.$this->handle.'|'.$this->ad_id.'|'.serialize($this->visitor);
+        /* get impression keys */
+        $pairs = array();
+        do{
+            $keyname = Redis::spop('KEYS_DEFAULT');
+            if(strlen(trim($keyname))){
+                $val = Redis::get($keyname);
+                Redis::del($keyname);
+                Log::info('Deleted Default KEY - '.$keyname);
+                $stuff = explode("|", $keyname);
+                $visitor = unserialize($stuff[4]);
+                $zone = Zone::where('handle', $stuff[2])->first();
+                $ad_info = explode('_', $stuff[3]);
+                if(intval($add_info[1])){
+                    $ad = DefaultAd::where('id', intval($ad_info[1]))->first();
+                }else{
+                    Log::info('WTF, people?');
+                    continue;
+                }
+                $data = $this->transposeUser($visitor);
+                $pair = '('.$ad->affiliate_id.','.$zone->site_id.','
+                        .$zone->id.","
+                        .$stuff[3].","
+                        .$data['country'].','
+                        .$data['state'].','
+                        .$data['city'].','
+                        .$data['platform'].','
+                        .$data['os'].','
+                        .$data['browser'].','
+                        .$val.",'"
+                        .$stuff[1]."')";
+                 $pairs[] = $pair;
+            }
+        }while(!$keyname == '');
+        if(sizeof($pairs)){
+        $prefix = "INSERT INTO affiliate_stats (`affiliate_id`,`site_id`,`zone_id`,`ad_id`,`country_id`,`state_code`,`city_code`,`platform`,`os`,`browser`,`impressions`,`stat_date`) VALUES";
+        $suffix = " ON DUPLICATE KEY UPDATE `impressions` = `impressions` + VALUES(`impressions`);";
+        $query = $prefix.implode(",",$pairs).$suffix;
+        DB::insert($query);
+        //Log::info($query);
+        }
+        Log::info('Default Impressions Gathered');       
     }
     public function gatherSiteKeys()
     {
