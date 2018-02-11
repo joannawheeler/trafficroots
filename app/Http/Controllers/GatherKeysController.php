@@ -176,7 +176,7 @@ class GatherKeysController extends Controller
                 $new_balance = $result[0]->running_balance - $amount;
                 $transaction_amount = $amount * -1;
                 $sql = "INSERT INTO bank (user_id, transaction_amount, running_balance, created_at, updated_at)
-                        VALUES($user_id, $transaction_amount, $new_balance, CURDATE(), CURDATE())";
+                        VALUES($user_id, $transaction_amount, $new_balance, NOW(), NOW())";
                 DB::insert($sql);
 
             }
