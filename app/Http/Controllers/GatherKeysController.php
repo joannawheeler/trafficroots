@@ -38,7 +38,27 @@ class GatherKeysController extends Controller
     {
          // 'DEFAULT|'.date('Y-m-d').'|'.$this->handle.'|'.$this->ad_id.'|'.serialize($this->visitor);
         /* get impression keys */
-        $pairs = array();
+	    $pairs = array();
+	    try{
+		    /*    
+		    $handle = fopen("/var/www/publishers/storage/logs/laravel.bak", "r");
+		    if ($handle) {
+			    Log::info('Opened Log File!');
+			        while (($line = fgets($handle)) !== false) {
+					if(strpos($line, 'Deleted Default')){
+                                            $keyname = substr($line, strpos($line, 'DEFAULT|'));
+					    Log::info('Need to add back '.$keyname);
+					    Redis::sadd('KEYS_DEFAULT', $keyname);
+					    Redis::incr($keyname);
+					   
+					}	
+			         }
+			             fclose($handle);
+		    } else {
+			    Log::error('Cannot open log file');
+			             // error opening the file.
+		    } 
+		     */
         do{
             $keyname = Redis::spop('KEYS_DEFAULT');
             if(strlen(trim($keyname))){
@@ -49,16 +69,20 @@ class GatherKeysController extends Controller
                 $visitor = unserialize($stuff[4]);
                 $zone = Zone::where('handle', $stuff[2])->first();
                 $ad_info = explode('_', $stuff[3]);
-                if(intval($add_info[1])){
-                    $ad = DefaultAd::where('id', intval($ad_info[1]))->first();
+                if(is_array($ad_info) && intval($ad_info[1])){
+			$ad = DefaultAd::where('id', intval($ad_info[1]))->get();
+			if(!sizeof($ad)){
+				Log::error('Default Ad '.$ad_info[1].' not found!');
+				continue;
+			}
                 }else{
                     Log::info('WTF, people?');
-                    continue;
                 }
-                $data = $this->transposeUser($visitor);
-                $pair = '('.$ad->affiliate_id.','.$zone->site_id.','
+		$data = $this->transposeUser($visitor);
+		if(sizeof($ad)){
+                $pair = '('.$ad[0]->affiliate_id.','.$zone->site_id.','
                         .$zone->id.","
-                        .$stuff[3].","
+                        .intval($ad_info[1]).","
                         .$data['country'].','
                         .$data['state'].','
                         .$data['city'].','
@@ -67,16 +91,23 @@ class GatherKeysController extends Controller
                         .$data['browser'].','
                         .$val.",'"
                         .$stuff[1]."')";
-                 $pairs[] = $pair;
+		$pairs[] = $pair;
+		}
             }
-        }while(!$keyname == '');
+	}while(!$keyname == '');
+
+        }catch(Exception $e){
+            Log::error($e->getMessage());
+	    Log::error($e->getFile());
+	    Log::error($e->getLine());
+	}
         if(sizeof($pairs)){
         $prefix = "INSERT INTO affiliate_stats (`affiliate_id`,`site_id`,`zone_id`,`ad_id`,`country_id`,`state_code`,`city_code`,`platform`,`os`,`browser`,`impressions`,`stat_date`) VALUES";
         $suffix = " ON DUPLICATE KEY UPDATE `impressions` = `impressions` + VALUES(`impressions`);";
         $query = $prefix.implode(",",$pairs).$suffix;
         DB::insert($query);
         //Log::info($query);
-        }
+	}
         Log::info('Default Impressions Gathered');       
     }
     public function gatherSiteKeys()
@@ -153,25 +184,29 @@ class GatherKeysController extends Controller
         $data = array();
         if(is_array($user)){
             $platform = Platform::where('platform', $user['platform'])->get();
-            $browser = Browser::where('browser', $user['browser'])->get();
+            $browser = isset($user['browser']) ? Browser::where('browser', $user['browser'])->get() : 0;
             $os = OperatingSystem::where('os', $user['os'])->get();
             $country = Country::where('country_short', $user['geo'])->get();
             if(!sizeof($country)){
                 DB::insert("INSERT INTO countries VALUES(NULL,'".$user['geo']."','',NULL,NULL);");
                 $country = Country::where('country_short', $user['geo'])->get();
             }
-            $state = State::where('state_name', $user['state'])->get();
+	    $state = State::where('state_name', $user['state'])->where('country_id', $country[0]->id)->get();
+	    if(!sizeof($state)){
+                DB::insert('INSERT INTO states (`state_name`, `country_id`, `legal`) VALUES(?,?,?)', array($user['state'],$country[0]->id,0));
+                $state = State::where('country_id', $country[0]->id)->where('state_name', $user['state'])->get();
+            }
             $city = City::where('state_code', $state[0]->id)->where('city_name', $user['city'])->get();
             if(!sizeof($city)){
                 DB::insert("INSERT INTO cities VALUES(NULL,'".$user['city']."',".$state[0]->id.",NULL,NULL);");
                 $city = City::where('state_code', $state[0]->id)->where('city_name', $user['city'])->get();
             }
-            $data['platform'] = $platform[0]->id;
-            $data['browser'] = $browser[0]->id;
-            $data['os'] = $os[0]->id;
-            $data['country'] = $country[0]->id;
-            $data['state'] = $state[0]->id;
-            $data['city'] = $city[0]->id;
+            $data['platform'] = isset($platform[0]->id) ? $platform[0]->id : 0;
+            $data['browser'] = isset($browser[0]->id) ? $browser[0]->id : 0;
+            $data['os'] = isset($os[0]->id) ? $os[0]->id : 0;
+            $data['country'] = isset($country[0]->id) ? $country[0]->id : 0;
+            $data['state'] = isset($state[0]->id) ? $state[0]->id : 0;
+            $data['city'] = isset($city[0]->id) ? $city[0]->id : 0;
 
         }
         return $data;
@@ -275,7 +310,8 @@ class GatherKeysController extends Controller
     public function gatherClicks()
     {
         // 'CLICK|'.date('Y-m-d').'|'.$zone_id.'|'.$ad_id.'|'.$bid_id.'|'.$creative.'|'.serialize($this->visitor);
-        $pairs = array();
+	    $pairs = array();
+	    $defs = array();
         do{
             $keyname = Redis::spop('KEYS_CLICKS');
             //Log::info($keyname);
@@ -286,8 +322,31 @@ class GatherKeysController extends Controller
                 $visitor = unserialize($stuff[6]);
                 $zone = Zone::where('handle', $stuff[2])->first();
                 if($zone){
-                $data = $this->transposeUser($visitor);
-                $pair = '('.$zone->site_id.','
+			$data = $this->transposeUser($visitor);
+			if(substr($stuff[3],0,3) == 'DEF'){
+				/* it's a default ad */
+				$ad_info = explode('_', $stuff[3]);
+				if(is_array($ad_info) && isset($ad_info[1])){
+					$ad_id = intval($ad_info[1]);
+					$ad = DefaultAd::where('id', $ad_id)->first();
+                                        $pair = '('.$ad->affiliate_id.','.$zone->site_id.','
+                                        .$zone->id.","
+                                        .$ad_id.","
+                                        .$data['country'].','
+                                        .$data['state'].','
+                                        .$data['city'].','
+                                        .$data['platform'].','
+                                        .$data['os'].','
+                                        .$data['browser'].','
+                                        .$val.",'"
+                                        .$stuff[1]."')";
+					$defs[] = $pair;
+					Log::info($pair);
+				} else {
+					Log::info('not right...');
+			        }
+			}else{
+                        $pair = '('.$zone->site_id.','
                         .$zone->id.","
                         .$stuff[3].","
                         .$stuff[4].','
@@ -300,7 +359,8 @@ class GatherKeysController extends Controller
                         .$data['browser'].','
                         .$val.",'"
                         .$stuff[1]."')";
-                 $pairs[] = $pair;
+                        $pairs[] = $pair;
+			}
                  }else{
                      Log::error('Zone Handle '.$stuff[2].' not found!');
                  }
@@ -314,6 +374,16 @@ class GatherKeysController extends Controller
         DB::insert($query);
         //Log::info($query);
         }
+
+        if(sizeof($defs)){
+             $prefix = "INSERT INTO affiliate_stats (`affiliate_id`,`site_id`,`zone_id`,`ad_id`,`country_id`,`state_code`,`city_code`,`platform`,`os`,`browser`,`clicks`,`stat_date`) VALUES";
+             $suffix = " ON DUPLICATE KEY UPDATE `clicks` = `clicks` + VALUES(`clicks`);";
+             $query = $prefix . implode(",", $defs) . $suffix;
+             DB::insert($query);
+             Log::info($query);
+	}else{
+	     Log::info('no defs...');
+	}
         $keys = Redis::keys('CLICK*');
         foreach($keys as $key => $val){
             Redis::del($val);
