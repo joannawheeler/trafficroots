@@ -59,6 +59,30 @@ GROUP BY site_id, zone_id, pub_id, bid_id, cpm;";
             $clicks[$row->zone_id] = isset($clicks[$row->zone_id]) ? ($clicks[$row->zone_id] + $row->clicks) : $row->clicks;
         }
 
+        $sql = "SELECT SUM(affiliate_stats.impressions) as impressions, 
+SUM(affiliate_stats.clicks) as clicks, 
+affiliate_stats.cpm, 
+affiliate_stats.zone_id,
+affiliate_stats.site_id,
+zones.pub_id 
+FROM affiliate_stats
+JOIN zones on affiliate_stats.zone_id = zones.id
+WHERE affiliate_stats.stat_date = '$mydate'
+GROUP BY site_id, zone_id, pub_id, cpm;";
+        $result = DB::select($sql);
+        Log::info("Result selected".count($result)." rows");
+        foreach($result as $row){
+            $earnings = 0;
+            if($row->campaign_type == 1){
+                $earnings = $row->cpm * ($row->impressions / 1000);
+            }
+            if($row->campaign_type == 2){
+                $earnings = $row->cpm * $row->clicks;
+            }
+            $zones[$row->zone_id] = isset($zones[$row->zone_id]) ? ($zones[$row->zone_id] + $earnings) : $earnings;
+            $impressions[$row->zone_id] = isset($impressions[$row->zone_id]) ? ($impressions[$row->zone_id] + $row->impressions) : $row->impressions;
+            $clicks[$row->zone_id] = isset($clicks[$row->zone_id]) ? ($clicks[$row->zone_id] + $row->clicks) : $row->clicks;
+        }
         foreach($zones as $zone => $earned){
             /* check for publisher booking and enter one if not there */
             $booking = DB::select("SELECT * FROM publisher_bookings WHERE zone_id = $zone AND booking_date = '$mydate'");
