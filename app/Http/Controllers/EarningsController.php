@@ -72,13 +72,7 @@ GROUP BY site_id, zone_id, pub_id, cpm;";
         $result = DB::select($sql);
         Log::info("Result selected".count($result)." rows");
         foreach($result as $row){
-            $earnings = 0;
-            if($row->campaign_type == 1){
-                $earnings = $row->cpm * ($row->impressions / 1000);
-            }
-            if($row->campaign_type == 2){
-                $earnings = $row->cpm * $row->clicks;
-            }
+            $earnings = $row->cpm * ($row->impressions / 1000);
             $zones[$row->zone_id] = isset($zones[$row->zone_id]) ? ($zones[$row->zone_id] + $earnings) : $earnings;
             $impressions[$row->zone_id] = isset($impressions[$row->zone_id]) ? ($impressions[$row->zone_id] + $row->impressions) : $row->impressions;
             $clicks[$row->zone_id] = isset($clicks[$row->zone_id]) ? ($clicks[$row->zone_id] + $row->clicks) : $row->clicks;
