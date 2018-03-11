@@ -43,7 +43,8 @@ class HomeController extends Controller
     }
     public function publisherFaq()
     {
-        return view('faq_publisher', array('title' => 'Publisher FAQ'));
+	$faqs = Faq::where('faq_type', 2)->get();
+        return view('faq_publisher', array('faqs' => $faqs, 'title' => 'Publisher FAQ'));
     }
     public function whoAmI()
     {

@@ -162,5 +162,13 @@
     jQuery(document).ready(function ($) {
    	    $('#media_tab').click();
     });
-</script>  
+</script>
+   <script type="text/javascript">
+       jQuery(document).ready(function ($) {
+	       $('.nav-click').removeClass("active");
+	       $('#nav_buyer_library').addClass("active");
+	       $('#nav_buyer').addClass("active");
+	       $('#nav_buyer_menu').removeClass("collapse");
+       });
+   </script>
 @endsection

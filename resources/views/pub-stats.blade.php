@@ -459,4 +459,12 @@
         </div>
     </div>
 </div>
+   <script type="text/javascript">
+       jQuery(document).ready(function ($) {
+	       $('.nav-click').removeClass("active");
+	       $('#nav_pub_stats').addClass("active");
+	       $('#nav_pub').addClass("active");
+	       $('#nav_pub_menu').removeClass("collapse");
+       });
+   </script>
 @endsection

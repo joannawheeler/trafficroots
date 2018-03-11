@@ -187,17 +187,17 @@ class GatherKeysController extends Controller
             $browser = isset($user['browser']) ? Browser::where('browser', $user['browser'])->get() : 0;
             $os = OperatingSystem::where('os', $user['os'])->get();
             $country = Country::where('country_short', $user['geo'])->get();
-            if(!sizeof($country)){
+            if(!sizeof($country) && strlen($user['geo'])){
                 DB::insert("INSERT INTO countries VALUES(NULL,'".$user['geo']."','',NULL,NULL);");
                 $country = Country::where('country_short', $user['geo'])->get();
             }
 	    $state = State::where('state_name', $user['state'])->where('country_id', $country[0]->id)->get();
-	    if(!sizeof($state)){
+	    if(!sizeof($state) && strlen($user['state'])){
                 DB::insert('INSERT INTO states (`state_name`, `country_id`, `legal`) VALUES(?,?,?)', array($user['state'],$country[0]->id,0));
                 $state = State::where('country_id', $country[0]->id)->where('state_name', $user['state'])->get();
             }
             $city = City::where('state_code', $state[0]->id)->where('city_name', $user['city'])->get();
-            if(!sizeof($city)){
+            if(!sizeof($city) && strlen($user['city'])){
                 DB::insert("INSERT INTO cities VALUES(NULL,'".$user['city']."',".$state[0]->id.",NULL,NULL);");
                 $city = City::where('state_code', $state[0]->id)->where('city_name', $user['city'])->get();
             }

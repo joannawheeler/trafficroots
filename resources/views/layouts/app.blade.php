@@ -66,17 +66,17 @@
                             <span class="nav-label">Publisher</span>
                             <span class="fa arrow"></span>
                         </a>
-                        <ul class="nav nav-second-level collapse">
-                            <li>
+                        <ul id="nav_pub_menu" class="nav nav-second-level collapse">
+                            <li id="nav_pub_dashboard" class "nav-click">
                                 <a href="{{ URL::to('/home?type=1') }}">Dashboard</a>
                             </li>
-                            <li>
+                            <li id="nav_pub_sites" class="nav-click">
                                 <a href="{{ URL::to('/sites') }}">Sites</a>
                             </li>
-                            <li>
+                            <li id="nav_pub_stats" class="nav-click">
                                 <a href="{{ URL::to('/stats/pub') }}">Stats</a>
                             </li>
-                            <li>
+                            <li id="nav_pub_faq" class="nav-click">
                                 <a href="{{URL::to('/faq_publisher')}}">FAQ</a>
                             </li>                            
                         </ul>
@@ -87,22 +87,22 @@
                             <span class="nav-label">Advertiser</span>
                             <span class="fa arrow"></span>
                         </a>
-                        <ul class="nav nav-second-level collapse">
-                            <li>
+                        <ul id="nav_buyer_menu" class="nav nav-second-level collapse">
+                            <li id="nav_buyer_dashboard" class="nav-click">
                                 <a href="{{URL::to('/home?type=2')}}">Dashboard</a>
                             </li>
-                            <li>
+                            <li id="nav_buyer_campaigns" class="nav-click">
                                 <a href="{{URL::to('/campaigns')}}">Campaigns</a>
                             </li>
-                            <li>
+                            <li id="nav_buyer_library" class="nav-click">
                                 <a href="{{URL::to('/library')}}">Library</a>
                             </li>                             
-                            <li>
+                            <li id="nav_buyer_faq" class="nav-click">
                                 <a href="{{URL::to('faq_advertiser')}}">FAQ</a>
                             </li>
                         </ul>
                     </li>
-                    <li id="nav_support" class="nav-click">
+                    <li id="nav_profile" class="nav-click">
                         <a href="{{ url('/profile') }}">
                             <i class="fa fa-address-book-o fa-2x"></i>
                             <span class="nav-label">Profile</span>

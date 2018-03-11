@@ -206,6 +206,14 @@
     
     });    
 </script>
+   <script type="text/javascript">
+       jQuery(document).ready(function ($) {
+	       $('.nav-click').removeClass("active");
+	       $('#nav_pub_dashboard').addClass("active");
+	       $('#nav_pub').addClass("active");
+	       $('#nav_pub_menu').removeClass("collapse");
+       });
+   </script>
 @endif
 @if($view_type == 2)
 <div class="row">
@@ -439,5 +447,13 @@
     
     });
 </script>
+   <script type="text/javascript">
+       jQuery(document).ready(function ($) {
+	       $('.nav-click').removeClass("active");
+	       $('#nav_buyer_dashboard').addClass("active");
+	       $('#nav_buyer').addClass("active");
+	       $('#nav_buyer_menu').removeClass("collapse");
+       });
+   </script>
 @endif
 @endsection

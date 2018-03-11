@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
             <div class="ibox">
-                <div class="ibox-title">Advertiser FAQ</div>
+                <div class="ibox-title">Publisher FAQ</div>
 
                 <div class="ibox-content">
                         @foreach($faqs as $faq)
@@ -38,9 +38,9 @@
    <script type="text/javascript">
        jQuery(document).ready(function ($) {
 	       $('.nav-click').removeClass("active");
-	       $('#nav_buyer_faq').addClass("active");
-	       $('#nav_buyer').addClass("active");
-	       $('#nav_buyer_menu').removeClass("collapse");
+	       $('#nav_pub_faq').addClass("active");
+	       $('#nav_pub').addClass("active");
+	       $('#nav_pub_menu').removeClass("collapse");
        });
    </script>
 @endsection

@@ -30,4 +30,8 @@ class Zone extends Model
     {
         return $this->hasMany('App\Stat');
     }
+    public function site_name()
+    {
+        return $this->hasOne('App\Site', 'id', 'site_id')->pluck('site_name');
+    }
 }

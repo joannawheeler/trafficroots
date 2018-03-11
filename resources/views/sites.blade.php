@@ -614,4 +614,13 @@ hljs.initHighlightingOnLoad();
             } );
 
 </script>
+   <script type="text/javascript">
+       jQuery(document).ready(function ($) {
+	       $('.nav-click').removeClass("active");
+	       $('#nav_pub_sites').addClass("active");
+	       $('#nav_pub').addClass("active");
+	       $('#nav_pub_menu').removeClass("collapse");
+       });
+   </script>
+
 @endsection

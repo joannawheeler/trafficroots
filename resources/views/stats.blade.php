@@ -25,7 +25,7 @@
    <script type="text/javascript">
        jQuery(document).ready(function ($) {
                $('.nav-click').removeClass("active");
-               $('#nav_pub').addClass("active");
+	       $('#nav_pub_sites').addClass("active");
        });
    </script>
 @endsection

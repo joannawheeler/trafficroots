@@ -101,4 +101,12 @@
     });
 
 </script>
+   <script type="text/javascript">
+       jQuery(document).ready(function ($) {
+	       $('.nav-click').removeClass("active");
+	       $('#nav_buyer_campaigns').addClass("active");
+	       $('#nav_buyer').addClass("active");
+	       $('#nav_buyer_menu').removeClass("collapse");
+       });
+   </script>
 @endsection
