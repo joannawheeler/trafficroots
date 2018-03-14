@@ -116,6 +116,23 @@ class CronController extends Controller
         } else {
             Log::info("Bid Roller Complete!");
         }
+	}
+
+	/* clear out any inactive bids */
+	$sql = "SELECT DISTINCT(campaign_id) as campaign_id 
+		FROM bids
+		JOIN campaigns on bids.campaign_id = campaigns.id
+                WHERE campaigns.status <> 1;";
+        $result = DB::select($sql);
+        $inactive = array();
+	foreach($result as $row){
+		$inactive[] = $row->campaign_id;
+        }
+	if(sizeof($inactive)){
+            $sql = "DELETE FROM trafficroots.bids WHERE campaign_id IN (".implode(",",$inactive).");";
+	    Log::info('Removing '.count($inactive).' inactive campaigns');
+	    Log::info($sql);
+	    Log::info(DB::delete($sql));
         }
     }
     

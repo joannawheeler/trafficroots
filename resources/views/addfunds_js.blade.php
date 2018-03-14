@@ -50,7 +50,8 @@
 <script src="https://api.nabcommerce.com/1.3/button.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
-        
+ 	       $('.nav-click').removeClass("active");
+	       $('#nav_profile').addClass("active");       
     });
     function onPaymentCompletion(response){
             if(!response) {

@@ -69,12 +69,36 @@ class CampaignController extends Controller
             $bid = (float) $request->bid;
             if($bid){
                 $user = Auth::getUser();
-                $campaign = intval($request->camp_id);
-                Campaign::where('id', $campaign)->where('user_id', $user->id)->update(array('bid' => $bid));
-                return('All Changes Saved');
+		$campaign = intval($request->camp_id);
+		$camp = Campaign::where('id', $campaign)->where('user_id', $user->id)->first();
+		$topbid = $this->getTopBid($camp['location_type']);
+
+	        if($topbid == 0){
+			$return['bid_range'] = 'Your bid of $'.$request->bid.' is in the top 5% of all bids for this location type!';
+			$return['bid_class'] = 'success';
+	        }else{
+                    $ratio = $request->bid / $topbid;
+	            if($ratio > .95){
+			    $return['bid_range'] = 'Your bid of $'.$request->bid.' is in the top 5% of all bids for this location type!';
+			    $return['bid_class'] = 'success';
+	            }elseif($ratio > .90){
+			    $return['bid_range'] = 'Your bid of $'.$request->bid.' is in the top 10% of all bids for this location type!';
+			    $return['bid_class'] = 'info';
+	            }elseif($ratio > .80){
+			    $return['bid_range'] = 'Your bid of $'.$request->bid.' is in the top 20% of all bids for this location type.';
+			    $return['bid_class'] = 'warning';
+	            }else{
+			    $return['bid_range'] = 'Your bid of $'.$request->bid.' is OUTSIDE the top 20% of all bids for this location type.';
+			    $return['bid_class'] = 'danger';
+                    }
+	        }	
+		Campaign::where('id', $campaign)->where('user_id', $user->id)->update(array('bid' => $bid));
+		$return['result'] ='Bid Updated to $'.$bid;
+		return response()->json($return);
             }else{
                 /* bid evaluates to false - invalid */
-                return('Invalid Bid');
+		    $return['result'] = 'Invalid Bid';
+		    return response()->json($return);
             }
         }catch(Exception $e){
             return $e->getMessage();
@@ -167,11 +191,15 @@ class CampaignController extends Controller
 	    $countries .= '<option value="'.$nation->id.'">'.$nation->country_short.' - '.$nation->country_name.'</option>';
         }
 
-        $states = '<option value="0" selected>All States</option>';
-        $result = State::all();
+	$states = '<option value="0" selected>All States</option>';
+	$result = State::where('country_id', 840)->get();
         foreach($result as $row){
-            $states .= '<option value="'.$row->state_short.'">'.$row->state_name.'</option>';
-        }
+	    $states .= '<option value="'.$row->id.'">'.State::find($row->id)->country_name['country_name'].' - '.$row->state_name.'</option>';
+	}
+	$result = State::where('country_id', '<>', 840)->orderby('country_id')->orderby('state_name')->get();
+        foreach($result as $row){
+	    $states .= '<option value="'.$row->id.'">'.State::find($row->id)->country_name['country_name'].' - '.$row->state_name.'</option>';
+	}	
         
         $systems = OperatingSystem::all();
         $operating_systems = '<option value="0" selected>All Operating Systems</option>';
@@ -409,7 +437,32 @@ class CampaignController extends Controller
                 }
                 $row = DB::table('campaign_targets')->where('campaign_id', $camp->id)->first();
                 $media = DB::select('select * from media where user_id = '.$user->id.' and location_type = '.$camp->location_type);
-                $links = DB::select('select * from links where user_id = '.$user->id.' and category = '.$camp->campaign_category);
+		$links = DB::select('select * from links where user_id = '.$user->id.' and category = '.$camp->campaign_category);
+
+		/* get bid status */
+		$topbid = $this->getTopBid($camp->location_type);
+
+	        if($topbid == 0){
+			$bid_range = 'Your bid of $'.$camp->bid.' is in the top 5% of all bids for this location type!';
+			$bid_class = 'success';
+	        }else{
+                    $ratio = $camp->bid / $topbid;
+	            if($ratio > .95){
+			    $bid_range = 'Your bid of $'.$camp->bid.' is in the top 5% of all bids for this location type!';
+			    $bid_class = 'success';
+	            }elseif($ratio > .90){
+			    $bid_range = 'Your bid of $'.$camp->bid.' is in the top 10% of all bids for this location type!';
+			    $bid_class = 'info';
+			    
+	            }elseif($ratio > .80){
+			    $bid_range = 'Your bid of $'.$camp->bid.' is in the top 20% of all bids for this location type.';
+			    $bid_class = 'warning';
+	            }else{
+			    $bid_range = 'Your bid of $'.$camp->bid.' is OUTSIDE the top 20% of all bids for this location type.';
+			    $bid_class = 'danger';
+                    }
+	        }	
+	
                 return view('manage_campaign', [
                     'campaign' => $camp,
                     'media' => $media,
@@ -424,7 +477,9 @@ class CampaignController extends Controller
                     'browser_targets' => $browser_targets,
                     'platforms' => $platforms,
                     'keywords' => str_replace("|", ",", $row->keywords),
-                    'user_id' => $user->id
+		    'user_id' => $user->id,
+		    'bid_range' => $bid_range,
+		    'bid_class' => $bid_class
                 ]);
             }
         }
@@ -500,21 +555,41 @@ class CampaignController extends Controller
             /* cpc campaign */
 
 	}
-	$return['topbid'] = $this->getTopBid($post['location_type']);
+	$topbid = $this->getTopBid($post['location_type']);
+
+	if($topbid == 0){
+		$return['bid_range'] = 5;
+	}else{
+             $ratio = $request->bid / $topbid;
+	     if($ratio > .95){
+		     $return['bid_range'] = 5;
+	     }elseif($ratio > .90){
+		     $return['bid_range'] = 10;
+	     }elseif($ratio > .80){
+		     $return['bid_range'] = 20;
+	     }else{
+		     $return['bid_range'] = 0;
+             }
+	}
 	return response()->json($return);
     }
     public function getTopBid($location_type)
     {
 	    try{
-	        $sql = "SELECT COALESCE(MAX(bid), 0.00) as topbid 
-		    FROM bids 
-		    JOIN stats
-                    ON bids.id = stats.bid_id
-                    WHERE bids.location_type = $location_type 
-                    AND bids.`status` = 1
-                    AND stats.stat_date = CURDATE();";
-                $result = DB::select($sql);
-                return $result[0]->topbid;
+		    $topbid = 0;
+		    $sql = "SELECT * FROM campaigns 
+			    WHERE location_type = ?
+			    AND status = 1
+                            ORDER BY bid DESC;";
+                $result = DB::select($sql, array($location_type));
+                foreach($result as $row){
+                    $sql = 'SELECT * FROM bank WHERE user_id = ? ORDER BY id DESC LIMIT 1';
+		    $bank = DB::select($sql, array($row->user_id));
+		    if($bank[0]->running_balance > 0){
+                        return $row->bid;
+	            }
+		}
+		return $topbid;
 	    }catch(Exception $e){
                 return 0.00;
             }

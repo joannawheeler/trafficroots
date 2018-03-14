@@ -208,4 +208,10 @@
 
     }
 </script>
+   <script type="text/javascript">
+       jQuery(document).ready(function ($) {
+	       $('.nav-click').removeClass("active");
+	       $('#nav_profile').addClass("active");
+       });
+   </script>
 @endsection

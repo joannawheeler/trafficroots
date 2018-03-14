@@ -18,7 +18,8 @@ use App\Platform;
 use App\Country;
 use App\City;
 use App\State;
-
+use DOMDocument;
+use DOMXPath;
 class GatherKeysController extends Controller
 {
     public function __construct()
@@ -33,6 +34,7 @@ class GatherKeysController extends Controller
         $this->gatherClicks();
 	$this->gatherSales();
 	$this->enforceBudgets();
+	$this->findCountyByZip();
     }
     public function gatherDefaultImpressions()
     {
@@ -181,6 +183,7 @@ class GatherKeysController extends Controller
     }
     public function transposeUser($user)
     {
+	try{
         $data = array();
         if(is_array($user)){
             $platform = Platform::where('platform', $user['platform'])->get();
@@ -195,12 +198,14 @@ class GatherKeysController extends Controller
 	    if(!sizeof($state) && strlen($user['state'])){
                 DB::insert('INSERT INTO states (`state_name`, `country_id`, `legal`) VALUES(?,?,?)', array($user['state'],$country[0]->id,0));
                 $state = State::where('country_id', $country[0]->id)->where('state_name', $user['state'])->get();
-            }
-            $city = City::where('state_code', $state[0]->id)->where('city_name', $user['city'])->get();
-            if(!sizeof($city) && strlen($user['city'])){
-                DB::insert("INSERT INTO cities VALUES(NULL,'".$user['city']."',".$state[0]->id.",NULL,NULL);");
+	    
+
                 $city = City::where('state_code', $state[0]->id)->where('city_name', $user['city'])->get();
-            }
+                if(!sizeof($city) && strlen($user['city'])){
+                    DB::insert("INSERT INTO cities VALUES(NULL,'".$user['city']."',".$state[0]->id.",NULL,NULL);");
+                    $city = City::where('state_code', $state[0]->id)->where('city_name', $user['city'])->get();
+	        }
+	    }
             $data['platform'] = isset($platform[0]->id) ? $platform[0]->id : 0;
             $data['browser'] = isset($browser[0]->id) ? $browser[0]->id : 0;
             $data['os'] = isset($os[0]->id) ? $os[0]->id : 0;
@@ -210,7 +215,11 @@ class GatherKeysController extends Controller
 
         }
         return $data;
-
+        }catch(Throwable $t){
+		Log::error($t->getMessage());
+		Log::error($t->getFile());
+		Log::error($t->getLine());
+	}
     }
     public function gatherSales()
     {
@@ -473,5 +482,47 @@ class GatherKeysController extends Controller
 	Campaign::where('status', 8)->update($update);
 	Bid::where('status', 8)->update($update);
     }
-    
+    public function findCountyByZip()
+    {
+	do{    
+	    $zip = Redis::spop('COUNTY_LOOKUP');
+	    $innerHTML = '';
+	    if(strlen($zip) == 5){
+	        Log::info('Looking up county by zip');
+	        Log::info($zip);
+                $url = 'http://www.uscounties.com/zipcodes/search.pl?query='.$zip.'&stpos=0&stype=AND';
+                $ch = curl_init(); 
+	        curl_setopt($ch, CURLOPT_URL, $url); 
+	        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+	        $output = curl_exec($ch); 
+	        curl_close($ch);
+		$doc = new DOMDocument();
+		libxml_use_internal_errors(true);
+	        $doc->loadHTML($output);
+                $classname = 'results';
+                $finder = new DomXPath($doc);
+                $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
+                $tmp_dom = new DOMDocument(); 
+                foreach ($nodes as $node) 
+	        {
+	            $tmp_dom->appendChild($tmp_dom->importNode($node,true));
+	        }
+                $innerHTML.=trim($tmp_dom->saveHTML()); 
+		Log::info($innerHTML);
+		Log::info('ok');
+		$x = 0;
+		foreach($tmp_dom->getElementsByTagName('td') as $element){
+			if($x == 2) {
+                            $county = trim($element->textContent);
+			    $key = $zip."_COUNTY";
+			    Redis::sadd('US_COUNTIES', $key);
+			    Redis::set($key, $county);
+			    Log::info('Redis key '.$key.' set to '.$county);
+			    break;
+			}
+			$x = $x + 1;
+                }
+	    }
+        }while(!$zip == '');	    
+    } 
 }

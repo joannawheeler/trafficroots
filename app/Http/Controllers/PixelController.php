@@ -340,7 +340,7 @@ class PixelController extends Controller
         'SearchBot'=>'(nuhk)|(googlebot)|(yammybot)|(openbot)|(slurp)|(msnbot)|(ask jeeves/teoma)|(ia_archiver)'
         );
 
-        $useragent = htmlspecialchars($_SERVER['HTTP_USER_AGENT']);
+        $useragent = isset($_SERVER['HTTP_USER_AGENT']) ? htmlspecialchars($_SERVER['HTTP_USER_AGENT']) : '';
         $useragent = strtolower($useragent);
         $thisos = "Unknown";
         foreach($osList as $os=>$match) {

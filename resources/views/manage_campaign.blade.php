@@ -47,14 +47,14 @@
                                     <td>
                                         <form name="bid_form" id="bid_form" role="form" class="form-horizontal" action="/update_bid" method="POST">
                                         {{ csrf_field() }}
-                                        <input type="number" id="bid" name="bid" value="{{ $campaign->bid }}">
+                                        <input type="number" id="bid" name="bid" value="{{ $campaign->bid }}" size="5">
                                         <input type="hidden" id="camp_id" name="camp_id" value="{{ $campaign->id }}">
                                         </form>
                                     </td>
                                     <td>
                                         <form name="budget_form" id="budget_form" role="form" class="form-horizontal" action="/update_budget" method="POST">
                                         {{ csrf_field() }}
-                                        <input type="number" id="daily_budget" name="daily_budget" value="{{ $campaign->daily_budget }}">
+                                        <input type="number" id="daily_budget" name="daily_budget" value="{{ $campaign->daily_budget }}" size="5">
                                         <input type="hidden" id="camp_id" name="camp_id" value="{{ $campaign->id }}">
                                         </form>
                                     </td>
@@ -148,7 +148,7 @@
 <script type="text/javascript">
 $('[multiple]').chosen();
 jQuery(document).ready(function ($) {
-        $('[data-toggle="tooltip"]').tooltip();
+	$('[data-toggle="tooltip"]').tooltip();
         $(".form-control").change(function () {
             var url = "{{ url('/update_targets') }}";
             var mydata = $("#target_form").serialize();
@@ -165,10 +165,15 @@ jQuery(document).ready(function ($) {
             var mydata = $("#bid_form").serialize();
             $.post(url, mydata)
                 .done(function (response) {
-                    toastr.success(response);
+			toastr.success(response.result);
+			if(response.bid_class == 'success') toastr.info(response.bid_range, "Bid Status");
+                        if(response.bid_class == 'info') toastr.info(response.bid_range, "Bid Status");
+                        if(response.bid_class == 'warning') toastr.warning(response.bid_range, "Bid Status");
+                        if(response.bid_class == 'danger') toastr.error(response.bid_range, "Bid Status");
+                        
                 })
                 .fail(function (response) {
-                    toastr.error(response);
+                    toastr.error(response.result);
                 });
 	});
         $("#daily_budget").change(function () {
@@ -228,6 +233,34 @@ jQuery(document).ready(function ($) {
 	       $('#nav_buyer_campaigns').addClass("active");
 	       $('#nav_buyer').addClass("active");
 	       $('#nav_buyer_menu').removeClass("collapse");
+	       toastr.options = {
+	         "closeButton": true,
+	         "debug": false,
+                 "progressBar": true,
+		 "preventDuplicates": false,
+		 "positionClass": "toast-top-right",
+		 "onclick": null,
+		 "showDuration": "400",
+		 "hideDuration": "1000",
+		 "timeOut": "10000",
+		 "extendedTimeOut": "1000",
+		 "showEasing": "swing",
+		 "hideEasing": "linear",
+		 "showMethod": "fadeIn",
+		 "hideMethod": "fadeOut"
+	       }
+	       @if($bid_class == 'success')
+               toastr.info("{{ $bid_range }}", "Bid Status");
+	       @endif
+	       @if($bid_class == 'info')
+               toastr.info("{{ $bid_range }}", "Bid Status");
+	       @endif
+	       @if($bid_class == 'warning')
+               toastr.warning("{{ $bid_range }}", "Bid Status");
+	       @endif
+	       @if($bid_class == 'danger')
+               toastr.error("{{ $bid_range }}", "Bid Status");
+	       @endif
        });
    </script>
 @endsection
