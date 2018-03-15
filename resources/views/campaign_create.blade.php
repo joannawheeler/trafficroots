@@ -143,27 +143,33 @@
                             {!! $countries !!} 
                             </select>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                              <h6>State Targeting</h6>
-                             <select id="states" name="states[]" class="chosen-select form-control" multiple>
+                             <select id="states[]" name="states[]" class="chosen-select form-control state-control" multiple>
                              {!! $states !!}
                              </select>
                             </div>
                             <div class="col-md-6">
+                            <h6>County Targeting</h6>
+                                <select name="counties[]" id="counties[]" class="chosen-select form-control" multiple>
+                                {!! $counties !!}
+                                </select>
+                            </div>
+			    <div class="col-md-6">
                             <h6>Platform Targeting</h6>
-                                <select name="platform_targets[]" id="platform_targets" class="chosen-select form-control" multiple>
+                                <select name="platform_targets[]" id="platform_targets[]" class="chosen-select form-control" multiple>
                                 {!! $platforms !!}
                                 </select>
                             </div>
                             <div class="col-md-6"><br />
                              <h6>OS Targeting</h6>
-                             <select id="operating_systems" name="operating_systems[]" class="chosen-select form-control"  multiple>
+                             <select id="operating_systems[]" name="operating_systems[]" class="chosen-select form-control"  multiple>
                              {!! $os_targets !!}
                              </select>
                             </div>
                             <div class="col-md-6"><br />
                              <h6>Browser Targeting</h6>
-                             <select id="browser_targets" name="browser_targets[]" class="chosen-select form-control"  multiple>
+                             <select id="browser_targets[]" name="browser_targets[]" class="chosen-select form-control"  multiple>
                              {!! $browser_targets !!}
                              </select>
                             </div>
@@ -317,7 +323,17 @@
                 $('#media_id').prop("disabled", false);
             }
         });
-        $('.reload').change(function($){
+        $('#states').change(function(){
+            var url = "{{ url('/update_counties') }}";
+            var mydata = $("#campaign_form").serialize();
+            $.post(url, mydata)
+                .done(function (response) {
+                    $('.counties').html(response);
+                })
+                .fail(function (response) {
+                    toastr.error(response);
+                });       });
+	$('.reload').change(function($){
            reloadMedia(); 
         });
     });

@@ -35,6 +35,7 @@ class GatherKeysController extends Controller
 	$this->gatherSales();
 	$this->enforceBudgets();
 	$this->findCountyByZip();
+	//$this->populateZipsTable();
     }
     public function gatherDefaultImpressions()
     {
@@ -524,5 +525,57 @@ class GatherKeysController extends Controller
                 }
 	    }
         }while(!$zip == '');	    
+    }
+
+    public function populateZipsTable()
+    {
+        $sql = 'SELECT *
+		FROM trafficroots.zips
+                WHERE county IS NULL;';
+        $result = DB::select($sql);
+        foreach($result as $row){
+		$zip = $row->zip;
+		$innerHTML = '';
+		Log::info('Looking up county by zip');
+	        Log::info($zip);
+                $url = 'http://www.uscounties.com/zipcodes/search.pl?query='.$zip.'&stpos=0&stype=AND';
+                $ch = curl_init(); 
+	        curl_setopt($ch, CURLOPT_URL, $url); 
+	        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+	        $output = curl_exec($ch); 
+	        curl_close($ch);
+		$doc = new DOMDocument();
+		libxml_use_internal_errors(true);
+	        $doc->loadHTML($output);
+                $classname = 'results';
+                $finder = new DomXPath($doc);
+                $nodes = $finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $classname ')]");
+                $tmp_dom = new DOMDocument(); 
+                foreach ($nodes as $node) 
+	        {
+	            $tmp_dom->appendChild($tmp_dom->importNode($node,true));
+	        }
+                $innerHTML.=trim($tmp_dom->saveHTML()); 
+		Log::info($innerHTML);
+		Log::info('ok');
+		$x = 0;
+		foreach($tmp_dom->getElementsByTagName('td') as $element){
+			if($x == 2) {
+                            $county = trim($element->textContent);
+			    $key = $zip."_COUNTY";
+			    Redis::sadd('US_COUNTIES', $key);
+			    Redis::set($key, $county);
+			    Log::info('Redis key '.$key.' set to '.$county);
+                            $sql = 'UPDATE trafficroots.zips SET county = ? WHERE zip = ?';
+			    DB::update($sql, array($county, $zip));
+			    Log::info('Mysql Database Updated for '.$zip);
+			    break;
+			}
+			$x = $x + 1;
+                }
+
+            sleep(2);
+	}
+
     } 
 }

@@ -82,11 +82,17 @@
                         <div class="ibox-content">
                             <div class="ibox-content">
                              <p>State Targeting</p>
-                             <select id="states[]" name="states[]" class="chosen-select form-control" data-placeholder="Choose sites..." multiple>
+                             <select id="states[]" name="states[]" class="chosen-select form-control state-control" data-placeholder="Choose a state..." multiple>
                              {!! $states !!}
                              </select>
                             </div>
                             <div class="ibox-content">
+                             <p>County Targeting</p>
+                             <select id="counties" name="counties[]" class="form-control county-control" multiple>
+                             {!! $counties !!}
+                             </select>
+                            </div>
+			    <div class="ibox-content">
                             <p>Platform Targeting</p>
                                 <select name="platform_targets[]" id="platform_targets[]" class="form-control" data-placeholder="Choose platforms..." multiple>
                                 {!! $platforms !!}
@@ -146,7 +152,6 @@
     </div>
 </div>
 <script type="text/javascript">
-$('[multiple]').chosen();
 jQuery(document).ready(function ($) {
 	$('[data-toggle="tooltip"]').tooltip();
         $(".form-control").change(function () {
@@ -160,7 +165,20 @@ jQuery(document).ready(function ($) {
                     toastr.error(response);
                 });
         });
-        $("#bid").change(function () {
+	$(".state-control").change(function () {
+	    $('#counties').html('');
+            var url = "{{ url('/update_counties') }}";
+            var mydata = $("#target_form").serialize();
+            $.post(url, mydata)
+		.done(function (response) {
+	            alert(response);
+                    $('#counties').html(response);
+                })
+                .fail(function (response) {
+                    toastr.error(response);
+                });
+        });
+	$("#bid").change(function () {
             var url = "{{ url('/update_bid') }}";
             var mydata = $("#bid_form").serialize();
             $.post(url, mydata)

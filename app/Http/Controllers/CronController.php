@@ -60,7 +60,16 @@ class CronController extends Controller
             $in = implode($allowed, ",")."\n";
    
             /* get all active campaigns for this location type and among the allowed categories */
-            $sql = "select *
+	    $sql = "select campaigns.*, 
+		    campaign_targets.countries,
+                    campaign_targets.states,
+                    campaign_targets.counties,
+                    campaign_targets.platforms,
+                    campaign_targets.browsers,
+                    campaign_targets.operating_systems,
+                    campaign_targets.keywords,
+                    campaign_targets.sites,
+                    campaign_targets.frequency_capping
                     from campaigns
                     join campaign_targets
                     on campaigns.id = campaign_targets.campaign_id
@@ -80,7 +89,7 @@ class CronController extends Controller
                            .$camp->bid.",'"
                            .$camp->countries."','"
                            .$camp->states."','"
-                           .$camp->cities."',"
+                           .$camp->counties."',"
                            .$camp->campaign_category.",'"
                            .$camp->platforms."','"
                            .$camp->operating_systems."','"
@@ -98,12 +107,12 @@ class CronController extends Controller
             }
         }
         if(sizeof($pairs)){
-        $prefix = "INSERT INTO bids (zone_handle,location_type,status,buyer_id,campaign_id,bid,country_id,state_id,city_id,category_id,device_id,os_id,browser_id,keywords,created_at,updated_at) VALUES";
+        $prefix = "INSERT INTO bids (zone_handle,location_type,status,buyer_id,campaign_id,bid,country_id,state_id,county_id,category_id,device_id,os_id,browser_id,keywords,created_at,updated_at) VALUES";
         $suffix = " ON DUPLICATE KEY UPDATE 
                     bid = VALUES(`bid`), 
                     country_id = VALUES(`country_id`), 
                     state_id = VALUES(`state_id`), 
-                    city_id = VALUES(`city_id`), 
+                    county_id = VALUES(`county_id`), 
                     category_id = VALUES(`category_id`),
                     device_id = VALUES(`device_id`),
                     os_id = VALUES(`os_id`),

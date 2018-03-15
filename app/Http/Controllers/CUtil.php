@@ -25,6 +25,8 @@ use App\LocationType;
 use App\ModuleType;
 use App\StatusType;
 use App\Links;
+use Log;
+
 class CUtil extends Controller
 {
     public function __construct()
@@ -40,12 +42,32 @@ class CUtil extends Controller
         $states .= '>All States</option>';
         $result = State::all();
         foreach($result as $row){
-            $states .= '<option value="'.$row->state_short.'"';
-            if(in_array($row->state_short, $state_targets)) $states .= ' selected';
+            $states .= '<option value="'.$row->id.'"';
+            if(in_array($row->id, $state_targets)) $states .= ' selected';
             $states .= '>'.$row->state_name.'</option>';
         }
 
         return $states;
+
+    }
+    public function getCounties($id)
+    {
+        $targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
+	$county_targets = explode("|",$targets->counties);
+	$state_targets = implode(",",explode("|",$targets->states));
+        $counties = '<option value="0"';
+        if($county_targets[0] == '0') $counties .= ' selected';
+        $counties .= '>All Counties</option>';
+	$sql = "SELECT DISTINCT(county) AS county_name, state_code FROM trafficroots.zips WHERE county <> '' AND state_code IN ($state_targets) ORDER BY state_code, county_name";
+	$result = DB::select($sql);
+	Log::info($sql);
+        foreach($result as $row){
+            $counties .= '<option value="'.$row->county_name.'"';
+            if(in_array($row->county_name, $county_targets)) $counties .= ' selected';
+            $counties .= '>'.$row->county_name.'</option>';
+        }
+
+        return $counties;
 
     }
     public function getCampaignTypes()

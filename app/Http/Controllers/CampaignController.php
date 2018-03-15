@@ -122,6 +122,17 @@ class CampaignController extends Controller
                 return $e->getMessage();
  	 } 
     }
+    public function updateCounties(Request $request)
+    {
+	    try{
+            $this->updateTargets($request);
+	    $CUtil = new CUtil();
+            $output = $CUtil->getCounties($request->campaign_id);		    
+            return($output);
+	}catch(Throwable $t){
+            Log::error($t->getMessage());
+	}
+    }
     public function updateTargets(Request $request)
     {
         try {
@@ -135,9 +146,14 @@ class CampaignController extends Controller
             if (is_array($request->states)) {
                 $data['states'] = implode("|", $request->states);
             } else {
-                $data['states'] = ''.$request->states;
+                $data['states'] = ''.intval($request->states);
             }
-            if (is_array($request->platform_targets)) {
+            if (is_array($request->counties)) {
+                $data['counties'] = implode("|", $request->counties);
+            } else {
+                $data['counties'] = ''.intval($request->counties);
+            }
+	    if (is_array($request->platform_targets)) {
                 $data['platforms'] = implode("|", $request->platform_targets);
             } else {
                 $data['platforms'] = ''.$request->platform_targets;
@@ -200,7 +216,7 @@ class CampaignController extends Controller
         foreach($result as $row){
 	    $states .= '<option value="'.$row->id.'">'.State::find($row->id)->country_name['country_name'].' - '.$row->state_name.'</option>';
 	}	
-        
+        $counties = '<option value="0" selected>All Counties</option>'; 
         $systems = OperatingSystem::all();
         $operating_systems = '<option value="0" selected>All Operating Systems</option>';
         foreach($systems as $row){
@@ -232,7 +248,8 @@ class CampaignController extends Controller
                                        'module_types' => $module_types,
                                        'platforms' => $platform_targets,
                                        'browser_targets' => $browser_targets,
-                                       'os_targets' => $operating_systems,
+				       'os_targets' => $operating_systems,
+				       'counties' => $counties,
                                        'states' => $states]);
     }
     public function postCampaign(Request $request)
@@ -430,7 +447,8 @@ class CampaignController extends Controller
                 $states = $CUtil->getStates($camp->id);
                 $os_targets = $CUtil->getOperatingSystems($camp->id);
                 $platforms = $CUtil->getPlatforms($camp->id);
-                $browser_targets = $CUtil->getBrowsers($camp->id);
+		$browser_targets = $CUtil->getBrowsers($camp->id);
+		$counties = $CUtil->getCounties($camp->id);
                 $creatives = Creative::where('campaign_id', $camp->id)->get();
                 if (!$creatives) {
                     $creatives = array();
@@ -479,7 +497,8 @@ class CampaignController extends Controller
                     'keywords' => str_replace("|", ",", $row->keywords),
 		    'user_id' => $user->id,
 		    'bid_range' => $bid_range,
-		    'bid_class' => $bid_class
+		    'bid_class' => $bid_class,
+		    'counties' => $counties
                 ]);
             }
         }
