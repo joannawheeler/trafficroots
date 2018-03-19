@@ -206,6 +206,14 @@ class GatherKeysController extends Controller
                     DB::insert("INSERT INTO cities VALUES(NULL,'".$user['city']."',".$state[0]->id.",NULL,NULL);");
                     $city = City::where('state_code', $state[0]->id)->where('city_name', $user['city'])->get();
 	        }
+	    }else{
+		if(sizeof($state)){    
+                    $city = City::where('state_code', $state[0]->id)->where('city_name', $user['city'])->get();
+                    if(!sizeof($city) && strlen($user['city'])){
+                        DB::insert("INSERT INTO cities VALUES(NULL,'".$user['city']."',".$state[0]->id.",NULL,NULL);");
+                        $city = City::where('state_code', $state[0]->id)->where('city_name', $user['city'])->get();
+		    }
+		}
 	    }
             $data['platform'] = isset($platform[0]->id) ? $platform[0]->id : 0;
             $data['browser'] = isset($browser[0]->id) ? $browser[0]->id : 0;

@@ -1,10 +1,5 @@
 @extends('layouts.app') 
 
-
-@section('css')
-<link href="css/plugins/iCheck/custom.css" rel="stylesheet"> 
-@endsection
-
 @section('content') 
 <div class="container">
     <div class="row">
@@ -13,8 +8,13 @@
                 <div class="ibox-title">
                     <h5>Reset Password</h5>
                 </div>
-                <div class="ibox-content">
-                    <form class="form-horizontal" role="form" method="POST" action="{{ url('/password/reset') }}">
+		<div class="ibox-content">
+                    @if (session('status'))
+                        <div class="alert alert-success">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+                    <form class="form-horizontal" role="form" method="POST" action="{{ url('/password/email') }}">
                         {{ csrf_field() }} {{--
                         <p>Sign in today for more expirience.</p> --}}
                         <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
