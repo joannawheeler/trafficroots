@@ -8,10 +8,18 @@
             <div class="ibox-title">My Tickets</div>
             <div class="ibox-content table-responsive">
             <table width="100%" class="table table-border table-hover">
-            <thead><tr><th>Ticket ID</th><th>Subject</th><th>Type</th><th>Status</th><th>Date Created</th><th>Date Update</th><th>Details</th></tr></thead>
+            <thead><tr><th>Ticket ID</th><th>Subject</th><th>Type</th><th>Status</th><th>Date Created</th><th>Date Updated</th><th>Details</th></tr></thead>
             <tbody>
             @foreach($mytickets as $ticket)
-                <tr><td>{{$ticket->id}}</td><td>{{$ticket->subject}}</td><td>{{$ticket->type}}</td><td>{{$ticket->status}}</td><td>{{$ticket->created_at}}</td><td>{{$ticket->updated_at}}</td><td><a href=""><i class="fa fa-cogs"></i></a></td></tr>
+		<tr><td>{{$ticket->id}}</td><td>{{$ticket->subject}}</td><td>{{$ticket->type}}</td><td>
+                @if($ticket->status == 0)
+                Pending
+                @elseif($ticket->status == 1)
+                Replied
+                @elseif($ticket->status == 2)
+                Closed
+                @endif
+                </td><td>{{$ticket->created_at}}</td><td>{{$ticket->updated_at}}</td><td><a href="/ticket/{{ $ticket->id }}"><i class="fa fa-cogs"></i></a></td></tr>
 
             @endforeach
             </tbody>

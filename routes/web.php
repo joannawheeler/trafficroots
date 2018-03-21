@@ -59,6 +59,8 @@ Route::get('/stats/zone/{zone_id}/{range}', 'StatsController@getZoneStats');
 // Route::get('/stats/site/{site_id}/{range}', 'StatsController@getSiteStats');
 Route::get('/tickets', 'TicketController@index');
 Route::post('/tickets', 'TicketController@store');
+Route::get('/ticket/{id}', 'TicketController@show');
+Route::post('/reply', 'TicketController@reply');
 Route::get('/service/{handle}/{keywords?}', 'AdserverController@getIndex');
 Route::get('/click/{querystr}', 'AdserverController@clickedMe');
 Route::get('/profile', 'HomeController@myProfile');
