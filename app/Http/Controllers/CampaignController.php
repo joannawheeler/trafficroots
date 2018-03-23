@@ -133,6 +133,11 @@ class CampaignController extends Controller
             Log::error($t->getMessage());
 	}
     }
+    public function loadCounties(Request $request)
+    {
+        $CUtil = new CUtil();
+	return $CUtil->loadCounties($request);
+    }
     public function updateTargets(Request $request)
     {
         try {
@@ -301,10 +306,12 @@ class CampaignController extends Controller
 	$sql = "SELECT COUNT(*) AS records FROM creatives WHERE campaign_id = $id";
 	$result = DB::select($sql);
 	$count = $result[0]->records;
+	if($count){
 	$weight = round(100 / $count);
 	$sql = "UPDATE creatives SET weight = ? WHERE campaign_id = ?";
 	Log::info($sql);
 	DB::update($sql, array($weight, $id));
+	}
 	return true;
     }
     public function createCreative(Request $request)

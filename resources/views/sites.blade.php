@@ -41,19 +41,16 @@ hljs.initHighlightingOnLoad();
         <div class="ibox">
             <div class="ibox-title"><h5>Pending Campaigns</h5></div>
             <div class="ibox-content">
-                <div class="row"><div class="col-lg-3">Site</div><div class="col-lg-3">Campaign</div><div class="col-lg-3">Advertiser</div><div class="col-lg-3">Options</div></div>
+                <div class="row"><div class="col-lg-4">Site</div><div class="col-lg-4">Campaign</div><div class="col-lg-4">Options</div></div>
                 @foreach ($pending as $pend)
                 <div class="row">
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
                        {{ $pend->site_name }}
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
                        {{ $pend->campaign_name }}
                     </div>
-                    <div class="col-lg-3">
-                       {{ $pend->name }}
-                    </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
                                 <button class="btn btn-xs alert-success activate-bid" id="activate_bid_{{ $pend->id }}"><i class="fa fa-check-square-o"></i> Activate</button>&nbsp;<a href="/preview/{{ $pend->id }}" target="_blank"><button class="btn btn-xs alert-info"><i class="fa fa-camera-retro"></i> Preview</button></a>&nbsp;<button class="btn btn-xs alert-danger decline-bid" id="decline_bid_{{ $pend->id }}"><i class="fa fa-times-circle-o"></i> Decline</button>
                     </div>
                 </div>

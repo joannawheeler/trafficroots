@@ -81,6 +81,7 @@ Route::post('/update_targets', 'CampaignController@updateTargets');
 Route::post('/update_bid', 'CampaignController@updateBid');
 Route::post('/update_budget', 'CampaignController@updateBudget');
 Route::post('/update_counties', 'CampaignController@updateCounties');
+Route::post('/load_counties', 'CampaignController@loadCounties');
 Route::get('/folder', 'CampaignController@createFolder');
 Route::post('/folder', 'CampaignController@postFolder');
 Route::get('/whoami', 'HomeController@whoAmI');

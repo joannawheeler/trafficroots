@@ -280,14 +280,17 @@ class SiteController extends Controller
     {
         $id = $request->id;
         $user = Auth::user();
-        $sql = 'SELECT `bids`.* 
-        FROM `bids` 
+        $sql = 'SELECT `bids`.*, users.name 
+        FROM `bids`
+        JOIN users 
+        ON bids.buyer_id = users.id 
         JOIN `zones`
         ON `bids`.`zone_handle` = `zones`.`handle`
         WHERE `bids`.`id` = ? 
-        AND `zones`.`pub_id` = ?;'; 
+        AND `zones`.`pub_id` = ?'; 
         $result = DB::select($sql, array($id, $user->id));
-        if(sizeof($result)){
+	if(sizeof($result)){
+	    
             $sql = "SELECT *
                     FROM creatives
                     JOIN media
@@ -305,8 +308,9 @@ class SiteController extends Controller
             }else{
                 $media = array();
                 $links = array();
-            }
-            return view('preview', array('media' => $media, 'links' => $links));
+	    }
+
+            return view('preview', array('media' => $media, 'links' => $links, 'advertiser' => $result[0]->name));
         }        
     }
 }

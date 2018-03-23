@@ -145,31 +145,31 @@
                             </div>
                             <div class="col-md-12">
                              <h6>State Targeting</h6>
-                             <select id="states[]" name="states[]" class="chosen-select form-control state-control" multiple>
+                             <select id="states" name="states[]" class="chosen-select form-control state-control" multiple>
                              {!! $states !!}
                              </select>
                             </div>
                             <div class="col-md-6">
                             <h6>County Targeting</h6>
-                                <select name="counties[]" id="counties[]" class="chosen-select form-control" multiple>
+                                <select name="counties[]" id="counties" class="chosen-select form-control counties" multiple>
                                 {!! $counties !!}
                                 </select>
                             </div>
 			    <div class="col-md-6">
                             <h6>Platform Targeting</h6>
-                                <select name="platform_targets[]" id="platform_targets[]" class="chosen-select form-control" multiple>
+                                <select name="platform_targets[]" id="platform_targets" class="chosen-select form-control" multiple>
                                 {!! $platforms !!}
                                 </select>
                             </div>
                             <div class="col-md-6"><br />
                              <h6>OS Targeting</h6>
-                             <select id="operating_systems[]" name="operating_systems[]" class="chosen-select form-control"  multiple>
+                             <select id="operating_systems" name="operating_systems[]" class="chosen-select form-control"  multiple>
                              {!! $os_targets !!}
                              </select>
                             </div>
                             <div class="col-md-6"><br />
                              <h6>Browser Targeting</h6>
-                             <select id="browser_targets[]" name="browser_targets[]" class="chosen-select form-control"  multiple>
+                             <select id="browser_targets" name="browser_targets[]" class="chosen-select form-control"  multiple>
                              {!! $browser_targets !!}
                              </select>
                             </div>
@@ -257,10 +257,16 @@
                             <div id="bid-tips" class="col-md-6"></div>
 			    <div class="col-md-4">
                                 <h4>Place Your Bid</h4>
-			        <input type="text" id="bid" name="bid" value="4.20">
-				<label class="error hide" for="bid"></label>
+			        <input type="text" id="bid" name="bid" value="4.20" required>
+				<label class="error hide" for="bid"></label><br />
 			    </div>
-                        </div>               
+			</div>              
+                        <div class="row"><div class="col-md-6">&nbsp;</div>
+                            <div class="col-md-4">
+                                <h4>Set Your Daily Budget</h4>
+				<input type="text" id="daily_budget" name="daily_budget" value"0.00">&nbsp;<i>*optional</i>
+                            </div>
+                        </div>
                     </div>                    
                 </div>
 		</form>
@@ -312,7 +318,8 @@
 	                                alert("Submitted");
 				    });	     
 		            }			
-        });
+	    });
+	@if($user->allow_folders)    
         $('#folder_id').change(function(){
             var check = parseInt($(this).val());
             if(check){
@@ -322,12 +329,13 @@
                 $('#link_id').prop("disabled", false);
                 $('#media_id').prop("disabled", false);
             }
-        });
-        $('#states').change(function(){
-            var url = "{{ url('/update_counties') }}";
+	});
+	@endif
+		$('.state-control').change(function(){
+            var url = "{{ url('/load_counties') }}";
             var mydata = $("#campaign_form").serialize();
             $.post(url, mydata)
-                .done(function (response) {
+		.done(function (response) {
                     $('.counties').html(response);
                 })
                 .fail(function (response) {
@@ -363,7 +371,7 @@
 	    $(".creative").each(function(){
 	        creatives ++;
 	    });	    
-	    var myhtml = '<h4>Campaign Overview</h4><div class="ibox-content"><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Campaign Name:</strong></h6></div><div class="col-md-6"><h6>' + $('#campaign_name').val() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Campaign Type:</strong></h6></div><div class="col-md-6"><h6>' + $('#campaign_type option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Campaign Category:</strong></div><div class="col-md-6"><h6>' + $('#campaign_category option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Location Type:</strong></div><div class="col-md-6"><h6>' + $('#location_type option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Frequency Capping:</strong></div><div class="col-md-6"><h6>' + $('#frequency_capping option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Country/Geo Targeting:</strong></div><div class="col-md-6"><h6>' + $('#countries option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>State Targeting:</strong></div><div class="col-md-6"><h6>' + $('#states option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Platform Targeting:</strong></div><div class="col-md-6"><h6>' + $('#platform_targets option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>OS Targeting:</strong></div><div class="col-md-6"><h6>' + $('#operating_systems option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Browser Targeting:</strong></div><div class="col-md-6"><h6>' + $('#browser_targets option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Keyword Targeting:</strong></div><div class="col-md-6"><h6>' + $('#keyword_targets').val() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Creatives:</strong></div><div class="col-md-6"><h6>' + creatives + '</h6></div></div></div><!--ends here --></div>';
+	    var myhtml = '<h4>Campaign Overview</h4><div class="ibox-content"><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Campaign Name:</strong></h6></div><div class="col-md-6"><h6>' + $('#campaign_name').val() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Campaign Type:</strong></h6></div><div class="col-md-6"><h6>' + $('#campaign_type option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Campaign Category:</strong></div><div class="col-md-6"><h6>' + $('#campaign_category option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Location Type:</strong></div><div class="col-md-6"><h6>' + $('#location_type option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Frequency Capping:</strong></div><div class="col-md-6"><h6>' + $('#frequency_capping option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Country/Geo Targeting:</strong></div><div class="col-md-6"><h6>' + $('#countries option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>State Targeting:</strong></div><div class="col-md-6"><h6>' + $('#states option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>County Targeting:</strong></div><div class="col-md-6"><h6>' + $('#counties option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Platform Targeting:</strong></div><div class="col-md-6"><h6>' + $('#platform_targets option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>OS Targeting:</strong></div><div class="col-md-6"><h6>' + $('#operating_systems option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Browser Targeting:</strong></div><div class="col-md-6"><h6>' + $('#browser_targets option:selected').text() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Keyword Targeting:</strong></div><div class="col-md-6"><h6>' + $('#keyword_targets').val() + '</h6></div></div><div class="row"><div class="col-md-2">&nbsp;</div><div class="col-md-2"><h6><strong>Creatives:</strong></div><div class="col-md-6"><h6>' + creatives + '</h6></div></div></div><!--ends here --></div>';
 	    $('#overview_content').html(myhtml);
     }
     function reloadMedia(){
