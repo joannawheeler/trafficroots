@@ -18,13 +18,21 @@
                         @if($pub)
                         <li><a id="pub_tab" href="#pub-tab" data-toggle="tab">Earnings</a></li>
                         @endif
-                        @if($buyer)
                         <li><a id="account_tab" href="#buyer-tab" data-toggle="tab">Invoices</a></li>
-                        @endif
                     </ul>
                 <div id="my-tab-content" class="tab-content">
                     <div class="tab-pane table-responsive active" id="account-tab">
-                    <div class="ibox">
+		    <div class="ibox">
+                    @if($user->status == 0)
+		    <div class="ibox-content">
+                    <div class="alert alert-warning">
+                    <div class="row"><div class="col-xs-4"><h3>Your Attention Is Needed</h3></div>
+                    <div class="col-xs-8"><p>Your E-Mail Address Has Not Been Confirmed!</p>
+                    <a href="/send_confirmation"><button class="btn btn-primary">Click Here To Re-Send Confirmation E-Mail</button></a>
+		    </div></div>
+                    </div>
+                    </div>
+                    @endif
                         <div class="ibox-content">
                 <form name="profile_form" id="profile_form" class="form-horizontal" role="form" method="POST" action="update_profile">
                 {{ csrf_field() }}
@@ -206,7 +214,6 @@
             <div class="tab-pane table-responsive" id="buyer-tab">
                 <div class="ibox">
                 <div class="ibox-content">
-                @if($buyer)
                 @if(sizeof($invoices))
                 <h3>Invoices</h3>
                 <div class="row"><div class="col-md-2 alert-info"><h4>Transaction Date</h4></div>
@@ -216,12 +223,10 @@
                     <div class="col-md-2">$ {{ $invoice->Amount }}</div></div>
                 @endforeach
                 @endif                
-                @else
                 <a href="/campaigns"><h4>Start A Campaign!</h4></a>
-		@endif
 		<div class="row"><br /><br /><hr></div>
                 <div class="row"><div class="col-md-3">Your Current Balance Is:</div><div class="col-md-3">$ {{$balance}}</div></div>
-                <div class="text-center"><a href="/addfunds"><button class="btn btn-primary">Fund Your Account!</button></a></div> 
+                <div class="row"><div class="text-center"><a href="/addfunds"><button class="btn btn-primary">Fund Your Account!</button></a></div></div> 
                 </div>
                 </div>
             </div>

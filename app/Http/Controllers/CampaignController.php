@@ -31,6 +31,7 @@ use Validator;
 use Input;
 use Session;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Gate;
 
 class CampaignController extends Controller
 {
@@ -512,7 +513,12 @@ class CampaignController extends Controller
     }
     public function campaigns()
     {
-        $user = Auth::user();
+	    $user = Auth::user();
+	    if (Gate::allows('unconfirmed_user')) {
+		$user = Auth::getUser();
+		Log::info($user->name.' attempted to access Campaigns page and got sent home.');
+		return redirect('/profile');
+	    }
         $startDate = Carbon::now()->firstOfMonth()->toDateString();
         $endDate = Carbon::now()->endOfMonth()->toDateString();
         $campaigns = Campaign::with(['stats' => function ($query) use ($startDate, $endDate) {

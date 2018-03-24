@@ -19,6 +19,9 @@ use App\Campaign;
 use DB;
 use Log;
 use Session;
+use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ConfirmUser;
 
 class HomeController extends Controller
 {
@@ -31,6 +34,26 @@ class HomeController extends Controller
     {
         $this->middleware('auth');
         setlocale(LC_MONETARY, 'en_US.utf8');
+    }
+
+    /* send confirmation email with redis token */
+    public function sendConfirmation(Request $request){
+        $user = Auth::getUser();
+	if($user->status){
+		Log::info($user->name.' hit the confirmation email route, but is already activated');
+		Log::info('' . bin2hex(random_bytes(8)));
+		return redirect('/home');
+	}else{
+            Log::info('Sending confirmation email to '.$user->name);
+	    $handle = bin2hex(random_bytes(8));
+	    session(['sent_confirmation' => 1]);
+            Redis::setex($handle, 86400 * 2, $user->id);
+	    Log::info($handle);
+	    Mail::to($user->email)->send(new ConfirmUser($user, $handle));
+	    Log::info('Mail Sent!');
+	    $request->session()->flash('status', 'Sending of Confirmation Email was successful!');
+            return redirect('/home');
+	}	
     }
     public function advertiser()
     {

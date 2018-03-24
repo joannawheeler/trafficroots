@@ -70,11 +70,11 @@
     }
     function checkDeposit(){
         var amount = $("#amount").val();
-        if(amount >= 100){
+        if(amount >= 250){
             window.location = window.location.href = '?deposit=' + amount;
             return false;
         }else{
-            alert("Minimum deposit is $100.00");
+            alert("Minimum deposit is $250.00");
             return false;
         }
 

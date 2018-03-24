@@ -453,6 +453,9 @@
 	       $('#nav_buyer_dashboard').addClass("active");
 	       $('#nav_buyer').addClass("active");
 	       $('#nav_buyer_menu').removeClass("collapse");
+	       @if(session('status'))
+		       toastr.success('{{session('status')}}');
+	       @endif
        });
    </script>
 @endif

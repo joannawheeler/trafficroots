@@ -10,16 +10,24 @@ use App\Site;
 use App\Category;
 use App\LocationType;
 use Illuminate\Validation\Rule;
-
+use Illuminate\Support\Facades\Gate;
 class SiteController extends Controller
 {
     public function __construct()
     {
-         $this->middleware('auth');
+	    $this->middleware('auth');
     }
     public function index()
     {
-        $user = Auth::user();
+	    $user = Auth::user();
+	    if (Gate::allows('unconfirmed_user')) {
+		$user = Auth::getUser();
+		Log::info($user->name.' attempted to access Sites page and got sent home.');
+		return redirect('/profile');
+	    }else{
+		    Log::info('user was allowed into sites page');
+            }
+
         $sites = Site::with('zones')->where('user_id', $user->id)->get();
         $categories = Category::all();
         $locationTypes = LocationType::orderBy('width')->get();
