@@ -65,6 +65,9 @@
                         </a>
                         <ul class="nav nav-second-level collapse">
                             <li>
+                                <a href="{{ URL::to('/home?type=1') }}">Dashboard</a>
+                            </li>
+                            <li>
                                 <a href="{{ URL::to('home?type=1') }}">Dashboard</a>
                             </li>
                             <li>

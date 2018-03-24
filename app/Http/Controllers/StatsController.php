@@ -99,7 +99,7 @@ class StatsController extends Controller
         },'category','type'])
             ->where('id', $campaign)
             ->first();
-        return view('campaign-stats', compact('campaign'));
+        return view('campaign-stats', compact('campaign', 'startDate', 'endDate'));
     }
 
     public function zone(Zone $zone)
@@ -111,7 +111,7 @@ class StatsController extends Controller
           ->where('stat_date', '>=', $startDate)
           ->where('stat_date', '<=', $endDate);
 
-        return view('zone-stats', compact('zone', 'stats'));
+        return view('zone-stats', compact('zone', 'stats', 'startDate', 'endDate'));
     }
     /**
      * @author Cary White
@@ -194,7 +194,7 @@ class StatsController extends Controller
                     }
                 }
             }
-            return view('stats', ['site' => $site, 'big' => $big, 'range' => $range_desc, 'zone_count' => $zone_count, 'browsers' => $browsers, 'platforms' => $platforms, 'operating_systems' => $operating_systems, 'sitedata' => $sitedata, 'zones' => $zones, 'imps' => $imps, 'clicks' => $clicks]);
+            return view('stats', ['site' => $site, 'big' => $big, 'range' => $range_desc, 'zone_count' => $zone_count, 'browsers' => $browsers, 'platforms' => $platforms, 'operating_systems' => $operating_systems, 'sitedata' => $sitedata, 'zones' => $zones, 'imps' => $imps, 'clicks' => $clicks, 'startDate' => $start_date, 'endDate' => date('Y-m-d')]);
         } catch (Exception $e) {
             Log::error($e->getMessage());
         }

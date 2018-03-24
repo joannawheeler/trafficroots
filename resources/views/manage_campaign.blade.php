@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', '- Campaigns')
+@section('title', '- Campaigns2345678')
 @section('css')
 <link rel="stylesheet"
       href="{{ URL::asset('css/plugins/select2/select2.min.css') }}">

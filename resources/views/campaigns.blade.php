@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@section('title','- Advertisers')
+@section('title','Advertisers23456789')
+@section('css')
+@endsection
 
 @section('content')
     @if(Session::has('success'))
@@ -21,7 +23,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="ibox">
-                    <div class="ibox-title">My Campaigns<a href="/campaign" class="btn btn-xs btn-primary pull-right">Add A Campaign</a></div>
+                    <div class="ibox-title">My Campaigns 234567654334565<a href="/campaign" class="btn btn-xs btn-primary pull-right">Add A Campaign</a></div>
                     <div class="ibox-content table-responsive">
                         @if (count($campaigns))
                             <table class="table table-hover table-border table-striped table-condensed" name="campaigns_table" id="campaigns_table" width="100%">

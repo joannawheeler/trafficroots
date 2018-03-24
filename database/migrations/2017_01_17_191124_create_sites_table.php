@@ -20,9 +20,12 @@ class CreateSitesTable extends Migration
             $table->integer('site_category');
             $table->integer('user_id');
             
-            $table->timestamps();
+            //$table->timestamps();
         });
         //
+		//		Schema::table('site_delete', function (Blueprint $table) {
+//			$table->softDeletes();
+//		});
     }
 
     /**
@@ -32,6 +35,14 @@ class CreateSitesTable extends Migration
      */
     public function down()
     {
+		Schema::create('sites', function (Blueprint $table) {
+             $table->timestamps();
+
+            
+            //$table->timestamps();
+        });
+		
+		
         //
     }
 }

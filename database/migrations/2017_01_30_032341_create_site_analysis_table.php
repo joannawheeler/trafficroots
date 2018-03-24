@@ -23,8 +23,9 @@ class CreateSiteAnalysisTable extends Migration
             $table->integer('browser');
             $table->integer('os');
             $table->integer('impressions');
+		   
+		   
         });
-        //
     }
 
     /**

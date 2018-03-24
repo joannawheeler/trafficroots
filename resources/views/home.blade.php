@@ -1,5 +1,7 @@
 @extends('layouts.app') 
 @section('content')
+
+
 @if($view_type == 1 || $view_type == 3)
 @section('title', '- Publisher Dashboard') 
 @else
@@ -90,12 +92,57 @@
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5>Daily Stats</h5>
-                <div ibox-tools></div>
-            </div>
-            <div class="ibox-content">
+                
+                <div class="pull-right">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-xs btn-white active">Today</button>
+                        <button type="button" class="btn btn-xs btn-white">Week</button>
+                        <button type="button" class="btn btn-xs btn-white">Month</button>
+                    </div>
+                    <div ibox-tools></div>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-lg-9">            
                             <div class="flot-chart">
                                 <div class="flot-chart-content" id="flot-line-chart-multi"></div>
                             </div>
+                        </div>
+            
+
+                         <div class="col-lg-3">
+                        <ul class="stat-list">
+                            <li>
+                                <h2 class="no-margins"> {{ number_format($pub_data['impressions_today']) }} </h2>
+                                <small>Impressions</small>
+                                <div class="stat-percent"> {{ number_format($pub_data['impressions_today']) }} %<i class="fa fa-level-up text-navy"></i></div>
+                                <div class="progress progress-mini">
+                                    <div style="width: 48%;" class="progress-bar"></div>
+                                </div>
+                            </li>
+                            <li>
+                                <h2 class="no-margins ">$ {{ round($pub_data['earned_today'],2) }} </h2>
+                                <small>Earnings</small>
+                                <div class="stat-percent">60% <i class="fa fa-level-down text-navy"></i></div>
+                                <div class="progress progress-mini">
+                                    <div style="width: 60%;" class="progress-bar"></div>
+                                </div>
+                            </li>
+                            <li>
+                                <h2 class="no-margins ">$ {{ round($pub_data['cpm_today'],2) }}</h2>
+                                <small>Cost Per Mili</small>
+                                <div class="stat-percent">22% <i class="fa fa-bolt text-navy"></i></div>
+                                <div class="progress progress-mini">
+                                    <div style="width: 22%;" class="progress-bar"></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+
+            
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -215,6 +262,9 @@
        });
    </script>
 @endif
+
+<!-- start advertisement -->
+
 @if($view_type == 2)
 <div class="row">
     <div class="col-lg-3">
@@ -231,7 +281,7 @@
                 <div class="stat-percent font-bold text-success pull-right">{{ round($buyer_data['ctr_today'],2) }}</div>
                 <small>CTR</small><br />
                 <div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['spent_today'] }}</div>
-                <small>Spend</small><br />
+                <small>Costs</small><br />
                 <div class="stat-percent font-bold text-success">$ {{ $buyer_data['cpm_today'] }}</div>
                 <small>CPM</small><br />
                 <div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpc_today'] }}</div>
@@ -255,7 +305,7 @@
                 <div class="stat-percent font-bold text-success pull-right">{{ $buyer_data['ctr_yesterday'] }}</div>
                 <small>CTR</small><br />                
                 <div class="stat-percent font-bold text-success pull-right">$ {{ round($buyer_data['spent_yesterday'],2) }}</div>
-                <small>Spend</small><br />
+                <small>Costs</small><br />
                 <div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpm_yesterday'] }}</div>
                 <small>CPM</small><br />
                 <div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpc_yesterday'] }}</div>
@@ -277,7 +327,7 @@
                 <div class="stat-percent font-bold text-success pull-right">{{ $buyer_data['ctr_this_month'] }}</div>
                 <small>CTR</small><br />                
                 <div class="stat-percent font-bold text-success pull-right">$ {{ round($buyer_data['spent_this_month'],2) }}</div>
-                <small>Spend</small><br />
+                <small>Costs</small><br />
                 <div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpm_this_month'] }}</div>
                 <small>CPM</small><br />
                 <div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpc_this_month'] }}</div>
@@ -299,7 +349,7 @@
                 <div class="stat-percent font-bold text-success pull-right">{{ $buyer_data['ctr_last_month'] }}</div>
                 <small>CTR</small><br />                
                 <div class="stat-percent font-bold text-success pull-right">$ {{ round($buyer_data['spent_last_month'],2) }}</div>
-                <small>Spend</small><br />
+                <small>Costs</small><br />
                 <div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpm_last_month'] }}</div>
                 <small>CPM</small><br />
                 <div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpc_last_month'] }}</div>
@@ -313,16 +363,87 @@
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5>Daily Stats</h5>
+                <div class="pull-right">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-xs btn-white active">Today</button>
+                        <button type="button" class="btn btn-xs btn-white">Week</button>
+                        <button type="button" class="btn btn-xs btn-white">Month</button>
+                    </div>
                 <div ibox-tools></div>
             </div>
             <div class="ibox-content">
+                <div class="row">
+                        <div class="col-lg-9">
                             <div class="flot-chart">
                                 <div class="flot-chart-content" id="flot-line-chart-multi"></div>
                             </div>
+                        </div>
+
+                    <div class="col-lg-3">
+                        <ul class="stat-list">
+                            <li>
+                                <h2 class="no-margins"> {{ number_format($buyer_data['impressions_today']) }} </h2>
+                                <small>Impressions</small>
+                                <div class="stat-percent"> {{ number_format($buyer_data['impressions_today']) }}%<i class="fa fa-level-up text-navy"></i></div>
+                                <div class="progress progress-mini">
+                                    <div style="width: 48%;" class="progress-bar"></div>
+                                </div>
+                            </li>
+                            <li>
+                                <h2 class="no-margins "> $ {{ $buyer_data['cpc_today'] }} </h2>
+                                <small>Cost Per Click</small>
+                                <div class="stat-percent">60% <i class="fa fa-level-down text-navy"></i></div>
+                                <div class="progress progress-mini">
+                                    <div style="width: 60%;" class="progress-bar"></div>
+                                </div>
+                            </li>
+                            <li>
+                                <h2 class="no-margins ">{{ round($buyer_data['ctr_today'],2) }}</h2>
+                                <small>Click Through Rate</small>
+                                <div class="stat-percent">22% <i class="fa fa-bolt text-navy"></i></div>
+                                <div class="progress progress-mini">
+                                    <div style="width: 22%;" class="progress-bar"></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 </div>
+
+    <div class="row">
+        <div class="col-md-5">
+            <div class="panel panel-default">
+                <h5 class="p-title">Campaigns</h5>
+                <div class="ibox-content">
+                    <h4>Dates:</h4>
+                    <div id="date_filter">
+                        <input class="date_range_filter date" type="hidden" id="datepicker_from" />
+                        <input class="date_range_filter date" type="hidden" id="datepicker_to" />
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <input type="text" class="form-control dateRangeFilter">
+                            <span class="glyphicon glyphicon-calendar fa fa-calendar dateRangeIcon"></span>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <br>
+                            <button type="submit" class="btn btn-primary btn-block" id="filterSubmit">Submit</button>
+                            
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <br>
+                            <button type="submit" class="btn btn-danger btn-block" id="resetFilter">Reset Filter</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <div class="row">
     <div class="col-lg-12">
         <div class="ibox float-e-margins">
@@ -332,6 +453,11 @@
                 <a href="javascript:void" onclick="return showThisMonth();" class="lastmonth"><span class="label label-info pull-right lastmonth" style="display:none">Show This Month</span></a>
                 <a href="javascript:void" onclick="return showLastMonth();" class="thismonth"><span class="label label-info pull-right thismonth">Show Last Month</button></a>
             </div>
+            
+            
+            
+            
+            
             <div class="ibox-content">
 
                 <table class="table">
@@ -341,7 +467,7 @@
                             <th>Days Active</th>
                             <th>Impressions</th>
                             <th>Clicks</th>
-                            <th>Spend</th>
+                            <th>Costs</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -351,7 +477,7 @@
                             <td>{{ $campaign['days_active'] }} </td>
                             <td>{{ $campaign['impressions'] }}</td>
                             <td>{{ $campaign['clicks'] }}</td>
-                            <td>{{ money_format('%(#10n',$campaign['spend']) }}</td>
+                            <td>{{ money_format('%(#10n',$campaign['costs']) }}</td>
                         </tr>
                     @endforeach
                     @foreach($buyer_data['campaigns']['lastmonth'] as $key => $campaign)
@@ -360,7 +486,7 @@
                             <td>{{ $campaign['days_active'] }} </td>
                             <td>{{ $campaign['impressions'] }}</td>
                             <td>{{ $campaign['clicks'] }}</td>
-                            <td>{{ money_format('%(#10n',$campaign['spend']) }}</td>
+                            <td>{{ money_format('%(#10n',$campaign['costs']) }}</td>
                         </tr>
                     @endforeach
                     </tbody>

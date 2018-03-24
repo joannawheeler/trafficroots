@@ -588,7 +588,8 @@ AND publisher_bookings.pub_id = $id;";
         $spend = array();
         $balance = 0;
         /* is user a publisher? */
-        $pub = false;
+	$pub = false;
+	DB::statement("SET sql_mode = ''");
         $sites = Site::where('user_id', $user->id)->count();
         if($sites){
             /* yes, user is a publisher */
@@ -607,7 +608,7 @@ AND publisher_bookings.pub_id = $id;";
                     ON pb.site_id = sites.id
                     WHERE pb.pub_id = ?
                     AND pb.cost = 0.00
-                    GROUP BY pb.site_id, pb.commission_tier;';
+                    GROUP BY pb.site_id, pb.commission_tier, ct.publisher_factor;';
             $earnings = DB::select($sql, array($user->id));
         }
         /* is user an advertiser? */

@@ -1,20 +1,23 @@
 @extends('layouts.app')
-@section('title', '- Profile')
+@section('title', 'Admin')
+@section('js')
+	<script src="{{ URL::asset('js/plugins/dataTables/datatables.min.js') }}"></script>
+@endsection
 @section('content')
     @if(Session::has('success'))
         <div class="alert alert-success">
             <h2>{{ Session::get('success') }}</h2>
         </div>
     @endif
-<div class="container">
+<div class="">
     <div class="row">
         <div class="col-md-12">
             <div class="ibox">
-                <div class="ibox-title">My Profile</div>
+                
 
                 <div class="ibox-content">
                     <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
-                        <li><a id="account_tab" href="#account-tab" data-toggle="tab">Account</a></li>
+                        <li><a id="account_tab" href="#account-tab" data-toggle="tab">My Profile</a></li>
                         @if($pub)
                         <li><a id="pub_tab" href="#pub-tab" data-toggle="tab">Earnings</a></li>
                         @endif
@@ -206,22 +209,146 @@
             <div class="tab-pane table-responsive" id="buyer-tab">
                 <div class="ibox">
                 <div class="ibox-content">
-                @if($buyer)
-                @if(sizeof($invoices))
-                <h3>Invoices</h3>
-                <div class="row"><div class="col-md-2 alert-info"><h4>Transaction Date</h4></div>
-                    <div class="col-md-2 alert-info"><h4>Deposit Amount</h4></div></div>
-                @foreach($invoices as $invoice)
-                <div class="row"><div class="col-md-2">{{ $invoice->transaction_date }}</div>
-                    <div class="col-md-2">$ {{ $invoice->Amount }}</div></div>
-                @endforeach
-                @endif                
-                @else
-                <a href="/campaigns"><h4>Start A Campaign!</h4></a>
-		@endif
-		<div class="row"><br /><br /><hr></div>
-                <div class="row"><div class="col-md-3">Your Current Balance Is:</div><div class="col-md-3">$ {{$balance}}</div></div>
-                <div class="text-center"><a href="/addfunds"><button class="btn btn-primary">Fund Your Account!</button></a></div> 
+                    @if($buyer)
+                    @if(sizeof($invoices))
+                    <h2 class="text-success"><strong>Account Information</strong></h2>
+                        <table class="table">
+                            <tr>
+                                <td><strong>Account Status:</strong></td>
+                                <td>Approved</td><!-- Place status of the account -->
+                            </tr>
+                            <tr>
+                                <td><strong>Current Balance:</strong></td>
+                                <td>$250.00</td><!-- What is owed next payment period -->
+                            </tr>
+                            <tr>
+                                <td><strong>Month Date Spent:</strong></td>
+                                <td>$300.00</td><!-- total amount owed -->
+                            </tr>
+                        </table>
+                    <div class="row"><div class="col-md-2 alert-info"><h4><strong>Transaction Date</strong></h4></div>
+                    <div class="col-md-2 alert-info"><h4><strong>Deposit Amount</strong></h4></div></div>
+                    @foreach($invoices as $invoice)
+                    <div class="row"><div class="col-md-2">{{ $invoice->transaction_date }}</div>
+                        <div class="col-md-2">$ {{ $invoice->Amount }}</div></div>
+                    @endforeach
+                    @endif                
+                    @else
+                    <a href="/campaigns"><h4>Start A Campaign!</h4></a>
+                    @endif
+                    <div class="row"><br /><br /><hr></div>
+                    <div class="row"><div class="col-md-3">Your Current Balance Is:</div><div class="col-md-3">$ {{$balance}}</div></div>
+                    <div class="text-center"><a href="/addfunds"><button class="btn btn-primary">Fund Your Account!</button></a></div>
+                    
+                    <div class="clearfix"></div>
+												<br>
+												<div class="row">
+													<div class="col-md-5">
+													<div class="panel panel-default">
+														<h5 class="p-title">Daily Stats</h5>
+														<div class="ibox-content">
+															<h4>Dates:</h4>
+															<div id="date_filter">
+																<input class="date_range_filter date" type="hidden" id="datepicker_from" />
+																<input class="date_range_filter date" type="hidden" id="datepicker_to" />
+															</div>
+															<div class="row">
+																<div class="col-xs-12">
+																	<input type="text" class="form-control dateRangeFilter">
+																	<span class="glyphicon glyphicon-calendar fa fa-calendar dateRangeIcon"></span>
+																</div>
+																<div class="col-xs-12 col-md-6">
+																	<br>
+																	<button type="submit" class="btn btn-primary btn-block" id="filterSubmit">Submit</button>
+
+																</div>
+																<div class="col-xs-12 col-md-6">
+																	<br>
+																	<button type="submit" class="btn btn-danger btn-block" id="resetFilter">Reset Filter</button>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+                                                </div>
+                                                
+                                                <br>
+												<div class="row">
+													<div class="col-md-12">
+														<div class="panel panel-default">
+															<h5 class="p-title">Campaigns</h5>
+															<div class="dataTableSearch">
+																<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearch dateTableFilter" data-tablesaw-mode="stack">
+																<thead> 
+																<tr>
+																	<th>Date</th>
+																	<th>Select</th>
+																	<th>Name</th>
+																	<th>Size</th>
+																	<th>Type</th>
+																	<th>Total</th>
+																	<th class="text-center">Preview</th>
+																</tr>
+																</thead>
+																<tbody>
+																<tr>
+																	<td class="text-center align-center"><span class="tablesaw-cell-content">01/07/2017</span></td>
+																	<td>
+																		<label><input type="checkbox"></label>
+																	</td>
+																	<td>Bargains</td>
+																	<td class="text-center"><b class=" tablesaw-cell-label">Size</b><span>26.0 MB</span></td>
+																	<td class="text-center"><b class=" tablesaw-cell-label">Type</b>
+																		<button class="btn btn-xs btn-success">CPM</button>
+																	</td>
+																	<td class="text-center"><b class=" tablesaw-cell-label">Total</b>125</td>
+																	<td class="text-center">
+																		<b class=" tablesaw-cell-label">Preview</b>
+																		<span class="tablesaw-cell-content">
+																			<a class="tr-preview" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="" data-content="<img src='https://publishers.trafficroots.com/uploads/823/27a3d8580ab76f5302f7326deeff40d1.jpeg' width='120' height='120'>"><i class="fa fa-camera" aria-hidden="true"></i></a>
+																		</span>
+																	</td>
+																</tr>
+																<tr>
+																	<td class="text-center align-center"><span class="tablesaw-cell-content">03/05/2018</span></td>
+																	<td><label><input type="checkbox"></label></td>
+																	<td class="text-center"><b class=" tablesaw-cell-label">Name</b><span class="tablesaw-cell-content">Act Now</span></td>
+																	<td class="text-center"><b class=" tablesaw-cell-label">Size</b><span>31.0 MB</span></td>
+																	<td class="text-center"><b class=" tablesaw-cell-label">Type</b>
+																		<button class="btn btn-xs btn-warning">CPC</button>
+																	</td>
+																	<td class="text-center"><b class=" tablesaw-cell-label">Total</b>30</td>
+																	<td class="text-center">
+																		<b class=" tablesaw-cell-label">Preview</b>
+																		<span class="tablesaw-cell-content">
+																			<a class="tr-preview" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="" data-content="<img src='https://publishers.trafficroots.com/uploads/823/27a3d8580ab76f5302f7326deeff40d1.jpeg' width='120' height='120'>"><i class="fa fa-camera" aria-hidden="true"></i></a>
+																		</span>
+																	</td>
+																</tr>
+																<tr>
+																	<td class="text-center align-center"><span class="tablesaw-cell-content">02/21/2017</span></td>
+																	<td><label><input type="checkbox"></label></td>
+																	<td class="text-center"><b class=" tablesaw-cell-label">Name</b><span class="tablesaw-cell-content">California Bargains</span></td>
+																	<td class="text-center"><b class=" tablesaw-cell-label">Size</b><span>0.0 MB</span></td>
+																	<td class="text-center"><b class=" tablesaw-cell-label">Type</b>
+																		<button class="btn btn-xs btn-success">CPM</button>
+																	<td class="text-center"><b class=" tablesaw-cell-label">Total</b>652</td>
+																	<td class="text-center">
+																		<b class=" tablesaw-cell-label">Preview</b>
+																		<span class="tablesaw-cell-content">
+																			<a class="tr-preview" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="" data-content="<img src='https://publishers.trafficroots.com/uploads/823/27a3d8580ab76f5302f7326deeff40d1.jpeg' width='120' height='120'>"><i class="fa fa-camera" aria-hidden="true"></i></a>
+																		</span>
+																	</td>
+																</tr>
+																</tbody>
+																</table>
+															</div>
+														</div>
+													</div>
+												</div>
+
+
+
                 </div>
                 </div>
             </div>
@@ -234,6 +361,29 @@
 $(document).ready(function(){
 	$('#account_tab').click();
     });
+
+$('.dataTableSearch').DataTable({
+		pageLength: 25,
+		responsive: true,
+		dom: '<"html5buttons"B>lTfgitp',
+		buttons: [
+			{ extend: 'copy', },
+			{extend: 'csv'},
+			{extend: 'excel', title: 'ExampleFile'},
+			{extend: 'pdf', title: 'ExampleFile'},
+
+			{extend: 'print',
+			 customize: function (win){
+				$(win.document.body).addClass('white-bg');
+				$(win.document.body).css('font-size', '10px');
+
+				$(win.document.body).find('table')
+						.addClass('compact')
+						.css('font-size', 'inherit');
+			}
+			}
+		]
+	});
 
 </script>
    <script type="text/javascript">

@@ -3,18 +3,29 @@ use App\Site;
 ?>
 @extends('layouts.app')
 
-@section('title','- Sites')
+@section('title','Publisher Sites/Zones')
 
 @section('css')
+<link rel="stylesheet"
+      href="{{ URL::asset('css/custom.css') }}">
 <link rel="stylesheet"
       href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
 <link href="{{ URL::asset('css/plugins/footable/footable.core.css') }}"
       rel="stylesheet">
 <link href="{{ URL::asset('css/plugins/iCheck/custom.css') }}"
       rel="stylesheet">
+
 <style type="text/css">
 .footable th:last-child .footable-sort-indicator {
     display: none;
+}
+	
+button span.btn-label {
+    padding: 2px 8px;
+    background: rgba(0,0,0,0.15);
+    border-radius: 3px 0 0 3px;
+    position: relative;
+    left: -7px;
 }
 </style>
 <link rel="stylesheet"
@@ -32,54 +43,75 @@ hljs.initHighlightingOnLoad();
 <script src="{{ URL::asset('js/plugins/iCheck/icheck.min.js') }}"></script>
 <script src="{{ URL::asset('js/plugins/select2/select2.full.min.js') }}"></script>
 <script src="{{ URL::asset('js/plugins/chosen/chosen.jquery.js') }}"></script>
+<script src="js/plugins/sweetalert/sweetalert.min.js"></script>
 @endsection
 
 @section('content')
-@if(sizeof($pending))
-<div class="row">
-    <div class="col-lg-12">
-        <div class="ibox">
-            <div class="ibox-title"><h5>Pending Campaigns</h5></div>
-            <div class="ibox-content">
-                <div class="row"><div class="col-lg-3">Site</div><div class="col-lg-3">Campaign</div><div class="col-lg-3">Advertiser</div><div class="col-lg-3">Options</div></div>
-                @foreach ($pending as $pend)
-                <div class="row">
-                    <div class="col-lg-3">
-                       {{ $pend->site_name }}
-                    </div>
-                    <div class="col-lg-3">
-                       {{ $pend->campaign_name }}
-                    </div>
-                    <div class="col-lg-3">
-                       {{ $pend->name }}
-                    </div>
-                    <div class="col-lg-3">
-                                <button class="btn btn-xs alert-success activate-bid" id="activate_bid_{{ $pend->id }}"><i class="fa fa-check-square-o"></i> Activate</button>&nbsp;<a href="/preview/{{ $pend->id }}" target="_blank"><button class="btn btn-xs alert-info"><i class="fa fa-camera-retro"></i> Preview</button></a>&nbsp;<button class="btn btn-xs alert-danger decline-bid" id="decline_bid_{{ $pend->id }}"><i class="fa fa-times-circle-o"></i> Decline</button>
-                    </div>
-                </div>
-                
-                @endforeach
-            </div>
-        </div>
-    </div>
-</div>
-@endif
-<div class="row">
-    <div class="col-lg-12">
-        <div class="ibox">
-            <div class="ibox-title">
-                <h5>Sites</h5>
-                <div class="pull-right">
-                    <button type="button"
-                            class="btn btn-xs alert-success"
-                            data-toggle="modal"
-                            data-target="#addSite"><i class="fa fa-plus-square-o"></i> Add Site</button>
-                    <div class="modal inmodal"
-                         id="addSite"
-                         tabindex="-1"
-                         role="dialog"
-                         aria-hidden="true">
-                        <div class="modal-dialog">
+<div class="content">
+	@if(sizeof($pending))
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="ibox">
+				<div class="ibox-title"><h5>Pending Campaigns</h5></div>
+				<div class="ibox-content">
+					<div class="tableSearchOnly">
+						<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack">
+							<thead>
+								<tr>
+									<th>Site</th>
+									<th>Campaign</th>
+									<th>Advertiser</th>
+									<th class="col-xs-12 col-md-4">Options</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach ($pending as $pend)
+								<tr>
+									<td class="text-center"><b class=" tablesaw-cell-label">Site</b>{{ $pend->site_name }}</td>
+									<td class="text-center"><b class=" tablesaw-cell-label">Campaign</b>{{ $pend->campaign_name }}</td>
+									<td class="text-center"><b class=" tablesaw-cell-label">Advertiser</b>{{ $pend->name }}</td>
+									<td class="text-center"><b class=" tablesaw-cell-label">Options</b>
+										<button class="btn btn-xs btn-success activate-bid" id="activate_bid_{{ $pend->id }}">
+											<span class="btn-label"><i class="fa fa-check-square-o"></i></span>
+											Activate</button>&nbsp;
+
+										<a href="/preview/{{ $pend->id }}" target="_blank"><button class="btn btn-xs btn-primary alert-info">
+											<span class="btn-label"><i class="fa fa-camera"></i></span>
+											Preview</button></a>&nbsp;
+
+										<button class="btn btn-xs btn-danger alert-danger decline-bid" id="decline_bid_{{ $pend->id }}">
+											<span class="btn-label"><i class="fa fa-times"></i></span> 
+											Decline
+										</button>
+									</td>
+								</tr>
+								@endforeach
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	@endif
+	<!--Add new Site -->
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="ibox">
+				<div class="ibox-title">
+					<h5>Sites</h5>
+					<div class="pull-right">
+						<button type="button"
+								class="btn btn-xs btn-primary"
+								data-toggle="modal"
+								data-target="#addSite"> Add Site</button>
+						<!--Add Site Modal-->
+						<div class="modal inmodal"
+							 id="addSite"
+							 tabindex="-1"
+							 role="dialog"
+							 aria-hidden="true">
+                        	<div class="modal-dialog">
                             <div class="modal-content animated fadeIn">
                                 <div class="modal-header">
                                     <button type="button"
@@ -138,6 +170,7 @@ hljs.initHighlightingOnLoad();
                                                     placeholder="Select Categories Allowed on this Site"
                                                     multiple
                                                     required>
+												<option class="" value="999">Select All</option>
                                                 @foreach($categories as $category)
                                                 <option value="{{ $category->id }}">{{ $category->category }}</option>
                                                 @endforeach
@@ -166,79 +199,80 @@ hljs.initHighlightingOnLoad();
                                 </form>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="ibox-content">
-                <div style="overflow-wrap: break-word;">
-                    <input type="text"
-                           class="form-control input-sm m-b-xs"
-                           id="filter"
-                           placeholder="Search in table">
-
-                    <table class="footable table table-stripped"
-                           data-page-size="8"
-                           data-filter=#filter>
-                        <thead>
-                            <tr>
-                                <tr>
-                                    <th>Site Name</th>
-                                    <th>Site Url</th>
-                                    <th>Site Category</th>
-                                    <th>Links</th>
-                                </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($sites as $site)
-                            <tr>
-                                <td>{{ $site->site_name }} </td>
-                                <td>{{ $site->site_url }}</td>
-                                <td>{{ $categories->where('id',$site->site_category)->first()->category }}</td>
-                                <td data-site_id="{{ $site->id }}">
-                                    <a href="#"
-                                       class="site-zones">
-                                        <button class="btn btn-xs alert-info"><i class="fa fa-newspaper-o"></i> Zones</button>
-                                    </a>
-                                    <a href="{{ url("stats/site/".$site->id) }}" class="site-stats">
-                                        <button class="btn btn-xs alert-warning"><i class="fa fa-line-chart"></i> Stats</button>
-                                    </a>
-                                    <a href="#"
-                                       class="site-edit"
-                                       data-toggle="modal"
-                                       data-target="#editSite{{ $site->id }}">
-                                        <button class="btn btn-xs alert-success"><i class="fa fa-edit"></i> Edit</button>
-                                    </a>
-                                    <a href="#"
-                                       class="site-pixel"
-                                       data-toggle="modal"
-                                       data-target="#sitePixel{{ $site->id }}">
-                                        <button class="btn btn-xs alert-info"><i class="fa fa-file-code-o"></i> Pixel</button>
-                                    </a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="5">
-                                    <ul class="pagination pull-right"></ul>
-                                </td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@foreach($sites as $site)
+                    	</div>
+					</div>
+				</div>
+				<div class="ibox-content">	
+					<div class="tableSearchOnly">
+						<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack">
+							<thead> 
+							<tr>
+								<th>Site Name</th>
+								<th>Site Url</th>
+								<th>Site Category</th>
+								<th>Links</th>
+							</tr>
+							</thead>
+							<tbody>
+								@foreach ($sites as $site)
+								<tr>
+									<td class="text-center"><b class=" tablesaw-cell-label">Site Name</b> {{ $site->site_name }} </td>
+									<td class="text-center col-xs-12 col-md-3"><b class=" tablesaw-cell-label">Site Url</b>{{ $site->site_url }}</td>
+									<td class="text-center"><b class=" tablesaw-cell-label">Site Category</b>{{ $categories->where('id',$site->site_category)->first()->category }}</td>
+									<td class="text-center" 
+										data-site_id="{{ $site->id }}">
+										<b class=" tablesaw-cell-label">Links</b>
+										<a href="#"
+										   class="site-zones">
+											<button class="btn btn-xs alert-info">
+											<span class="btn-label">
+												<i class="fa fa-map"></i> 
+											</span> Zones</button>
+										</a>
+										<a href="{{ url("stats/site/".$site->id) }}" class="site-stats">
+											<button class="btn btn-xs btn-warning alert-warning">
+											<span class="btn-label">
+												<i class="fa fa-line-chart"></i>
+											</span> Stats</button>
+										</a>
+										<a href="#"
+										   class="site-edit"
+										   data-toggle="modal"
+										   data-target="#editSite{{ $site->id }}">
+											<button class="btn btn-xs btn-success alert-success">
+											<span class="btn-label">
+												<i class="fa fa-edit"></i>
+											</span> Edit</button>
+										</a>
+										<a href="#"
+										   class="site-pixel"
+										   data-toggle="modal"
+										   data-target="#sitePixel{{ $site->id }}">
+											<button class="btn btn-xs btn-danger alert-info">
+											<span class="btn-label">
+												<i class="fa fa-file-code-o"></i>
+											</span> Pixel</button>
+										</a>
+									</td>
+								</tr>
+								@endforeach
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+		
+	@foreach($sites as $site)
     <div class="row zones hide"
          id="zones{{ $site->id }}">
-        <div class="col-lg-12">
-            <div class="ibox">
-                <div class="ibox-title">
-                    <h5>{{ $site->site_name }}</h5>
-                    <div class="pull-right">
+		
+		<div class="col-xs-12">
+			<div class="ibox">
+				<div class="ibox-title">
+					<h5>Zone Name: {{ $site->site_name }} - Based on Site</h5>
+					<div class="pull-right">
                         <button type="button"
                                 class="btn btn-xs btn-primary"
                                 data-toggle="modal"
@@ -304,65 +338,55 @@ hljs.initHighlightingOnLoad();
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="ibox-content">
-                    <input type="text"
-                           class="form-control input-sm m-b-xs"
-                           id="filter"
-                           placeholder="Search in table">
-
-                    <table class="footable table table-stripped"
-                           id="zonesTable"
-                           data-page-size="8"
-                           data-filter=#filter>
-                        <thead>
-                            <tr>
-                                <tr>
-                                    <th>Zone Name</th>
-                                    <th>Location Type</th>
-                                    <th>Size</th>
-                                    <th>Links</th>
-                                </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($site->zones as $zone)
-                            <tr>
-                                <td>{{ $zone->description }} </td>
-                                <td>{{ $locationTypes->where('id',$zone->location_type)->first()->description }} </td>
-                                <td>{{ $locationTypes->where('id',$zone->location_type)->first()->width . 'x' . $locationTypes->where('id',$zone->location_type)->first()->height }} </td>
-                                <td data-zone_id="{{ $zone->id }}">
-                                    <a href="/stats/zone/{{ $zone->id }}"
-                                       class="zone-stats">
-                                        <button class="btn btn-xs alert-info"><i class="fa fa-line-chart"></i> Stats</button>
-                                    </a>
-                                    <a href="#"
-                                       class="zone-edit"
-                                       data-toggle="modal"
-                                       data-target="#editZone{{ $zone->id }}">
-                                        <button class="btn btn-xs alert-success"><i class="fa fa-edit"></i> Edit</button>
-                                    </a>
-                                    <a href="#"
-                                       class="zone-code"
-                                       data-toggle="modal"
-                                       data-target="#zoneCode{{ $zone->id }}">
-                                        <button class="btn btn-xs alert-info"><i class="fa fa-file-code-o"></i> Code</span>
-                                    </a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="5">
-                                    <ul class="pagination pull-right"></ul>
-                                </td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+				</div>
+				
+				<div class="ibox-content">
+					<div class="tableSearchOnly">
+						<table id="zonesTable" class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack">
+							<thead>
+								<tr>
+									<tr>
+										<th>Zone Name</th>
+										<th>Location Type</th>
+										<th>Size</th>
+										<th>Links</th>
+									</tr>
+							</thead>
+							<tbody>
+								@foreach ($site->zones as $zone)
+								<tr>
+									<td class="text-center col-xs-12 col-md-3"><b class=" tablesaw-cell-label">Zone Name</b>{{ $zone->description }} </td>
+									<td class="text-center col-xs-12 col-md-3"><b class=" tablesaw-cell-label">Location Type</b>{{ $locationTypes->where('id',$zone->location_type)->first()->description }} </td>
+									<td class="text-center col-xs-12 col-md-3"><b class=" tablesaw-cell-label">Size</b>{{ $locationTypes->where('id',$zone->location_type)->first()->width . 'x' . $locationTypes->where('id',$zone->location_type)->first()->height }} </td>
+									<td class="text-center col-xs-12 col-md-3"
+										data-zone_id="{{ $zone->id }}">
+										<b class=" tablesaw-cell-label">Links</b>
+										<a href="/stats/zone/{{ $zone->id }}"
+										   class="zone-stats">
+											<button class="btn btn-xs btn-warning"><span class="btn-label"><i class="fa fa-line-chart"></i></span> Stats</button>
+										</a>
+										<a href="#"
+										   class="zone-edit"
+										   data-toggle="modal"
+										   data-target="#editZone{{ $zone->id }}">
+											<button class="btn btn-xs btn-success"><span class="btn-label"><i class="fa fa-edit"></i></span> Edit</button>
+										</a>
+										<a href="#"
+										   class="zone-code"
+										   data-toggle="modal"
+										   data-target="#zoneCode{{ $zone->id }}" style="color: white;">
+											<button class="btn btn-xs btn-danger"><span class="btn-label"><i class="fa fa-file-code-o"></i></span> Code</span>
+										</a>
+									</td>
+								</tr>
+								@endforeach
+							</tbody>
+                    	</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div><!--row-->
     <div class="modal inmodal"
          id="sitePixel{{ $site->id }}"
          tabindex="-1"
@@ -391,7 +415,7 @@ hljs.initHighlightingOnLoad();
     </div>
     <div class="modal inmodal"
          id="editSite{{ $site->id }}"
-         tabindex="-1"
+		 tabindex="-1"
          role="dialog"
          aria-hidden="true">
         <div class="modal-dialog">
@@ -410,6 +434,11 @@ hljs.initHighlightingOnLoad();
                       action="{{ url("sites/$site->id") }}" method="POST"> {{ method_field('PATCH') }}
                     <div class="modal-body">
                         {{ csrf_field() }}
+						<div class="pull-right">
+							<button class="btn btn-xs btn-danger">Delete Site
+							</button>
+						</div>
+						<br>
                         <div class="form-group">
                             <label>Name</label>
                             <input type="text"
@@ -476,151 +505,195 @@ hljs.initHighlightingOnLoad();
             </div>
         </div>
     </div>
-    @foreach($site->zones as $zone)
-        <?php 
-            $width = $locationTypes->where('id',$zone->location_type)->first()->width; 
-            $height = $locationTypes->where('id',$zone->location_type)->first()->height;
-        ?>
-        <div class="modal inmodal"
-             id="editZone{{ $zone->id }}"
-             tabindex="-1"
-             role="dialog"
-             aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content animated fadeIn">
-                    <div class="modal-header">
-                        <button type="button"
-                                class="close"
-                                data-dismiss="modal">
-                            <span aria-hidden="true">&times;</span>
-                            <span class="sr-only">Close</span>
-                        </button>
+		@foreach($site->zones as $zone)
+		<?php 
+			$width = $locationTypes->where('id',$zone->location_type)->first()->width; 
+			$height = $locationTypes->where('id',$zone->location_type)->first()->height;
+		?>
+		<div class="modal inmodal"
+			 id="editZone{{ $zone->id }}"
+			 tabindex="-1"
+			 role="dialog"
+			 aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content animated fadeIn">
+					<div class="modal-header">
+						<button type="button"
+								class="close"
+								data-dismiss="modal">
+							<span aria-hidden="true">&times;</span>
+							<span class="sr-only">Close</span>
+						</button>
 			<h4 class="modal-title"><i class="fa fa-edit"></i> Edit Zone</h4>
-                    </div>
-                    <form name="site_form"
-                          id="site_form"
-                          action="{{ url("zones/$zone->id") }}" method="POST"> {{ method_field('PATCH') }}
-                        <div class="modal-body">
-                            {{ csrf_field() }}
-                            <div class="form-group">
-                                <label>Name</label>
-                                <input type="text"
-                                       placeholder="Enter your zone name"
-                                       value="{{ $zone->description }}"
-                                       class="form-control"
-                                       name="description"
-                                       required>
+					</div>
+					<form name="site_form"
+						  id="site_form"
+						  action="{{ url("zones/$zone->id") }}" method="POST"> {{ method_field('PATCH') }}
+						<div class="modal-body">
+							{{ csrf_field() }}
+							<div class="form-group">
+								<label>Name</label>
+								<input type="text"
+									   placeholder="Enter your zone name"
+									   value="{{ $zone->description }}"
+									   class="form-control"
+									   name="description"
+									   required>
 
-                                <label class="error hide"
-                                       for="description"></label>
-                            </div>
-                            <div class="form-group">
-                                <label>Type</label>
-                                <div>{{ $locationTypes->where('id',$zone->location_type)->first()->description }}</div>
-                                <label class="error hide"
-                                       for="site_category"></label>
-                            </div>
-                            <div class="form-group">
-                                <label>Size</label>
-                                <div>{{ $locationTypes->where('id',$zone->location_type)->first()->width . 'x' . $locationTypes->where('id',$zone->location_type)->first()->height }}</div>
-                                <label class="error hide"
-                                       for="site_category"></label>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button"
-                                    class="btn btn-white"
-                                    data-dismiss="modal">Cancel</button>
-                            <button type="submit"
-                                    class="btn btn-primary">Save changes</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="modal inmodal"
-             id="zoneCode{{ $zone->id }}"
-             tabindex="-1"
-             role="dialog"
-             aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content animated fadeIn">
-                    <div class="modal-header">
-                        <button type="button"
-                                class="close"
-                                data-dismiss="modal">
-                            <span aria-hidden="true">&times;</span>
-                            <span class="sr-only">Close</span>
-                        </button>
-                        <h4 class="modal-title"><i class="fa fa-file-code-o"></i> Zone Invocation Code</h4>
-                    </div>
-                    <div class="modal-body">
-                        <h3>Place this code in your site's layout:</h3>
-                        <div style="overflow-wrap: break-word;">
-                            <pre><code class="html">{{ htmlspecialchars('<div class="tr_'.$zone->handle.'" data-width="'.$width.'" data-height="'.$height.'"><script>var tr_handle = "'.$zone->handle.'";</script><script src="//service.trafficroots.com/js/service.js"></script></div>') }}
-                            </code></pre>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endforeach
-@endforeach
+								<label class="error hide"
+									   for="description"></label>
+							</div>
+							<div class="form-group">
+								<label>Type</label>
+								<div>{{ $locationTypes->where('id',$zone->location_type)->first()->description }}</div>
+								<label class="error hide"
+									   for="site_category"></label>
+							</div>
+							<div class="form-group">
+								<label>Size</label>
+								<div>{{ $locationTypes->where('id',$zone->location_type)->first()->width . 'x' . $locationTypes->where('id',$zone->location_type)->first()->height }}</div>
+								<label class="error hide"
+									   for="site_category"></label>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button"
+									class="btn btn-white"
+									data-dismiss="modal">Cancel</button>
+							<button type="submit"
+									class="btn btn-primary">Save changes</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="modal inmodal"
+			 id="zoneCode{{ $zone->id }}"
+			 tabindex="-1"
+			 role="dialog"
+			 aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content animated fadeIn">
+					<div class="modal-header">
+						<button type="button"
+								class="close"
+								data-dismiss="modal">
+							<span aria-hidden="true">&times;</span>
+							<span class="sr-only">Close</span>
+						</button>
+						<h4 class="modal-title"><i class="fa fa-file-code-o"></i> Zone Invocation Code</h4>
+					</div>
+					<div class="modal-body">
+						<h3>Place this code in your site's layout:</h3>
+						<div style="overflow-wrap: break-word;">
+							<pre><code class="html">{{ htmlspecialchars('<div class="tr_'.$zone->handle.'" data-width="'.$width.'" data-height="'.$height.'"><script>var tr_handle = "'.$zone->handle.'";</script><script src="//service.trafficroots.com/js/service.js"></script></div>') }}
+							</code></pre>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		@endforeach
+	@endforeach
+</div>
 <script type="text/javascript">
-        $('.activate-bid').click(function() {
-            if(confirm('Activate this campaign?')){
-                var str =  $(this).attr('id');
-                var res = str.split("_");
-                var url = '/activate_bid/' + res[2];
-                $.get(url)
-                    .done(function (response) {
-                        toastr.success(response, function(){
-                          setTimeout(function(){ window.location.reload(); }, 3000);
-                        });
-                    })
-                    .fail(function (response) {
-                        toastr.error(response);
-                    });
-            }else{
-                return false;
-            }
+	$(document).ready(function(){
+	$('.activate-bid').click(function() {
+		swal({
+			title: "Activate Campaign",
+			text: "Do you want to activate this campaign?", 
+			 icon: "success",
+			buttons: true,
+		}).then((isConfirm) => {
+			if (isConfirm) {
+				var str =  $(this).attr('id');
+				var res = str.split("_");
+				var url = '/activate_bid/' + res[2];
+				$.get(url)
+					.done(function (response) {
+						toastr.success(response, function(){
+						  setTimeout(function(){ window.location.reload(); }, 3000);
+						});
+					})
+					.fail(function (response) {
+						toastr.error(response);
+					});
+			} else {
+				return false;
+			}
+		});	
+	}); //end of activae-bid   
+	
+	//Pending Campaigns decline option, show sweet alert...
+	//if approved the bid will be declined and refresh page
+	$('.decline-bid').click(function() {	
+		swal({
+			title: "Cancel Campaign",
+			text: "Are you sure you want to cancel this campaign?", 
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
+		}).then((cancel) => {
+			if (cancel) {
+				var str =  $(this).attr('id');
+				var res = str.split("_");
+				var url = '/decline_bid/' + res[2];
+				$.get(url)
+					.done(function (response) {
+						toastr.success(response, function(){
+						  setTimeout(function(){ window.location.reload(); }, 3000);
+						});
+					})
+					.fail(function (response) {
+						toastr.error(response);
+					});
+			} else {
+				return false;
+			}
+		});
 
-        });    
-        $('.decline-bid').click(function() {
-            if(confirm('Decline this campaign?')){
-                var str =  $(this).attr('id');
-                var res = str.split("_");
-                var url = '/decline_bid/' + res[2];
-                $.get(url)
-                    .done(function (response) {
-                        toastr.success(response, function(){
-                          setTimeout(function(){ window.location.reload(); }, 3000);
-                        });
-                    })
-                    .fail(function (response) {
-                        toastr.error(response);
-                    });
-            }else{
-                return false;
-            }
-
-        });
+	});	//end of decline bid 
+	
+	//Delete the site 
+	$(".delete-site").click(function() {	
+		swal({
+			title: "Cancel Campaign",
+			text: "Are you sure you want to delete this Site?", 
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
+		}).then((willDelete) => {
+			if (willDelete) {
+				 swal({
+			  		title: "Cancel Campaign",
+					text: "Final Warning: Once deleted, you will delete the site and the zones that are tied to this site.", 
+					icon: "warning",
+					buttons: true,
+					dangerMode: true,
+				});
+		  	}
+		});
+	});	//end of delete site 
     
-        $("select").chosen({
-                search_contains : true, // kwd can be anywhere
-                max_shown_results : 5, // show only 5 suggestions at a time
-                width: "95%",
-                no_results_text: "Oops, nothing found!"
-            } );
+	$("select").chosen({
+			search_contains : true, // kwd can be anywhere
+			max_shown_results : 5, // show only 5 suggestions at a time
+			width: "95%",
+			no_results_text: "Oops, nothing found!"
+		} );
 
+	$('.dataTableSearchOnly').DataTable({
+		"oLanguage": {
+		  "sSearch": "Search Table"
+		}, pageLength: 10,
+		responsive: true
+	});	
+	
+	   $('.nav-click').removeClass("active");
+	   $('#nav_pub_sites').addClass("active");
+	   $('#nav_pub').addClass("active");
+	   $('#nav_pub_menu').removeClass("collapse");
+	});
 </script>
-   <script type="text/javascript">
-       jQuery(document).ready(function ($) {
-	       $('.nav-click').removeClass("active");
-	       $('#nav_pub_sites').addClass("active");
-	       $('#nav_pub').addClass("active");
-	       $('#nav_pub_menu').removeClass("collapse");
-       });
-   </script>
 
 @endsection
