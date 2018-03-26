@@ -51,8 +51,8 @@ class CreditAchController extends Controller
         if(!$bank){
             $data = array();
             $data['user_id'] = $user->id;
-            $data['transaction_amount'] = 20.00;
-            $data['running_balance'] = 20.00;
+            $data['transaction_amount'] = 0.00;
+            $data['running_balance'] = 0.00;
             $bank = new Bank();
             $bank->fill($data);
             $bank->save();
@@ -69,7 +69,7 @@ class CreditAchController extends Controller
           if(($request->Status == 'Successful') && ($request->CaptureState == 'Captured')){
 
               $user = Auth::getUser();
-              $balance = $this->getBalance();
+	      $balance = $this->getBalance();
               $running_balance = ($balance + $request->Amount);
               $data = array('user_id' => $user->id, 'transaction_amount' => $request->Amount, 'running_balance' => $running_balance);
               $bank = new Bank();

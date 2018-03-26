@@ -73,11 +73,17 @@
                                for="location_type"></label>
                     </div>
                     <div class="form-group">
-                        <label class="btn btn-success btn-block"
+                        <label class="btn btn-primary btn-block"
                                for="image_file">
                             <i class="fa fa-upload"></i>&nbsp;&nbsp;
                             <span class="bold">Upload</span>
                         </label>
+						<!--display image only -->
+						<div class="text-center image-preview">
+							<i class="fa fa-camera"></i>
+							<img class="newCampaignImg" src="" alt="Preview Image" src="">
+						</div>
+						
                         <input type="file"
                                name="file"
                                id="image_file"
@@ -106,21 +112,6 @@
                             </div>
                         </label>
                     </div>
-                    <div>
-                        <h3>Media:</h3>
-                        [<b>mee</b>-dee-<i>uh</i> ] - 
-                        <i>noun</i>
-                        <ul><li>an intervening agency, means, or instrument by which something is conveyed or accomplished</li></ul>
-                        
-                        <div class="well">
-                            <ul>
-                                <li>Media uploaded must be image files.</li>
-                                <li>To avoid duplication, we offer a Media Library feature.</li>
-                                <li>Upload and Categorize your images here and they will be available across all your campaigns.</li>
-                                <li>On this page you are creating a new Media item by naming it and selecting a Location Type and Category.</li>
-                             </ul>
-                        </div>
-                    </div>
                 </div>                
                 <div class="modal-footer">
                     <button type="button"
@@ -145,6 +136,33 @@
 </div>
 @if($_SERVER['REQUEST_URI'] == '/campaign')
 <script type="text/javascript">
+	$('#image_file').change(function (event) {
+		alert("test");
+	var tmppath = URL.createObjectURL(event.target.files[0]);
+    $("#newCampaignImg").fadeIn("fast").attr('src',URL.createObjectURL(event.target.files[0]));
+});
+	
+if ($("#image_file").length) {
+	$("#image_file").change(function() {
+		alert("test");
+	  uploadImgURL(this);
+	});
+}
+	
+function uploadImgURL(input) {
+  if (input.files && input.files[0]) {
+	var reader = new FileReader();
+
+	reader.onload = function(e) {
+	  $('#newCampaignImg').attr('src', e.target.result);
+	};
+
+	reader.readAsDataURL(input.files[0]);
+  }
+}
+		
+	
+	
 function submitMediaForm(){
         // Get form
         var form = $('#media_form')[0];

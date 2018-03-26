@@ -3,13 +3,6 @@
 @section('title','Library')
 @section('css')
     <link href="{{ URL::asset('css/style.css') }}" rel="stylesheet">
-
-<style>
-	.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
-		border: 1px solid #e7eaec;
-		border-bottom-color: transparent;
-	}
-</style>
 @endsection
 
 @section('js')

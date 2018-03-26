@@ -5,7 +5,7 @@
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="panel panel-default">
-					<h5 class="p-title">Advertiser FAQ</h5>
+					<h4 class="p-title">Advertiser FAQ</h4>
 					<div class="ibox-content">
 						@foreach($faqs as $faq)
 						<div class="faq-item">

@@ -12,8 +12,6 @@
         "geoip2/geoip2": "^2.4",
         "mobiledetect/mobiledetectlib": "^2.8",
         "riverskies/laravel-mobile-detect": "^1.0",
-        "swiftmailer/swiftmailer": "^5.4",
-        "aws/aws-sdk-php": "~3.0",
         "authorizenet/authorizenet": "^1.9",
         "guzzlehttp/guzzle": "~5.2",
         "paypal/rest-api-sdk-php": "*",

@@ -31,6 +31,7 @@ use Validator;
 use Input;
 use Session;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Gate;
 
 class CampaignController extends Controller
 {
@@ -132,6 +133,11 @@ class CampaignController extends Controller
 	}catch(Throwable $t){
             Log::error($t->getMessage());
 	}
+    }
+    public function loadCounties(Request $request)
+    {
+        $CUtil = new CUtil();
+	return $CUtil->loadCounties($request);
     }
     public function updateTargets(Request $request)
     {
@@ -301,10 +307,12 @@ class CampaignController extends Controller
 	$sql = "SELECT COUNT(*) AS records FROM creatives WHERE campaign_id = $id";
 	$result = DB::select($sql);
 	$count = $result[0]->records;
+	if($count){
 	$weight = round(100 / $count);
 	$sql = "UPDATE creatives SET weight = ? WHERE campaign_id = ?";
 	Log::info($sql);
 	DB::update($sql, array($weight, $id));
+	}
 	return true;
     }
     public function createCreative(Request $request)
@@ -505,7 +513,12 @@ class CampaignController extends Controller
     }
     public function campaigns()
     {
-        $user = Auth::user();
+	    $user = Auth::user();
+	    if (Gate::allows('unconfirmed_user')) {
+		$user = Auth::getUser();
+		Log::info($user->name.' attempted to access Campaigns page and got sent home.');
+		return redirect('/profile');
+	    }
         $startDate = Carbon::now()->firstOfMonth()->toDateString();
         $endDate = Carbon::now()->endOfMonth()->toDateString();
         $campaigns = Campaign::with(['stats' => function ($query) use ($startDate, $endDate) {

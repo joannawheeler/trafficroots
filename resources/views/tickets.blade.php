@@ -5,8 +5,8 @@
 	<div class="row">	
 		<div class="col-xs-12">
 			<div class="panel panel-default">
-				<button type="button" class="btn btn-primary btn-xs pull-right m-t m-r" data-toggle="modal" data-target="#ticketModal" id="create-ticket">Create Ticket</button>
-				<h5 class="p-title">My New Ticket</h5>
+				<button type="button" class="btn btn-primary btn-xs pull-right m-t m-r" data-toggle="modal" data-target="#ticketModal" id="create-ticket"><span class="fa fa-plus-square-o"></span>&nbsp;&nbsp; Create Ticket</button>
+				<h4 class="p-title">My New Ticket</h4>
 				
 				<div class="ibox-content">
 					<div class="tableSearchOnly">

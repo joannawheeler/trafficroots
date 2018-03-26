@@ -70,6 +70,28 @@ class CUtil extends Controller
         return $counties;
 
     }
+    public function loadCounties($request)
+    {
+	if(is_array($request->states)){
+            $state_targets = implode(",",$request->states);
+	}else{
+            $state_targets = $request->states;
+	}
+        $counties = '<option value="0"';
+        if($state_targets == '0') $counties .= ' selected';
+        $counties .= '>All Counties</option>';
+	$sql = "SELECT DISTINCT(county) AS county_name, state_code FROM trafficroots.zips WHERE county <> '' AND state_code IN ($state_targets) ORDER BY state_code, county_name";
+	$result = DB::select($sql);
+	Log::info($sql);
+        foreach($result as $row){
+            $counties .= '<option value="'.$row->county_name.'"';
+            $counties .= '>'.$row->county_name.'</option>';
+        }
+
+        return $counties;
+
+    }
+
     public function getCampaignTypes()
     {
         $campaign_types = array();

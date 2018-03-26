@@ -78,7 +78,7 @@
                 <div class="ibox-title">
                     <h5>Campaigns</h5>
 					<div class="pull-right">
-                    	<a href="{{ URL::to('campaign') }}" class="btn btn-xs btn-primary">New Campaign</a>
+                    	<a href="{{ URL::to('campaign') }}" class="btn btn-xs btn-primary"><i class="fa fa-plus-square-o"></i>&nbsp;&nbsp; New Campaign</a>
 					</div>
                 </div>
                 <div class="ibox-content">	

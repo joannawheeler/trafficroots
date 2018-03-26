@@ -600,6 +600,18 @@ body.canvas-menu.mini-navbar nav.navbar-static-side {
 .tablesaw-stack td.align-center {
 	text-align: center;
 }	
+
+/*jackie*/
+div.dataTables_wrapper div.dataTables_filter label {
+	white-space: unset;
+	padding-top: 10px;
+}
+
+div.dataTables_wrapper div.dataTables_filter input {
+	margin-top: 10px;
+}
+
+
 @media (max-width: 768px) {
   .top-navigation .navbar-header {
     display: block;
@@ -1656,6 +1668,7 @@ table.dataTable thead .sorting_desc_disabled {
 }
 .dataTables_wrapper {
   padding-bottom: 30px;
+  text-align: center;
 }
 .dataTables_length {
   float: left;
@@ -1905,7 +1918,7 @@ div.dt-button-info {
   background-color: #FFFFFF;
   background-image: none;
   border: 1px solid #e5e6e7;
-  border-radius: 1px;
+  border-radius: 4px;
   color: inherit;
   display: block;
   padding: 6px 12px;
@@ -3625,9 +3638,6 @@ video {
 .modal-body {
   padding: 20px 30px 30px 30px;
 }
-.inmodal .modal-body {
-  background: #f8fafb;
-}
 .inmodal .modal-header {
   padding: 30px 15px;
   text-align: center;
@@ -3827,6 +3837,7 @@ body.body-small .footer.fixed {
   color: #fff;
 */
 	color: #19aa8d;
+	border-bottom: 0px;
 	
 }
 .ui-tab .tab-content {
@@ -7414,6 +7425,16 @@ body.landing-page {
 		width: initial;
 		text-align: unset;
 		margin: unset;
+	}
+	
+	/*jackie*/
+	div.dataTables_wrapper div.dataTables_filter label {
+		white-space: nowrap;
+		padding-top: 0px;
+	}
+
+	div.dataTables_wrapper div.dataTables_filter input {
+		margin-top: 0px;
 	}
 	
 }

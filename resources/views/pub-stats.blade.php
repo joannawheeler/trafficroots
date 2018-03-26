@@ -139,7 +139,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="tabs-container">
-						<ul class="nav nav-tabs stats-tabs">
+						<ul class="nav nav-tabs">
 							<li class="active">
 								<a data-toggle="tab"
 								   href="#dates"><span class="fa fa-calendar"></span><div>Dates</div></a>

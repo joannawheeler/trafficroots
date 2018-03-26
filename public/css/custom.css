@@ -84,7 +84,7 @@
 
 .nav > li.active {
     border-left: none !important;
-    background: #293846;
+/*    background: #293846;*/
 /*	color: white;*/
 }
 .nav > li.active > a {
@@ -219,19 +219,23 @@ button.loginBtn {
 }
 
 .dataTables_filter label {
-	font-weight: 600;
+	font-weight: 600 !important;
 }
 
 .dataTables_info {
 	margin: 10px 0px 15px 5px;
-    font-weight: 600;
+    font-weight: 600 !important;
 }
 
-.dataTables_filter input.form-control.input-sm, .dataTables_length label select {
-    background-color: white;
+.dataTables_filter input.form-control.input-sm, .dataTables_length label select,
+div.dataTables_wrapper div.dataTables_filter input {
+	background-color: white;
     border: 1px solid lightgrey;
     margin-left: 10px;
-	font-weight: 600;
+    padding: 3px;
+    font-weight: 600;
+    border-radius: 4px;
+    font-size: 14px;
 }
 
 
@@ -343,9 +347,22 @@ button span.btn-label {
 }
 
 .panel.panel-body {
-    border: 1px solid #e7eaec;
+    border: 0px;
     border-top: 0px;
     margin-top: -1px;
+}
+
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+	border: 1px solid #e7eaec;
+	border-bottom-color: transparent;
+}
+
+div.tab-pane {
+	border: 0px;
+}
+
+#pub-stats .nav.nav-tabs li {
+	
 }
 
 /* HiDPI support */

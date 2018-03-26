@@ -10,16 +10,24 @@ use App\Site;
 use App\Category;
 use App\LocationType;
 use Illuminate\Validation\Rule;
-
+use Illuminate\Support\Facades\Gate;
 class SiteController extends Controller
 {
     public function __construct()
     {
-         $this->middleware('auth');
+	    $this->middleware('auth');
     }
     public function index()
     {
-        $user = Auth::user();
+	    $user = Auth::user();
+	    if (Gate::allows('unconfirmed_user')) {
+		$user = Auth::getUser();
+		Log::info($user->name.' attempted to access Sites page and got sent home.');
+		return redirect('/profile');
+	    }else{
+		    Log::info('user was allowed into sites page');
+            }
+
         $sites = Site::with('zones')->where('user_id', $user->id)->get();
         $categories = Category::all();
         $locationTypes = LocationType::orderBy('width')->get();
@@ -280,14 +288,17 @@ class SiteController extends Controller
     {
         $id = $request->id;
         $user = Auth::user();
-        $sql = 'SELECT `bids`.* 
-        FROM `bids` 
+        $sql = 'SELECT `bids`.*, users.name 
+        FROM `bids`
+        JOIN users 
+        ON bids.buyer_id = users.id 
         JOIN `zones`
         ON `bids`.`zone_handle` = `zones`.`handle`
         WHERE `bids`.`id` = ? 
-        AND `zones`.`pub_id` = ?;'; 
+        AND `zones`.`pub_id` = ?'; 
         $result = DB::select($sql, array($id, $user->id));
-        if(sizeof($result)){
+	if(sizeof($result)){
+	    
             $sql = "SELECT *
                     FROM creatives
                     JOIN media
@@ -305,8 +316,9 @@ class SiteController extends Controller
             }else{
                 $media = array();
                 $links = array();
-            }
-            return view('preview', array('media' => $media, 'links' => $links));
+	    }
+
+            return view('preview', array('media' => $media, 'links' => $links, 'advertiser' => $result[0]->name));
         }        
     }
 }

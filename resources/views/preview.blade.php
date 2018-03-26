@@ -15,5 +15,9 @@
    <i class="fa fa-link"></i>  {!! $link !!}
 </div>
 @endforeach
+<h3>Advertiser</h3>
+<div class="contact-box">
+    {{ $advertiser }}
+</div>
 </div>
 @endsection
