@@ -1,6 +1,17 @@
-@extends('layouts.app') 
-@section('content') 
-
+@extends('layouts.app')
+@section('content')
+<style>
+    .navbar-static-top {
+       display: none;
+   }
+   .navbar-static-side {
+       display: none;
+   }
+   #page-wrapper {
+       padding: 0;
+       margin: 0;
+   }
+</style>
 <div class="login-container">
     <div id="wrapper">
         <div id="page-wrapper" class="gray-bg tree-bg" style="margin: 0px;">
@@ -15,9 +26,9 @@
                                 <p>Sign in today for more experience.</p> --}}
                                 <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
                                     <label for="email">Email</label>
-                                    <input type="email" placeholder="Email" name="email" class="form-control"> 
+                                    <input type="email" placeholder="Email" name="email" class="form-control">
                                     @if ($errors->has('email'))
-                                    <span class="help-block m-b-none">{{ $errors->first('email') }}</span> 
+                                    <span class="help-block m-b-none">{{ $errors->first('email') }}</span>
                                     @endif
                                 </div>
 								<div class="centered-block"><br>
@@ -32,7 +43,7 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection
 
 @section('js')
 <script type="text/javascript">

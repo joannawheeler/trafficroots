@@ -29,7 +29,7 @@
                         <div class="ibox-title"><h3>Register</h3>
                     </div>
                     <div class="ibox-content clearfix">
-                        <form class="form-horizontal" role="form" id="registrationform" method="POST">
+                        <form class="form-horizontal" role="form" id="registrationform" method="POST" action="{{ url('/register') }}">
                             <input type="hidden" name="_token" value="jEBYi6NttG1WHgPNSXH6mKg9G2e0AzS7rZuog1GX"> 
 							<input type="hidden" name="formId" value="2W7UI+OZYzFhmO4xQQWvcQ==" />
                             <p>Please fill out your information below.</p><br>
@@ -44,11 +44,6 @@
                                             <option value="advertiser">Advertiser</option>
                                             <option value="both">Both</option>
                                         </select>
-                                        <!--   Do not erase I want to incorporate this feature in the future
-                                        <button data-toggle="toggle" class="btn btn-success btn-outline" type="button" value="publisher"><h3>Publisher</h3></button> or
-                                        <button data-toggle="toggle" class="btn btn-warning btn-outline" type="button" value="advertiser"><h3>Advertiser</h3></button> or
-                                        <button data-toggle="toggle" class="btn btn-primary btn-outline" type="button" value="both"><h3>Both</h3></button>
-                                        -->
                                     </div>
                                 </div>
                             
@@ -121,7 +116,7 @@
                                                 <input type="checkbox" required style="opacity:inherit;">
                                                 <ins class="iCheck-helper"></ins>
                                             </div>
-                                            <a href="terms.html"> Agree to the terms and Conditions</a></label>
+                                            <a href="terms"> Agree to the terms and Conditions</a></label>
                                         </div>
                                     </div>
                                     <!--recaptcha-->
@@ -131,14 +126,6 @@
                                         <button class="btn btn-danger" id="cancel"><strong>Cancel</strong></button>
                                     </div>
                                 </div>
-                            
-                            
-                            
-                                <!-- <div class="form-group">
-                                    <div class="col-lg-offset-2 col-lg-10">
-                                        <button class="btn btn-sm btn-primary" type="submit">Register</button>
-                                    </div>
-                                </div> -->
                                 <hr>
                                 <div class="form-group">
                                     <div class="col-md-6 col-md-offset-3 text-center">
@@ -148,18 +135,6 @@
                                     </div>
                                 </div>
                         </form>
-						
-						<form id="insightly_web_form" name="insightly_web_to_lead" action="https://crm.na1.insightly.com/WebToLead/Create" method="post" style="display:block;">
-							<input type="hidden" name="formId" value="2W7UI+OZYzFhmO4xQQWvcQ==" /><label for="insightly_firstName">First Name: </label>
-							<input id="insightly_firstName" name="FirstName" type="text"/><br/><label for="insightly_lastName">Last Name: </label>
-							<input id="insightly_lastName" name="LastName" type="text"/><br/><label for="insightly_organization">Organization: </label>
-							<input id="insightly_organization" name="OrganizationName" type="text"/><br/><label for="email">Email: </label>
-							<input id="insightly_Email" name="email" type="text"/><br/><label for="phone">Phone: </label>
-							<input id="insightly_Phone" name="phone" type="text"/><br/><label for="insightly_title">Title: </label>
-							<input id="insightly_Title" name="Title" type="text"/><br/><input type="hidden" id="insightly_ResponsibleUser" name="ResponsibleUser" value="1184940"/>
-							<input type="hidden" id="insightly_LeadSource" name="LeadSource" value="1234460"/>
-							<input type="submit" value="Submit">
-						</form>
                     </div>
                 </div>
             </div>
@@ -273,35 +248,6 @@ $(document).ready(function() {
     $('.nav-click').removeClass("active");
     $('#nav_register').addClass("active");
     $(".no-skin-config").removeAttr("style");
-
-	$('#registrationform').submit(function(e){
-	//$('form').submit(function(e){
-		 event.preventDefault();
-		$('#insightly_firstName').val( $('#name').val() ); //First name
-		$('#insightly_lastName').val( $('#name').val() ); //Last name
-		$('#insightly_Email').val( $('#email').val() ); //Email
-		$('#insightly_organization').val("None");
-		$('#insightly_Title').val("NA");
-//		$('phones[0]_Value').val( $('#field-1').val() ); //Phone
-//		$('insightly_background').val( $('#field-1').val() ); //Title
-		//document.getElementById("insightly_web_form").submit();
-			alert("submit button clicked");
-		$.ajax({
-            type: "POST",
-            url: "{{ url('/register') }}",
-			//url: "https://crm.na1.insightly.com/WebToLead/Create",
-			data: $(this).serialize(),
-			//crossDomain: false,
-			//dataType: 'jsonp',			
-//			dataType: 'JSON',
-//    		jsonpCallback: 'callback',
-            success: function() { //alert("Success"); 
-				document.getElementById("insightly_web_form").submit();
-			},
-			error: function() { alert('Failed!'); }				
-        });
-        e.preventDefault();
-	});
 });
 </script>
 @endsection

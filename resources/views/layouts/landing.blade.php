@@ -48,7 +48,7 @@
                         <li><a class="page-scroll" href="#joinus">Join Us!</a></li>
                         <li><a class="page-scroll" href="#traffic">Traffic</a></li>
                         <li><a class="page-scroll" href="#contact">Contact</a></li>
-                        <li><a href="login">Login</a></li>
+                        <li><a href="login">Login / Register</a></li>
                     </ul>
                 </div>
             </div>

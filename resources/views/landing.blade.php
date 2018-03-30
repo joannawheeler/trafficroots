@@ -1,6 +1,8 @@
 @extends('layouts.landing')
 @section('title', '- Welcome!')
 @section('content')
+
+
 <div id="inSlider" class="carousel carousel-fade" data-ride="carousel">
     <ol class="carousel-indicators">
         <li data-target="#inSlider" data-slide-to="0" class="active"></li>
@@ -11,7 +13,9 @@
             <div class="container">
                 <div class="carousel-caption">
                     <h1>Traffic Roots</h1>
+                   
                     <p>Ad Network for Modern Lifestyles</p>
+                    <p><a class="btn btn-xxxlg btn-primary" href="login" role="button">REGISTER NOW</a></p>
                 </div>
                 <div class="carousel-image wow zoomIn">
                     <img src="img/landing/laptop.png" alt="laptop"/>
@@ -287,9 +291,9 @@
             <div class="col-lg-12 text-center">
                 <address>
                     <strong><span class="navy">Traffic Roots, LLC.</span></strong><br/>
-                    6335 Ferris Square, Suite B<br />
+
                     San Diego, CA 92121<br/>  
-                    <abbr title="Phone">P:</abbr> (619) 431-1017
+
                 </address>
             </div>
             <div class="col-lg-12 text-center">
@@ -472,4 +476,5 @@
             createCookie(name, "", -1);
         }       
    </script>
+   
 @endsection

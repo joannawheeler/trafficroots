@@ -344,16 +344,18 @@ hljs.initHighlightingOnLoad();
 										<th>Zone Name</th>
 										<th>Location Type</th>
 										<th>Size</th>
+										<th>Status</th> <!--Should toggle between active/inactive -->
 										<th>Links</th>
 									</tr>
 							</thead>
 							<tbody>
 								@foreach ($site->zones as $zone)
 								<tr>
-									<td class="text-center col-xs-12 col-md-3"><b class=" tablesaw-cell-label">Zone Name</b>{{ $zone->description }} </td>
-									<td class="text-center col-xs-12 col-md-3"><b class=" tablesaw-cell-label">Location Type</b>{{ $locationTypes->where('id',$zone->location_type)->first()->description }} </td>
-									<td class="text-center col-xs-12 col-md-3"><b class=" tablesaw-cell-label">Size</b>{{ $locationTypes->where('id',$zone->location_type)->first()->width . 'x' . $locationTypes->where('id',$zone->location_type)->first()->height }} </td>
-									<td class="text-center col-xs-12 col-md-3"
+									<td class="text-center col-xs-12 col-md-2"><b class=" tablesaw-cell-label">Zone Name</b>{{ $zone->description }} </td>
+									<td class="text-center col-xs-12 col-md-2"><b class=" tablesaw-cell-label">Location Type</b>{{ $locationTypes->where('id',$zone->location_type)->first()->description }} </td>
+									<td class="text-center col-xs-12 col-md-2"><b class=" tablesaw-cell-label">Size</b>{{ $locationTypes->where('id',$zone->location_type)->first()->width . 'x' . $locationTypes->where('id',$zone->location_type)->first()->height }} </td>
+									<td class="text-center col-xs-12 col-md-2"><b class=" tablesaw-cell-label">Status</td> <!--Should toggle between active/inactive -->
+									<td class="text-center col-xs-12 col-md-4"
 										data-zone_id="{{ $zone->id }}">
 										<b class=" tablesaw-cell-label">Links</b>
 										<a href="/stats/zone/{{ $zone->id }}"
@@ -431,7 +433,7 @@ hljs.initHighlightingOnLoad();
                     <div class="modal-body">
                         {{ csrf_field() }}
 						<div class="pull-right">
-							<button class="btn btn-xs btn-danger">Delete Site
+							<button class="btn btn-xs btn-danger deleteSite">Delete Site
 							</button>
 						</div>
 						<br>
@@ -527,6 +529,11 @@ hljs.initHighlightingOnLoad();
 						  action="{{ url("zones/$zone->id") }}" method="POST"> {{ method_field('PATCH') }}
 						<div class="modal-body">
 							{{ csrf_field() }}
+							<div class="pull-right">
+								<button class="btn btn-xs btn-danger deleteZone">Delete Zone
+								</button>
+							</div>
+							<br>
 							<div class="form-group">
 								<label>Name</label>
 								<input type="text"
@@ -670,6 +677,14 @@ hljs.initHighlightingOnLoad();
 		  	}
 		});
 	});	//end of delete site 
+		
+	$(".deleteSite").click(function() {
+		alert("Are you sure you want to delete this site");
+	});	
+		
+	$(".deleteZone").click(function() {
+		alert("Are you sure you want to delete this zone");
+	});
     
 	$("select").chosen({
 			search_contains : true, // kwd can be anywhere

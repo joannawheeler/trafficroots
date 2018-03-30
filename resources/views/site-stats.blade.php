@@ -1,25 +1,11 @@
 @extends('layouts.app') 
-@section('title', '- Sites')
+@section('title', 'Publisher Site/Stats')
 @section('css')
-<link href="{{ URL::asset('css/plugins/footable/footable.core.css') }}" rel="stylesheet">
 <style type="text/css">
-    @media only screen and (min-width: 769px) {
-        .stats-tabs {
-            display: flex;
-            justify-content: space-between;
-        }
-        .stats-tabs:before,
-        .stats-tabs:after {
-            display: none;
-        }
-    }
-
     .hide {
         display: none;
     }
 </style>
-
-
 @endsection 
 
 @section('js')
@@ -41,7 +27,7 @@
         </h5>
     </div>
     <div class="tabs-container">
-        <ul class="nav nav-tabs stats-tabs">
+        <ul class="nav nav-tabs">
             <li class="active">
                 <a data-toggle="tab" href="#dates">Dates</a>
             </li>

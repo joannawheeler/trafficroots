@@ -1,19 +1,7 @@
 @extends('layouts.app') 
-@section('title', '- Zones')
+@section('title', 'Publisher Zone/Stats')
 @section('css')
-<link href="{{ URL::asset('css/plugins/footable/footable.core.css') }}" rel="stylesheet">
 <style type="text/css">
-    @media only screen and (min-width: 769px) {
-        .stats-tabs {
-            display: flex;
-            justify-content: space-between;
-        }
-        .stats-tabs:before,
-        .stats-tabs:after {
-            display: none;
-        }
-    }
-
     .hide {
         display: none;
     }
@@ -31,14 +19,17 @@
 
 @section('content')
 <div class="row">
+    <div class="col-md-12">
     <div class="ibox-title">
         <h5>
-            {{ $zone->description }}
-            <small class="m-l-sm">Month to date</small>
+        {{ $zone->description }} 
+        <small class="m-l-sm">Month to date</small> </a></li>
         </h5>
     </div>
+    <div class="row">
+	<div class="col-md-12">
     <div class="tabs-container">
-        <ul class="nav nav-tabs stats-tabs">
+        <ul class="nav nav-tabs">
             <li class="active">
                 <a data-toggle="tab"
                     href="#dates">Dates</a>
@@ -188,13 +179,6 @@
                                     @endif 
                                 @endforeach
                             </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="5">
-                                        <ul class="pagination pull-right"></ul>
-                                    </td>
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -376,5 +360,12 @@
                 </div>
             </div>
         </div>
+</div>
+</div>
     </div>
+</div>
+</div>
+    
+    
+    
 @endsection

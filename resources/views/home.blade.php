@@ -91,7 +91,7 @@
 						</div>
 					</div>
 			</div>
-
+											
 			<div class="row">
 				<div class="col-sm-2 widget-boxs">
 					<div class="ibox float-e-margins">
@@ -101,7 +101,7 @@
 						</div>
 						<div class="ibox-content">
 						  <span class="totalStat">
-							  {{ number_format($pub_data['impressions_today']) }}
+							  {{ number_format($pub_data['impressions_this_month']) }}
 							</span>
 						</div>
 					</div>
@@ -114,7 +114,7 @@
 						</div>
 						<div class="ibox-content">
 							<span class="totalStat">
-								{{ number_format($pub_data['clicks_today']) }}
+								{{ number_format($pub_data['clicks_this_month']) }}
 							</span>
 						</div>
 					</div>
@@ -127,7 +127,7 @@
 						</div>
 						<div class="ibox-content">
 							<span class="totalStat">
-								$ {{ round($pub_data['earned_today'],2) }}
+								$ {{ round($pub_data['earned_this_month'],2) }}
 							</span>
 						</div>
 					</div>
@@ -139,7 +139,7 @@
 							<span>CPM</span>
 						</div>
 						<div class="ibox-content">
-							<span class="totalStat">$ {{ round($pub_data['cpm_today'],2) }}</span>
+							<span class="totalStat">$ {{ round($pub_data['cpm_this_month'],2) }}</span>
 						</div>
 					</div>
 				</div>
@@ -150,7 +150,7 @@
 							<span>CPC</span>
 						</div>
 						<div class="ibox-content">
-							<span class="totalStat">$53,000</span>
+							<span class="totalStat">{{ number_format($pub_data['clicks_this_month']) }}</span>
 						</div>
 					</div>
 				</div>
@@ -161,12 +161,11 @@
 					<div class="ibox float-e-margins">
 						<div class="ibox-title">
 							<h5>Daily Stats</h5>
-
 							<div class="pull-right">
 								<div class="btn-group">
-									<button type="button" class="btn btn-xs btn-white active">Today</button>
-									<button type="button" class="btn btn-xs btn-white">Week</button>
-									<button type="button" class="btn btn-xs btn-white">Month</button>
+									<button type="button" id="monthToDate" class="btn btn-xs btn-white active">Today</button>
+									<button type="button" id="currentWeek" class="btn btn-xs btn-white">Week</button>
+									<button type="button" id="previousMonth" class="btn btn-xs btn-white">Month</button>
 								</div>
 								<div ibox-tools></div>
 							</div>
@@ -177,39 +176,35 @@
 											<div class="flot-chart-content" id="flot-line-chart-multi"></div>
 										</div>
 									</div>
-
-
-									 <div class="col-lg-3">
+									<div class="col-lg-3" id="pub-stat-list">
 									<ul class="stat-list">
-										<li>
-											<h2 class="no-margins"> {{ number_format($pub_data['impressions_today']) }} </h2>
+										<li id="pub-impressions">
+											<h2 class="no-margins"> {{ number_format($pub_data['impressions_this_month']) }} </h2>
 											<small>Impressions</small>
-											<div class="stat-percent"> {{ number_format($pub_data['impressions_today']) }} %<i class="fa fa-level-up text-navy"></i></div>
+											<div class="stat-percent"><span>
+												{{ number_format($pub_data['impressions_today']) }} </span>%<i class="fa fa-level-up text-navy"></i></div>
 											<div class="progress progress-mini">
 												<div style="width: 48%;" class="progress-bar"></div>
 											</div>
 										</li>
-										<li>
-											<h2 class="no-margins ">$ {{ round($pub_data['earned_today'],2) }} </h2>
+										<li id="pub-earnings">
+											<h2 class="no-margins ">$ {{ round($pub_data['earned_this_month'],2) }} </h2>
 											<small>Earnings</small>
-											<div class="stat-percent">60% <i class="fa fa-level-down text-navy"></i></div>
+											<div class="stat-percent"><span>60</span>% <i class="fa fa-level-down text-navy"></i></div>
 											<div class="progress progress-mini">
 												<div style="width: 60%;" class="progress-bar"></div>
 											</div>
 										</li>
-										<li>
-											<h2 class="no-margins ">$ {{ round($pub_data['cpm_today'],2) }}</h2>
+										<li id="pub-cpm">
+											<h2 class="no-margins ">$ {{ round($pub_data['cpm_this_month'],2) }}</h2>
 											<small>Cost Per Mili</small>
-											<div class="stat-percent">22% <i class="fa fa-bolt text-navy"></i></div>
+											<div class="stat-percent"><span>22</span>% <i class="fa fa-bolt text-navy"></i></div>
 											<div class="progress progress-mini">
 												<div style="width: 22%;" class="progress-bar"></div>
 											</div>
 										</li>
 									</ul>
 								</div>
-
-
-
 								</div>
 							</div>
 						</div>
@@ -234,6 +229,7 @@
 									<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack">
 									<thead>
 										<tr>
+											<th>Select</th>
 											<th>Site</th>
 											<th>Days Active</th>
 											<th>Impressions</th>
@@ -246,6 +242,7 @@
 									<tbody>
 										@foreach($pub_data['sites'] as $site)
 										<tr>
+											<td class="text-center">{{ $site->site_name }}</td>
 											<td class="text-center"><b class=" tablesaw-cell-label">Site</b>{{ $site->site_name }}</td>
 											<td class="text-center"><b class=" tablesaw-cell-label">Days Active</b>{{ $site->days_active }} </td>
 											<td class="text-center"><b class=" tablesaw-cell-label">Impressions</b>{{ $site->impressions }}</td>
@@ -268,7 +265,18 @@
 </div>
 @endsection
 @section('js')
-<script> 
+<script language="javascript" type="text/javascript" src="{{ URL::asset('js/plugins/flot/excanvas.min.js') }}"></script>
+<script>
+$( document ).ready(function() {
+	
+	$('.dataTableSearchOnly').DataTable({
+		"oLanguage": {
+		  "sSearch": "Search Table"
+		}, pageLength: 25,
+		responsive: true
+	});	
+	
+	
     $(function(){
 	    var impressions = [
 		    @foreach($pub_data['last_thirty_days'] as $key => $value)
@@ -283,26 +291,70 @@
     function doPlot(position) {
         $.plot($("#flot-line-chart-multi"), [{
             data: impressions,
-            label: "Impressions"
+            label: "Impressions",
+			color: "#1ab394",
+			bars: {
+				show: true,
+				align: "center",
+				barWidth: 24 * 60 * 60 * 600,
+				lineWidth:0
+			}
+			
         }, {
             data: clicks,
             label: "Clicks",
-            yaxis: 1
+            yaxis: 1, 
+			color: "#1C84C6",
+			lines: {
+				lineWidth:1,
+					show: true,
+					fill: true,
+				fillColor: {
+					colors: [{
+						opacity: 0.2
+					}, {
+						opacity: 0.4
+					}]
+				}
+			},
+			splines: {
+				show: false,
+				tension: 0.6,
+				lineWidth: 1,
+				fill: 0.1
+			}
         }], {
             xaxes: [{
                 mode: 'time'
             }],
             yaxes: [{
-                min: 0
+                min: 0,
+				position: "left",
+				color: "#d5d5d5",
+				axisLabelUseCanvas: true,
+				axisLabelFontSizePixels: 12,
+				axisLabelFontFamily: 'Arial'				
             }, {
                 // align if we are to the right
                 alignTicksWithAxis: position == "right" ? 1 : null,
-                position: position
+                position: position,
+				
+				//position: "right",
+				clolor: "#d5d5d5",
+				axisLabelUseCanvas: true,
+				axisLabelFontSizePixels: 12,
+				axisLabelFontFamily: ' Arial',
+				axisLabelPadding: 67
+				
             }],
             legend: {
-                position: 'sw'
+                //position: 'sw',
+				
+				noColumns: 1,
+				labelBoxBorderColor: "#000000",
+				position: "nw"
             },
-            colors: ["blue","green"],
+            colors: ["#1ab394","#1C84C6"],
             grid: {
                 color: "#999999",
                 hoverable: true,
@@ -331,7 +383,72 @@
         doPlot($(this).text());
     });
     
-    }); 
+    }) 
+	
+	$("#monthToDate").click(function(){ 
+		$("#previousMonth").removeClass("active");
+		$("#currentWeek").removeClass("active");
+		$("#monthToDate").addClass("active");
+		
+		$("#pub-impressions h2").text({{ number_format($pub_data['impressions_this_month']) }});
+		$("#pub-impressions .stat-percent span").text(
+			{{ number_format($pub_data['impressions_this_month']) }} );
+		$("#pub-impressions .progress-bar").css("width", "35%");
+		$("#pub-earnings h2").text( "$" + {{ round($pub_data['earned_this_month'],2) }});
+		$("#pub-earnings .stat-percent span").text(
+			{{ ($pub_data['earned_this_month']) }} );
+		$("#pub-earnings .progress-bar").css("width", "25%");
+		
+		$("#pub-cpm h2").text("$" + {{ round($pub_data['cpm_this_month'],2) }});
+		$("#pub-cpm .stat-percent span").text(
+			{{ number_format($pub_data['cpm_this_month']) }} );
+		$("#pub-cpm .progress-bar").css("width", "11%");
+	});
+	
+	$("#currentWeek").click(function(){ 
+		$("#previousMonth").removeClass("active");
+		$("#currentWeek").addClass("active");
+		$("#monthToDate").removeClass("active");
+		
+		$("#pub-impressions h2").text({{ number_format($pub_data['impressions_this_month']) }});
+		$("#pub-impressions .stat-percent span").text(
+			{{ number_format($pub_data['impressions_this_month']) }} );
+		$("#pub-impressions .progress-bar").css("width", "35%");
+		$("#pub-earnings h2").text( "$" + {{ round($pub_data['earned_this_month'],2) }});
+		$("#pub-earnings .stat-percent span").text(
+			{{ ($pub_data['earned_this_month']) }} );
+		$("#pub-earnings .progress-bar").css("width", "25%");
+		
+		$("#pub-cpm h2").text("$" + {{ round($pub_data['cpm_this_month'],2) }});
+		$("#pub-cpm .stat-percent span").text(
+			{{ number_format($pub_data['cpm_this_month']) }} );
+		$("#pub-cpm .progress-bar").css("width", "11%");
+	});
+	
+	$("#previousMonth").click(function(){ 
+		$("#previousMonth").addClass("active");
+		$("#currentWeek").removeClass("active");
+		$("#monthToDate").removeClass("active");
+		
+		$("#pub-impressions h2").text({{ number_format($pub_data['impressions_last_month']) }});
+		$("#pub-impressions .stat-percent span").text(
+			{{ ($pub_data['impressions_last_month']) }} );
+		$("#pub-impressions .progress-bar").css("width", "15%");
+	
+		$("#pub-earnings h2").text("$" + {{ round($pub_data['earned_last_month'],2) }});
+		$("#pub-earnings .stat-percent span").text(
+			{{ ($pub_data['impressions_today']) }} );
+		$("#pub-earnings .progress-bar").css("width", "36%");
+	
+		$("#pub-cpm h2").text("$" + {{ round($pub_data['cpm_last_month'],2) }});
+		$("#pub-cpm .stat-percent span").text(
+			{{ ($pub_data['cpm_last_month']) }} );
+		$("#pub-cpm .progress-bar").css("width", "75%");
+	});
+	
+});	
+	
+	
 </script>
    <script type="text/javascript">
        jQuery(document).ready(function ($) {
@@ -349,6 +466,12 @@
 <div class="content">
     <div class="row">
         <div class="col-lg-12">
+			<div class="row">
+				<div class="col-xs-12">
+					<h1>Test</h1>
+					<div id="placeholder"></div>
+				</div>
+			</div>
 			<div class="row">
 				<div class="col-lg-3">
 					<div class="ibox float-e-margins">
@@ -645,8 +768,10 @@
 </div>
 @endsection
 @section('js')
+<script language="javascript" type="text/javascript" src="{{ URL::asset('js/plugins/float/excanvas.min.js') }}"></script>
 <script>
 $( document ).ready(function() {
+	
 	$('.dataTableSearchOnly').DataTable({
 		"oLanguage": {
 		  "sSearch": "Search Table"
@@ -716,7 +841,7 @@ $( document ).ready(function() {
             legend: {
                 position: 'sw'
             },
-            colors: ["blue","green"],
+            colors: ["#1C84C6","#1ab394"],
             grid: {
                 color: "#999999",
                 hoverable: true,

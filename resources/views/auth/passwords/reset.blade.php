@@ -1,11 +1,23 @@
-@extends('layouts.app') 
+@extends('layouts.app')
 
 
 @section('css')
-<link href="css/plugins/iCheck/custom.css" rel="stylesheet"> 
+<link href="css/plugins/iCheck/custom.css" rel="stylesheet">
 @endsection
 
-@section('content') 
+@section('content')
+<style>
+    .navbar-static-top {
+       display: none;
+   }
+   .navbar-static-side {
+       display: none;
+   }
+   #page-wrapper {
+       padding: 0;
+       margin: 0;
+   }
+</style>
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
@@ -21,9 +33,9 @@
                             <label class="col-lg-2 control-label">Email</label>
 
                             <div class="col-lg-10">
-                                <input type="email" placeholder="Email" name="email" class="form-control"> 
+                                <input type="email" placeholder="Email" name="email" class="form-control">
                                 @if ($errors->has('email'))
-                                <span class="help-block m-b-none">{{ $errors->first('email') }}</span> 
+                                <span class="help-block m-b-none">{{ $errors->first('email') }}</span>
                                 @endif
                             </div>
                         </div>
@@ -38,7 +50,7 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection
 
 @section('js')
 <script>

@@ -5,11 +5,12 @@
 <script src='https://www.google.com/recaptcha/api.js'></script>
 <div class="container">
     <div class="row">
-        <div class="col-md-10 col-md-offset-1">
-            <div class="ibox">
-            <div class="ibox-title">Deposit Funds</div>
+		<div class="panel panel-body">
+            <div class="p-title">
+				<h4>Deposit Funds</h4>
+			</div>
             <div class="ibox-content">
-            <div class="row" id="container">
+            	<div class="row" id="container">
             <div id="errors"></div>
             <form id="payment" onsubmit="return checkForm(this);">
             <div class="col-md-6">
@@ -127,9 +128,9 @@
        </div>
   </form>
 </div>
-</div>
-</div>
-</div>
+			</div>
+		</div>
+	</div>
 </div>
 <script type="text/javascript">
     $(document).ready(function(){
