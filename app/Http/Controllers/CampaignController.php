@@ -264,6 +264,7 @@ class CampaignController extends Controller
         $user = Auth::getUser();
         $campaign = new Campaign();
 	$data = $request->all();
+	$data['daily_budget'] = floatval($data['daily_budget']);
 	Log::info(print_r($data,true));
         $data['user_id'] = $user->id;
         $campaign->fill($data);
@@ -285,14 +286,14 @@ class CampaignController extends Controller
                 $size = sizeof($info);
 		if($size == 3){
 			/* it's a banner */
-			$sql = "INSERT INTO creatives (campaign_id, user_id, description, media_id, link_id) VALUES(?,?,?,?,?);";
-			DB::insert($sql, array($id, $user->id, $value, $info[1], $info[2]));
+			$sql = "INSERT INTO creatives (campaign_id, user_id, description, media_id, link_id, created_at) VALUES(?,?,?,?,?,?);";
+			DB::insert($sql, array($id, $user->id, $value, $info[1], $info[2], date('Y-m-d H:i:s')));
 
 		}
 		if($size == 2){
                     /* it's a folder */
-                        $sql = "INSERT INTO creatives (campaign_id, user_id, description, folder_id) VALUES(?,?,?,?);";
-			DB::insert($sql, array($id, $user->id, $value, $info[1]));
+                        $sql = "INSERT INTO creatives (campaign_id, user_id, description, folder_id, created_at) VALUES(?,?,?,?,?);";
+			DB::insert($sql, array($id, $user->id, $value, $info[1], date('Y-m-d H:i:s'))); 
 		}
             }
 	}	
@@ -511,7 +512,7 @@ class CampaignController extends Controller
             }
         }
     }
-    public function campaigns()
+    public function campaigns(Request $request)
     {
 	    $user = Auth::user();
 	    if (Gate::allows('unconfirmed_user')) {
@@ -519,8 +520,14 @@ class CampaignController extends Controller
 		Log::info($user->name.' attempted to access Campaigns page and got sent home.');
 		return redirect('/profile');
 	    }
-        $startDate = Carbon::now()->firstOfMonth()->toDateString();
-        $endDate = Carbon::now()->endOfMonth()->toDateString();
+	if($request->has('daterange')){
+                $dateRange = explode(' - ', $request->daterange);
+	        $startDate = Carbon::parse($dateRange[0]);
+		$endDate = Carbon::parse($dateRange[1]);
+	}else{
+            $startDate = Carbon::now()->firstOfMonth()->toDateString();
+            $endDate = Carbon::now()->endOfMonth()->toDateString();
+	}
         $campaigns = Campaign::with(['stats' => function ($query) use ($startDate, $endDate) {
             $query
                 ->where('stat_date', '>=', $startDate)
