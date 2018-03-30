@@ -38,7 +38,7 @@
                         <input type="hidden" name="invoice" id="invoice" value="{{ $user_invoice }}">
                         {{ csrf_field() }}  
                         @else
-                            <p>Minimum deposit is $100.00</p>
+                            <p>Minimum deposit is $250.00</p>
                             <input type="text" name="amount" id="amount" value="{{ $amount }}"><br /><br />
                             <button id="mybutton" class="btn btn-outline btn-primary dim" onclick="return checkDeposit();">Continue</button>
                         @endif              

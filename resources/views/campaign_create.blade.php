@@ -618,6 +618,14 @@
            $('#campaign_name').focus();
            return false;
        }
+       var creatives = 0;
+       $(".creative").each(function(){
+           creatives++
+       });
+       if(!creatives){
+           alert('Please add at least one Creative!');
+	   return false;
+       }
        if(confirm("Submit this campaign?")){
            var data = $('#campaign_form').serialize();
            $.post('/campaign', data).done(function(result){
