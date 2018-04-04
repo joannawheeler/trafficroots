@@ -18,8 +18,12 @@ use App\Platform;
 use App\Country;
 use App\City;
 use App\State;
+use App\User;
 use DOMDocument;
 use DOMXPath;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ConfirmUser;
+
 class GatherKeysController extends Controller
 {
     public function __construct()
@@ -36,6 +40,8 @@ class GatherKeysController extends Controller
 	$this->enforceBudgets();
 	$this->findCountyByZip();
 	//$this->populateZipsTable();
+	$this->sendUserConfirmation();
+	$this->bounceUsers();
     }
     public function gatherDefaultImpressions()
     {
@@ -585,5 +591,83 @@ class GatherKeysController extends Controller
             sleep(2);
 	}
 
-    } 
+    }
+    /* send confirmation email with redis token */
+    public function sendUserConfirmation(){
+	    $x = 0;
+	    Log::info('Sending user confirmation emails...');
+	    foreach(User::where('status', 0)->where('token_expires', 0)->get() as $user){
+	        Log::info('Sending confirmation email to '.$user->name);
+	        $handle = bin2hex(random_bytes(8));
+		Redis::setex($handle, 86400 * 2, $user->id);
+		try{
+		Mail::to($user->email)->send(new ConfirmUser($user, $handle));
+		Log::info('Mail Sent!');
+		User::where('id', $user->id)->update(array('token_expires' => 1, 'updated_at' => date('Y-m-d H:i:s')));
+		}catch(Exception $e){
+                    Log::error($e->getMessage());
+		}
+		$x ++;
+		if($x > 40)
+		break;
+            }
+    }
+    /* check for bounced user emails */
+    public function bounceUsers() 
+    {
+	    Log::info('Checking bounces');
+	    $connect_to = '{imap.gmail.com:993/imap/ssl}bounced';
+	    $user_email = 'admin@trafficroots.com';
+	    $pass = 'iysayjcymwihmfed';
+
+	    try{$inbox = imap_open($connect_to, $user_email, $pass);}catch(Exception $e){ Log::info(print_r(imap_errors(), true)); }
+	    if($inbox){
+		    /* grab emails */
+		    $emails = imap_search($inbox,'ALL');
+
+		    /* if emails are returned, cycle through each... */
+		    if($emails) {
+			
+			/* begin output var */
+			$output = '';
+	    	
+		/* put the newest emails on top */
+		rsort($emails);
+                $x = 0;		
+		/* for every email... */
+		foreach($emails as $email_number) {
+			
+			/* get information specific to this email */
+			$overview = imap_fetch_overview($inbox,$email_number,0);
+			Log::info(print_r($overview,true));
+			$header = explode("\n", imap_fetchheader($inbox, $email_number));
+			Log::info(print_r($header, true));
+			foreach($header as $line){
+				$line = preg_replace( "/\r|\n/", "", $line );
+				if(strpos($line, 'X-Failed-Recipients:') === 0) {
+					$stuff = explode(' ', $line);
+					Log::info(print_r($stuff, true));
+                                        $sql = "DELETE FROM `trafficroots`.`users` WHERE `email` = '".$stuff[1]."' LIMIT 1";
+					if(DB::delete($sql)) {
+						Log::info('User '.$stuff[1].' removed');
+				        }else{
+				            Log::info('WTF??   '.$sql);
+			                }		    
+			        }
+			}
+
+		        imap_delete($inbox, $email_number);
+			$x ++;
+			if($x > 50) break;
+		}
+                   imap_close($inbox);	
+		    } 		
+	    
+	    }else{
+		    Log::error("Can't connect to '$connect_to': " . imap_last_error());
+		    Log::info(print_r(imap_errors(), true));
+	    }
+            
+
+    }
 }

@@ -85,7 +85,7 @@ class HomeController extends Controller
     {
         $user = Auth::getUser();
         User::where('id', $user->id)->update(array('user_type' => 2));
-        return redirect('media');
+        return redirect('library');
     }
     /**
      * Show the advertiser`s library.

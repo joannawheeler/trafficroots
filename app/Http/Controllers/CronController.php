@@ -169,4 +169,41 @@ class CronController extends Controller
             Log::info('No Pending Bids to Activate.');
         }
     }
+
+    /* check for bounced user emails */
+    public function bounceUsers() 
+    {
+	    $connect_to = '{imap.gmail.com:993/imap/ssl/novalidate-cert}bounces';
+	    $user_email = 'admin@trafficroots.com';
+	    $pass = env('MAIL_PASSWORD');
+	    if($inbox = imap_open($connect_to, $user_email, $pass)){
+		    /* grab emails */
+		    $emails = imap_search($inbox,'ALL');
+
+		    /* if emails are returned, cycle through each... */
+		    if($emails) {
+			
+			/* begin output var */
+			$output = '';
+	    	
+		/* put the newest emails on top */
+		rsort($emails);
+		
+		/* for every email... */
+		foreach($emails as $email_number) {
+			
+			/* get information specific to this email */
+			$overview = imap_fetch_overview($inbox,$email_number,0);
+			Log::info(print_r($overview,true));
+			break;
+		}
+	
+		    } 		
+	    
+	    }else{
+		    Log::error("Can't connect to '$connect_to': " . imap_last_error());
+	    }
+            
+
+    }
 }
