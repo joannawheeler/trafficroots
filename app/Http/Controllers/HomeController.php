@@ -16,6 +16,7 @@ use App\Country;
 use App\Transaction;
 use App\Payment;
 use App\Campaign;
+use App\Zone;
 use DB;
 use Log;
 use Session;
@@ -334,12 +335,23 @@ SUM(publisher_bookings.revenue) * commission_tiers.publisher_factor AS earned,
 SUM(publisher_bookings.impressions) as impressions,
 SUM(publisher_bookings.clicks) as clicks,
 sites.site_name,
+CASE WHEN `zones`.location_type = 1 THEN 'Leaderboard'
+	 WHEN `zones`.location_type = 2 THEN 'Cube A'
+	 WHEN `zones`.location_type = 4 THEN 'Mobile Banner'
+	 WHEN `zones`.location_type = 7 THEN 'Super Leaderboard'
+END as location_type,
+CASE WHEN `zones`.status = 1 THEN 'Active'
+	 WHEN `zones`.status = 0 THEN 'Declined'
+	 ELSE 'Pending'
+END as status,
 COUNT(publisher_bookings.booking_date) as days_active
 FROM publisher_bookings
 JOIN commission_tiers
 ON publisher_bookings.commission_tier = commission_tiers.id
 JOIN sites
 ON publisher_bookings.site_id = sites.id
+JOIN `zones`
+ON `zones`.site_id = sites.id
 WHERE publisher_bookings.booking_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
 AND publisher_bookings.pub_id = $id;";
         foreach(DB::select($sql) as $row){

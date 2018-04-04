@@ -13,8 +13,8 @@
 <script src="{{ asset('js/plugins/dataTables/jquery.dataTables.js') }}"></script>
 
 <!-- Flot -->
-<script src="{{ asset('js/plugins/flot/jquery.flot.js') }}"></script>
-<script src="{{ asset('js/plugins/flot/jquery.flot.tooltip.min.js') }}"></script>
+<script src="{{ URL::asset('js/plugins/flot/jquery.flot.js') }}"></script>
+<script src="{{ URL::asset('js/plugins/flot/jquery.flot.tooltip.min.js') }}"></script>
 <script src="{{ asset('js/plugins/flot/jquery.flot.spline.js') }}"></script>
 <script src="{{ asset('js/plugins/flot/jquery.flot.resize.js') }}"></script>
 <script src="{{ asset('js/plugins/flot/jquery.flot.pie.js') }}"></script>
@@ -64,6 +64,8 @@ if ($(".dataTableSearchOnly").length) {
 		responsive: true
 	});
 }
+	
+$('[data-toggle="tooltip"]').tooltip();
 	   	
 toastr.options = {
     "closeButton": true,

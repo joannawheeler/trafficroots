@@ -1,75 +1,56 @@
 @extends('layouts.app') 
 @section('title', 'Campaign Stats')
 @section('css')
-<link href="{{ URL::asset('css/plugins/footable/footable.core.css') }}" rel="stylesheet">
 <style type="text/css">
     @media only screen and (min-width: 769px) {
-        .stats-tabs {
-            display: flex;
-            justify-content: space-between;
-        }
-        .stats-tabs:before,
-        .stats-tabs:after {
-            display: none;
-        }
-    }
-
-    .hide {
-        display: none;
-    }
+		.hide {
+			display: none;
+		}
+	}
 </style>
 @endsection
-
 @section('js')
-<script src="{{ URL::asset('js/plugins/footable/footable.all.min.js') }}"></script>
-<script>
-    $(document).ready(function() {
-        $('.footable').footable();
-    });
-</script>
-@endsection 
 
 @section('content')
 <div class="content">
 	<div class="row">
 		<div class="col-xs-12">
-				<div class="ibox-title">
-					<h5>Campaign Name: {{ $campaign->campaign_name }}
-					</h5>
-					<div class="pull-right">
-						<a href="{{ URL::to('/campaigns') }}" class="btn btn-xs btn-danger"><span class="fa fa-arrow-circle-left"></span>&nbsp;Go Back</a>
-					</div>
+				<div class="panel panel-default">
+					<a href="{{ URL::to('/campaigns') }}" class="btn btn-primary btn-xs pull-right m-t m-r">
+						<span class="fa fa-arrow-circle-left"></span>&nbsp;Back to Campaign</a>
+					</a>
+					<h4 class="p-title">Campaign Name: {{ $campaign->campaign_name }}
+					</h4>
 				</div>
-				<br><br>
 				<div class="tabs-container">
-				<ul class="nav nav-tabs stats-tabs">
+				<ul class="nav nav-tabs stats-tab">
 					<li class="active">
 						<a data-toggle="tab"
-							href="#dates">Dates</a>
+						   href="#dates"><span class="fa fa-calendar"></span><div>Dates</div></a>
 					</li>
 					<li class="nav nav-tabs">
 						<a data-toggle="tab"
-							href="#countries">Countries</a>
+						   href="#countries"><span class="fa fa-globe"></span><div>Countries</div></a>
 					</li>
 					<li class="nav nav-tabs">
 						<a data-toggle="tab"
-							href="#states">States</a>
+						   href="#states"><span class="fa fa-location-arrow"></span><div>States</div></a>
 					</li>
 					<li class="nav nav-tabs">
 						<a data-toggle="tab"
-							href="#cities">Cities</a>
+						   href="#cities"><span class="fa fa-map-marker"></span><div>Cities</div></a>
 					</li>
 					<li class="nav nav-tabs">
 						<a data-toggle="tab"
-							href="#platforms">Platforms</a>
+						   href="#platforms"><span class="fa fa-mobile"></span><div>Platforms</div></a>
 					</li>
 					<li class="nav nav-tabs">
 						<a data-toggle="tab"
-							href="#os">Operating Systems</a>
+						   href="#os"><span class="fa fa-desktop"></span><div>Operating Systems</div></a>
 					</li>
 					<li class="nav nav-tabs">
 						<a data-toggle="tab"
-							href="#browsers">Browsers</a>
+						   href="#browsers"><span class="fa fa-laptop"></span><div>Browsers</div></a>
 					</li>
 				</ul>
 				<div class="tab-content">

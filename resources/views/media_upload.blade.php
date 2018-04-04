@@ -78,6 +78,10 @@
                             <i class="fa fa-upload"></i>&nbsp;&nbsp;
                             <span class="bold">Upload</span>
                         </label>
+						<br>
+						<div class="text-center image-preview" style="border: 0px;">
+							<img id="previewImgFile" src="#" alt="Preview Image" />
+						</div>
                         <input type="file"
                                name="file"
                                id="image_file"
@@ -140,6 +144,7 @@
 </div>
 @if($_SERVER['REQUEST_URI'] == '/campaign')
 <script type="text/javascript">
+	
 function submitMediaForm(){
         // Get form
         var form = $('#media_form')[0];

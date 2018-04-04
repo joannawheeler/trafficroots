@@ -17,82 +17,11 @@
 <div class="content">
     <div class="row">
         <div class="col-lg-12">
-			<div class="row">
-					<div class="col-lg-3">
-						<div class="ibox float-e-margins">
-							<div class="ibox-title">
-								<span class="label label-success pull-right">{{ Carbon\Carbon::now()->format('F jS') }}</span>
-								<h5>Today</h5>
-							</div>
-							<div class="ibox-content">
-								<div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['impressions_today']) }}</div>
-								<small>Impressions</small><br />
-								<div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['clicks_today']) }}</div>
-								<small>Clicks</small><br />                
-								<div class="stat-percent font-bold text-success pull-right">$ {{ round($pub_data['earned_today'],2) }}</div>
-								<small>Earnings</small><br />
-								<div class="stat-percent font-bold text-success">$ {{ round($pub_data['cpm_today'],2) }}</div>
-								<small>CPM</small>                
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3">
-						<div class="ibox float-e-margins">
-							<div class="ibox-title">
-								<span class="label label-success pull-right">{{ Carbon\Carbon::now()->format('F') }}</span>
-								<h5>This Month</h5>
-							</div>
-							<div class="ibox-content">
-								<div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['impressions_this_month']) }}</div>
-								<small>Impressions</small><br />
-								<div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['clicks_this_month']) }}</div>
-								<small>Clicks</small><br />                
-								<div class="stat-percent font-bold text-success pull-right">$ {{ round($pub_data['earned_this_month'],2) }}</div>
-								<small>Earnings</small><br />
-								<div class="stat-percent font-bold text-success pull-right">$ {{ round($pub_data['cpm_this_month'],2) }}</div>
-								<small>CPM</small>  
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3">
-						<div class="ibox float-e-margins">
-							<div class="ibox-title">
-								<span class="label label-success pull-right">{{ date('F', strtotime('last month')) }}</span>
-								<h5>Last Month</h5>
-							</div>
-							<div class="ibox-content">
-								<div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['impressions_last_month']) }}</div>
-								<small>Impressions</small><br />
-								<div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['clicks_last_month']) }}</div>
-								<small>Clicks</small><br />                
-								<div class="stat-percent font-bold text-success pull-right">$ {{ round($pub_data['earned_last_month'],2) }}</div>
-								<small>Earnings</small><br />
-								<div class="stat-percent font-bold text-success pull-right">$ {{ round($pub_data['cpm_last_month'],2) }}</div>
-								<small>CPM</small>  
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-3">
-						<div class="ibox float-e-margins">
-							<div class="ibox-title">
-								<span class="label label-success pull-right">{{ date('Y') }}</span>
-								<h5>This Year</h5>
-							</div>
-							<div class="ibox-content">
-								<div class="stat-percent font-bold text-success">{{ number_format($pub_data['impressions_this_year']) }}</div>
-								<small>Impressions</small><br />
-								<div class="stat-percent font-bold text-success">{{ number_format($pub_data['clicks_this_year']) }}</div>
-								<small>Clicks</small><br />                
-								<div class="stat-percent font-bold text-success">$ {{ round($pub_data['earned_this_year'],2) }}</div>
-								<small>Earnings</small><br />
-								<div class="stat-percent font-bold text-success">$ {{ round($pub_data['cpm_this_year'],2) }}</div>
-								<small>CPM</small>  
-							</div>
-						</div>
-					</div>
-			</div>
 											
 			<div class="row">
+				<div class="col-xs-12">
+					<h4>Month to Date</h4>
+				</div>
 				<div class="col-sm-2 widget-boxs">
 					<div class="ibox float-e-margins">
 						<div class="ibox-title purple-bg">
@@ -157,19 +86,69 @@
 			</div>
 
 			<div class="row">
+				<div class="col-lg-4">
+					<div class="ibox float-e-margins">
+						<div class="ibox-title">
+							<span class="label label-success pull-right">{{ Carbon\Carbon::now()->format('F jS') }}</span>
+							<h5>Yesterday</h5>
+						</div>
+						<div class="ibox-content">
+							<div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['impressions_today']) }}</div>
+							<small>Impressions</small><br />
+							<div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['clicks_today']) }}</div>
+							<small>Clicks</small><br />                
+							<div class="stat-percent font-bold text-success pull-right">$ {{ round($pub_data['earned_today'],2) }}</div>
+							<small>Earnings</small><br />
+							<div class="stat-percent font-bold text-success">$ {{ round($pub_data['cpm_today'],2) }}</div>
+							<small>CPM</small>                
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4">
+					<div class="ibox float-e-margins">
+						<div class="ibox-title">
+							<span class="label label-success pull-right">{{ date('F', strtotime('last month')) }}</span>
+							<h5>Last Month</h5>
+						</div>
+						<div class="ibox-content">
+							<div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['impressions_last_month']) }}</div>
+							<small>Impressions</small><br />
+							<div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['clicks_last_month']) }}</div>
+							<small>Clicks</small><br />                
+							<div class="stat-percent font-bold text-success pull-right">$ {{ round($pub_data['earned_last_month'],2) }}</div>
+							<small>Earnings</small><br />
+							<div class="stat-percent font-bold text-success pull-right">$ {{ round($pub_data['cpm_last_month'],2) }}</div>
+							<small>CPM</small>  
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4">
+					<div class="ibox float-e-margins">
+						<div class="ibox-title">
+							<span class="label label-success pull-right">{{ date('Y') }}</span>
+							<h5>This Year</h5>
+						</div>
+						<div class="ibox-content">
+							<div class="stat-percent font-bold text-success">{{ number_format($pub_data['impressions_this_year']) }}</div>
+							<small>Impressions</small><br />
+							<div class="stat-percent font-bold text-success">{{ number_format($pub_data['clicks_this_year']) }}</div>
+							<small>Clicks</small><br />                
+							<div class="stat-percent font-bold text-success">$ {{ round($pub_data['earned_this_year'],2) }}</div>
+							<small>Earnings</small><br />
+							<div class="stat-percent font-bold text-success">$ {{ round($pub_data['cpm_this_year'],2) }}</div>
+							<small>CPM</small>  
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
 				<div class="col-lg-12">
 					<div class="ibox float-e-margins">
 						<div class="ibox-title">
 							<h5>Daily Stats</h5>
-							<div class="pull-right">
-								<div class="btn-group">
-									<button type="button" id="monthToDate" class="btn btn-xs btn-white active">Today</button>
-									<button type="button" id="currentWeek" class="btn btn-xs btn-white">Week</button>
-									<button type="button" id="previousMonth" class="btn btn-xs btn-white">Month</button>
-								</div>
-								<div ibox-tools></div>
-							</div>
-							<div class="ibox-content">
+						</div>
+						<div class="ibox-content">
 								<div class="row">
 									<div class="col-lg-9">            
 										<div class="flot-chart">
@@ -177,34 +156,99 @@
 										</div>
 									</div>
 									<div class="col-lg-3" id="pub-stat-list">
-									<ul class="stat-list">
-										<li id="pub-impressions">
-											<h2 class="no-margins"> {{ number_format($pub_data['impressions_this_month']) }} </h2>
-											<small>Impressions</small>
-											<div class="stat-percent"><span>
-												{{ number_format($pub_data['impressions_today']) }} </span>%<i class="fa fa-level-up text-navy"></i></div>
-											<div class="progress progress-mini">
-												<div style="width: 48%;" class="progress-bar"></div>
-											</div>
-										</li>
-										<li id="pub-earnings">
-											<h2 class="no-margins ">$ {{ round($pub_data['earned_this_month'],2) }} </h2>
-											<small>Earnings</small>
-											<div class="stat-percent"><span>60</span>% <i class="fa fa-level-down text-navy"></i></div>
-											<div class="progress progress-mini">
-												<div style="width: 60%;" class="progress-bar"></div>
-											</div>
-										</li>
-										<li id="pub-cpm">
-											<h2 class="no-margins ">$ {{ round($pub_data['cpm_this_month'],2) }}</h2>
-											<small>Cost Per Mili</small>
-											<div class="stat-percent"><span>22</span>% <i class="fa fa-bolt text-navy"></i></div>
-											<div class="progress progress-mini">
-												<div style="width: 22%;" class="progress-bar"></div>
-											</div>
-										</li>
-									</ul>
+										<ul class="stat-list">
+											<li id="pub-impressions">
+												<h2 class="no-margins"> {{ number_format($pub_data['impressions_this_month']) }} </h2>
+												<small>Impressions</small>
+												<div class="progress progress-mini">
+													<div style="width: 100%;" class="progress-bar"></div>
+												</div>
+											</li>
+											<li id="pub-earnings">
+												<h2 class="no-margins ">$ {{ round($pub_data['earned_this_month'],2) }} </h2>
+												<small>Earnings</small>
+												<div class="progress progress-mini">
+													<div style="width: 100%;" class="progress-bar"></div>
+												</div>
+											</li>
+											<li id="pub-cpm">
+												<h2 class="no-margins "> {{ round($pub_data['cpm_this_month'],2) }} %</h2>
+												<small>Cost Per Mili</small>
+												<div class="progress progress-mini">
+													<div style="width: 100%;" class="progress-bar"></div>
+												</div>
+											</li>
+										</ul>
+									</div>
 								</div>
+							</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<h4 class="p-title">Campaigns</h4>
+						<div class="ibox-content">
+							<div class="row">
+								<div class="col-xs-12 col-md-8">
+<!--
+									<form name="stats_form"
+										  id="stats_form"
+										  action="{{ url('/stats/pub') }}"
+										  method="POST">
+									{{ csrf_field() }}
+-->
+									<div class="row">
+										<div class="col-xs-12 col-md-6 form-group">
+											<label>Dates</label>
+											<input hidden="true"
+												   type="text"
+												   name="daterange" />
+											<div id="reportrange"
+												 class="form-control">
+												<i class="fa fa-calendar" style="float: right;"></i>
+												<span></span>
+											</div>
+										<label class="error hide"
+											   for="dates"></label>
+										</div>
+										<div class="col-xs-12 col-md-6 form-group">
+											<label>Sites</label>
+											<select class="form-control">
+<!--									
+											<select name="sites[]" 
+														id="sites"
+														data-placeholder="Choose sites..."
+														class="chosen-select"
+														multiple
+														tabindex="3">
+-->
+													<option value="">Select</option>
+<!--
+													@foreach(Auth::User()->sites as $site)
+														<option value="{{ $site->id }}">{{ $site->site_name }}</option>
+													@endforeach
+-->
+												</select>
+											<label class="error hide"
+												   for="sites"></label>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-xs-12 col-md-6">
+											<div class="form-group">
+												<button type="submit" class="btn btn-primary btn-block">Submit</button>
+											</div>
+										</div>
+
+										<div class="col-xs-12 col-md-6">
+											<div class="form-group">
+												<button type="submit" class="btn btn-danger 	btn-block" id="resetFilter">Reset Filter</button>
+											</div>
+										</div>
+									</div>
+								</form>
 								</div>
 							</div>
 						</div>
@@ -216,7 +260,7 @@
 					<div class="ibox float-e-margins xs-ibox-title">
 						<div class="panel panel-default">
 							<div class="col-xs-12 col-md-6">
-								<h4 class="p-title">Sites - {{ date('F') }}</h4>
+								<h4 class="p-title">Campaigns - {{ date('F') }}</h4>
 							</div>
 							<div class="col-xs-12 col-md-6 text-right" style="padding: 10px 25px;">
 									<label>Update Status:</label>
@@ -229,27 +273,32 @@
 									<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack">
 									<thead>
 										<tr>
-											<th>Select</th>
+											<th><input type="checkbox" class="form-check-input checkAll"> Select All</th>
 											<th>Site</th>
+											<th>Status <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Do you like my fa-coq icon?"></span></th>
+											<th>Location</th> <!--zone name name of size-->
+											<th>Date</th>
 											<th>Days Active</th>
-											<th>Impressions</th>
-											<th>Clicks</th>
-											<th>CPM</th>
-											<th>CPC</th>
 											<th>Earnings</th>
+											<th>Preview</th>
 										</tr>
 									</thead>
 									<tbody>
 										@foreach($pub_data['sites'] as $site)
 										<tr>
-											<td class="text-center">{{ $site->site_name }}</td>
+											<td class="text-center col-xs-2"><input type="checkbox" class="form-check-input checkAll"></td>
 											<td class="text-center"><b class=" tablesaw-cell-label">Site</b>{{ $site->site_name }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Status</b>
+												<span class="currentStatus label">{{ $site->status }}</span>
+											</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Location</b>{{ $site->location_type }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Date</b> </td>
 											<td class="text-center"><b class=" tablesaw-cell-label">Days Active</b>{{ $site->days_active }} </td>
-											<td class="text-center"><b class=" tablesaw-cell-label">Impressions</b>{{ $site->impressions }}</td>
-											<td class="text-center"><b class=" tablesaw-cell-label">Clicks</b>{{ $site->clicks }}</td>
-											<td class="text-center"><b class=" tablesaw-cell-label">CPM</b>{{ $cpm = $site->impressions ? round($site->earned / ($site->impressions / 1000),2) : 0 }}</td>
-											<td class="text-center"><b class=" tablesaw-cell-label">CPC</b>{{ $cpc = $site->clicks ? round($site->earned / $site->clicks,2): 0 }}</td>
-											<td class="text-center"><b class=" tablesaw-cell-label">Earnings</b>{{ money_format('%(#10n',$site->earned) }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Earnings</b>$ {{ money_format('%(#10n',$site->earned) }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Preview</b>
+												<a class="tr-preview" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="" data-content="<img src='https://publishers.trafficroots.com/uploads/823/f7a65b864d5fc4216aff842bcc3a6321.jpeg' width='120' height='120'>" id="view_media_159">
+												<span class="fa fa-camera" aria-hidden="true"></span></a>
+											</td>
 										</tr>
 										@endforeach
 										</tbody>
@@ -265,9 +314,32 @@
 </div>
 @endsection
 @section('js')
-<script language="javascript" type="text/javascript" src="{{ URL::asset('js/plugins/flot/excanvas.min.js') }}"></script>
-<script>
+<script type="text/javascript">
 $( document ).ready(function() {
+	//Check and uncheck records
+	$(".checkAll").click(function(event) {   
+		if(this.checked) {
+			// Iterate each checkbox
+			$(':checkbox').each(function() {
+				this.checked = true;                        
+			});
+		} else {
+			$(':checkbox').each(function() {
+				this.checked = false;                        
+			});
+		}
+	});
+	
+	$('[data-toggle="tooltip"]').tooltip();
+		
+	var currentStatus = $(".currentStatus").text();
+    if (currentStatus == "Active"){
+        $(".currentStatus").addClass('label-primary');
+    } else if (currentStatus == "Declined"){
+        $(".currentStatus").addClass('label-danger');
+    } else {
+		$(".currentStatus").addClass('label-warning');
+	}
 	
 	$('.dataTableSearchOnly').DataTable({
 		"oLanguage": {
@@ -275,9 +347,9 @@ $( document ).ready(function() {
 		}, pageLength: 25,
 		responsive: true
 	});	
+});
 	
-	
-    $(function(){
+   $(function(){
 	    var impressions = [
 		    @foreach($pub_data['last_thirty_days'] as $key => $value)
 		        [{{$value['timestamp']}},{{$value['impressions']}}],
@@ -377,76 +449,13 @@ $( document ).ready(function() {
         });
     }
 
-    doPlot("right");
+		doPlot("right");
 
-    $("button").click(function() {
-        doPlot($(this).text());
-    });
+		$("button").click(function() {
+			doPlot($(this).text());
+		});
     
-    }) 
-	
-	$("#monthToDate").click(function(){ 
-		$("#previousMonth").removeClass("active");
-		$("#currentWeek").removeClass("active");
-		$("#monthToDate").addClass("active");
-		
-		$("#pub-impressions h2").text({{ number_format($pub_data['impressions_this_month']) }});
-		$("#pub-impressions .stat-percent span").text(
-			{{ number_format($pub_data['impressions_this_month']) }} );
-		$("#pub-impressions .progress-bar").css("width", "35%");
-		$("#pub-earnings h2").text( "$" + {{ round($pub_data['earned_this_month'],2) }});
-		$("#pub-earnings .stat-percent span").text(
-			{{ ($pub_data['earned_this_month']) }} );
-		$("#pub-earnings .progress-bar").css("width", "25%");
-		
-		$("#pub-cpm h2").text("$" + {{ round($pub_data['cpm_this_month'],2) }});
-		$("#pub-cpm .stat-percent span").text(
-			{{ number_format($pub_data['cpm_this_month']) }} );
-		$("#pub-cpm .progress-bar").css("width", "11%");
-	});
-	
-	$("#currentWeek").click(function(){ 
-		$("#previousMonth").removeClass("active");
-		$("#currentWeek").addClass("active");
-		$("#monthToDate").removeClass("active");
-		
-		$("#pub-impressions h2").text({{ number_format($pub_data['impressions_this_month']) }});
-		$("#pub-impressions .stat-percent span").text(
-			{{ number_format($pub_data['impressions_this_month']) }} );
-		$("#pub-impressions .progress-bar").css("width", "35%");
-		$("#pub-earnings h2").text( "$" + {{ round($pub_data['earned_this_month'],2) }});
-		$("#pub-earnings .stat-percent span").text(
-			{{ ($pub_data['earned_this_month']) }} );
-		$("#pub-earnings .progress-bar").css("width", "25%");
-		
-		$("#pub-cpm h2").text("$" + {{ round($pub_data['cpm_this_month'],2) }});
-		$("#pub-cpm .stat-percent span").text(
-			{{ number_format($pub_data['cpm_this_month']) }} );
-		$("#pub-cpm .progress-bar").css("width", "11%");
-	});
-	
-	$("#previousMonth").click(function(){ 
-		$("#previousMonth").addClass("active");
-		$("#currentWeek").removeClass("active");
-		$("#monthToDate").removeClass("active");
-		
-		$("#pub-impressions h2").text({{ number_format($pub_data['impressions_last_month']) }});
-		$("#pub-impressions .stat-percent span").text(
-			{{ ($pub_data['impressions_last_month']) }} );
-		$("#pub-impressions .progress-bar").css("width", "15%");
-	
-		$("#pub-earnings h2").text("$" + {{ round($pub_data['earned_last_month'],2) }});
-		$("#pub-earnings .stat-percent span").text(
-			{{ ($pub_data['impressions_today']) }} );
-		$("#pub-earnings .progress-bar").css("width", "36%");
-	
-		$("#pub-cpm h2").text("$" + {{ round($pub_data['cpm_last_month'],2) }});
-		$("#pub-cpm .stat-percent span").text(
-			{{ ($pub_data['cpm_last_month']) }} );
-		$("#pub-cpm .progress-bar").css("width", "75%");
-	});
-	
-});	
+    }); 
 	
 	
 </script>
@@ -467,105 +476,9 @@ $( document ).ready(function() {
     <div class="row">
         <div class="col-lg-12">
 			<div class="row">
-				<div class="col-xs-12">
-					<h1>Test</h1>
-					<div id="placeholder"></div>
+				<div class="col-md-12">
+					<h4>Month to Date</h4>
 				</div>
-			</div>
-			<div class="row">
-				<div class="col-lg-3">
-					<div class="ibox float-e-margins">
-						<div class="ibox-title">
-							<span class="label label-success pull-right">{{ Carbon\Carbon::now()->format('F jS') }}</span>
-							<h5>Today</h5>
-						</div>
-						<div class="ibox-content">
-							<div class="stat-percent font-bold text-success pull-right">{{ number_format($buyer_data['impressions_today']) }}</div>
-							<small>Impressions</small><br />
-							<div class="stat-percent font-bold text-success pull-right">{{ number_format($buyer_data['clicks_today']) }}</div>
-							<small>Clicks</small><br />                
-							<div class="stat-percent font-bold text-success pull-right">{{ round($buyer_data['ctr_today'],2) }}</div>
-							<small>CTR</small><br />
-							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['spent_today'] }}</div>
-							<small>Costs</small><br />
-							<div class="stat-percent font-bold text-success">$ {{ $buyer_data['cpm_today'] }}</div>
-							<small>CPM</small><br />
-							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpc_today'] }}</div>
-							<small>CPC</small><br />
-							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['current_balance'] }}</div>
-							<small>Remaining Balance</small>                
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-3">
-					<div class="ibox float-e-margins">
-						<div class="ibox-title">
-							<span class="label label-success pull-right">{{ date('F jS',strtotime('yesterday')) }}</span>
-							<h5>Yesterday</h5>
-						</div>
-						<div class="ibox-content">
-							<div class="stat-percent font-bold text-success pull-right">{{ number_format($buyer_data['impressions_yesterday']) }}</div>
-							<small>Impressions</small><br />
-							<div class="stat-percent font-bold text-success pull-right">{{ number_format($buyer_data['clicks_yesterday']) }}</div>
-							<small>Clicks</small><br />
-							<div class="stat-percent font-bold text-success pull-right">{{ $buyer_data['ctr_yesterday'] }}</div>
-							<small>CTR</small><br />                
-							<div class="stat-percent font-bold text-success pull-right">$ {{ round($buyer_data['spent_yesterday'],2) }}</div>
-							<small>Costs</small><br />
-							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpm_yesterday'] }}</div>
-							<small>CPM</small><br />
-							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpc_yesterday'] }}</div>
-							<small>CPC</small><br />
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-3">
-					<div class="ibox float-e-margins">
-						<div class="ibox-title">
-							<span class="label label-success pull-right">{{ date('F') }}</span>
-							<h5>This Month</h5>
-						</div>
-						<div class="ibox-content">
-							<div class="stat-percent font-bold text-success pull-right">{{ number_format($buyer_data['impressions_this_month']) }}</div>
-							<small>Impressions</small><br />
-							<div class="stat-percent font-bold text-success pull-right">{{ number_format($buyer_data['clicks_this_month']) }}</div>
-							<small>Clicks</small><br />
-							<div class="stat-percent font-bold text-success pull-right">{{ $buyer_data['ctr_this_month'] }}</div>
-							<small>CTR</small><br />                
-							<div class="stat-percent font-bold text-success pull-right">$ {{ round($buyer_data['spent_this_month'],2) }}</div>
-							<small>Costs</small><br />
-							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpm_this_month'] }}</div>
-							<small>CPM</small><br />
-							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpc_this_month'] }}</div>
-							<small>CPC</small><br />
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-3">
-					<div class="ibox float-e-margins">
-						<div class="ibox-title">
-							<span class="label label-success pull-right">{{ date('F', strtotime('last month')) }}</span>
-							<h5>Last Month</h5>
-						</div>
-						<div class="ibox-content">
-							<div class="stat-percent font-bold text-success pull-right">{{ number_format($buyer_data['impressions_last_month']) }}</div>
-							<small>Impressions</small><br />
-							<div class="stat-percent font-bold text-success pull-right">{{ number_format($buyer_data['clicks_last_month']) }}</div>
-							<small>Clicks</small><br />
-							<div class="stat-percent font-bold text-success pull-right">{{ $buyer_data['ctr_last_month'] }}</div>
-							<small>CTR</small><br />                
-							<div class="stat-percent font-bold text-success pull-right">$ {{ round($buyer_data['spent_last_month'],2) }}</div>
-							<small>Costs</small><br />
-							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpm_last_month'] }}</div>
-							<small>CPM</small><br />
-							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpc_last_month'] }}</div>
-							<small>CPC</small><br />
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="row">
 				<div class="col-sm-2 widget-boxs">
 					<div class="ibox float-e-margins">
 						<div class="ibox-title purple-bg">
@@ -628,52 +541,112 @@ $( document ).ready(function() {
 					</div>
 				</div>
 			</div>
-
+			
+			<div class="row">
+				<div class="col-lg-4">
+					<div class="ibox float-e-margins">
+						<div class="ibox-title">
+							<span class="label label-success pull-right">{{ Carbon\Carbon::now()->format('F jS') }}</span>
+							<h5>Yesterday</h5>
+						</div>
+						<div class="ibox-content">
+							<div class="stat-percent font-bold text-success pull-right">{{ number_format($buyer_data['impressions_today']) }}</div>
+							<small>Impressions</small><br />
+							<div class="stat-percent font-bold text-success pull-right">{{ number_format($buyer_data['clicks_today']) }}</div>
+							<small>Clicks</small><br />                
+							<div class="stat-percent font-bold text-success pull-right">{{ round($buyer_data['ctr_today'],2) }}</div>
+							<small>CTR</small><br />
+							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['spent_today'] }}</div>
+							<small>Costs</small><br />
+							<div class="stat-percent font-bold text-success">$ {{ $buyer_data['cpm_today'] }}</div>
+							<small>CPM</small><br />
+							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpc_today'] }}</div>
+							<small>CPC</small><br />
+							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['current_balance'] }}</div>
+							<small>Remaining Balance</small>                
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4">
+					<div class="ibox float-e-margins">
+						<div class="ibox-title">
+							<span class="label label-success pull-right">{{ date('F jS',strtotime('yesterday')) }}</span>
+							<h5>Yesterday</h5>
+						</div>
+						<div class="ibox-content">
+							<div class="stat-percent font-bold text-success pull-right">{{ number_format($buyer_data['impressions_yesterday']) }}</div>
+							<small>Impressions</small><br />
+							<div class="stat-percent font-bold text-success pull-right">{{ number_format($buyer_data['clicks_yesterday']) }}</div>
+							<small>Clicks</small><br />
+							<div class="stat-percent font-bold text-success pull-right">{{ $buyer_data['ctr_yesterday'] }}</div>
+							<small>CTR</small><br />                
+							<div class="stat-percent font-bold text-success pull-right">$ {{ round($buyer_data['spent_yesterday'],2) }}</div>
+							<small>Costs</small><br />
+							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpm_yesterday'] }}</div>
+							<small>CPM</small><br />
+							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpc_yesterday'] }}</div>
+							<small>CPC</small><br />
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4">
+					<div class="ibox float-e-margins">
+						<div class="ibox-title">
+							<span class="label label-success pull-right">{{ date('F', strtotime('last month')) }}</span>
+							<h5>Last Month</h5>
+						</div>
+						<div class="ibox-content">
+							<div class="stat-percent font-bold text-success pull-right">{{ number_format($buyer_data['impressions_last_month']) }}</div>
+							<small>Impressions</small><br />
+							<div class="stat-percent font-bold text-success pull-right">{{ number_format($buyer_data['clicks_last_month']) }}</div>
+							<small>Clicks</small><br />
+							<div class="stat-percent font-bold text-success pull-right">{{ $buyer_data['ctr_last_month'] }}</div>
+							<small>CTR</small><br />                
+							<div class="stat-percent font-bold text-success pull-right">$ {{ round($buyer_data['spent_last_month'],2) }}</div>
+							<small>Costs</small><br />
+							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpm_last_month'] }}</div>
+							<small>CPM</small><br />
+							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpc_last_month'] }}</div>
+							<small>CPC</small><br />
+						</div>
+					</div>
+				</div>
+			</div>
+			
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="ibox float-e-margins">
 						<div class="ibox-title">
 							<h5>Daily Stats</h5>
-							<div class="pull-right">
-								<div class="btn-group">
-									<button type="button" class="btn btn-xs btn-white btn-today active">Today</button>
-									<button type="button" class="btn btn-xs btn-white btn-week">Week</button>
-									<button type="button" class="btn btn-xs btn-white btn-month">Month</button>
-								</div>
-							<div ibox-tools></div>
 						</div>
 						<div class="ibox-content">
 							<div class="row">
-									<div class="col-lg-9">
-										<div class="flot-chart">
-											<div class="flot-chart-content" id="flot-line-chart-multi"></div>
-										</div>
+								<div class="col-lg-9">
+									<div class="flot-chart">
+										<div class="flot-chart-content" id="flot-line-chart-multi"></div>
 									</div>
-
-								<div class="col-lg-3">
+								</div>
+								<div class="col-lg-3" id="ad-stat-list">
 									<ul class="stat-list">
-										<li>
-											<h2 class="no-margins"> {{ number_format($buyer_data['impressions_today']) }} </h2>
+										<li id="ad-impressions">
+											<h2 class="no-margins"> {{ number_format($buyer_data['impressions_this_month']) }} </h2>
 											<small>Impressions</small>
-											<div class="stat-percent"> {{ number_format($buyer_data['impressions_today']) }}%<i class="fa fa-level-up text-navy"></i></div>
 											<div class="progress progress-mini">
-												<div style="width: 48%;" class="progress-bar"></div>
+												<div style="width: 100%;" class="progress-bar"></div>
 											</div>
 										</li>
-										<li>
-											<h2 class="no-margins "> $ {{ $buyer_data['cpc_today'] }} </h2>
+										<li id="ad-earnings">
+											<h2 class="no-margins "> $ {{ $buyer_data['cpc_this_month'] }} </h2>
 											<small>Cost Per Click</small>
-											<div class="stat-percent">60% <i class="fa fa-level-down text-navy"></i></div>
 											<div class="progress progress-mini">
-												<div style="width: 60%;" class="progress-bar"></div>
+												<div style="width: 100%;" class="progress-bar"></div>
 											</div>
 										</li>
-										<li>
-											<h2 class="no-margins ">{{ round($buyer_data['ctr_today'],2) }}</h2>
+										<li id="ad-cpm">
+											<h2 class="no-margins ">{{ round($buyer_data['ctr_this_month'],2) }} %</h2>
 											<small>Click Through Rate</small>
-											<div class="stat-percent">22% <i class="fa fa-bolt text-navy"></i></div>
 											<div class="progress progress-mini">
-												<div style="width: 22%;" class="progress-bar"></div>
+												<div style="width: 100%;" class="progress-bar"></div>
 											</div>
 										</li>
 									</ul>
@@ -683,38 +656,50 @@ $( document ).ready(function() {
 						</div>
 					</div>
 				</div>
-				</div>
 			</div>
 
 			<div class="row">
-					<div class="col-md-5">
-						<div class="panel panel-default">
-							<h5 class="p-title">Campaigns</h5>
-							<div class="ibox-content">
-								<h4>Dates:</h4>
-								<div id="date_filter">
-									<input class="date_range_filter date" type="hidden" id="datepicker_from" />
-									<input class="date_range_filter date" type="hidden" id="datepicker_to" />
-								</div>
-								<div class="row">
-									<div class="col-xs-12">
-										<input type="text" class="form-control dateRangeFilter">
-										<span class="glyphicon glyphicon-calendar fa fa-calendar dateRangeIcon"></span>
-									</div>
-									<div class="col-xs-12 col-md-6">
-										<br>
-										<button type="submit" class="btn btn-primary btn-block" id="filterSubmit">Submit</button>
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<h4 class="p-title">Campaigns</h4>
+						<div class="ibox-content">
+							<div class="row">
+								<div class="col-xs-12 col-md-5">
+									<form name="dashboard_form" method="POST">
+										<label>Dates</label>
+										<div class="row">
+											<div class="col-xs-12 form-group">
+												<input hidden="true"
+													   type="text"
+													   name="daterange" />
+												<div id="reportrange"
+													 class="form-control">
+													<i class="fa fa-calendar" style="float: right;"></i>
+													<span></span>
+												</div>
+												<label class="error hide" for="dates"></label>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-xs-12 col-md-6">
+												<div class="form-group">
+													<button type="submit" class="btn btn-primary btn-block">Submit</button>
+												</div>
+											</div>
 
-									</div>
-									<div class="col-xs-12 col-md-6">
-										<br>
-										<button type="submit" class="btn btn-danger btn-block" id="resetFilter">Reset Filter</button>
-									</div>
+											<div class="col-xs-12 col-md-6">
+												<div class="form-group">
+													<button type="submit" class="btn btn-danger 	btn-block" id="resetFilter">Reset Filter</button>
+												</div>
+											</div>
+										</div>
+									</form>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
+			</div>
 
 			<div class="row">
 				<div class="col-lg-12">
@@ -724,40 +709,53 @@ $( document ).ready(function() {
 							<a href="javascript:void" onclick="return showLastMonth();" class="thismonth"><span class="label label-info pull-right thismonth m-t m-r">Show Last Month</button></a>
 							<h4 id="table_this_month" class="thismonth p-title">Campaigns - {{ date('F') }}</h4>
 							<h4 id="table_this_month" class="lastmonth p-title" style="display:none">Campaigns - {{ date('F',strtotime('last month')) }}</h4>
-							<div class="ibox-content">
-								<div class="tableSearchOnly">
-									<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack">
+							<div class="ibox-content tableSearchOnly">
+								<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack">
 									<thead>
 										<tr>
 											<th>Campaign</th>
+											<th>Date</th>
 											<th>Days Active</th>
 											<th>Impressions</th>
+											<th>Status</th>
 											<th>Clicks</th>
-											<th>Costs</th>
+											<th>Cost</th>
+											<th>Preview</th>
 										</tr>
 									</thead>
 									<tbody>
 									@foreach($buyer_data['campaigns']['thismonth'] as $key => $campaign)
 										<tr class='thismonth'>
-											<td>{{ $key }}</td>
-											<td>{{ $campaign['days_active'] }} </td>
-											<td>{{ $campaign['impressions'] }}</td>
-											<td>{{ $campaign['clicks'] }}</td>
-											<td>{{ money_format('%(#10n',$campaign['costs']) }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Campaign</b>{{ $key }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Date</b>{{ $key }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Days Active</b>{{ $campaign['days_active'] }} </td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Impressions</b>{{ $campaign['impressions'] }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Status</b>{{ $campaign['impressions'] }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Clicks</b>{{ $campaign['clicks'] }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Costs</b>{{ money_format('%(#10n',$campaign['costs']) }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Preview</b>
+												<a class="tr-preview" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="" data-content="<img src='https://publishers.trafficroots.com/uploads/823/f7a65b864d5fc4216aff842bcc3a6321.jpeg' width='120' height='120'>" id="view_media_159">
+												<span class="fa fa-camera" aria-hidden="true"></span></a>
+											</td>
 										</tr>
 									@endforeach
 									@foreach($buyer_data['campaigns']['lastmonth'] as $key => $campaign)
 										<tr class='lastmonth' style="display:none">
-											<td>{{ $key }}</td>
-											<td>{{ $campaign['days_active'] }} </td>
-											<td>{{ $campaign['impressions'] }}</td>
-											<td>{{ $campaign['clicks'] }}</td>
-											<td>{{ money_format('%(#10n',$campaign['costs']) }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Campaign</b>{{ $key }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Date</b>{{ $key }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Days Active</b>{{ $campaign['days_active'] }} </td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Impressions</b>{{ $campaign['impressions'] }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Status</b></td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Clicks</b>{{ $campaign['clicks'] }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Costs</b>{{ money_format('%(#10n',$campaign['costs']) }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Preview</b>
+												<a class="tr-preview" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="" data-content="<img src='https://publishers.trafficroots.com/uploads/823/f7a65b864d5fc4216aff842bcc3a6321.jpeg' width='120' height='120'>" id="view_media_159">
+												<span class="fa fa-camera" aria-hidden="true"></span></a>
+											</td>
 										</tr>
 									@endforeach
 									</tbody>
 								</table>
-								</div>
 							</div>
 						</div>
 					</div>
@@ -768,33 +766,13 @@ $( document ).ready(function() {
 </div>
 @endsection
 @section('js')
-<script language="javascript" type="text/javascript" src="{{ URL::asset('js/plugins/float/excanvas.min.js') }}"></script>
-<script>
+<script type="text/javascript">
 $( document ).ready(function() {
-	
 	$('.dataTableSearchOnly').DataTable({
 		"oLanguage": {
 		  "sSearch": "Search Table"
 		}, pageLength: 25,
 		responsive: true
-	});	
-	
-	$(".btn-today").click(function(){ 
-		$(".btn-week").removeClass("active");
-		$(".btn-month").removeClass("active");
-		$(".btn-today").addClass("active");
-	});
-	
-	$(".btn-week").click(function(){ 
-		$(".btn-today").removeClass("active");
-		$(".btn-month").removeClass("active");
-		$(".btn-week").addClass("active");
-	});
-	
-	$(".btn-month").click(function(){ 
-		$(".btn-week").removeClass("active");
-		$(".btn-today").removeClass("active");
-		$(".btn-month").addClass("active");
 	});
 });
 	
@@ -819,29 +797,74 @@ $( document ).ready(function() {
 		        [{{$value['timestamp']}},{{$value['clicks']}}],
 	            @endforeach
 	    ];
-    function doPlot(position) {
+		
+		    function doPlot(position) {
         $.plot($("#flot-line-chart-multi"), [{
             data: impressions,
-            label: "Impressions"
+            label: "Impressions",
+			color: "#1ab394",
+			bars: {
+				show: true,
+				align: "center",
+				barWidth: 24 * 60 * 60 * 600,
+				lineWidth:0
+			}
+			
         }, {
             data: clicks,
             label: "Clicks",
-            yaxis: 1
+            yaxis: 1, 
+			color: "#1C84C6",
+			lines: {
+				lineWidth:1,
+					show: true,
+					fill: true,
+				fillColor: {
+					colors: [{
+						opacity: 0.2
+					}, {
+						opacity: 0.4
+					}]
+				}
+			},
+			splines: {
+				show: false,
+				tension: 0.6,
+				lineWidth: 1,
+				fill: 0.1
+			}
         }], {
             xaxes: [{
                 mode: 'time'
             }],
             yaxes: [{
-                min: 0
+                min: 0,
+				position: "left",
+				color: "#d5d5d5",
+				axisLabelUseCanvas: true,
+				axisLabelFontSizePixels: 12,
+				axisLabelFontFamily: 'Arial'				
             }, {
                 // align if we are to the right
                 alignTicksWithAxis: position == "right" ? 1 : null,
-                position: position
+                position: position,
+				
+				//position: "right",
+				clolor: "#d5d5d5",
+				axisLabelUseCanvas: true,
+				axisLabelFontSizePixels: 12,
+				axisLabelFontFamily: ' Arial',
+				axisLabelPadding: 67
+				
             }],
             legend: {
-                position: 'sw'
+                //position: 'sw',
+				
+				noColumns: 1,
+				labelBoxBorderColor: "#000000",
+				position: "nw"
             },
-            colors: ["#1C84C6","#1ab394"],
+            colors: ["#1ab394","#1C84C6"],
             grid: {
                 color: "#999999",
                 hoverable: true,

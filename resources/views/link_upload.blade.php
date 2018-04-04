@@ -1,7 +1,7 @@
 <button type="button"
         class="btn btn-xs btn-primary"
         data-toggle="modal"
-        data-target="#addLink"><i class="fa fa-plus-square-o"></i>&nbsp;&nbsp;Add Link&nbsp;&nbsp;&nbsp;&nbsp;</button>
+        data-target="#addLink"><i class="fa fa-plus-square-o"></i>&nbsp;&nbsp;Add URL&nbsp;&nbsp;&nbsp;&nbsp;</button>
 <div class="modal inmodal"
      id="addLink"
      tabindex="-1"
@@ -16,7 +16,7 @@
                     <span aria-hidden="true">&times;</span>
                     <span class="sr-only">Close</span>
                 </button>
-                <h4 class="modal-title">New Link</h4>
+                <h4 class="modal-title">New URL</h4>
             </div>
             <form name="link_form"
                   id="link_form"

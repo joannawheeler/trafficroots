@@ -73,9 +73,6 @@
                             <span class="fa arrow"></span>
                         </a>
                         <ul id="nav_pub_menu" class="nav nav-second-level collapse">
-							<li id="nav_pub_admin" class "nav-click">
-                                <a href="{{ URL::to('/profile') }}">Admin</a>
-                            </li>
                             <li id="nav_pub_dashboard" class "nav-click">
                                 <a href="{{ URL::to('/home?type=1') }}">Dashboard</a>
                             </li>
@@ -94,9 +91,6 @@
                             <span class="fa arrow"></span>
                         </a>
                         <ul id="nav_buyer_menu" class="nav nav-second-level collapse">
-							<li id="nav_pub_admin" class "nav-click">
-                                <a href="{{ URL::to('/profile') }}">Admin</a>
-                            </li>
                             <li id="nav_buyer_dashboard" class="nav-click">
                                 <a href="{{URL::to('/home?type=2')}}">Dashboard</a>
                             </li>
@@ -107,6 +101,12 @@
                                 <a href="{{URL::to('/library')}}">Library</a>
                             </li>                             
                         </ul>
+                    </li>
+					<li id="nav_support" class="nav-click">
+                        <a href="{{ url('/profile') }}">
+                            <i class="fa fa-address-book-o"></i>
+                            <span class="nav-label">Profile</span>
+                        </a>
                     </li>
                     <li id="nav_support" class="nav-click">
                         <a href="{{ url('/tickets') }}">

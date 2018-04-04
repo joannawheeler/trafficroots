@@ -23,10 +23,11 @@
         <div class="col-md-8 col-md-offset-2">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Login</h5>
+                    <h4>Login</h4>
                 </div>
                 <div class="ibox-content">
-                    <form class="form-horizontal" role="form" method="POST" action="{{ url('/password/reset') }}">
+					<div class="col-xs-12">
+                    	<form class="form-horizontal" role="form" method="POST" action="{{ url('/password/reset') }}">
                         {{ csrf_field() }} {{--
                         <p>Sign in today for more expirience.</p> --}}
                         <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
@@ -45,6 +46,7 @@
                             </div>
                         </div>
                     </form>
+					</div>
                 </div>
             </div>
         </div>

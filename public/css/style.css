@@ -611,6 +611,99 @@ div.dataTables_wrapper div.dataTables_filter input {
 	margin-top: 10px;
 }
 
+/*paging*/
+table.dataTableSearchOnly, .tableSearchOnly {
+	padding: 15px 0px;
+}
+
+.dataTables_paginate {
+	float: right;
+}
+
+.dataTables_paginate>a.disabled, .dataTables_paginate>a.disabled:focus, .pagination>a.disabled:hover, .dataTables_paginate>span.disabled, .pagination>span.disabled>:focus, .dataTables_paginate>span.disabled:hover {
+    color: #777;
+    cursor: not-allowed;
+    background-color: #fff;
+    border-color: #ddd;
+}
+.dataTables_paginate>a:focus, .dataTables_paginate>a:hover, .dataTables_paginate>span:focus, .dataTables_paginate>span:hover {
+    z-index: 2;
+    color: #23527c;
+    background-color: #eee;
+    border-color: #ddd;
+}
+.dataTables_paginate>a:first-child, .dataTables_paginate>span:first-child {
+    margin-left: 0;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.dataTables_paginate > a {
+    background-color: #FFFFFF;
+    border: 1px solid #DDDDDD;
+    color: inherit;
+    float: left;
+    line-height: 1.42857;
+    margin-left: -1px;
+    padding: 4px 10px;
+    position: relative;
+    text-decoration: none;
+}
+.dataTables_paginate>a {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #337ab7;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+
+.dataTables_paginate .paginate_button, .dataTables_paginate .paginate_button, .dataTables_paginate .ellipsis {
+    padding: 6px 12px;
+    color: #337ab7;
+    border: 1px solid #ddd;
+    float: left;
+}
+
+.paginate_button.next {
+    border-radius: 0px 4px 4px 0px;
+}
+
+a.paginate_button.current {
+    background-color: #337ab7;
+    color: #fff;
+    border: 1px solid #337ab7;
+}
+
+.paginate_button a:hover, .paginate_button a:focus {
+    text-decoration: none;
+	background-color: #eee;
+    border-color: #ddd;
+}
+.paginate_button a:focus, .paginate_button a:hover {
+    color: #23527c;
+    text-decoration: underline;
+	background-color: #eee;
+    border-color: #ddd;
+}
+.paginate_button a:active, .paginate_button a:hover {
+    outline: 0;
+	background-color: #eee;
+    border-color: #ddd;
+}
+
+/*tabs*/
+.nav.stats-tab > li > a {
+    padding: 10px 0px;
+    text-align: center;
+}	
+	
+.nav.stats-tab li {
+    width: calc(100% / 7);
+}
 
 @media (max-width: 768px) {
   .top-navigation .navbar-header {
@@ -2686,6 +2779,12 @@ a.forum-item-title:hover {
 .forum-item.active a.forum-item-title {
   color: #1ab394;
 }
+
+div.dataTables_wrapper div.dataTables_info {
+	float: left; 
+	padding-top: 0px;
+}
+
 @media (max-width: 992px) {
   .forum-info {
     margin: 15px 0 10px 0;
@@ -2869,6 +2968,14 @@ a.forum-item-title:hover {
   .vertical-timeline-content p {
     font-size: 13px;
   }
+	
+  .nav.stats-tab li {
+	width: unset;
+  }
+	
+  .nav.stats-tab > li > a {
+ 	padding: 10px 8px;
+  }
 }
 @media only screen and (min-width: 1170px) {
   .center-orientation .vertical-timeline-content {
@@ -2912,7 +3019,17 @@ a.forum-item-title:hover {
   }
   .center-orientation .cssanimations .vertical-timeline-content.is-hidden {
     visibility: hidden;
+  }	
+	
+  .nav.stats-tab li {
+	width: unset;
   }
+	
+  .nav.stats-tab > li > a {
+	padding-right: 25px;
+	padding-left: 25px;
+  }
+	
 }
 /* Tabs */
 .tabs-container .panel-body {
@@ -2943,7 +3060,8 @@ a.forum-item-title:hover {
   border-bottom-color: transparent;
 }
 .tabs-container .nav-tabs {
-  border-bottom: 1px solid #e7eaec;
+  	border-bottom: 0px;
+	margin-left: -1px;
 }
 .tabs-container .tab-pane .panel-body {
   border-top: none;
@@ -3047,10 +3165,9 @@ a.forum-item-title:hover {
 }
 @media (max-width: 767px) {
   .tabs-container .nav-tabs > li {
-    float: none !important;
+/*    float: none !important; jackie*/
   }
   .tabs-container .nav-tabs > li.active > a {
-    border-bottom: 1px solid #e7eaec !important;
     margin: 0;
   }
 }
@@ -4006,6 +4123,7 @@ code {
   border-image: none;
   border-style: solid solid none;
   border-width: 1px 0;
+  overflow: auto;
 }
 .ibox-footer {
   color: inherit;
@@ -7435,8 +7553,7 @@ body.landing-page {
 
 	div.dataTables_wrapper div.dataTables_filter input {
 		margin-top: 0px;
-	}
-	
+	}	
 }
 @media (max-width: 992px) {
   .landing-page .carousel-image {
@@ -8546,7 +8663,8 @@ body.md-skin {
 	#page-wrapper {
 		position: inherit;
 		margin: 0 0 0 220px;
-		min-height: 1200px;
+/*		min-height: 1200px;*/
+		min-height: auto;
 	}
 	
 	.navbar-static-side {

@@ -2,8 +2,6 @@
 @section('title','Publisher Stats')
 @section('css')
 <link rel="stylesheet"
-      href="{{ URL::asset('css/plugins/footable/footable.core.css') }}">
-<link rel="stylesheet"
       href="{{ URL::asset('css/plugins/daterangepicker/daterangepicker.css') }}">
 <link rel="stylesheet"
       href="{{ URL::asset('css/plugins/select2/select2.min.css') }}">
@@ -14,30 +12,24 @@
 <link rel="stylesheet"
       href="{{ URL::asset('css/plugins/tablesaw/tablesaw.css') }}">
 <style type="text/css">
-@media only screen and (min-width: 769px) {
-/*
-    .stats-tabs {
-        display: flex;
-        justify-content: space-between;
-    }
-*/
-    .stats-tabs:before,
-    .stats-tabs:after {
-        display: none;
-    }
-}
-
+	
 #reportrange {
     width: unset;
 }
 	
-	.chosen-select {
-		width: 100%;
-	}
-
+.chosen-select {
+	width: 100%;
+}
 
 .hide {
     display: none;
+}
+	
+@media only screen and (min-width: 769px) {
+    .stats-tabs:before,
+    .stats-tabs:after {
+        display: none;
+    }
 }
 </style>
 @endsection 
@@ -60,33 +52,32 @@
 				</h5>
 			</div>
 			<div class="row">
-				<div class="col-md-8">
+				<div class="col-md-12">
 					<div class="panel panel-default">
 						<h4 class="p-title">Filter</h4>
 						<div class="ibox-content">
-							<form name="stats_form"
-								  id="stats_form"
-								  action="{{ url('/stats/pub') }}"
-								  method="POST">
-								{{ csrf_field() }}
-								<label>Dates</label>
-								<div class="row">
-									<div class="col-xs-12 col-md-6 form-group">
-										<input hidden="true"
-											   type="text"
-											   name="daterange" />
-										<div id="reportrange"
-											 class="form-control">
-											<i class="fa fa-calendar" style="float: right;"></i>
-											<span></span>
+							<div class="row">
+								<div class="col-xs-12 col-md-8">
+									<form name="stats_form"
+										  id="stats_form"
+										  action="{{ url('/stats/pub') }}"
+										  method="POST">
+									{{ csrf_field() }}
+									<div class="row">
+										<div class="col-xs-12 col-md-6 form-group">
+											<label>Dates</label>
+											<input hidden="true"
+												   type="text"
+												   name="daterange" />
+											<div id="reportrange"
+												 class="form-control">
+												<i class="fa fa-calendar" style="float: right;"></i>
+												<span></span>
+											</div>
+										<label class="error hide"
+											   for="dates"></label>
 										</div>
-									<label class="error hide"
-										   for="dates"></label>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-xs-12 form-group no-padding">
-										<div class="col-md-6">
+										<div class="col-xs-12 col-md-6 form-group">
 											<label>Sites</label>
 											<select name="sites[]" 
 														id="sites"
@@ -102,36 +93,23 @@
 											<label class="error hide"
 												   for="sites"></label>
 										</div>
-										<div class="col-md-6">
-											<label>Countries</label>
-											<select name="countries[]" id="countriesSelect"
-														data-placeholder="Choose countries..."
-														class="chosen-select"
-														multiple>
-													<option value="">Select</option>
-													@foreach (App\Country::all() as $country)
-													<option value="{{ $country->id }}">{{ $country->country_name }}</option>
-													@endforeach
-												</select>
-											<label class="error hide"
-												   for="countries"></label>
-										</div>
 									</div>
-								</div>
-								<div class="row">
-									<div class="col-xs-12 col-md-6">
-										<div class="form-group">
-											<button type="submit" class="btn btn-primary btn-block">Submit</button>
+									<div class="row">
+										<div class="col-xs-12 col-md-6">
+											<div class="form-group">
+												<button type="submit" class="btn btn-primary btn-block">Submit</button>
+											</div>
 										</div>
-									</div>
 
-									<div class="col-xs-12 col-md-6">
-										<div class="form-group">
-											<button type="submit" class="btn btn-danger 	btn-block" id="resetFilter">Reset Filter</button>
+										<div class="col-xs-12 col-md-6">
+											<div class="form-group">
+												<button type="submit" class="btn btn-danger 	btn-block" id="resetFilter">Reset Filter</button>
+											</div>
 										</div>
 									</div>
+								</form>
 								</div>
-							</form>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -139,7 +117,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="tabs-container">
-						<ul class="nav nav-tabs">
+						<ul class="nav nav-tabs stats-tab">
 							<li class="active">
 								<a data-toggle="tab"
 								   href="#dates"><span class="fa fa-calendar"></span><div>Dates</div></a>
@@ -152,10 +130,10 @@
 								<a data-toggle="tab"
 								   href="#states"><span class="fa fa-location-arrow"></span><div>States</div></a>
 							</li>
-							<li class="nav nav-tabs">
+							<!-- <li class="nav nav-tabs">
 								<a data-toggle="tab"
 								   href="#cities"><span class="fa fa-map-marker"></span><div>Cities</div></a>
-							</li>
+							</li> -->
 							<li class="nav nav-tabs">
 								<a data-toggle="tab"
 								   href="#platforms"><span class="fa fa-mobile"></span><div>Platforms</div></a>
@@ -230,7 +208,6 @@
 								 class="tab-pane">
 								<div class="ibox-content">
 									<div class="tableSearchOnly">
-										<div class="tableSearchOnly">
 										<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack">
 											<thead>
 												<tr>
@@ -253,7 +230,6 @@
 												@endforeach
 											</tbody>
 										</table>
-									</div>
 									</div>
 								</div>
 							</div>

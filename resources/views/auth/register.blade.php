@@ -243,6 +243,11 @@ $(document).ready(function() {
 	
 	$('.icheckbox_square-green input').css("opacity", "inherit");
     setActiveNav('#nav_register');
+	
+	$("#cancel").click(function (e) {
+		e.preventDefault();
+		window.location.replace("/login");
+	});
 
     //alert("test");
     $('.nav-click').removeClass("active");

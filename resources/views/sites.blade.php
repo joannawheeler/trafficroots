@@ -149,10 +149,7 @@ hljs.initHighlightingOnLoad();
 									</div>
 									<div class="form-group">
 										<label>Site Category</label>
-										<select class="form-control m-b chosen-select"
-						name="site_category"
-												placeholder="Choose this Site's Category"
-						required>
+										<select class="form-control m-b chosen-select" name="site_category" placeholder="Choose this Site's Category" required>
 											<option value="">Choose this Site's Category</option>
 											@foreach($categories as $category)
 											<option value="{{ $category->id }}">{{ $category->category }}</option>
@@ -354,7 +351,7 @@ hljs.initHighlightingOnLoad();
 									<td class="text-center col-xs-12 col-md-2"><b class=" tablesaw-cell-label">Zone Name</b>{{ $zone->description }} </td>
 									<td class="text-center col-xs-12 col-md-2"><b class=" tablesaw-cell-label">Location Type</b>{{ $locationTypes->where('id',$zone->location_type)->first()->description }} </td>
 									<td class="text-center col-xs-12 col-md-2"><b class=" tablesaw-cell-label">Size</b>{{ $locationTypes->where('id',$zone->location_type)->first()->width . 'x' . $locationTypes->where('id',$zone->location_type)->first()->height }} </td>
-									<td class="text-center col-xs-12 col-md-2"><b class=" tablesaw-cell-label">Status</td> <!--Should toggle between active/inactive -->
+									<td class="text-center col-xs-12 col-md-2"><b class=" tablesaw-cell-label">Status</b>{{ $zone->status }}</td> <!--Should toggle between active/inactive -->
 									<td class="text-center col-xs-12 col-md-4"
 										data-zone_id="{{ $zone->id }}">
 										<b class=" tablesaw-cell-label">Links</b>
@@ -432,10 +429,10 @@ hljs.initHighlightingOnLoad();
                       action="{{ url("sites/$site->id") }}" method="POST"> {{ method_field('PATCH') }}
                     <div class="modal-body">
                         {{ csrf_field() }}
-						<div class="pull-right">
+						<!-- <div class="pull-right">
 							<button class="btn btn-xs btn-danger deleteSite">Delete Site
 							</button>
-						</div>
+						</div> -->
 						<br>
                         <div class="form-group">
                             <label>Name</label>
@@ -529,10 +526,10 @@ hljs.initHighlightingOnLoad();
 						  action="{{ url("zones/$zone->id") }}" method="POST"> {{ method_field('PATCH') }}
 						<div class="modal-body">
 							{{ csrf_field() }}
-							<div class="pull-right">
+							<!-- <div class="pull-right">
 								<button class="btn btn-xs btn-danger deleteZone">Delete Zone
 								</button>
-							</div>
+							</div> -->
 							<br>
 							<div class="form-group">
 								<label>Name</label>

@@ -317,7 +317,7 @@ table {
 }
 
 .tab-content .panel .btnNewEntry {
-	margin-bottom: 30px;
+	margin-bottom: 15px;
 }
 
 .tab-content.tab-padding .panel > div {
@@ -361,8 +361,8 @@ div.tab-pane {
 	border: 0px;
 }
 
-#pub-stats .nav.nav-tabs li {
-	
+b.tablesaw-cell-label {
+    float: left;
 }
 
 /* HiDPI support */
