@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
-use App\Bank;
+use Log;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -53,7 +53,7 @@ class RegisterController extends Controller
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
-           
+            'g-recaptcha-response' => 'required',          
         ]);
     }
 
@@ -63,14 +63,14 @@ class RegisterController extends Controller
      * @return boolean
      * @author Cary White
      */
-    protected function reCaptcha(Request $request)
+    protected function reCaptcha()
     {
-        $secret = env('GOOGLE_RECAPTCHA');
+	$request = request();
+        $secret = '6LfwKzUUAAAAAEnr87OfoR3EUqED4ewpVLfZ2SAB';
         $url = 'https://www.google.com/recaptcha/api/siteverify';
         $input = $request->all();
         $query = 'secret='.$secret.'&response='.$input['g-recaptcha-response'].'&remoteip='.$request->ip();
         $ch = curl_init();  
- 
         curl_setopt($ch,CURLOPT_URL,$url);
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
         curl_setopt($ch,CURLOPT_HEADER, false); 
@@ -78,11 +78,11 @@ class RegisterController extends Controller
         curl_setopt($ch, CURLOPT_POSTFIELDS, $query);    
  
         $output=json_decode(curl_exec($ch));
- 
+        Log::info(print_r($output, true));
         curl_close($ch);
         
-        if(isset($output['success'])){
-            return $output['success'];
+        if(isset($output->success)){
+            return $output->success;
         }else{
             return false;
         }
@@ -96,6 +96,7 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+	if($this->reCaptcha()){
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
@@ -103,13 +104,10 @@ class RegisterController extends Controller
             'user_type' => 0,
             'password' => bcrypt($data['password']),
         ]);
-            $data = array();
-            $data['user_id'] = $user->id;
-            $data['transaction_amount'] = 20.00;
-            $data['running_balance'] = 20.00;
-            $bank = new Bank();
-            $bank->fill($data);
-            $bank->save();
-        return $user;
+	return $user;
+	}else{
+	    Log::info('Invalid reCaptcha!');
+	    die('Invalid reCaptcha!');
+	}
     }
 }
