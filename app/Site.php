@@ -15,7 +15,7 @@ class Site extends Model
     protected $fillable = [
     	'site_name',
     	'site_url',
-    	'site_category',
+    	'site_theme',
     	'user_id',
     	'site_handle',
         'status_type'

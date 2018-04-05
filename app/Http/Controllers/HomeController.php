@@ -373,10 +373,10 @@ AND publisher_bookings.pub_id = $id;";
        if(!$user->user_type){
            return view('whoami');
        }
-        $sql = 'SELECT sites.*, categories.category 
+        $sql = 'SELECT sites.*, site_themes.theme 
                 FROM sites 
-                JOIN categories 
-                ON sites.site_category = categories.id
+                JOIN site_themes 
+                ON sites.site_theme = site_themes.id
                 WHERE sites.user_id = '.$user->id;
         $sites = DB::select($sql);
         $view_type = isset($input['type']) ? intval($input['type']) : 0;

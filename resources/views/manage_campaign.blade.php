@@ -30,6 +30,7 @@
 				<div class="ibox-content" id="bid_status_div"></div>
 				<br>
 				<div class="ibox-content">
+					<h2 class="text-success"><strong>Campaign Information</strong></h2>
 					<table class="table tablesaw tablesaw-stack" name="campaigns_table" id="campaigns_table" data-tablesaw-mode="stack">
 						<thead>
                             <tr>
@@ -78,76 +79,86 @@
 							</tr>
 						</tbody>
 					</table>
-                    <div class="ibox">
-                        <form name="target_form" id="target_form" role="form" class="form-horizontal" target="#" method="POST">
-                         {{ csrf_field() }}
-                       <input type="hidden" id="campaign_id" name="campaign_id" value="{{ $campaign->id }}">
-						<h2 class="text-success"><strong>Campaign Targeting Options</strong></h2>
-                        <div class="col-xs-12">
-                             <label>State Targeting</label>
-                             <select id="states[]" name="states[]" class="chosen-select form-control state-control" data-placeholder="Choose a state..." multiple>
-                             {!! $states !!}
-                             </select>
-						</div>
-						<div class="col-xs-12">
-                             <label>County Targeting</label>
-                             <select id="counties" name="counties[]" class="form-control county-control" multiple>
-                             {!! $counties !!}
-                             </select>
-						</div>
-						<div class="col-xs-12 col-md-6">
-                            <label>Platform Targeting</label>
-							<select name="platform_targets[]" id="platform_targets[]" class="form-control" data-placeholder="Choose platforms..." multiple>
-                                {!! $platforms !!}
-                                </select>
-						</div>
-						<div class="col-xs-12 col-md-6">
-                             <label>OS Targeting</label>
-                             <select id="operating_systems[]" name="operating_systems[]" class="form-control" data-placeholder="Choose operating systems..." multiple>
-                             {!! $os_targets !!}
-                             </select>
-						</div>
-						<div class="col-xs-12 col-md-6">
-                             <label>Browser Targeting</label>
-                             <select id="browser_targets[]" name="browser_targets[]" class="form-control" data-placeholder="Choose browsers..." multiple>
-                             {!! $browser_targets !!}
-                             </select>
-                             <label>Keyword Targeting</label><small>Use commas to separate</small>
-                             <input name="keyword_targets" id="keyword_targets" class="form-control" type="text" value="{!! $keywords !!}">
-                            </form>
-                        </div>
-                    <div class="ibox">
-                        <div class="ibox-title" id="creative_heading">Creatives</div>
-                        <div class="ibox-content table-responsive" id="creative_div">
-                        @if (count($creatives))
-                            <table class="table tablesaw tablesaw-stack" name="creative_table" id="creative_table" data-tablesaw-mode="stack">
-                            <thead>
-                            	<tr>
+					<br>
+					<form name="target_form" id="target_form" role="form" class="form-horizontal" target="#" method="POST">
+                        	{{ csrf_field() }}
+                       		<input type="hidden" id="campaign_id" name="campaign_id" value="{{ $campaign->id }}">
+							<h2 class="text-success"><strong>Campaign Targeting Options</strong></h2>
+							<div class="col-xs-12 form-group">
+								 <label>Site Targeting</label>
+								 <select id="themes[]" name="themes[]" class="chosen-select form-control state-control" data-placeholder="Choose a theme..." multiple>
+								 {!! $themes !!}
+								 </select>
+							</div>
+							<div class="col-xs-12 form-group">
+								 <label>State Targeting</label>
+								 <select id="states[]" name="states[]" class="chosen-select form-control state-control" data-placeholder="Choose a state..." multiple>
+								 {!! $states !!}
+								 </select>
+							</div>
+							<div class="col-xs-12 form-group">
+								 <label>County Targeting</label>
+								 <select id="counties" name="counties[]" class="form-control county-control" multiple>
+								 {!! $counties !!}
+								 </select>
+							</div>
+							<div class="col-xs-12 form-group">
+								<label>Platform Targeting</label>
+								<select name="platform_targets[]" id="platform_targets[]" class="form-control" data-placeholder="Choose platforms..." multiple>
+									{!! $platforms !!}
+									</select>
+							</div>
+							<div class="col-xs-12 form-group">
+								 <label>OS Targeting</label>
+								 <select id="operating_systems[]" name="operating_systems[]" class="form-control" data-placeholder="Choose operating systems..." multiple>
+								 {!! $os_targets !!}
+								 </select>
+							</div>
+							<div class="col-xs-12 form-group">
+								 <label>Browser Targeting</label>
+								 <select id="browser_targets[]" name="browser_targets[]" class="form-control" data-placeholder="Choose browsers..." multiple>
+								 {!! $browser_targets !!}
+								 </select>
+							</div>
+							<div class="col-xs-12 form-group">
+								<label>Keyword Targeting</label><small>Use commas to separate</small>
+								<input name="keyword_targets" id="keyword_targets" class="form-control" type="text" value="{!! $keywords !!}">
+							</div>
+						</form>
+					<div class="clearfix"></div>
+					<br>
+					<div class="col-xs-12 no-padding">
+						<button type="button" class="btn btn-primary btn-xs pull-right" id="add_creative" href="/creatives/{{ $campaign->id }}">Add Creative</button>
+						<h2 class="text-success" id="creative_heading"><strong>Creatives</strong></h2>
+					</div>
+					<div class="col-xs-12 table-responsive" id="creative_div">
+					@if (count($creatives))
+						<table class="table tablesaw tablesaw-stack" name="creative_table" id="creative_table" data-tablesaw-mode="stack">
+							<thead>
+								<tr>
 									<th>Description</th>
 									<th>Media</th>
 									<th>Link</th>
 									<th>Status</th>
 									<th>Date Created</th>
 								</tr>
-                            </thead>
-                            <tbody>
-                            @foreach ($creatives as $file)
-							<tr class="creative_row" id="creative_row_{{ $file->id }}">
-								<td class="text-center"><b class=" tablesaw-cell-label">Description</b>{{ $file->description }} </td>
-								<td class="text-center"><b class=" tablesaw-cell-label">Media</b> {{ $file->media_id }} </td>
-								<td class="text-center"><b class=" tablesaw-cell-label">Link</b> {{ $file->link_id }} </td>
-								<td class="text-center"><b class=" tablesaw-cell-label">Status</b> {{ $status_types[$file->status] }} </td>
-								<td class="text-center"><b class=" tablesaw-cell-label">Date Created</b> {{ $file->created_at }} </td>
-							</tr>
-                            @endforeach
-                            </tbody>
-                            </table>
-
-                        @else
-                            <h3>No Creatives Defined</h3>
-                        @endif
-                        <br /><br /><a href="/creatives/{{ $campaign->id }}"><button class="btn-u" type="button" id="add_creative">Add Creative</button></a>
-                        </div>
+							</thead>
+							<tbody>
+								@foreach ($creatives as $file)
+								<tr class="creative_row" id="creative_row_{{ $file->id }}">
+									<td class="text-center"><b class=" tablesaw-cell-label">Description</b>{{ $file->description }} </td>
+									<td class="text-center"><b class=" tablesaw-cell-label">Media</b> {{ $file->media_id }} </td>
+									<td class="text-center"><b class=" tablesaw-cell-label">Link</b> {{ $file->link_id }} </td>
+									<td class="text-center"><b class=" tablesaw-cell-label">Status</b> {{ $status_types[$file->status] }} </td>
+									<td class="text-center"><b class=" tablesaw-cell-label">Date Created</b> {{ $file->created_at }} </td>
+								</tr>
+								@endforeach
+							</tbody>
+						</table>
+					@else
+						<h3>No Creatives Defined</h3>
+					@endif
+					</div>
                     </div>
                 </div>
             </div>
@@ -174,7 +185,6 @@ jQuery(document).ready(function ($) {
             var mydata = $("#target_form").serialize();
             $.post(url, mydata)
 		.done(function (response) {
-	            alert(response);
                     $('#counties').html(response);
                 })
                 .fail(function (response) {

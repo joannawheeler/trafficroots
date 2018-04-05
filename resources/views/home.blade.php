@@ -546,30 +546,6 @@ $( document ).ready(function() {
 				<div class="col-lg-4">
 					<div class="ibox float-e-margins">
 						<div class="ibox-title">
-							<span class="label label-success pull-right">{{ Carbon\Carbon::now()->format('F jS') }}</span>
-							<h5>Yesterday</h5>
-						</div>
-						<div class="ibox-content">
-							<div class="stat-percent font-bold text-success pull-right">{{ number_format($buyer_data['impressions_today']) }}</div>
-							<small>Impressions</small><br />
-							<div class="stat-percent font-bold text-success pull-right">{{ number_format($buyer_data['clicks_today']) }}</div>
-							<small>Clicks</small><br />                
-							<div class="stat-percent font-bold text-success pull-right">{{ round($buyer_data['ctr_today'],2) }}</div>
-							<small>CTR</small><br />
-							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['spent_today'] }}</div>
-							<small>Costs</small><br />
-							<div class="stat-percent font-bold text-success">$ {{ $buyer_data['cpm_today'] }}</div>
-							<small>CPM</small><br />
-							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpc_today'] }}</div>
-							<small>CPC</small><br />
-							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['current_balance'] }}</div>
-							<small>Remaining Balance</small>                
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-4">
-					<div class="ibox float-e-margins">
-						<div class="ibox-title">
 							<span class="label label-success pull-right">{{ date('F jS',strtotime('yesterday')) }}</span>
 							<h5>Yesterday</h5>
 						</div>
@@ -585,6 +561,28 @@ $( document ).ready(function() {
 							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpm_yesterday'] }}</div>
 							<small>CPM</small><br />
 							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpc_yesterday'] }}</div>
+							<small>CPC</small><br />
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-4">
+					<div class="ibox float-e-margins">
+						<div class="ibox-title">
+							<span class="label label-success pull-right">{{ date('F') }}</span>
+							<h5>This Month</h5>
+						</div>
+						<div class="ibox-content">
+							<div class="stat-percent font-bold text-success pull-right">{{ number_format($buyer_data['impressions_this_month']) }}</div>
+							<small>Impressions</small><br />
+							<div class="stat-percent font-bold text-success pull-right">{{ number_format($buyer_data['clicks_this_month']) }}</div>
+							<small>Clicks</small><br />
+							<div class="stat-percent font-bold text-success pull-right">{{ $buyer_data['ctr_this_month'] }}</div>
+							<small>CTR</small><br />                
+							<div class="stat-percent font-bold text-success pull-right">$ {{ round($buyer_data['spent_this_month'],2) }}</div>
+							<small>Costs</small><br />
+							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpm_this_month'] }}</div>
+							<small>CPM</small><br />
+							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpc_this_month'] }}</div>
 							<small>CPC</small><br />
 						</div>
 					</div>

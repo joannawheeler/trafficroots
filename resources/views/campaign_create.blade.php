@@ -163,7 +163,9 @@
                                             </div>
                                         </div>
                                         <div class="form-group{{ $errors->has('campaign_category') ? ' has-error' : '' }}">
-                                            <label for="campaign_category" class="col-md-4 control-label">Campaign Category</label>
+                                            <label for="campaign_category" class="col-md-4 control-label">Campaign Category
+                                              <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Category Must Match for the Campaign/Images/URL"></em>
+                                            </label>
                                             <div class="col-md-6">
                                                 <select id="campaign_category" class="form-control reload" name="campaign_category" required>
                                                     <option value="">Choose</option>
@@ -178,7 +180,9 @@
                                             </div>
                                         </div>
                                         <div class="form-group{{ $errors->has('location_type') ? ' has-error' : '' }}">
-                                            <label for="location_type" class="col-md-4 control-label">Location Type</label>
+                                            <label for="location_type" class="col-md-4 control-label">Location Type
+                                              <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Specifies the ad location on a Webpage, determined by the Image Dimensions"></em>
+                                            </label>
                                             <div class="col-md-6">
                                                 <select id="location_type" class="form-control reload" name="location_type" required>
                                                     <option value="">Choose</option>
@@ -202,6 +206,15 @@
                     <h1>Advanced Targeting</h1>
                         <div class="step-content">
                             <div class="col-md-12">
+                                <h6>Site Targeting - Hold Ctrl to Select Multiple Themes</h6>
+				<select id="themes" name="themes[]" class="chosen-select form-control" multiple>
+                                    <option value="0" selected>All Themes</option>
+                                    @foreach($themes as $theme)
+                                    <option value="{{ $theme->id }}">{{ $theme->theme }} </option>
+                                    @endforeach
+                                </select>
+                            </div>
+			    <div class="col-md-12">
                                 <h6>Country / Geo Targeting - Hold Ctrl to Select Multiple Countries</h6>
                                 <select id="countries" name="countries[]" class="chosen-select form-control" multiple>
                                     {!! $countries !!}
@@ -266,12 +279,12 @@
                                       <h3>Step 1)</h3>
                                         <div class="col-xs-12 form-group{{ $errors->has('media_id') ? ' has-error' : '' }}" style="float:none;margin-bottom:0;">
                                             <p><h4>Select Existing or Uploaded Image&nbsp;<i class="fa fa-camera"></i></h4></p>
-                                            <label for="media_id">&nbsp; Choose an Image from Corresponding Library Category:</label>
                                             <br>
                                                 <div class="form-group col-xs-12 mediaOptions">
-                                                    <select id="media_id" class="form-control" name="media_id">
+                                                    <select id="media_id" name="media_id" class="form-control" style="display:inline;width:85%;">
                                                         <option value="">Choose</option>
                                                     </select>
+                                                    <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Choose an Image from Corresponding Library Category" style="display:inline;"></em>
                                                     @if ($errors->has('media_id'))
                                                         <span class="help-block">
                                                             <strong>{{ $errors->first('media_id') }}</strong>
@@ -287,12 +300,12 @@
                                       <h3>Step 2)</h3>
                                         <div class="col-xs-12 form-group{{ $errors->has('link_id') ? ' has-error' : '' }}" style="float:none;margin-bottom:22px">
                                                 <p><h4>Select Existing or Uploaded URL  &nbsp;<i class="fa fa-link"></i></h4></p>
-                                            <label for="link_id">&nbsp; Choose a URL from Corresponding Library Category:</label>
                                                 <br>
                                                 <div class="col-xs-12">
-                                                    <select id="link_id" class="form-control" name="link_id">
+                                                    <select id="link_id" name="link_id" class="form-control"  style="display:inline;width:85%;">
                                                         <option value="">Choose</option>
                                                     </select>
+                                                    <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Choose a Link from Corresponding Library Category" style="display:inline;"></em>
                                                     @if ($errors->has('link_id'))
                                                     <span class="help-block">
                                                         <strong>{{ $errors->first('link_id') }}</strong>
@@ -313,12 +326,14 @@
                                         <div class="instruction">
                                           <ul>
                                           	  <li>Combine Image and URL in order to Add a New Campaign Creative</li>
-                                              <li>Add description to unique Image and URL combination</li>
                                               <li>Multiple Creatives can be added per Campaign!</li>
                                               <li>All creative image sizes must have a uniform Location / Dimension per Campaign</li>
                                           </ul>
                                         </div>
-                                        <label for="description" class="col-md-3 control-label">Description:</label>
+                                        <label for="description" class="col-md-3 control-label">
+                                          <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Add description to unique Image and URL combination"></em>
+                                          &nbsp;Description:
+                                        </label>
                                         <div class="col-md-6">
                                             <input id="description" type="text" class="form-control" name="description" value=""> @if ($errors->has('description'))
                                             <span class="help-block">
@@ -354,10 +369,10 @@
                                         <div class="ibox-title">
                                             <h2 class="text"><strong style="color: #1AB394;">Configuration & Pricing</strong></h2>
                                         </div>
-                                        <div class="ibox-content">
+                                        <div class="ibox-content" style="overflow:visible;">
                                             <div class="form-group{{ $errors->has('campaign_type') ? ' has-error' : '' }}">
                                               <label for="campaign_type" class="col-md-4 control-label">Pricing Model
-                                                  <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="right" title="CPM (Cost Per Mille) CPC (Cost Per Click)"></em>
+                                                  <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="CPM (Cost Per Mille) CPC (Cost Per Click)"></em>
                                                 </label>
                                                 <div class="col-md-6">
                                                     <select id="campaign_type" class="form-control" name="campaign_type" required>
@@ -373,7 +388,9 @@
                                                 </div>
                                             </div>
                                             <div class="form-group{{ $errors->has('impression_capping') ? ' has-error' : '' }}">
-                                                <label for="frequency_capping" class="col-md-4 control-label">Frequency Capping</label>
+                                                <label for="frequency_capping" class="col-md-4 control-label">Frequency Capping
+                                                  <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Set Frequncy Capping for your Campaign"></em>
+                                                </label>
                                                 <div class="col-md-6">
                                                     <select id="frequency_capping" class="form-control" name="frequency_capping">
                                                         <option value="0">Disabled</option>
@@ -391,7 +408,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-md-4 control-label">Max Daily Budget
-                                                  <!-- <em class="fa fa-question-circle" aria-hidden="true"></em> -->
+                                                  <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Set a Maximum Daily Budget for your Campaign"></em>
                                                 </label>
                                                 &nbsp;
                                                 <div class="col-md-6">
@@ -484,7 +501,7 @@
 
 
 <script type="text/javascript">
-    //$('[multiple]').chosen();  
+    //$('[multiple]').chosen();
     jQuery(document).ready(function($){
         $('#campaign_name').focus();
         $(document).on('hidden.bs.modal', function(){

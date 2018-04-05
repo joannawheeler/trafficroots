@@ -148,15 +148,15 @@ hljs.initHighlightingOnLoad();
 											   for="site_url"></label>
 									</div>
 									<div class="form-group">
-										<label>Site Category</label>
-										<select class="form-control m-b chosen-select" name="site_category" placeholder="Choose this Site's Category" required>
-											<option value="">Choose this Site's Category</option>
-											@foreach($categories as $category)
-											<option value="{{ $category->id }}">{{ $category->category }}</option>
+										<label>Site Theme</label>
+										<select class="form-control m-b chosen-select" name="site_theme" placeholder="What kind of site is this?" required>
+											<option value="">What kind of site is this?</option>
+											@foreach($themes as $theme)
+											<option value="{{ $theme->id }}">{{ $theme->theme }}</option>
 											@endforeach
 										</select>
 										<label class="error hide"
-											   for="site_category"></label>
+											   for="site_theme"></label>
 									</div>
 									<div class="form-group">
 										<label for="allowed_category[]">Advertising Categories Allowed</label>
@@ -212,7 +212,7 @@ hljs.initHighlightingOnLoad();
 								<tr>
 									<td class="text-center"><b class=" tablesaw-cell-label">Site Name</b> {{ $site->site_name }} </td>
 									<td class="text-center col-xs-12 col-md-3"><b class=" tablesaw-cell-label">Site Url</b>{{ $site->site_url }}</td>
-									<td class="text-center"><b class=" tablesaw-cell-label">Site Category</b>{{ $categories->where('id',$site->site_category)->first()->category }}</td>
+									<td class="text-center"><b class=" tablesaw-cell-label">Site Theme</b>{{ App\SiteTheme::where('id',$site->site_theme)->first()->theme }}</td>
 									<td class="text-center" 
 										data-site_id="{{ $site->id }}">
 										<b class=" tablesaw-cell-label">Links</b>
@@ -318,7 +318,7 @@ hljs.initHighlightingOnLoad();
 											</select>
 
 											<label class="error hide"
-												   for="site_category"></label>
+												   for="location_type"></label>
 										</div>
 									</div>
 									<div class="modal-footer">
@@ -459,18 +459,18 @@ hljs.initHighlightingOnLoad();
                                    for="site_url"></label>
                         </div>
                         <div class="form-group">
-                            <label>Category</label>
+                            <label>Theme</label>
                             <select class="form-control m-b chosen-select"
-                                    value="{{ $site->site_category }}"
-                                    name="site_category"
+                                    value="{{ $site->site_theme }}"
+                                    name="site_theme"
                                     required>
-                                @foreach($categories as $category)
-                                <option @if($category->id == $site->site_category) selected="selected" @endif value="{{ $category->id }}">{{ $category->category }}</option>
+                                @foreach($themes as $theme)
+                                <option @if($theme->id == $site->site_theme) selected="selected" @endif value="{{ $theme->id }}">{{ $theme->category }}</option>
                                 @endforeach
                             </select>
 
                             <label class="error hide"
-                                   for="site_category"></label>
+                                   for="site_theme"></label>
 			</div>
 
                                         <div class="form-group">
@@ -546,14 +546,10 @@ hljs.initHighlightingOnLoad();
 							<div class="form-group">
 								<label>Type</label>
 								<div>{{ $locationTypes->where('id',$zone->location_type)->first()->description }}</div>
-								<label class="error hide"
-									   for="site_category"></label>
 							</div>
 							<div class="form-group">
 								<label>Size</label>
 								<div>{{ $locationTypes->where('id',$zone->location_type)->first()->width . 'x' . $locationTypes->where('id',$zone->location_type)->first()->height }}</div>
-								<label class="error hide"
-									   for="site_category"></label>
 							</div>
 						</div>
 						<div class="modal-footer">

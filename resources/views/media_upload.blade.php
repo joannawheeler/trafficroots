@@ -46,31 +46,31 @@
                     <div class="form-group">
                         <label>Category</label>
                         <select class="form-control m-b"
-                                name="category"
+                                name="image_category"
                                 required>
-                            <option value="">Choose Site Category</option>
+                            <option value="">Choose Image Category</option>
                             @foreach(App\Category::all() as $category)
                             <option value="{{ $category->id }}">{{ $category->category }}</option>
                             @endforeach
                         </select>
                         <label class="error hide"
-                               for="category"></label>
+                               for="image_category"></label>
                     </div>
 
                     <div class="form-group">
                         <label>Location Type</label>
                         <select class="form-control m-b"
                                 value=""
-                                name="location_type"
+                                name="image_size"
                                 required>
-                            <option value="">Choose zone size</option>
+                            <option value="">Choose Image Size</option>
                             @foreach(App\LocationType::all() as $locationType)
                             <option value="{{ $locationType->id }}">{{ $locationType->width . 'x' . $locationType->height . ' ' . $locationType->description }}</option>
                             @endforeach
                         </select>
 
                         <label class="error hide"
-                               for="location_type"></label>
+                               for="image_size"></label>
                     </div>
                     <div class="form-group">
                         <label class="btn btn-success btn-block"

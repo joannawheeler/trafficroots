@@ -44,7 +44,7 @@
                     <div class="form-group">
                         <label>Category</label>
                         <select class="form-control m-b"
-                                name="category"
+                                name="link_category"
                                 required>
                             <option value="">Choose category</option>
                             @foreach(App\Category::all() as $category)
@@ -52,7 +52,7 @@
                             @endforeach
                         </select>
                         <label class="error hide"
-                               for="category"></label>
+                               for="link_category"></label>
                     </div>
 
                     <div class="form-group">
