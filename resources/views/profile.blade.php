@@ -194,23 +194,32 @@
 								<div class="col-xs-12 col-md-6">
 									<br>
 									<h2 class="text-success" align="left" style="font-weight: bold;">Change Password</h2>
-									<form class="form-horizontal" id="changePassword">
+									<form class="form-horizontal" id="changePassword" action="/changepw" method="POST">
+                                                                                {{ csrf_field() }}
 										<div class="form-group">
 											<label align="right" class="col-sm-4 control-label">Existing Password</label>
-											<div class="col-sm-8"><input placeholder="Password" class="form-control" type="password"> </div>
+											<div class="col-sm-8"><input id="mypassword" name="mypassword" 
+                                                                                                                     placeholder="Password" class="form-control" type="password" required> 
+                                                                                        </div>
 										</div>
 										<div class="form-group">
 											<label align="right" class="col-sm-4 control-label">New Password</label>
-											<div class="col-sm-8"><input type="password" class="form-control" name="password" placeholder="Change password"></div>
+											<div class="col-sm-8"><input id="newpass" name="newpass" 
+                                                                                                                     type="password" class="form-control" 
+                                                                                                                     placeholder="Change password" required>
+                                                                                        </div>
 										</div>
 										<div class="form-group">
 											<label align="right" class="col-sm-4 control-label">Confirm Password</label>
-											<div class="col-sm-8"><input type="password" class="form-control" name="password" placeholder="Confirm password"></div>
+											<div class="col-sm-8"><input id="confirm" name="confirm" 
+                                                                                                                     type="password" class="form-control"
+                                                                                                                     placeholder="Confirm password" required>
+                                                                                                             </div>
 										</div>
 										<br>
 										<br>
 										<div class="form-group text-center">
-											<button type="button" class="btn btn-primary btn-lg">Submit</button>
+											<button type="submit" class="btn btn-primary btn-lg">Submit</button>
 										</div>
 									</form>
 								</div>
@@ -227,11 +236,11 @@
 								<div class="panel no-border">
 									<div class="panel-body col-md-6">
 										<h2 class="text-success" align="left" style="font-weight: bold;">Payment Information</h2>
-										<form name="payment_form" id="payment_form" class="form-horizontal" role="form" method="POST" action="">
+										<form name="payment_form" id="payment_form" class="form-horizontal" role="form" method="POST" action="/update_payout">
 											<div class="form-group">
 												<label class="col-sm-4 control-label">Payment Method</label>    
 												<div class="col-sm-8">
-													<select class="form-control" required>
+													<select name="payment_method" id="payment_method" class="form-control" required>
 														<option>Select</option>
 														<option>Paper Check</option>
 														<option>Wire-Bank(Fee May Apply)</option>
@@ -242,7 +251,7 @@
 											<div class="form-group">
 												<label class="col-sm-4 control-label">Minimum Payout</label>    
 												<div class="col-sm-8">
-													<select class="form-control" required>
+													<select id="minimum_payout" name="minimum_payout" class="form-control" required>
 														<option>Select</option>
 														<option>250</option>
 														<option>500</option>
@@ -256,7 +265,7 @@
 											<div class="form-group">
 												<label class="col-sm-4 control-label">Tax Status</label>    
 												<div class="col-sm-8">
-													<select class="form-control" required>
+													<select name="tax_status" id="tax_status" class="form-control" required>
 														<option>Select</option>
 														<option>Company</option>
 														<option>Individual</option>
@@ -265,7 +274,7 @@
 											</div>
 											<div class="form-group">
 												<label class="col-sm-4 control-label">Vat/Tax ID</label>
-												<div class="col-sm-8"><input placeholder="Vat/Tax ID" class="form-control" type="text"></div>
+												<div class="col-sm-8"><input name="tax_id" id="tax_id" placeholder="Vat/Tax ID" class="form-control" type="text"></div>
 											</div>
 											<div class="form-group">
 												<label class="col-sm-4 control-label"></label>
@@ -594,6 +603,14 @@ $('#dataTableSearch').DataTable({
        jQuery(document).ready(function ($) {
 	       $('.nav-click').removeClass("active");
 	       $('#nav_profile').addClass("active");
+	       @if(session('status'))
+		       @if(session('status_type'))
+		       toastr.{{session('status_type')}}('{{session('status')}}');
+	               @else
+		       toastr.info('{{session('status')}}');
+		       @endif
+	       @endif
+
        });
    </script>
 @endsection

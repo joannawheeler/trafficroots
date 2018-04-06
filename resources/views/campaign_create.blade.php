@@ -22,17 +22,37 @@
         </div>
     @endif
 <style>
+
+
+#page-wrapper .container .ibox-content {
+    overflow: visible;
+}
+
+#wizard {
+    overflow: visible;
+}
+
 .ibox {
     width: 80%;
 }
+
 .wizard .content {
     min-height: 100px;
+    overflow: visible;
 }
 .wizard .content > .body {
     width: 100%;
     height: auto;
     padding: 15px;
     position: relative;
+}
+
+#wizard-p-1 h5, h6 {
+    padding-left: 5px;
+}
+
+#wizard-p-2 .media-selection .createNew {
+    padding: 5px;
 }
 
 #wizard-p-2 .media-selection {
@@ -49,10 +69,12 @@
 }
 
 #wizard-p-2 > div.media-selection > div:nth-child(5) {
-  border-right: none;
-}
+  border-right: none;}
+
 
 #media_id, #link_id {
+  display:inline;
+  width: 80%;
   margin: 10px;
 }
 
@@ -203,8 +225,9 @@
                         </div>
 
 
-                    <h1>Advanced Targeting</h1>
+                    <h1>Advanced Targeting</h1>                    
                         <div class="step-content">
+                            <h5>Target an advertisement based on a specific geographical region, area or location. Geo-targeting is done based on the IP address of the visitor.</h5>
                             <div class="col-md-12">
                                 <h6>Site Targeting - Hold Ctrl to Select Multiple Themes</h6>
 				<select id="themes" name="themes[]" class="chosen-select form-control" multiple>
@@ -279,12 +302,11 @@
                                       <h3>Step 1)</h3>
                                         <div class="col-xs-12 form-group{{ $errors->has('media_id') ? ' has-error' : '' }}" style="float:none;margin-bottom:0;">
                                             <p><h4>Select Existing or Uploaded Image&nbsp;<i class="fa fa-camera"></i></h4></p>
-                                            <br>
                                                 <div class="form-group col-xs-12 mediaOptions">
-                                                    <select id="media_id" name="media_id" class="form-control" style="display:inline;width:85%;">
-                                                        <option value="">Choose</option>
-                                                    </select>
                                                     <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Choose an Image from Corresponding Library Category" style="display:inline;"></em>
+                                                    <select id="media_id" name="media_id" class="form-control">
+                                                        <option value="">Choose</option>
+                                                    </select>                                                    
                                                     @if ($errors->has('media_id'))
                                                         <span class="help-block">
                                                             <strong>{{ $errors->first('media_id') }}</strong>
@@ -300,12 +322,11 @@
                                       <h3>Step 2)</h3>
                                         <div class="col-xs-12 form-group{{ $errors->has('link_id') ? ' has-error' : '' }}" style="float:none;margin-bottom:22px">
                                                 <p><h4>Select Existing or Uploaded URL  &nbsp;<i class="fa fa-link"></i></h4></p>
-                                                <br>
                                                 <div class="col-xs-12">
-                                                    <select id="link_id" name="link_id" class="form-control"  style="display:inline;width:85%;">
+                                                  <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Choose a Link from Corresponding Library Category" style="display:inline;"></em>
+                                                    <select id="link_id" name="link_id" class="form-control">
                                                         <option value="">Choose</option>
                                                     </select>
-                                                    <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Choose a Link from Corresponding Library Category" style="display:inline;"></em>
                                                     @if ($errors->has('link_id'))
                                                     <span class="help-block">
                                                         <strong>{{ $errors->first('link_id') }}</strong>
@@ -372,7 +393,7 @@
                                         <div class="ibox-content" style="overflow:visible;">
                                             <div class="form-group{{ $errors->has('campaign_type') ? ' has-error' : '' }}">
                                               <label for="campaign_type" class="col-md-4 control-label">Pricing Model
-                                                  <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="CPM (Cost Per Mille) CPC (Cost Per Click)"></em>
+                                                  <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="CPM (Cost Per Mille)&nbsp;&nbsp;&nbsp; CPC (Cost Per Click)"></em>
                                                 </label>
                                                 <div class="col-md-6">
                                                     <select id="campaign_type" class="form-control" name="campaign_type" required>
@@ -389,7 +410,7 @@
                                             </div>
                                             <div class="form-group{{ $errors->has('impression_capping') ? ' has-error' : '' }}">
                                                 <label for="frequency_capping" class="col-md-4 control-label">Frequency Capping
-                                                  <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Set Frequncy Capping for your Campaign"></em>
+                                                  <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Restrict (cap) the number of times (frequency) a specific visitor to a website is shown a particular ad"></em>
                                                 </label>
                                                 <div class="col-md-6">
                                                     <select id="frequency_capping" class="form-control" name="frequency_capping">
@@ -431,7 +452,7 @@
                                             <div class="form-group">
                                                 <div id="bid-tips"></div>
                                                     <label class="col-md-4 control-label">Place Your Bid
-                                                      <!-- <em class="fa fa-question-circle" aria-hidden="true"></em> -->
+                                                        <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Amount paid for a click, or one thousand impressions"></em>
                                                     </label>
                                                     <div class="col-md-6">
                                                         <input type="text" id="bid" class="form-control" name="bid" value="0.00">

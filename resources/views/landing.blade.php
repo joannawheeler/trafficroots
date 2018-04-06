@@ -30,7 +30,7 @@
                 <div class="carousel-caption blank">
                     <h1>Better Visibility Means <br /> Higher Traffic and Fatter Profits!.</h1>
                     <p>Traffic Roots connects the gap between digital display advertising and the modern lifestyle.<br /> We empower you to scale your digital advertising efforts by reaching more consumers,<br /> on reputable websites, and with minimum effort. <br />We built the bridge to infinite digital marketing opportunities – and we’re going to help you scale it, too.</p>
-                    <p><a class="btn btn-lg btn-primary" href="#" role="button">Learn more</a></p>
+                    <p><a class="btn btn-lg btn-primary" href="login" role="button">Register Now</a></p>
                 </div>
             </div>
             <!-- Set background for slide in css -->

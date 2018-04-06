@@ -52,9 +52,9 @@
 									<thead>
 										<tr>
 											<th>Date</th>
-											<th>Impressions</th>
+											<th>Impressions <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title=" Number of times Advertising Material is served to a person visiting the Publisher’s Website"></span></th>
 											<th>Clicks</th>
-											<th>CTR</th>
+											<th>CTR <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title=" Percentage based on the total number of clicks divided by the number of impressions that an advertisement has received."></span></th>
 										</tr>
 									</thead>
 									<tbody>
@@ -71,6 +71,7 @@
 							</div>
 						</div>
 					</div>
+                    
 					<div id="countries" class="tab-pane">
 						<div class="ibox-content">
 							<div class="tableSearchOnly">
@@ -78,9 +79,9 @@
 									<thead>
 										<tr>
 											<th>Country</th>
-											<th>Impressions</th>
+											<th>Impressions <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title=" Number of times Advertising Material is served to a person visiting the Publisher’s Website"></span></th>
 											<th>Clicks</th>
-											<th>CTR</th>
+											<th>CTR <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title=" Percentage based on the total number of clicks divided by the number of impressions that an advertisement has received."></span></th>
 										</tr>
 									</thead>
 									<tbody>
@@ -106,9 +107,9 @@
 									<thead>
 										<tr>
 											<th>State</th>
-											<th>Impressions</th>
+											<th>Impressions <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title=" Number of times Advertising Material is served to a person visiting the Publisher’s Website"></span></th>
 											<th>Clicks</th>
-											<th>CTR</th>
+											<th>CTR <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title=" Percentage based on the total number of clicks divided by the number of impressions that an advertisement has received."></span></th>
 										</tr>
 									</thead>
 									<tbody>
@@ -134,9 +135,9 @@
 									<thead>
 										<tr>
 											<th>City</th>
-											<th>Impressions</th>
+											<th>Impressions <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title=" Number of times Advertising Material is served to a person visiting the Publisher’s Website"></span></th>
 											<th>Clicks</th>
-											<th>CTR</th>
+											<th>CTR <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title=" Percentage based on the total number of clicks divided by the number of impressions that an advertisement has received."></span></th>
 										</tr>
 									</thead>
 									<tbody>
@@ -163,9 +164,9 @@
 										<tr>
 											<tr>
 												<th>Platform</th>
-												<th>Impressions</th>
+												<th>Impressions <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title=" Number of times Advertising Material is served to a person visiting the Publisher’s Website"></span></th>
 												<th>Clicks</th>
-												<th>CTR</th>
+												<th>CTR <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title=" Percentage based on the total number of clicks divided by the number of impressions that an advertisement has received."></span></th>
 											</tr>
 									</thead>
 									<tbody>
@@ -191,9 +192,9 @@
 									<thead>
 										<tr>
 											<th>Operating System</th>
-											<th>Impressions</th>
+											<th>Impressions <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title=" Number of times Advertising Material is served to a person visiting the Publisher’s Website"></span></th>
 											<th>Clicks</th>
-											<th>CTR</th>
+											<th>CTR <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title=" Percentage based on the total number of clicks divided by the number of impressions that an advertisement has received."></span></th>
 										</tr>
 									</thead>
 									<tbody>
@@ -220,9 +221,9 @@
 										<tr>
 											<tr>
 												<th>Browser</th>
-												<th>Impressions</th>
+												<th>Impressions <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title=" Number of times Advertising Material is served to a person visiting the Publisher’s Website"></span></th>
 												<th>Clicks</th>
-												<th>CTR</th>
+												<th>CTR <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title=" Percentage based on the total number of clicks divided by the number of impressions that an advertisement has received."></span></th>
 											</tr>
 									</thead>
 									<tbody>
@@ -246,7 +247,14 @@
 		</div>
 	</div>
 </div>
+
+<script src="{{ URL::asset('js/plugins/flot/jquery.flot.js') }}"></script>
+<script src="{{ URL::asset('js/plugins/flot/jquery.flot.tooltip.min.js') }}"></script>
+
 <script type="text/javascript">
+$(document).ready(function(){
+	   $('[data-toggle="tooltip"]').tooltip();
+	});
 		$('.dataTableSearchOnly').DataTable({
 			"oLanguage": {
 			  "sSearch": "Search Table"

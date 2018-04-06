@@ -19,6 +19,10 @@
 			padding-top: 55px;
 			
 		}
+		.content .ibox .ibox-content {
+			overflow: visible;
+		}
+
     </style>
 @endsection
 

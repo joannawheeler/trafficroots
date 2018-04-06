@@ -22,6 +22,7 @@ use Log;
 use Session;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Hashing\BcryptHasher;
 use App\Mail\ConfirmUser;
 use Carbon\Carbon;
 
@@ -56,6 +57,33 @@ class HomeController extends Controller
 	    $request->session()->flash('status', 'Sending of Confirmation Email was successful!');
             return redirect('/home');
 	}	
+    }
+    public function pwChange(Request $request)
+    {
+	    $user = Auth::getUser();
+	    $hasher = new BcryptHasher();
+	    Log::info($user->name.' is trying to change their password from '.$request->ip());
+	    if(Auth::attempt(array('email' => $user->email, 'password' => $request->mypassword)))
+	    {
+		    Log::info($user->name.' is authenticated.');
+		    if($request->newpass == $request->confirm)
+		    {
+			    User::where('id', $user->id)->update(array('password' => $hasher->make($request->newpass)));
+			    Log::info($user->name.' successfully changed their password from '.$request->ip());
+                            $request->session()->flash('status', 'Success! Password was updated!');
+                            $request->session()->flash('status_type', 'success');
+		    }else{
+			    $request->session()->flash('status', 'Sorry! Your password and confirmation did not match.');
+			    $request->session()->flash('status_type', 'error');
+		    }
+ 	    }else{
+		    $request->session()->flash('status', 'Sorry! That is not your current password. Please try again, or logout and use the forgot password tool.');
+		    $request->session()->flash('status_type', 'error');
+		    Log::info(bcrypt($request->mypassword) .' != '. $user->password);
+                    Log::info($user->name.' FAILED to change their password from '.$request->ip());
+	    }
+
+	    return redirect('/profile');
     }
     public function advertiser()
     {
