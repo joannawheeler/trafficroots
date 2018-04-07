@@ -17,6 +17,10 @@ use App\Transaction;
 use App\Payment;
 use App\Campaign;
 use App\Zone;
+use App\PayoutSettings;
+use App\PaymentMethod;
+use App\TaxStatus;
+use App\MinimumPayout;
 use DB;
 use Log;
 use Session;
@@ -652,17 +656,37 @@ AND publisher_bookings.pub_id = $id;";
             return '';
         }
     }
+    public function updatePayout(Request $request)
+    {
+        $user = Auth::getUser();
+	$sql = "INSERT INTO payout_settings (user_id, payment_method, minimum_payout, tax_status, tax_id, created_at, updated_at)
+		VALUES(?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE payment_method = ".$request->payment_method.", minimum_payout = ".$request->minimum_payout.", tax_status = ".$request->tax_status.", tax_id = '".$request->tax_id."', updated_at = NOW()";
+        DB::insert($sql, array($user->id, $request->payment_method, $request->minimum_payout, $request->tax_status, $request->tax_id, date('Y-m-d H:i:s'), date('Y-m-d H:i:s')));
+	Session::flash('success', 'All Changes Saved!');
+	return redirect('/profile');
+
+
+    }
+
     public function myProfile()
     {
         $user = Auth::getUser();
-        $countries = Country::all();
+	$countries = Country::all();
+	$payout_settings = PayoutSettings::where('user_id', $user->id)->get();
+	$payment_methods = PaymentMethod::all();
+	$tax_status = TaxStatus::all();
+	$minimum_payouts = MinimumPayout::all();
+	
         $payments = array();
         $invoices = array();
         $earnings = array();
         $spend = array();
-        $balance = 0;
+	$balance = 0;
+	$mtd = 0.00;
         /* is user a publisher? */
 	$pub = false;
+	$earnings = array();
+	$current_earnings = 0.00;
 	DB::statement("SET sql_mode = ''");
         $sites = Site::where('user_id', $user->id)->count();
         if($sites){
@@ -684,13 +708,21 @@ AND publisher_bookings.pub_id = $id;";
                     AND pb.cost = 0.00
                     GROUP BY pb.site_id, pb.commission_tier, ct.publisher_factor;';
             $earnings = DB::select($sql, array($user->id));
+            foreach($earnings as $earned){ $current_earnings += $earned->earnings; }
         }
         /* is user an advertiser? */
         $buyer = false;
         $campaigns = Campaign::where('user_id', $user->id)->count();
         if($campaigns){
             /* yes, user is an advertiser */
-            $buyer = true;
+		$buyer = true;
+	    /* get month to date spend */
+            $sql = "SELECT SUM(transaction_amount) AS spend FROM bank WHERE user_id = ? 
+                AND bank.created_at >= '".date('Y-m-d', strtotime('first day of this month'))."'
+                AND bank.created_at < '".date('Y-m-d', strtotime('today'))."' AND transaction_amount < 0";
+            $result = DB::select($sql, array($user->id));
+            $mtd = sizeof($result) ? $result[0]->spend * -1 : 0;
+
             /* get deposit history */
             $invoices = Transaction::where('user_id', $user->id)
                                    ->where('Status', 'Successful')
@@ -711,7 +743,14 @@ AND publisher_bookings.pub_id = $id;";
                                 'payments' => $payments,
                                 'invoices' => $invoices,
                                 'earnings' => $earnings,
-                                'balance' => $balance]);
+				'balance' => $balance,
+				'payout_settings' => $payout_settings,
+				'payment_methods' => $payment_methods,
+				'tax_status' => $tax_status,
+				'minimum_payouts' => $minimum_payouts,
+				'current_earnings' => $current_earnings,
+				'mtd' => $mtd,
+			        ]);
     }
     public function updateProfile(Request $request)
     {

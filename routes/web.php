@@ -24,6 +24,7 @@ Route::group(['domain' => 'trafficroots.com'], $landing);
 Route::get('/', function () {
     return redirect('/home');
 });
+Route::post('/update_payout', 'HomeController@updatePayout');
 Route::post('/changepw', 'HomeController@pwChange');
 Route::get('/pub_type', 'HomeController@pubType');
 Route::get('/buyer_type', 'HomeController@buyerType');

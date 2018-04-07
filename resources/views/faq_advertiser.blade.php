@@ -1,11 +1,19 @@
 @extends('layouts.app')
-@section('title', 'Advertiser FAQ')
+@section('title', 'Frequently Asked Questions')
+
+@section('css')
+    <link href="{{ URL::asset('css/style.css') }}" rel="stylesheet">
+@endsection
+
 @section('content')
 	<div class="content">
 		<div class="row">
 			<div class="col-xs-12">
-				<div class="panel panel-default">
-					<h4 class="p-title">Advertiser FAQ</h4>
+				<ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+                    <li  class="active"><a data-toggle="tab">FAQ</a></li>
+                    <li><a href="" data-toggle="tab">State Regulations</a></li>
+                </ul>
+				<div class="panel panel-default">									
 					<div class="ibox-content">
 						@foreach($faqs as $faq)
 						<div class="faq-item">

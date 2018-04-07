@@ -47,9 +47,17 @@
     position: relative;
 }
 
-#wizard-p-1 h5, h6 {
+#keyword_targets {
+    margin-top: 10px;
+}
+
+#wizard-p-1 h5, h6, small{
     padding-left: 5px;
 }
+
+#wizard-p-1 { 
+    background: white;
+ }
 
 #wizard-p-2 .media-selection .createNew {
     padding: 5px;
@@ -275,16 +283,19 @@
                                     {!! $browser_targets !!}
                                 </select>
                             </div>
-                            <div class="col-md-12">
-                                <br />
-                                <h6>Keyword Targeting</h6><small>Use commas to separate</small>
-                                <input name="keyword_targets" id="keyword_targets" class="form-control" type="text" value="">
+                            <div class="col-md-12" style="margin-top:25px">
+                                <div>
+                                    <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Search terms or phrases targeted by the advertising campaign"></em>                                
+                                    <h5 style="display:inline">Keyword Targeting &nbsp;<span style="font:italic 100 12px opensans">(Optional)
+                                    </span></h5>
+                                </div>
+                                <input name="keyword_targets" id="keyword_targets" class="form-control" type="text" placeholder="Use commas to seperate" value="">
                             </div>
                         </div>
 
 
                     <h1>Creatives</h1>
-                    <div class="step-content" style="background: white;">
+                    <div class="step-content" style="background: white;">                        
                         <h2 class="text-success"><strong>Add Creatives</strong></h2>
                         <div class="instruction">
                           <ul>
@@ -301,7 +312,7 @@
                                     <div class="col-xs-12 col-md-6 b-r">
                                       <h3>Step 1)</h3>
                                         <div class="col-xs-12 form-group{{ $errors->has('media_id') ? ' has-error' : '' }}" style="float:none;margin-bottom:0;">
-                                            <p><h4>Select Existing or Uploaded Image&nbsp;<i class="fa fa-camera"></i></h4></p>
+                                            <p><h4>Select Existing or Uploaded Image&nbsp;&nbsp;<i class="fa fa-camera"></i></h4></p>
                                                 <div class="form-group col-xs-12 mediaOptions">
                                                     <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Choose an Image from Corresponding Library Category" style="display:inline;"></em>
                                                     <select id="media_id" name="media_id" class="form-control">
@@ -600,7 +611,7 @@
                 }
             });
         }
-                $('[data-toggle="tooltip"]').tooltip();
+    $('[data-toggle="tooltip"]').tooltip();
 
     });
     function checkForm(){

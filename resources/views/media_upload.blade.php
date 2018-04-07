@@ -79,9 +79,9 @@
                             <span class="bold">Upload</span>
                         </label>
 						<br>
-						<div class="text-center image-preview" style="border: 0px;">
+						<!-- <div class="text-center image-preview" style="border: 0px;">
 							<img id="previewImgFile" src="#" alt="Preview Image" />
-						</div>
+						</div> -->
                         <input type="file"
                                name="file"
                                id="image_file"
