@@ -13,7 +13,7 @@
 @endsection
 @section('content')
     @if(Session::has('success'))
-        <div class="alert alert-success">
+        <div class="alert alert-success alert-dismissable">
             <h2>{{ Session::get('success') }}</h2>
         </div>
     @endif
@@ -447,7 +447,7 @@
 														<td>$ {{$balance}}</td>
 													</tr>
 													<tr>
-														<td><strong>Month Date Spent</strong></td>
+														<td><strong>Spend for {{ date('F') }}</strong></td>
 														<td>$&nbsp;{{$mtd}}</td>
 													</tr>
 												</tbody>

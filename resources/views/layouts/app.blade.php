@@ -102,7 +102,7 @@
                             </li>                             
                         </ul>
                     </li>
-					<li id="nav_support" class="nav-click">
+		    <li id="nav_profile" class="nav-click">
                         <a href="{{ url('/profile') }}">
                             <i class="fa fa-address-book-o"></i>
                             <span class="nav-label">Profile</span>

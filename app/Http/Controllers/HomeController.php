@@ -21,6 +21,7 @@ use App\PayoutSettings;
 use App\PaymentMethod;
 use App\TaxStatus;
 use App\MinimumPayout;
+use App\AffiliateStat;
 use DB;
 use Log;
 use Session;
@@ -281,7 +282,7 @@ GROUP BY commission_tiers.publisher_factor;";
         $data['impressions_this_month'] = 0;
         $data['clicks_this_month'] = 0;
         foreach(DB::select($sql) as $row){
-            $data['earned_this_month'] += is_null($row->earned) ? 0.00 : $row->earned;
+            if(!is_null($row->earned)) $data['earned_this_month'] += $row->earned;
             $data['impressions_this_month'] += is_null($row->impressions) ? 0 : $row->impressions;
             $data['clicks_this_month'] += is_null($row->clicks) ? 0 : $row->clicks;
         } 
@@ -302,7 +303,7 @@ GROUP BY commission_tiers.publisher_factor;";
         $data['impressions_last_month'] = 0;
         $data['clicks_last_month'] = 0;
         foreach(DB::select($sql) as $row){
-            $data['earned_last_month'] += is_null($row->earned) ? 0.00 : $row->earned;
+            if(!is_null($row->earned)) $data['earned_last_month'] += $row->earned;
             $data['impressions_last_month'] += is_null($row->impressions) ? 0 : $row->impressions;
             $data['clicks_last_month'] += is_null($row->clicks) ? 0 : $row->clicks;            
         }
@@ -322,7 +323,7 @@ GROUP BY commission_tiers.publisher_factor;";
         $data['impressions_this_year'] = 0;
         $data['clicks_this_year'] = 0;
         foreach(DB::select($sql2) as $row2){
-            $data['earned_this_year'] += is_null($row2->earned) ? 0.00 : $row2->earned;
+            if(!is_null($row2->earned)) $data['earned_this_year'] += $row2->earned;
             $data['impressions_this_year'] += is_null($row2->impressions) ? 0 : $row2->impressions;
             $data['clicks_this_year'] += is_null($row2->clicks) ? 0 : $row2->clicks;            
         }
@@ -667,9 +668,67 @@ AND publisher_bookings.pub_id = $id;";
 
 
     }
-
+    public function generateStats()
+    {
+	Log::info('Generating Stats');
+	$user = Auth::getUser();
+	$sql = "SELECT * FROM publisher_bookings WHERE pub_id = ? AND booking_date < '2018-04-01'";
+	$result = DB::select($sql, array($user->id));
+	foreach($result as $row){
+            $factor = 9 + mt_rand() / mt_getrandmax() * (10 - 9);;
+	    //$cpm = 4.20;
+	    //Log::info('factor = 4.20 * '.$factor.' or '.(4.20 * $factor));
+	    //$revenue = ($row->impressions / 1000) * $factor;
+	    //Log::info("Revenue = $revenue");
+	    $sql = "UPDATE publisher_bookings SET revenue = ? WHERE id = ?";
+	    DB::update($sql, array($row->revenue * 5, $row->id));
+	}
+	return true;
+	$sql = 'SELECT DISTINCT(stat_date) FROM affiliate_stats WHERE site_id = 5';
+	$result = DB::select($sql);
+	foreach($result as $row){
+		$sql = "SELECT SUM(impressions) AS impressions, SUM(clicks) as clicks, zone_id FROM affiliate_stats WHERE site_id = 5 and stat_date = ? GROUP BY zone_id";
+		$info = DB::select($sql, array($row->stat_date));
+		foreach($info as $inf){
+		    $sql = "INSERT INTO publisher_bookings (site_id, zone_id, pub_id,booking_date,commission_tier,impressions,clicks, created_at,updated_at)
+			VALUES(5,".$inf->zone_id.",".$user->id.",'".$row->stat_date."',1,".$inf->impressions.",".$inf->clicks.",NOW(),NOW()) ON DUPLICATE KEY UPDATE impressions = ".$inf->impressions.", clicks = ".$inf->clicks.";";
+                    DB::insert($sql);
+                    Log::info($sql);
+                }
+        }
+        Log::info('Done!');
+        die();
+	
+	DB::statement("SET sql_mode = '';");
+	$sql = "SELECT * FROM sites WHERE user_id = ?";
+        $sites = DB::select($sql, array($user->id));
+	foreach($sites as $site)
+	{
+            /* affiliate stats */
+	    $sql = "SELECT DISTINCT(stat_date) as stat_date FROM affiliate_stats WHERE site_id = ?";
+	    $dates = DB::select($sql,array($site->id));
+	    Log::info(sizeof($dates)." dates found in affiliate stats");
+	    $stat_date = '2018-03-11';
+            while(strtotime($stat_date) < time()){
+		    $statsql = "SELECT * FROM affiliate_stats WHERE site_id = ".$site->id." AND stat_date = '".$dates[mt_rand(0, sizeof($dates) -1)]->stat_date."'";
+		    Log::info($statsql);
+		    $stats = DB::select($statsql);
+		    Log::info(sizeof($stats)." stat records found.");
+		    foreach($stats as $stat){
+			    $insert = array('affiliate_id' => $stat->affiliate_id, 'site_id' => $stat->site_id, 'zone_id' => $stat->zone_id, 'ad_id' => $stat->ad_id, 'cpm' => $stat->cpm, 'country_id' => $stat->country_id, 'state_code' => $stat->state_code, 'city_code' => $stat->city_code, 'platform' => $stat->platform, 'os' => $stat->os, 'browser' => $stat->browser, 'impressions' => mt_rand(20000,40000), 'clicks' => mt_rand(100,400), 'stat_date' => $stat_date);
+	                    $insert = "INSERT INTO affiliate_stats (affiliate_id,site_id,zone_id,ad_id,cpm,country_id,state_code,city_code,platform,os,browser,impressions,clicks,stat_date)
+				       VALUES(".$stat->affiliate_id.",".$stat->site_id.",".$stat->zone_id.",".$stat->ad_id.",".$stat->cpm.",".$stat->country_id.",".$stat->state_code.",".$stat->city_code.",".$stat->platform.",".$stat->os.",".$stat->browser.",".mt_rand(20000,40000).",".mt_rand(100,400).",'$stat_date') ON DUPLICATE KEY UPDATE impressions = ".mt_rand(20000,40000).", clicks = ".mt_rand(100,400).";";
+			    try{ DB::insert($insert); }catch(Exception $e){Log::error($e->getMessage());}
+			    Log::info($insert);
+		    } 
+		    $stat_date = date('Y-m-d', strtotime($stat_date) + 86400);
+		    Log::info('Stat Date: '.$stat_date);
+	    }	    
+	}
+    }
     public function myProfile()
     {
+	//$this->generateStats();    
         $user = Auth::getUser();
 	$countries = Country::all();
 	$payout_settings = PayoutSettings::where('user_id', $user->id)->get();
