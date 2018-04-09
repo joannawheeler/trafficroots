@@ -477,7 +477,7 @@ $( document ).ready(function() {
         <div class="col-lg-12">
 			<div class="row">
 				<div class="col-md-12">
-					<h4>Month to Date</h4>
+					<h4>Today</h4>
 				</div>
 				<div class="col-sm-2 widget-boxs">
 					<div class="ibox float-e-margins">
@@ -728,9 +728,9 @@ $( document ).ready(function() {
 											<td class="text-center"><b class=" tablesaw-cell-label">Date</b>{{ $key }}</td>
 											<td class="text-center"><b class=" tablesaw-cell-label">Days Active</b>{{ $campaign['days_active'] }} </td>
 											<td class="text-center"><b class=" tablesaw-cell-label">Impressions</b>{{ $campaign['impressions'] }}</td>
-											<td class="text-center"><b class=" tablesaw-cell-label">Status</b>{{ $campaign['impressions'] }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Status</b>{{ $campaign['status'] }}</td>
 											<td class="text-center"><b class=" tablesaw-cell-label">Clicks</b>{{ $campaign['clicks'] }}</td>
-											<td class="text-center"><b class=" tablesaw-cell-label">Costs</b>{{ money_format('%(#10n',$campaign['costs']) }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Costs</b>{{ money_format('%(#10n',$campaign['spend']) }}</td>
 											<td class="text-center"><b class=" tablesaw-cell-label">Preview</b>
 												<a class="tr-preview" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="" data-content="<img src='https://publishers.trafficroots.com/uploads/823/f7a65b864d5fc4216aff842bcc3a6321.jpeg' width='120' height='120'>" id="view_media_159">
 												<span class="fa fa-camera" aria-hidden="true"></span></a>
@@ -745,7 +745,7 @@ $( document ).ready(function() {
 											<td class="text-center"><b class=" tablesaw-cell-label">Impressions</b>{{ $campaign['impressions'] }}</td>
 											<td class="text-center"><b class=" tablesaw-cell-label">Status</b></td>
 											<td class="text-center"><b class=" tablesaw-cell-label">Clicks</b>{{ $campaign['clicks'] }}</td>
-											<td class="text-center"><b class=" tablesaw-cell-label">Costs</b>{{ money_format('%(#10n',$campaign['costs']) }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Costs</b>{{ money_format('%(#10n',$campaign['spend']) }}</td>
 											<td class="text-center"><b class=" tablesaw-cell-label">Preview</b>
 												<a class="tr-preview" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="" data-content="<img src='https://publishers.trafficroots.com/uploads/823/f7a65b864d5fc4216aff842bcc3a6321.jpeg' width='120' height='120'>" id="view_media_159">
 												<span class="fa fa-camera" aria-hidden="true"></span></a>

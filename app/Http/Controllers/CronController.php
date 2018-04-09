@@ -118,8 +118,16 @@ class CronController extends Controller
                     os_id = VALUES(`os_id`),
                     browser_id = VALUES(`browser_id`),
                     keywords = VALUES(`keywords`),
-                    updated_at = NOW();";
-        $result = DB::insert($prefix.implode($pairs,",").$suffix);           
+		    updated_at = NOW();";
+        foreach($pairs as $key => $pair){
+             $sql = $prefix.$pair.$suffix;
+	     DB::insert($sql);
+	     //Log::info($sql);
+	     //Log::info($key);
+	}
+        //$result = DB::insert($prefix.implode($pairs,",").$suffix);
+//Log::info($prefix.implode($pairs,",").$suffix);
+        $result = 1;
         if(!$result){
             Log::error(DB::error());
         } else {

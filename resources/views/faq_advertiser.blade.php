@@ -46,8 +46,6 @@
        jQuery(document).ready(function ($) {
 	       $('.nav-click').removeClass("active");
 	       $('#nav_buyer_faq').addClass("active");
-	       $('#nav_buyer').addClass("active");
-	       $('#nav_buyer_menu').removeClass("collapse");
        });
    </script>
 @endsection
