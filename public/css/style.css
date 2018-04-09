@@ -18,7 +18,8 @@ h1 {
   font-size: 30px;
 }
 h2 {
-  font-size: 24px;
+  font-size: 20px;
+  padding-bottom: 10px;
 }
 h3 {
   font-size: 16px;
@@ -109,6 +110,9 @@ h5 {
   text-align: left;
   font-weight: normal;
 }
+
+/*jackie was here*/
+/*
 .dropdown-menu > .active > a,
 .dropdown-menu > .active > a:focus,
 .dropdown-menu > .active > a:hover {
@@ -117,6 +121,8 @@ h5 {
   background-color: #1ab394;
   outline: 0;
 }
+*/
+
 .dropdown-menu > li > a.font-bold {
   font-weight: 600;
 }
@@ -173,7 +179,7 @@ h5 {
   background-image: url("patterns/header-profile.png");
 }
 .pace-done .nav-header {
-  transition: all 0.4s;
+  transition: all 0.5s;
 }
 ul.nav-second-level {
   background: #293846;
@@ -591,6 +597,114 @@ body.canvas-menu.mini-navbar nav.navbar-static-side {
 .top-navigation .navbar-nav .open .dropdown-menu .dropdown-header {
   padding: 10px 15px 10px 20px;
 }
+.tablesaw-stack td.align-center {
+	text-align: center;
+}	
+
+/*jackie*/
+div.dataTables_wrapper div.dataTables_filter label {
+	white-space: unset;
+	padding-top: 10px;
+}
+
+div.dataTables_wrapper div.dataTables_filter input {
+	margin-top: 10px;
+}
+
+/*paging*/
+table.dataTableSearchOnly, .tableSearchOnly {
+	padding: 15px 0px;
+}
+
+.dataTables_paginate {
+	float: right;
+}
+
+.dataTables_paginate>a.disabled, .dataTables_paginate>a.disabled:focus, .pagination>a.disabled:hover, .dataTables_paginate>span.disabled, .pagination>span.disabled>:focus, .dataTables_paginate>span.disabled:hover {
+    color: #777;
+    cursor: not-allowed;
+    background-color: #fff;
+    border-color: #ddd;
+}
+.dataTables_paginate>a:focus, .dataTables_paginate>a:hover, .dataTables_paginate>span:focus, .dataTables_paginate>span:hover {
+    z-index: 2;
+    color: #23527c;
+    background-color: #eee;
+    border-color: #ddd;
+}
+.dataTables_paginate>a:first-child, .dataTables_paginate>span:first-child {
+    margin-left: 0;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.dataTables_paginate > a {
+    background-color: #FFFFFF;
+    border: 1px solid #DDDDDD;
+    color: inherit;
+    float: left;
+    line-height: 1.42857;
+    margin-left: -1px;
+    padding: 4px 10px;
+    position: relative;
+    text-decoration: none;
+}
+.dataTables_paginate>a {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #337ab7;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+
+.dataTables_paginate .paginate_button, .dataTables_paginate .paginate_button, .dataTables_paginate .ellipsis {
+    padding: 6px 12px;
+    color: #337ab7;
+    border: 1px solid #ddd;
+    float: left;
+}
+
+.paginate_button.next {
+    border-radius: 0px 4px 4px 0px;
+}
+
+a.paginate_button.current {
+    background-color: #337ab7;
+    color: #fff;
+    border: 1px solid #337ab7;
+}
+
+.paginate_button a:hover, .paginate_button a:focus {
+    text-decoration: none;
+	background-color: #eee;
+    border-color: #ddd;
+}
+.paginate_button a:focus, .paginate_button a:hover {
+    color: #23527c;
+    text-decoration: underline;
+	background-color: #eee;
+    border-color: #ddd;
+}
+.paginate_button a:active, .paginate_button a:hover {
+    outline: 0;
+	background-color: #eee;
+    border-color: #ddd;
+}
+
+/*tabs*/
+.nav.stats-tab > li > a {
+    padding: 10px 0px;
+    text-align: center;
+}	
+	
+.nav.stats-tab li {
+    width: calc(100% / 7);
+}
+
 @media (max-width: 768px) {
   .top-navigation .navbar-header {
     display: block;
@@ -1066,13 +1180,19 @@ button.dim:active:before {
 .btn:focus {
   outline: none !important;
 }
+/*jackie*/
 .label {
   background-color: #d1dade;
   color: #5e5e5e;
   font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 12px;
   font-weight: 600;
   padding: 3px 8px;
   text-shadow: none;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  width: 100px;
 }
 .nav .label,
 .ibox .label {
@@ -1221,6 +1341,8 @@ button.dim:active:before {
   background: #ffffff;
   box-shadow: none;
   -moz-box-sizing: border-box;
+  background-color: #FFFFFF;
+  border: 1px solid #CBD5DD;
   border-radius: 2px;
   cursor: text;
   height: auto !important;
@@ -1233,7 +1355,7 @@ button.dim:active:before {
 }
 .chosen-container-multi .chosen-choices li.search-choice {
   background: #f1f1f1;
-  border: 1px solid #e5e6e7;
+  border: 1px solid #ededed;
   border-radius: 2px;
   box-shadow: none;
   color: #333333;
@@ -1639,6 +1761,7 @@ table.dataTable thead .sorting_desc_disabled {
 }
 .dataTables_wrapper {
   padding-bottom: 30px;
+  text-align: center;
 }
 .dataTables_length {
   float: left;
@@ -1888,7 +2011,7 @@ div.dt-button-info {
   background-color: #FFFFFF;
   background-image: none;
   border: 1px solid #e5e6e7;
-  border-radius: 1px;
+  border-radius: 4px;
   color: inherit;
   display: block;
   padding: 6px 12px;
@@ -2656,6 +2779,12 @@ a.forum-item-title:hover {
 .forum-item.active a.forum-item-title {
   color: #1ab394;
 }
+
+div.dataTables_wrapper div.dataTables_info {
+	float: left; 
+	padding-top: 0px;
+}
+
 @media (max-width: 992px) {
   .forum-info {
     margin: 15px 0 10px 0;
@@ -2839,6 +2968,14 @@ a.forum-item-title:hover {
   .vertical-timeline-content p {
     font-size: 13px;
   }
+	
+  .nav.stats-tab li {
+	width: unset;
+  }
+	
+  .nav.stats-tab > li > a {
+ 	padding: 10px 8px;
+  }
 }
 @media only screen and (min-width: 1170px) {
   .center-orientation .vertical-timeline-content {
@@ -2882,7 +3019,17 @@ a.forum-item-title:hover {
   }
   .center-orientation .cssanimations .vertical-timeline-content.is-hidden {
     visibility: hidden;
+  }	
+	
+  .nav.stats-tab li {
+	width: unset;
   }
+	
+  .nav.stats-tab > li > a {
+	padding-right: 25px;
+	padding-left: 25px;
+  }
+	
 }
 /* Tabs */
 .tabs-container .panel-body {
@@ -2913,7 +3060,8 @@ a.forum-item-title:hover {
   border-bottom-color: transparent;
 }
 .tabs-container .nav-tabs {
-  border-bottom: 1px solid #e7eaec;
+  	border-bottom: 0px;
+	margin-left: -1px;
 }
 .tabs-container .tab-pane .panel-body {
   border-top: none;
@@ -2922,9 +3070,12 @@ a.forum-item-title:hover {
 .tabs-container .tabs-right .tab-pane .panel-body {
   border-top: 1px solid #e7eaec;
 }
+/*jackie*/
 .tabs-container .nav-tabs > li a:hover {
+/*
   background: transparent;
   border-color: transparent;
+*/
 }
 .tabs-container .tabs-below > .nav-tabs,
 .tabs-container .tabs-right > .nav-tabs,
@@ -3014,10 +3165,9 @@ a.forum-item-title:hover {
 }
 @media (max-width: 767px) {
   .tabs-container .nav-tabs > li {
-    float: none !important;
+/*    float: none !important; jackie*/
   }
   .tabs-container .nav-tabs > li.active > a {
-    border-bottom: 1px solid #e7eaec !important;
     margin: 0;
   }
 }
@@ -3538,9 +3688,10 @@ a:focus {
 .font-italic {
   font-style: italic;
 }
+/*jackie
 .b-r {
   border-right: 1px solid #e7eaec;
-}
+}*/
 .hr-line-dashed {
   border-top: 1px dashed #e7eaec;
   color: #ffffff;
@@ -3603,9 +3754,6 @@ video {
 }
 .modal-body {
   padding: 20px 30px 30px 30px;
-}
-.inmodal .modal-body {
-  background: #f8fafb;
 }
 .inmodal .modal-header {
   padding: 30px 15px;
@@ -3768,16 +3916,46 @@ body.body-small .footer.fixed {
 }
 .blank-panel .panel-heading {
   padding-bottom: 0;
+}/*jackie*/
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+  -moz-border-bottom-colors: none;
+  -moz-border-left-colors: none;
+  -moz-border-right-colors: none;
+  -moz-border-top-colors: none;
+  background: none;
+  border-color: transparent;
+  border-image: none;
+  border-style: solid;
+  color: #555555;
+  cursor: default;
+}
+.nav.nav-tabs li {
+  background: none;
+  border: none;
 }
 .nav-tabs > li > a {
-  color: #A7B1C2;
+/*  color: #A7B1C2;*/
   font-weight: 600;
-  padding: 10px 20px 10px 25px;
+  padding: 10px 25px;
+  background-color: #eee;
+	color: #aaa;
 }
 .nav-tabs > li > a:hover,
 .nav-tabs > li > a:focus {
+/*
   background-color: #e6e6e6;
   color: #676a6c;
+*/
+	
+/*
+  background-color: #6fd1bd;
+  color: #fff;
+*/
+	color: #19aa8d;
+	border-bottom: 0px;
+	
 }
 .ui-tab .tab-content {
   padding: 20px 0;
@@ -3931,10 +4109,10 @@ code {
   border-color: #e7eaec;
   border-image: none;
   border-style: solid solid none;
-  border-width: 2px 0 0;
+  border-width: 3px 0 0;
   color: inherit;
   margin-bottom: 0;
-  padding: 15px 15px 7px;
+  padding: 14px 15px 7px;
   min-height: 48px;
 }
 .ibox-content {
@@ -3945,6 +4123,7 @@ code {
   border-image: none;
   border-style: solid solid none;
   border-width: 1px 0;
+  overflow: auto;
 }
 .ibox-footer {
   color: inherit;
@@ -4061,6 +4240,11 @@ table.table-mail tr td {
 }
 .black-bg {
   background-color: #262626;
+  color: #ffffff;
+}
+.purple-bg {
+  background-color: #884582;
+  color: #ffffff;
 }
 .panel-primary {
   border-color: #1ab394;
@@ -7342,7 +7526,34 @@ body.landing-page {
   }
   .landing-page .featurette-heading {
     font-size: 50px;
+  }/*jackie*/
+
+  .wrapper-content {
+	padding: 20px 10px 40px;
   }
+	
+	/*responsive buttons in ibox-title*/	
+	.xs-ibox-title .text-right label {
+		text-align: left;
+		width: initial;
+	}
+	
+	.xs-ibox-title .text-right button {
+		display: unset;
+		width: initial;
+		text-align: unset;
+		margin: unset;
+	}
+	
+	/*jackie*/
+	div.dataTables_wrapper div.dataTables_filter label {
+		white-space: nowrap;
+		padding-top: 0px;
+	}
+
+	div.dataTables_wrapper div.dataTables_filter input {
+		margin-top: 0px;
+	}	
 }
 @media (max-width: 992px) {
   .landing-page .carousel-image {
@@ -7405,7 +7616,15 @@ body.landing-page {
   }
   .landing-page .carousel-control {
     display: none;
+  }/*jackie*/
+  .dailystats {
+	margin-top: 0px;
+	padding: 0px;
   }
+	
+  .tabs-container li div {
+	  display:none;
+  }	
 }
 @media (min-width: 992px) {
   .landing-page .featurette-heading {
@@ -8127,6 +8346,12 @@ body.md-skin {
 .md-skin .wrapper-content {
   padding: 30px 20px 40px;
 }
+
+/*jackie*/
+.tablist button {
+  width: 100%;
+}
+
 @media (max-width: 768px) {
   .md-skin .wrapper-content {
     padding: 30px 0 40px;
@@ -8434,11 +8659,71 @@ body.md-skin {
   display: none;
 }
 @media (min-width: 768px) {
-  #page-wrapper {
-    position: inherit;
-    margin: 0 0 0 220px;
-    min-height: 100vh;
-  }
+/*jackie*/
+	#page-wrapper {
+		position: inherit;
+		margin: 0 0 0 220px;
+/*		min-height: 1200px;*/
+		min-height: auto;
+	}
+	
+	.navbar-static-side {
+		z-index: 2001;
+		position: absolute;
+		width: 220px;
+	}
+	
+	.navbar-top-links .dropdown-messages,
+	.navbar-top-links .dropdown-tasks,
+	.navbar-top-links .dropdown-alerts {
+		margin-left: auto;
+	}
+
+	.widget-boxs {
+		width: 33%;
+	}
+
+	.tabs-container li div {
+		display: block;
+	}
+
+	.tabs-container li span {
+		display:none;
+	}	
+
+	.dataTables_paginate {
+		text-align: right;
+	}	
+
+	.tablist button {
+		width: 23%;
+	}
+
+	.b-r {
+		border-right: 1px solid #e7eaec;
+	}
+
+	.tablesaw-stack td.align-center {
+		text-align: left;
+	}
+
+	form.form-lbl-right .form-group > .col-md-2, form.form-lbl-right .form-group > .col-md-3, .lbl-right .col-md-3 {
+		text-align: right;	
+	}
+
+	.tableSearchOnly .dataTables_filter {
+		float: right;
+	}
+
+	.checkAllTitle .checkAll {
+		float: left;
+	}
+
+	.checkAllTitle label {
+		margin-left: 10px;
+	}
+
+/*jackie wanted to erase but left alone*/
   .navbar-static-side {
     z-index: 2001;
     position: absolute;
@@ -8450,6 +8735,17 @@ body.md-skin {
     margin-left: auto;
   }
 }
+
+@media (min-width: 992px) {
+  .menu-visible-md {
+    display: block !important;
+  }
+	
+  .widget-boxs {
+    width: 20%;
+  }
+}
+
 @media (max-width: 768px) {
   #page-wrapper {
     position: inherit;
@@ -8502,6 +8798,30 @@ body.md-skin {
   .navbar-static-side {
     display: none;
   }
+
+/*jackie*/
+/*responsive buttons in ibox-title*/	
+  .xs-ibox-title .dataTables_wrapper > div:first-of-type {
+	background-color: #fff;
+  }
+	
+  .xs-ibox-title .dataTables_wrapper .dataTables_length label select {
+    background-color: #eee;
+  }	
+	
+  .xs-ibox-title .text-right label {
+    text-align: left;
+    width: 100%; 
+  }
+
+  .xs-ibox-title .text-right button {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin: 7px auto;
+  }
+/*end of jackie*/
+
   body:not(.mini-navbar) {
     -webkit-transition: background-color 500ms linear;
     -moz-transition: background-color 500ms linear;

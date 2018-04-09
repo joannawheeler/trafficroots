@@ -24,12 +24,12 @@ Route::group(['domain' => 'trafficroots.com'], $landing);
 Route::get('/', function () {
     return redirect('/home');
 });
+Route::post('/update_payout', 'HomeController@updatePayout');
+Route::post('/changepw', 'HomeController@pwChange');
 Route::get('/pub_type', 'HomeController@pubType');
 Route::get('/buyer_type', 'HomeController@buyerType');
 Route::get('/both_type', 'HomeController@bothType');
 Route::post('/subscribe', 'PublicController@subscribeUser');
-//Route::get('/fblogin/{facebook}/{user_id}/{name}/{email}', 'FacebookController@login');
-//Route::get('/glogin/{google}/{name}/{email}', 'GoogleController@login');
 Route::get('/landing', 'PublicController@getLandingPage');
 Route::get('/pixel/{handle?}', 'PixelController@getIndex');
 Route::get('/analysis/{handle}', 'SiteController@analyzeSite'); 

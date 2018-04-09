@@ -1,7 +1,7 @@
 <button type="button"
         class="btn btn-xs btn-primary"
         data-toggle="modal"
-        data-target="#addLink"><i class="fa fa-plus-square-o"></i>&nbsp;&nbsp;Add Link&nbsp;&nbsp;&nbsp;&nbsp;</button>
+        data-target="#addLink"><i class="fa fa-plus-square-o"></i>&nbsp;&nbsp;Add URL&nbsp;&nbsp;&nbsp;&nbsp;</button>
 <div class="modal inmodal"
      id="addLink"
      tabindex="-1"
@@ -16,7 +16,7 @@
                     <span aria-hidden="true">&times;</span>
                     <span class="sr-only">Close</span>
                 </button>
-                <h4 class="modal-title">New Link</h4>
+                <h4 class="modal-title">New URL</h4>
             </div>
             <form name="link_form"
                   id="link_form"
@@ -44,7 +44,7 @@
                     <div class="form-group">
                         <label>Category</label>
                         <select class="form-control m-b"
-                                name="category"
+                                name="link_category"
                                 required>
                             <option value="">Choose category</option>
                             @foreach(App\Category::all() as $category)
@@ -52,7 +52,7 @@
                             @endforeach
                         </select>
                         <label class="error hide"
-                               for="category"></label>
+                               for="link_category"></label>
                     </div>
 
                     <div class="form-group">
@@ -72,21 +72,6 @@
 	                @endif
                         <label class="error hide"
                                for="url"></label>
-                    </div>
-                    <div>
-                        <h3>Link:</h3>
-                        [ lingk ] - 
-                        <i>noun</i>
-                        <ul><li>anything serving to connect one part or thing with another - a bond or tie.</li></ul>
-                        
-                        <div class="well">
-                            <ul>
-                                <li>Links will be validated by Trafficroots staff and are subject to periodic malware/content scans.</li>
-                                <li>To avoid duplication, we offer a Link Library feature.</li>
-                                <li>Name and Categorize your Links here and they will be available across all your campaigns.</li>                 
-                                <li>On this page you are creating a new Link item by naming it, selecting a Category and providing a valid destination url.</li>
-                             </ul>
-                        </div>
                     </div>                    
                 </div>
                 <div class="modal-footer">

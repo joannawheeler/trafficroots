@@ -25,6 +25,7 @@ use App\LocationType;
 use App\ModuleType;
 use App\StatusType;
 use App\Links;
+use App\SiteTheme;
 use Log;
 
 class CUtil extends Controller
@@ -33,6 +34,23 @@ class CUtil extends Controller
     {
         $this->middleware('auth');
     }
+    public function getThemes($id)
+	        {
+		        $targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
+		        $theme_targets = explode("|",$targets->themes);
+		        $themes = '<option value="0"';
+			if($theme_targets[0] == '0') $themes .= ' selected';
+        	        $themes .= '>All States</option>';
+		        $result = SiteTheme::all();
+		        foreach($result as $row){
+		            $themes .= '<option value="'.$row->id.'"';
+	                    if(in_array($row->id, $theme_targets)) $themes .= ' selected';
+                            $themes .= '>'.$row->theme.'</option>';
+			}
+
+		        return $themes;
+
+		}
     public function getStates($id)
     {
         $targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();

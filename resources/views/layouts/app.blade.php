@@ -18,51 +18,57 @@
     }
     </script>
     <!-- Global and page level js -->
-    @include('_styles') 
+    @include('_styles')
     @include('_scripts')
 </head>
 
-<body class="no-skin-config">
+<body class="no-skin-config pace-done">
+	<div class="pace  pace-inactive">
+        <div class="pace-progress" data-progress-text="100%" data-progress="99" style="transform: translate3d(100%, 0px, 0px);">
+            <div class="pace-progress-inner"></div>
+        </div>
+        <div class="pace-activity"></div>
+    </div>
+	
     <div id="wrapper">
         <nav class="navbar-default navbar-static-side" role="navigation">
             <div class="sidebar-collapse">
                 <ul class="nav metismenu" id="side-menu">
-                    <li class="nav-header">
+					<li>
                         <div class="dropdown profile-element">
-                            <!-- Branding Image -->
-                            <div class="text-center">
-                                <a href="{{ url('/') }}">
-                                        <img src="{{ url('/img/white_tree_logo.png') }}" alt="TrafficRoots" width="100" height="104">
-                                </a>
-                            </div>
-			    <div class="logo-element">
-                                <img src="{{ url('/img/white_tree_logo.png') }}" alt="TrafficRoots" width="40" height="42">
-                            </div>
+                            <a href="{{ url('/') }}">
+                            	<img src="{{ url('/img/logo.png') }}" alt="TrafficRoots" width="100%">
+                            </a>
+                        </div>
+                        <div class="logo-element">
+							<img src="{{ url('/img/white_tree_logo.png') }}" alt="TrafficRoots" width="40" height="42">
+						</div>
                     </li>
+						
                     <!-- Authentication Links -->
                     @if (Auth::guest())
                     <li id="nav_login" class="active nav-click">
                         <a href="{{ url('/login') }}">
-                            <i class="fa fa-sign-in fa-2x"></i>
+                            <i class="fa fa-sign-in"></i>
                             <span class="nav-label">Login</span>
                         </a>
                     </li>
                     <li id="nav_register" class="nav-click">
                         <a href="{{ url('/register') }}">
-                            <i class="fa fa-pencil fa-2x"></i>
+                            <i class="fa fa-pencil"></i>
                             <span class="nav-label">Register</span>
                         </a>
                     </li>
                     {{--
                     <li id="nav_about" class="nav-click">
                         <a href="{{ url('/about') }}">
-                            <i class="fa fa-group fa-2x"></i>
+                            <i class="fa fa-group"></i>
                             <span class="nav-label">About</span>
                         </a>
                     </li> --}} @else
                     <li id="nav_pub" class="nav-click">
                         <a href="{{ url('/home') }}">
-                            <i class="fa fa-desktop fa-2x"></i>
+                            <i class="fa fa-desktop"></i>
                             <span class="nav-label">Publisher</span>
                             <span class="fa arrow"></span>
                         </a>
@@ -76,14 +82,11 @@
                             <li id="nav_pub_stats" class="nav-click">
                                 <a href="{{ URL::to('/stats/pub') }}">Stats</a>
                             </li>
-                            <li id="nav_pub_faq" class="nav-click">
-                                <a href="{{URL::to('/faq_publisher')}}">FAQ</a>
-                            </li>                            
                         </ul>
                     </li>
                     <li id="nav_buyer" class="nav-click">
                         <a href="{{ url('/buyers') }}">
-                            <i class="fa fa-bullhorn fa-2x"></i>
+                            <i class="fa fa-bullhorn"></i>
                             <span class="nav-label">Advertiser</span>
                             <span class="fa arrow"></span>
                         </a>
@@ -97,38 +100,31 @@
                             <li id="nav_buyer_library" class="nav-click">
                                 <a href="{{URL::to('/library')}}">Library</a>
                             </li>                             
-                            <li id="nav_buyer_faq" class="nav-click">
-                                <a href="{{URL::to('faq_advertiser')}}">FAQ</a>
-                            </li>
                         </ul>
                     </li>
-                    <li id="nav_profile" class="nav-click">
+		    <li id="nav_profile" class="nav-click">
                         <a href="{{ url('/profile') }}">
-                            <i class="fa fa-address-book-o fa-2x"></i>
+                            <i class="fa fa-address-book-o"></i>
                             <span class="nav-label">Profile</span>
                         </a>
                     </li>
                     <li id="nav_support" class="nav-click">
                         <a href="{{ url('/tickets') }}">
-                            <i class="fa fa-bug fa-2x"></i>
+                            <i class="fa fa-bug"></i>
                             <span class="nav-label">Support</span>
                         </a>
                     </li>
-                    <li id="nav_logout" class="nav-click">
-                        <a href="{{ url('/logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                            <i class="fa fa-plug fa-2x"></i>
-                            <span class="nav-label">Logout</span>
-                        </a>
-                        <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
-                            {{ csrf_field() }}
-                        </form>
-                    </li>
+					<li id="nav_buyer_faq" class="nav-click">
+						<a href="{{URL::to('faq_advertiser')}}">
+							<i class="fa fa-info-circle"></i>
+							<span class="nav-label"> FAQs</span>
+						</a>
+					</li>
                     @endif
-                </ul>
-                </div>
-            </div>
-        </nav>
-        <div id="page-wrapper" class="gray-bg">
+				</ul>
+			</div>
+		</nav>
+        <div id="page-wrapper" class="gray-bg" style="min-height: 755px;">
             <div class="row border-bottom">
                 <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
                     <div class="navbar-header">
@@ -139,26 +135,29 @@
                     <ul class="nav navbar-top-links navbar-right">
                         @if(!Auth::guest())
                         <li>
-                            <span class="nav-label m-r-sm text-muted welcome-message">{{ Auth::user()->name }} @yield('title')</span>
+                            <span class="nav-label m-r-sm text-muted welcome-message">{{ Auth::user()->name }}</span>
                         </li>
-
-                        <li>
-                            <a href="{{ url('/logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                                <i class="fa fa-plug"></i>
-                                <span class="nav-label">Logout</span>
-                            </a>
-                            <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
-                                {{ csrf_field() }}
-                            </form>
+						<li>
+							<a href="{{ url('/logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                            	<i class="fa fa-sign-out"></i>
+                            	<span class="nav-label">Logout</span>
+							</a>
+							<form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+								{{ csrf_field() }}
+							</form>
                         </li>
                         @endif
                     </ul>
 
                 </nav>
             </div>
-
-            <div class="wrapper wrapper-content">
-                @include('notifications') 
+			
+			<div class="row">
+                <span class="title-blue">@yield('title')</span>
+            </div>
+			
+            <div class="wrapper wrapper-content animated fadeInRight">
+                @include('notifications')
                 @yield('content')
             </div>
         </div>

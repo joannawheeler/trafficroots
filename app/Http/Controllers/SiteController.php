@@ -7,6 +7,7 @@ use Auth;
 use Log;
 use DB;
 use App\Site;
+use App\SiteTheme;
 use App\Category;
 use App\LocationType;
 use Illuminate\Validation\Rule;
@@ -29,12 +30,13 @@ class SiteController extends Controller
             }
 
         $sites = Site::with('zones')->where('user_id', $user->id)->get();
-        $categories = Category::all();
+	    $themes = SiteTheme::all();
+	    $categories = Category::all();
         $locationTypes = LocationType::orderBy('width')->get();
         $pending = $this->getPendingBids();
         return view(
             'sites',
-            compact('user', 'sites', 'categories', 'locationTypes', 'pending')
+            compact('user', 'sites', 'themes', 'categories', 'locationTypes', 'pending')
         );
     }
     public function store(Request $request)
@@ -47,13 +49,13 @@ class SiteController extends Controller
                     ->where('user_id', Auth::user()->id)
             ],
             'site_url' => 'required|url|unique:sites,site_url',
-	    'site_category' => 'required|exists:categories,id',
+	    'site_theme' => 'required|exists:site_themes,id',
 	    'allowed_category' => 'required'
         ]);
         $newsite = Site::create([
             'site_name' => $request->site_name,
             'site_url' => $request->site_url,
-            'site_category' => $request->site_category,
+            'site_theme' => $request->site_theme,
             'user_id' => Auth::user()->id,
             'site_handle' => uniqid()
         ]);
@@ -110,12 +112,12 @@ class SiteController extends Controller
                 'url',
                 Rule::unique('sites')->ignore($site->id)
             ],
-	    'site_category' => 'required|exists:categories,id',
+	    'site_theme' => 'required|exists:site_themes,id',
 	    'allowed_category' => 'required'
         ]);
         $site->site_name = $request->site_name;
         $site->site_url = $request->site_url;
-        $site->site_category = $request->site_category;
+        $site->site_theme = $request->site_theme;
         $site->save();
 	if(is_array($request->allowed_category) && count($request->allowed_category)){
 	    Log::info('Allowed Category exists');

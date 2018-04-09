@@ -8,3 +8,18 @@
 <script src="{{ URL::asset('js/inspinia.js') }}"></script>
 <script src="{{ URL::asset('js/plugins/pace/pace.min.js') }}"></script>
 <script src="{{ URL::asset('js/plugins/wow/wow.min.js') }}"></script>
+
+
+<script type="text/javascript">
+/*date table filtering only*/
+if ($(".dataTableSearchOnly").length) {
+	alert("test");
+	$('.dataTableSearchOnly').DataTable({
+		"oLanguage": {
+		  "sSearch": "Search Table"
+		}, pageLength: 10,
+		responsive: true
+	});
+}
+	
+</script>

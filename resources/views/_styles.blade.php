@@ -5,9 +5,12 @@
 <link rel="stylesheet" href="{{ asset('font-awesome/css/font-awesome.css') }}" >
 <link rel="stylesheet" href="{{ asset('css/plugins/toastr/toastr.min.css') }}" >
 <link rel="stylesheet" href="{{ asset('js/plugins/gritter/jquery.gritter.css') }}" >
+
+<link rel="stylesheet" href="{{ asset('css/plugins/tablesaw/tablesaw.css') }}" >
+<link rel="stylesheet" href="{{ URL::asset('css/custom.css') }}">
 <link rel="stylesheet" href="{{ asset('css/animate.css') }}" >
-<link rel="stylesheet" href="{{ asset('css/style.css') }}" >
-<link rel="stylesheet" href="{{ mix('mix/app.css') }}" >
+<link rel="stylesheet" href="{{ URL::asset('css/style.css') }}">
+<link rel="stylesheet" href="{{ URL::asset('mix/app.css') }}" >
 <!-- summer editor -->
 {{-- <link rel="stylesheet" href="{{ URL::asset('css/plugins/summernote/summernote.css') }}">
 <link rel="stylesheet" href="{{ URL::asset('css/plugins/summernote/summernote-bs3.css') }}"> --}}

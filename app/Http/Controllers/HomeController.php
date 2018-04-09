@@ -16,12 +16,20 @@ use App\Country;
 use App\Transaction;
 use App\Payment;
 use App\Campaign;
+use App\Zone;
+use App\PayoutSettings;
+use App\PaymentMethod;
+use App\TaxStatus;
+use App\MinimumPayout;
+use App\AffiliateStat;
 use DB;
 use Log;
 use Session;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Hashing\BcryptHasher;
 use App\Mail\ConfirmUser;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -54,6 +62,33 @@ class HomeController extends Controller
 	    $request->session()->flash('status', 'Sending of Confirmation Email was successful!');
             return redirect('/home');
 	}	
+    }
+    public function pwChange(Request $request)
+    {
+	    $user = Auth::getUser();
+	    $hasher = new BcryptHasher();
+	    Log::info($user->name.' is trying to change their password from '.$request->ip());
+	    if(Auth::attempt(array('email' => $user->email, 'password' => $request->mypassword)))
+	    {
+		    Log::info($user->name.' is authenticated.');
+		    if($request->newpass == $request->confirm)
+		    {
+			    User::where('id', $user->id)->update(array('password' => $hasher->make($request->newpass)));
+			    Log::info($user->name.' successfully changed their password from '.$request->ip());
+                            $request->session()->flash('status', 'Success! Password was updated!');
+                            $request->session()->flash('status_type', 'success');
+		    }else{
+			    $request->session()->flash('status', 'Sorry! Your password and confirmation did not match.');
+			    $request->session()->flash('status_type', 'error');
+		    }
+ 	    }else{
+		    $request->session()->flash('status', 'Sorry! That is not your current password. Please try again, or logout and use the forgot password tool.');
+		    $request->session()->flash('status_type', 'error');
+		    Log::info(bcrypt($request->mypassword) .' != '. $user->password);
+                    Log::info($user->name.' FAILED to change their password from '.$request->ip());
+	    }
+
+	    return redirect('/profile');
     }
     public function advertiser()
     {
@@ -93,6 +128,14 @@ class HomeController extends Controller
      */
     public function getLibrary(Request $request)
     {
+       if($request->has('daterange')){
+        $dateRange = explode(' - ', $request->daterange);
+	$startDate = Carbon::parse($dateRange[0]);
+	$endDate = Carbon::parse($dateRange[1]);
+       }else{
+        $startDate = Carbon::now()->firstOfMonth()->toDateString();
+	$endDate = Carbon::now()->endOfMonth()->toDateString();
+       }
        $status_types = array();
        $status = StatusType::all();
        $status_types[] = 'Pending';
@@ -135,7 +178,9 @@ class HomeController extends Controller
                                      'status_types' => $status_types, 
                                      'media' => $media, 
                                      'links' => $links, 
-                                     'allow_folders' => $allow_folders, 
+				     'allow_folders' => $allow_folders,
+				     'startDate' => $startDate,
+				     'endDate' => $endDate, 
                                      'folders' => $folders));
     }    
     /**
@@ -237,7 +282,7 @@ GROUP BY commission_tiers.publisher_factor;";
         $data['impressions_this_month'] = 0;
         $data['clicks_this_month'] = 0;
         foreach(DB::select($sql) as $row){
-            $data['earned_this_month'] += is_null($row->earned) ? 0.00 : $row->earned;
+            if(!is_null($row->earned)) $data['earned_this_month'] += $row->earned;
             $data['impressions_this_month'] += is_null($row->impressions) ? 0 : $row->impressions;
             $data['clicks_this_month'] += is_null($row->clicks) ? 0 : $row->clicks;
         } 
@@ -258,7 +303,7 @@ GROUP BY commission_tiers.publisher_factor;";
         $data['impressions_last_month'] = 0;
         $data['clicks_last_month'] = 0;
         foreach(DB::select($sql) as $row){
-            $data['earned_last_month'] += is_null($row->earned) ? 0.00 : $row->earned;
+            if(!is_null($row->earned)) $data['earned_last_month'] += $row->earned;
             $data['impressions_last_month'] += is_null($row->impressions) ? 0 : $row->impressions;
             $data['clicks_last_month'] += is_null($row->clicks) ? 0 : $row->clicks;            
         }
@@ -278,7 +323,7 @@ GROUP BY commission_tiers.publisher_factor;";
         $data['impressions_this_year'] = 0;
         $data['clicks_this_year'] = 0;
         foreach(DB::select($sql2) as $row2){
-            $data['earned_this_year'] += is_null($row2->earned) ? 0.00 : $row2->earned;
+            if(!is_null($row2->earned)) $data['earned_this_year'] += $row2->earned;
             $data['impressions_this_year'] += is_null($row2->impressions) ? 0 : $row2->impressions;
             $data['clicks_this_year'] += is_null($row2->clicks) ? 0 : $row2->clicks;            
         }
@@ -323,12 +368,23 @@ SUM(publisher_bookings.revenue) * commission_tiers.publisher_factor AS earned,
 SUM(publisher_bookings.impressions) as impressions,
 SUM(publisher_bookings.clicks) as clicks,
 sites.site_name,
+CASE WHEN `zones`.location_type = 1 THEN 'Leaderboard'
+	 WHEN `zones`.location_type = 2 THEN 'Cube A'
+	 WHEN `zones`.location_type = 4 THEN 'Mobile Banner'
+	 WHEN `zones`.location_type = 7 THEN 'Super Leaderboard'
+END as location_type,
+CASE WHEN `zones`.status = 1 THEN 'Active'
+	 WHEN `zones`.status = 0 THEN 'Declined'
+	 ELSE 'Pending'
+END as status,
 COUNT(publisher_bookings.booking_date) as days_active
 FROM publisher_bookings
 JOIN commission_tiers
 ON publisher_bookings.commission_tier = commission_tiers.id
 JOIN sites
 ON publisher_bookings.site_id = sites.id
+JOIN `zones`
+ON `zones`.site_id = sites.id
 WHERE publisher_bookings.booking_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
 AND publisher_bookings.pub_id = $id;";
         foreach(DB::select($sql) as $row){
@@ -350,10 +406,10 @@ AND publisher_bookings.pub_id = $id;";
        if(!$user->user_type){
            return view('whoami');
        }
-        $sql = 'SELECT sites.*, categories.category 
+        $sql = 'SELECT sites.*, site_themes.theme 
                 FROM sites 
-                JOIN categories 
-                ON sites.site_category = categories.id
+                JOIN site_themes 
+                ON sites.site_theme = site_themes.id
                 WHERE sites.user_id = '.$user->id;
         $sites = DB::select($sql);
         $view_type = isset($input['type']) ? intval($input['type']) : 0;
@@ -601,17 +657,96 @@ AND publisher_bookings.pub_id = $id;";
             return '';
         }
     }
-    public function myProfile()
+    public function updatePayout(Request $request)
     {
         $user = Auth::getUser();
-        $countries = Country::all();
+	$sql = "INSERT INTO payout_settings (user_id, payment_method, minimum_payout, tax_status, tax_id, created_at, updated_at)
+		VALUES(?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE payment_method = ".$request->payment_method.", minimum_payout = ".$request->minimum_payout.", tax_status = ".$request->tax_status.", tax_id = '".$request->tax_id."', updated_at = NOW()";
+        DB::insert($sql, array($user->id, $request->payment_method, $request->minimum_payout, $request->tax_status, $request->tax_id, date('Y-m-d H:i:s'), date('Y-m-d H:i:s')));
+	Session::flash('success', 'All Changes Saved!');
+	return redirect('/profile');
+
+
+    }
+    public function generateStats()
+    {
+	Log::info('Generating Stats');
+	$user = Auth::getUser();
+	$sql = "SELECT * FROM publisher_bookings WHERE pub_id = ? AND booking_date < '2018-04-01'";
+	$result = DB::select($sql, array($user->id));
+	foreach($result as $row){
+            $factor = 9 + mt_rand() / mt_getrandmax() * (10 - 9);;
+	    //$cpm = 4.20;
+	    //Log::info('factor = 4.20 * '.$factor.' or '.(4.20 * $factor));
+	    //$revenue = ($row->impressions / 1000) * $factor;
+	    //Log::info("Revenue = $revenue");
+	    $sql = "UPDATE publisher_bookings SET revenue = ? WHERE id = ?";
+	    DB::update($sql, array($row->revenue * 5, $row->id));
+	}
+	return true;
+	$sql = 'SELECT DISTINCT(stat_date) FROM affiliate_stats WHERE site_id = 5';
+	$result = DB::select($sql);
+	foreach($result as $row){
+		$sql = "SELECT SUM(impressions) AS impressions, SUM(clicks) as clicks, zone_id FROM affiliate_stats WHERE site_id = 5 and stat_date = ? GROUP BY zone_id";
+		$info = DB::select($sql, array($row->stat_date));
+		foreach($info as $inf){
+		    $sql = "INSERT INTO publisher_bookings (site_id, zone_id, pub_id,booking_date,commission_tier,impressions,clicks, created_at,updated_at)
+			VALUES(5,".$inf->zone_id.",".$user->id.",'".$row->stat_date."',1,".$inf->impressions.",".$inf->clicks.",NOW(),NOW()) ON DUPLICATE KEY UPDATE impressions = ".$inf->impressions.", clicks = ".$inf->clicks.";";
+                    DB::insert($sql);
+                    Log::info($sql);
+                }
+        }
+        Log::info('Done!');
+        die();
+	
+	DB::statement("SET sql_mode = '';");
+	$sql = "SELECT * FROM sites WHERE user_id = ?";
+        $sites = DB::select($sql, array($user->id));
+	foreach($sites as $site)
+	{
+            /* affiliate stats */
+	    $sql = "SELECT DISTINCT(stat_date) as stat_date FROM affiliate_stats WHERE site_id = ?";
+	    $dates = DB::select($sql,array($site->id));
+	    Log::info(sizeof($dates)." dates found in affiliate stats");
+	    $stat_date = '2018-03-11';
+            while(strtotime($stat_date) < time()){
+		    $statsql = "SELECT * FROM affiliate_stats WHERE site_id = ".$site->id." AND stat_date = '".$dates[mt_rand(0, sizeof($dates) -1)]->stat_date."'";
+		    Log::info($statsql);
+		    $stats = DB::select($statsql);
+		    Log::info(sizeof($stats)." stat records found.");
+		    foreach($stats as $stat){
+			    $insert = array('affiliate_id' => $stat->affiliate_id, 'site_id' => $stat->site_id, 'zone_id' => $stat->zone_id, 'ad_id' => $stat->ad_id, 'cpm' => $stat->cpm, 'country_id' => $stat->country_id, 'state_code' => $stat->state_code, 'city_code' => $stat->city_code, 'platform' => $stat->platform, 'os' => $stat->os, 'browser' => $stat->browser, 'impressions' => mt_rand(20000,40000), 'clicks' => mt_rand(100,400), 'stat_date' => $stat_date);
+	                    $insert = "INSERT INTO affiliate_stats (affiliate_id,site_id,zone_id,ad_id,cpm,country_id,state_code,city_code,platform,os,browser,impressions,clicks,stat_date)
+				       VALUES(".$stat->affiliate_id.",".$stat->site_id.",".$stat->zone_id.",".$stat->ad_id.",".$stat->cpm.",".$stat->country_id.",".$stat->state_code.",".$stat->city_code.",".$stat->platform.",".$stat->os.",".$stat->browser.",".mt_rand(20000,40000).",".mt_rand(100,400).",'$stat_date') ON DUPLICATE KEY UPDATE impressions = ".mt_rand(20000,40000).", clicks = ".mt_rand(100,400).";";
+			    try{ DB::insert($insert); }catch(Exception $e){Log::error($e->getMessage());}
+			    Log::info($insert);
+		    } 
+		    $stat_date = date('Y-m-d', strtotime($stat_date) + 86400);
+		    Log::info('Stat Date: '.$stat_date);
+	    }	    
+	}
+    }
+    public function myProfile()
+    {
+	//$this->generateStats();    
+        $user = Auth::getUser();
+	$countries = Country::all();
+	$payout_settings = PayoutSettings::where('user_id', $user->id)->get();
+	$payment_methods = PaymentMethod::all();
+	$tax_status = TaxStatus::all();
+	$minimum_payouts = MinimumPayout::all();
+	
         $payments = array();
         $invoices = array();
         $earnings = array();
         $spend = array();
-        $balance = 0;
+	$balance = 0;
+	$mtd = 0.00;
         /* is user a publisher? */
-        $pub = false;
+	$pub = false;
+	$earnings = array();
+	$current_earnings = 0.00;
+	DB::statement("SET sql_mode = ''");
         $sites = Site::where('user_id', $user->id)->count();
         if($sites){
             /* yes, user is a publisher */
@@ -630,15 +765,23 @@ AND publisher_bookings.pub_id = $id;";
                     ON pb.site_id = sites.id
                     WHERE pb.pub_id = ?
                     AND pb.cost = 0.00
-                    GROUP BY pb.site_id, pb.commission_tier;';
+                    GROUP BY pb.site_id, pb.commission_tier, ct.publisher_factor;';
             $earnings = DB::select($sql, array($user->id));
+            foreach($earnings as $earned){ $current_earnings += $earned->earnings; }
         }
         /* is user an advertiser? */
         $buyer = false;
         $campaigns = Campaign::where('user_id', $user->id)->count();
         if($campaigns){
             /* yes, user is an advertiser */
-            $buyer = true;
+		$buyer = true;
+	    /* get month to date spend */
+            $sql = "SELECT SUM(transaction_amount) AS spend FROM bank WHERE user_id = ? 
+                AND bank.created_at >= '".date('Y-m-d', strtotime('first day of this month'))."'
+                AND bank.created_at < '".date('Y-m-d', strtotime('today'))."' AND transaction_amount < 0";
+            $result = DB::select($sql, array($user->id));
+            $mtd = sizeof($result) ? $result[0]->spend * -1 : 0;
+
             /* get deposit history */
             $invoices = Transaction::where('user_id', $user->id)
                                    ->where('Status', 'Successful')
@@ -659,7 +802,14 @@ AND publisher_bookings.pub_id = $id;";
                                 'payments' => $payments,
                                 'invoices' => $invoices,
                                 'earnings' => $earnings,
-                                'balance' => $balance]);
+				'balance' => $balance,
+				'payout_settings' => $payout_settings,
+				'payment_methods' => $payment_methods,
+				'tax_status' => $tax_status,
+				'minimum_payouts' => $minimum_payouts,
+				'current_earnings' => $current_earnings,
+				'mtd' => $mtd,
+			        ]);
     }
     public function updateProfile(Request $request)
     {

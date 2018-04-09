@@ -46,31 +46,31 @@
                     <div class="form-group">
                         <label>Category</label>
                         <select class="form-control m-b"
-                                name="category"
+                                name="image_category"
                                 required>
-                            <option value="">Choose Site Category</option>
+                            <option value="">Choose Image Category</option>
                             @foreach(App\Category::all() as $category)
                             <option value="{{ $category->id }}">{{ $category->category }}</option>
                             @endforeach
                         </select>
                         <label class="error hide"
-                               for="category"></label>
+                               for="image_category"></label>
                     </div>
 
                     <div class="form-group">
                         <label>Location Type</label>
                         <select class="form-control m-b"
                                 value=""
-                                name="location_type"
+                                name="image_size"
                                 required>
-                            <option value="">Choose zone size</option>
+                            <option value="">Choose Image Size</option>
                             @foreach(App\LocationType::all() as $locationType)
                             <option value="{{ $locationType->id }}">{{ $locationType->width . 'x' . $locationType->height . ' ' . $locationType->description }}</option>
                             @endforeach
                         </select>
 
                         <label class="error hide"
-                               for="location_type"></label>
+                               for="image_size"></label>
                     </div>
                     <div class="form-group">
                         <label class="btn btn-success btn-block"
@@ -78,6 +78,10 @@
                             <i class="fa fa-upload"></i>&nbsp;&nbsp;
                             <span class="bold">Upload</span>
                         </label>
+						<br>
+						<!-- <div class="text-center image-preview" style="border: 0px;">
+							<img id="previewImgFile" src="#" alt="Preview Image" />
+						</div> -->
                         <input type="file"
                                name="file"
                                id="image_file"
@@ -106,12 +110,7 @@
                             </div>
                         </label>
                     </div>
-                    <div>
-                        <h3>Media:</h3>
-                        [<b>mee</b>-dee-<i>uh</i> ] - 
-                        <i>noun</i>
-                        <ul><li>an intervening agency, means, or instrument by which something is conveyed or accomplished</li></ul>
-                        
+                    <div>      
                         <div class="well">
                             <ul>
                                 <li>Media uploaded must be image files.</li>
@@ -145,6 +144,7 @@
 </div>
 @if($_SERVER['REQUEST_URI'] == '/campaign')
 <script type="text/javascript">
+	
 function submitMediaForm(){
         // Get form
         var form = $('#media_form')[0];

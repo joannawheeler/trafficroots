@@ -1,45 +1,63 @@
-@extends('layouts.app') 
-
-@section('content') 
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h5>Reset Password</h5>
-                </div>
-		<div class="ibox-content">
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
+@extends('layouts.app')
+@section('content')
+<style>
+    .navbar-static-top {
+       display: none;
+   }
+   .navbar-static-side {
+       display: none;
+   }
+   #page-wrapper {
+       padding: 0;
+       margin: 0;
+   }
+</style>
+<div class="login-container">
+    <div id="wrapper">
+        <div id="page-wrapper" class="gray-bg tree-bg" style="margin: 0px;">
+            <div class="wrapper wrapper-content animated fadeInRight">
+                <div class="row">
+                    <div class="col-md-4 col-md-offset-4 m-t-lg" id="SignIN">
+                        <div class="ibox-title"><h3>Forgot Password</h3>
+						</div>
+                        <div class="ibox-content">
+							<div class="col-xs-12">
+                            	<form class="form-horizontal" role="form" method="POST" action="{{ url('/password/email') }}">
+                                {{ csrf_field() }} {{--
+									<p>Sign in today for more experience.</p> --}}
+									<div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
+										<label for="email">Email</label>
+										<input type="email" placeholder="Email" name="email" class="form-control">
+										@if ($errors->has('email'))
+										<span class="help-block m-b-none">{{ $errors->first('email') }}</span>
+										@endif
+									</div>
+									<div class="centered-block"><br>
+										<button class="btn btn-primary" type="submit" value="Submit"><strong>Send Email</strong></button>
+										<button class="btn btn-danger" id="cancel"><strong>Cancel</strong></button>
+									</div>
+								</form>
+							</div>
                         </div>
-                    @endif
-                    <form class="form-horizontal" role="form" method="POST" action="{{ url('/password/email') }}">
-                        {{ csrf_field() }} {{--
-                        <p>Sign in today for more expirience.</p> --}}
-                        <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label class="col-lg-2 control-label">Email</label>
-
-                            <div class="col-lg-10">
-                                <input type="email" placeholder="Email" name="email" class="form-control"> 
-                                @if ($errors->has('email'))
-                                <span class="help-block m-b-none">{{ $errors->first('email') }}</span> 
-                                @endif
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-lg-offset-2 col-lg-10">
-                                <button class="btn btn-sm btn-primary" type="submit">Send Password Reset Link</button>
-                            </div>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-@endsection 
+@endsection
 
 @section('js')
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.no-skin-config').removeAttr('style');
+		
+		$("#cancel").click(function (e) {
+			e.preventDefault();
+			window.location.replace("/login");
+		});
+    });
+</script>
+
 
 @endsection

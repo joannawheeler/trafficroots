@@ -1,29 +1,42 @@
-@extends('layouts.app') 
+@extends('layouts.app')
 
 
 @section('css')
-<link href="css/plugins/iCheck/custom.css" rel="stylesheet"> 
+<link href="css/plugins/iCheck/custom.css" rel="stylesheet">
 @endsection
 
-@section('content') 
+@section('content')
+<style>
+    .navbar-static-top {
+       display: none;
+   }
+   .navbar-static-side {
+       display: none;
+   }
+   #page-wrapper {
+       padding: 0;
+       margin: 0;
+   }
+</style>
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Login</h5>
+                    <h4>Login</h4>
                 </div>
                 <div class="ibox-content">
-                    <form class="form-horizontal" role="form" method="POST" action="{{ url('/password/reset') }}">
+					<div class="col-xs-12">
+                    	<form class="form-horizontal" role="form" method="POST" action="{{ url('/password/reset') }}">
                         {{ csrf_field() }} {{--
                         <p>Sign in today for more expirience.</p> --}}
                         <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
                             <label class="col-lg-2 control-label">Email</label>
 
                             <div class="col-lg-10">
-                                <input type="email" placeholder="Email" name="email" class="form-control"> 
+                                <input type="email" placeholder="Email" name="email" class="form-control">
                                 @if ($errors->has('email'))
-                                <span class="help-block m-b-none">{{ $errors->first('email') }}</span> 
+                                <span class="help-block m-b-none">{{ $errors->first('email') }}</span>
                                 @endif
                             </div>
                         </div>
@@ -33,12 +46,13 @@
                             </div>
                         </div>
                     </form>
+					</div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-@endsection 
+@endsection
 
 @section('js')
 <script>

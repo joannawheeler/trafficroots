@@ -24,6 +24,7 @@ use App\LocationType;
 use App\ModuleType;
 use App\StatusType;
 use App\Links;
+use App\SiteTheme;
 use DB;
 use Log;
 use Auth;
@@ -144,6 +145,11 @@ class CampaignController extends Controller
         try {
             $user = Auth::getUser();
 	    $data = array();
+            if(is_array($request->themes)){
+		$data['themes'] = implode("|",$request->themes);
+            }else{
+                $data['themes'] = ''.$request->themes;
+	    }
 	    if(is_array($request->countries)){
 		$data['countries'] = implode("|",$request->countries);
 	    }else{
@@ -203,7 +209,8 @@ class CampaignController extends Controller
     public function createCampaign()
     {
         $campaign_types = CampaignType::all();
-        $categories = Category::all();
+	$categories = Category::all();
+	$themes = SiteTheme::all();
         $location_types = LocationType::all();
         $module_types = ModuleType::all();
         
@@ -244,7 +251,8 @@ class CampaignController extends Controller
 	return view('campaign_create', ['user' => $user,
 		                       'countries' => $countries,
 		                       'campaign_types' => $campaign_types,
-                                       'categories' => $categories,
+				       'categories' => $categories,
+				       'themes' => $themes,
                                        'browsers' => $browsers,
                                        'platforms' => $platforms,
                                        'operating_systems' => $operating_systems,
@@ -363,11 +371,13 @@ class CampaignController extends Controller
         try{
         $this->validate($request, [
             'media_name' => 'required|string',
-            'category' => 'required|exists:categories,id',
-            'location_type' => 'required|exists:location_types,id',
+            'image_category' => 'required|exists:categories,id',
+            'image_size' => 'required|exists:location_types,id',
             'file' => 'required|mimes:jpeg,gif,png|max:300'
         ]);
-        $data = $request->all();
+	$data = $request->all();
+	$data['category'] = $data['image_category'];
+	$data['location_type'] = $data['image_size'];
         $media = new Media();
         $user = Auth::getUser();
         $destination = 'uploads/'.$user->id;
@@ -423,10 +433,11 @@ class CampaignController extends Controller
     {
         $this->validate($request, [
             'link_name' => 'required|string',
-            'category' => 'required|exists:categories,id',
+            'link_category' => 'required|exists:categories,id',
             'url' => 'required|url'
         ]);
-        $data = $request->all();
+	$data = $request->all();
+	$data['category'] = $data['link_category'];
         $data['user_id'] = Auth::getUser()->id;
         $data['status'] = 5;
         $link = new Links();
@@ -449,10 +460,11 @@ class CampaignController extends Controller
         $campaign = DB::select('select * from campaigns where id = '.$request->id.' and user_id = '.$user->id);
         if ($campaign) {
             $campaign_types = $CUtil->getCampaignTypes();
-            $category = $CUtil->getCategories();
+	    $category = $CUtil->getCategories();
             $status_types = $CUtil->getStatusTypes();
             $location = $CUtil->getLocationTypes();
-            foreach ($campaign as $camp) {
+	    foreach ($campaign as $camp) {
+		$themes = $CUtil->getThemes($camp->id);
                 $states = $CUtil->getStates($camp->id);
                 $os_targets = $CUtil->getOperatingSystems($camp->id);
                 $platforms = $CUtil->getPlatforms($camp->id);
@@ -493,7 +505,8 @@ class CampaignController extends Controller
                 return view('manage_campaign', [
                     'campaign' => $camp,
                     'media' => $media,
-                    'links' => $links,
+		    'links' => $links,
+		    'themes' => $themes,
                     'campaign_types' => $campaign_types,
                     'categories' => $category,
                     'status_types' => $status_types,

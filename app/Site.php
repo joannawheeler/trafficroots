@@ -3,14 +3,19 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+//use Illuminate\Database\Eloquent\SoftDeletes;
+
 use App\Ad;
 
 class Site extends Model
 {
+	//use SoftDeletes;
+	//protected $dates = ['deleted_at'];
+	
     protected $fillable = [
     	'site_name',
     	'site_url',
-    	'site_category',
+    	'site_theme',
     	'user_id',
     	'site_handle',
         'status_type'
@@ -25,7 +30,6 @@ class Site extends Model
     {
     	return $this->belongsTo('App\User');
     }
-    
     
     public function addZone($description, $location_type)
     {
@@ -55,5 +59,5 @@ class Site extends Model
             Log::error($e->getMessage());
             return false;
         }
-    }    
+    }
 }

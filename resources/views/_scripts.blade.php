@@ -7,10 +7,14 @@
 <script src="{{ asset('js/plugins/slimscroll/jquery.slimscroll.min.js') }}"></script>
 
 <!-- Data Tables -->
-{{-- <script type="text/javascript" src="https://cdn.datatables.net/v/bs-3.3.7/jszip-3.1.3/pdfmake-0.1.27/dt-1.10.15/af-2.2.0/b-1.3.1/b-colvis-1.3.1/b-html5-1.3.1/b-print-1.3.1/cr-1.3.3/fc-3.2.2/fh-3.1.2/kt-2.2.1/r-2.1.1/sc-1.4.2/se-1.2.2/datatables.min.js"></script> --}}
+<!--{{-- <script type="text/javascript" src="https://cdn.datatables.net/v/bs-3.3.7/jszip-3.1.3/pdfmake-0.1.27/dt-1.10.15/af-2.2.0/b-1.3.1/b-colvis-1.3.1/b-html5-1.3.1/b-print-1.3.1/cr-1.3.3/fc-3.2.2/fh-3.1.2/kt-2.2.1/r-2.1.1/sc-1.4.2/se-1.2.2/datatables.min.js"></script> --}}-->
+
+<!--table filtering and print data -->
+<script src="{{ asset('js/plugins/dataTables/jquery.dataTables.js') }}"></script>
+
 <!-- Flot -->
-<script src="{{ asset('js/plugins/flot/jquery.flot.js') }}"></script>
-<script src="{{ asset('js/plugins/flot/jquery.flot.tooltip.min.js') }}"></script>
+<script src="{{ URL::asset('js/plugins/flot/jquery.flot.js') }}"></script>
+<script src="{{ URL::asset('js/plugins/flot/jquery.flot.tooltip.min.js') }}"></script>
 <script src="{{ asset('js/plugins/flot/jquery.flot.spline.js') }}"></script>
 <script src="{{ asset('js/plugins/flot/jquery.flot.resize.js') }}"></script>
 <script src="{{ asset('js/plugins/flot/jquery.flot.pie.js') }}"></script>
@@ -50,6 +54,19 @@
 <script src="{{ asset('js/plugins/toastr/toastr.min.js') }}"></script>
 
 <script type="text/javascript">
+/*date table filtering only*/
+if ($(".dataTableSearchOnly").length) {
+	alert("test");
+	$('.dataTableSearchOnly').DataTable({
+		"oLanguage": {
+		  "sSearch": "Search Table"
+		}, pageLength: 10,
+		responsive: true
+	});
+}
+	
+$('[data-toggle="tooltip"]').tooltip();
+	   	
 toastr.options = {
     "closeButton": true,
     "debug": false,
@@ -57,10 +74,10 @@ toastr.options = {
     "preventDuplicates": true,
     "positionClass": "toast-top-right",
     "onclick": null,
-    "showDuration": "400",
-    "hideDuration": "400",
-    "timeOut": "2000",
-    "extendedTimeOut": "1000",
+    "showDuration": "600",
+    "hideDuration": "600",
+    "timeOut": "4000",
+    "extendedTimeOut": "2000",
     "showEasing": "swing",
     "hideEasing": "linear",
     "showMethod": "slideDown",
@@ -91,6 +108,8 @@ function setActiveNav(selector) {
 
 <!-- Date range picker -->
 {{-- <script src="{{ asset('js/plugins/daterangepicker/daterangepicker.js') }}"></script> --}}
+
+{{-- <script src="{{ asset('js/main.js') }}"></script> --}}
 
 <!-- end globals -->
 <!-- page level scripts -->
