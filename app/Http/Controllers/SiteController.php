@@ -9,7 +9,9 @@ use DB;
 use App\Site;
 use App\SiteTheme;
 use App\Category;
+use App\Zone;
 use App\LocationType;
+use App\StatusType;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Gate;
 class SiteController extends Controller
@@ -32,11 +34,12 @@ class SiteController extends Controller
         $sites = Site::with('zones')->where('user_id', $user->id)->get();
 	    $themes = SiteTheme::all();
 	    $categories = Category::all();
+	    $status_types = StatusType::all();
         $locationTypes = LocationType::orderBy('width')->get();
         $pending = $this->getPendingBids();
         return view(
             'sites',
-            compact('user', 'sites', 'themes', 'categories', 'locationTypes', 'pending')
+            compact('user', 'sites', 'themes', 'categories', 'locationTypes', 'pending', 'status_types')
         );
     }
     public function store(Request $request)
@@ -285,12 +288,33 @@ class SiteController extends Controller
         $result = DB::select($sql, array(5, $user->id));
         return $result;
     }
+    /* show today's active campaigns for requested zone */
+    public function previewZone(Request $request)
+    {
+	$user = Auth::getUser();
+        $handle = $request->handle;
+	$zone = Zone::where('handle', $handle)->where('pub_id', $user->id)->first();
+	if($zone){
+	    
+	    $sql = "select bid_id, sum(impressions) as impressions, sum(clicks) as clicks, categories.category from stats 
+		    join bids on stats.bid_id = bids.id
+		    join campaigns on bids.campaign_id = campaigns.id
+		    join categories on campaigns.campaign_category = categories.id
+                    where stat_date = CURDATE() and zone_id = ? group by bid_id order by impressions desc;";
+	    $campaigns = DB::select($sql, array($zone->id));
+	    return view('zone_preview', array('campaigns' => $campaigns));
+
+	}else{
+		return redirect('/home?type=1');
+	}
+
+    }
     /* show campaign media and links */
     public function previewBid(Request $request)
     {
         $id = $request->id;
         $user = Auth::user();
-        $sql = 'SELECT `bids`.*, users.name 
+        $sql = 'SELECT `bids`.* 
         FROM `bids`
         JOIN users 
         ON bids.buyer_id = users.id 
@@ -311,8 +335,12 @@ class SiteController extends Controller
             if(sizeof($creatives)){
                 $media = array();
                 $links = array();
-                foreach($creatives as $creative){
-                    $media[] = '<img src="/'.$creative->file_location.'" alt="preview"></img>';
+		foreach($creatives as $creative){
+		    if(substr($creative->file_location,0,4) == 'http'){
+                        $media[] = '<img src="'.$creative->file_location.'" alt="preview"></img>';
+		    }else{
+                        $media[] = '<img src="/'.$creative->file_location.'" alt="preview"></img>';
+		    }
                     $links[] = '<a href="'.$creative->url.'" target="_blank">Campaign Link</a>';
                 }
             }else{
@@ -320,7 +348,7 @@ class SiteController extends Controller
                 $links = array();
 	    }
 
-            return view('preview', array('media' => $media, 'links' => $links, 'advertiser' => $result[0]->name));
+            return view('preview', array('media' => $media, 'links' => $links));
         }        
     }
 }

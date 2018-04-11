@@ -79,7 +79,13 @@
 							<span>CPC</span>
 						</div>
 						<div class="ibox-content">
-							<span class="totalStat">{{ number_format($pub_data['clicks_this_month']) }}</span>
+							<span class="totalStat">
+                                                        @if($pub_data['clicks_this_month'])
+							    {{ round($pub_data['earned_this_month'] / $pub_data['clicks_this_month'], 2) }}
+                                                        @else
+                                                           $ 0.00
+                                                        @endif
+                                                        </span>
 						</div>
 					</div>
 				</div>
@@ -89,17 +95,17 @@
 				<div class="col-lg-4">
 					<div class="ibox float-e-margins">
 						<div class="ibox-title">
-							<span class="label label-success pull-right">{{ Carbon\Carbon::now()->format('F jS') }}</span>
+							<span class="label label-success pull-right">{{ date('F jS', strtotime('yesterday')) }}</span>
 							<h5>Yesterday</h5>
 						</div>
 						<div class="ibox-content">
-							<div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['impressions_today']) }}</div>
+							<div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['impressions_yesterday']) }}</div>
 							<small>Impressions</small><br />
-							<div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['clicks_today']) }}</div>
+							<div class="stat-percent font-bold text-success pull-right">{{ number_format($pub_data['clicks_yesterday']) }}</div>
 							<small>Clicks</small><br />                
-							<div class="stat-percent font-bold text-success pull-right">$ {{ round($pub_data['earned_today'],2) }}</div>
+							<div class="stat-percent font-bold text-success pull-right">$ {{ round($pub_data['earned_yesterday'],2) }}</div>
 							<small>Earnings</small><br />
-							<div class="stat-percent font-bold text-success">$ {{ round($pub_data['cpm_today'],2) }}</div>
+							<div class="stat-percent font-bold text-success">$ {{ round($pub_data['cpm_yesterday'],2) }}</div>
 							<small>CPM</small>                
 						</div>
 					</div>
@@ -172,7 +178,7 @@
 												</div>
 											</li>
 											<li id="pub-cpm">
-												<h2 class="no-margins "> {{ round($pub_data['cpm_this_month'],2) }} %</h2>
+												<h2 class="no-margins ">$ {{ round($pub_data['cpm_this_month'],2) }} </h2>
 												<small>Cost Per Mili</small>
 												<div class="progress progress-mini">
 													<div style="width: 100%;" class="progress-bar"></div>
@@ -185,6 +191,7 @@
 					</div>
 				</div>
 			</div>
+<!--
 			<div class="row">
 				<div class="col-md-12">
 					<div class="panel panel-default">
@@ -192,13 +199,11 @@
 						<div class="ibox-content">
 							<div class="row">
 								<div class="col-xs-12 col-md-8">
-<!--
 									<form name="stats_form"
 										  id="stats_form"
 										  action="{{ url('/stats/pub') }}"
 										  method="POST">
 									{{ csrf_field() }}
--->
 									<div class="row">
 										<div class="col-xs-12 col-md-6 form-group">
 											<label>Dates</label>
@@ -216,20 +221,19 @@
 										<div class="col-xs-12 col-md-6 form-group">
 											<label>Sites</label>
 											<select class="form-control">
-<!--									
+									
 											<select name="sites[]" 
 														id="sites"
 														data-placeholder="Choose sites..."
 														class="chosen-select"
 														multiple
 														tabindex="3">
--->
+
 													<option value="">Select</option>
-<!--
+
 													@foreach(Auth::User()->sites as $site)
 														<option value="{{ $site->id }}">{{ $site->site_name }}</option>
 													@endforeach
--->
 												</select>
 											<label class="error hide"
 												   for="sites"></label>
@@ -255,49 +259,66 @@
 					</div>
 				</div>
 			</div>
+-->
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="ibox float-e-margins xs-ibox-title">
 						<div class="panel panel-default">
 							<div class="col-xs-12 col-md-6">
-								<h4 class="p-title">Campaigns - {{ date('F') }}</h4>
+								<h4 class="p-title">Active Zones</h4>
 							</div>
+<!--
 							<div class="col-xs-12 col-md-6 text-right" style="padding: 10px 25px;">
 									<label>Update Status:</label>
 									<button type="button" class="btn btn-success btn-sm">Approve</button>
 									<button type="button" class="btn btn-danger btn-sm">Decline</button>
 									<button type="button" class="btn btn-info btn-sm">Restore</button>
 								</div>
+-->
 							<div class="ibox-content">
 								<div class="tableSearchOnly">
 									<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack">
 									<thead>
 										<tr>
-											<th><input type="checkbox" class="form-check-input checkAll"> Select All</th>
 											<th>Site</th>
-											<th>Status <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Do you like my fa-coq icon?"></span></th>
 											<th>Location</th> <!--zone name name of size-->
-											<th>Date</th>
-											<th>Days Active</th>
+											<th>Impressions Today</th>
+											<th>Clicks Today</th>
 											<th>Earnings</th>
-											<th>Preview</th>
+                                                                                        <th>CPM</th>
+                                                                                        <th>CPC</th>
+                                                                                        <th>CTR</th>
+											<th>Campaigns</th>
 										</tr>
 									</thead>
 									<tbody>
-										@foreach($pub_data['sites'] as $site)
+										@foreach($pub_data['active_zones'] as $zone)
 										<tr>
-											<td class="text-center col-xs-2"><input type="checkbox" class="form-check-input checkAll"></td>
-											<td class="text-center"><b class=" tablesaw-cell-label">Site</b>{{ $site->site_name }}</td>
-											<td class="text-center"><b class=" tablesaw-cell-label">Status</b>
-												<span class="currentStatus label">{{ $site->status }}</span>
+											<td class="text-center"><b class=" tablesaw-cell-label">Site</b>{{ $zone->site_name }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Location</b>{{ $zone->description }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Impressions</b>{{ $zone->impressions }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Clicks</b>{{ $zone->clicks }} </td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Earnings</b>{{ money_format('%(#10n',$zone->earned) }}</td>
+											<td class="text-center"><b class=" tablesaw-cell-label">CPM</b>
+                                                                                        {{ money_format('%(#10n', round(($zone->earned / ($zone->impressions / 1000)),2)) }} </td>
+                                                                                        <td class="text-center"><b class=" tablesaw-cell-label">CPC</b>
+                                                                                        @if($zone->clicks)
+                                                                                        {{ money_format('%(#10n',round($zone->earned / $zone->clicks, 2)) }}
+                                                                                        @else
+                                                                                        $ 0.00
+                                                                                        @endif
 											</td>
-											<td class="text-center"><b class=" tablesaw-cell-label">Location</b>{{ $site->location_type }}</td>
-											<td class="text-center"><b class=" tablesaw-cell-label">Date</b> </td>
-											<td class="text-center"><b class=" tablesaw-cell-label">Days Active</b>{{ $site->days_active }} </td>
-											<td class="text-center"><b class=" tablesaw-cell-label">Earnings</b>$ {{ money_format('%(#10n',$site->earned) }}</td>
-											<td class="text-center"><b class=" tablesaw-cell-label">Preview</b>
-												<a class="tr-preview" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="" data-content="<img src='https://publishers.trafficroots.com/uploads/823/f7a65b864d5fc4216aff842bcc3a6321.jpeg' width='120' height='120'>" id="view_media_159">
-												<span class="fa fa-camera" aria-hidden="true"></span></a>
+                                                                                        <td class="text-center"><b class=" tablesaw-cell-label">CTR</b>
+                                                                                        @if($zone->clicks)
+                                                                                        {{ round($zone->clicks / $zone->impressions, 2) }}
+                                                                                        @else
+                                                                                        $ 0.00
+                                                                                        @endif
+                                                                                        </td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Preview Campaigns</b>
+                                                                                                <a href="/zone_preview/{{ $zone->handle }}">
+                                                                                                <button class="btn btn-xs alert-info"><span class="btn-label"><i class="fa fa-map"></i></span> Preview Campaigns</button>
+                                                                                                </a>
 											</td>
 										</tr>
 										@endforeach
@@ -556,11 +577,11 @@ $( document ).ready(function() {
 							<small>Clicks</small><br />
 							<div class="stat-percent font-bold text-success pull-right">{{ $buyer_data['ctr_yesterday'] }}</div>
 							<small>CTR</small><br />                
-							<div class="stat-percent font-bold text-success pull-right">$ {{ round($buyer_data['spent_yesterday'],2) }}</div>
+							<div class="stat-percent font-bold text-success pull-right">{{money_format('%(#10n',round($buyer_data['spent_yesterday'],2)) }}</div>
 							<small>Costs</small><br />
-							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpm_yesterday'] }}</div>
+							<div class="stat-percent font-bold text-success pull-right">{{money_format('%(#10n',$buyer_data['cpm_yesterday']) }}</div>
 							<small>CPM</small><br />
-							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpc_yesterday'] }}</div>
+							<div class="stat-percent font-bold text-success pull-right">{{money_format('%(#10n',$buyer_data['cpc_yesterday']) }}</div>
 							<small>CPC</small><br />
 						</div>
 					</div>
@@ -578,11 +599,11 @@ $( document ).ready(function() {
 							<small>Clicks</small><br />
 							<div class="stat-percent font-bold text-success pull-right">{{ $buyer_data['ctr_this_month'] }}</div>
 							<small>CTR</small><br />                
-							<div class="stat-percent font-bold text-success pull-right">$ {{ round($buyer_data['spent_this_month'],2) }}</div>
+							<div class="stat-percent font-bold text-success pull-right">{{ money_format('%(#10n',round($buyer_data['spent_this_month'],2)) }}</div>
 							<small>Costs</small><br />
-							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpm_this_month'] }}</div>
+							<div class="stat-percent font-bold text-success pull-right">{{ money_format('%(#10n',$buyer_data['cpm_this_month']) }}</div>
 							<small>CPM</small><br />
-							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpc_this_month'] }}</div>
+							<div class="stat-percent font-bold text-success pull-right">{{ money_format('%(#10n',$buyer_data['cpc_this_month']) }}</div>
 							<small>CPC</small><br />
 						</div>
 					</div>
@@ -600,11 +621,11 @@ $( document ).ready(function() {
 							<small>Clicks</small><br />
 							<div class="stat-percent font-bold text-success pull-right">{{ $buyer_data['ctr_last_month'] }}</div>
 							<small>CTR</small><br />                
-							<div class="stat-percent font-bold text-success pull-right">$ {{ round($buyer_data['spent_last_month'],2) }}</div>
+							<div class="stat-percent font-bold text-success pull-right">{{money_format('%(#10n', round($buyer_data['spent_last_month'],2)) }}</div>
 							<small>Costs</small><br />
-							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpm_last_month'] }}</div>
+							<div class="stat-percent font-bold text-success pull-right">{{ money_format('%(#10n',$buyer_data['cpm_last_month']) }}</div>
 							<small>CPM</small><br />
-							<div class="stat-percent font-bold text-success pull-right">$ {{ $buyer_data['cpc_last_month'] }}</div>
+							<div class="stat-percent font-bold text-success pull-right">{{money_format('%(#10n', $buyer_data['cpc_last_month']) }}</div>
 							<small>CPC</small><br />
 						</div>
 					</div>

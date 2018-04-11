@@ -351,7 +351,7 @@ hljs.initHighlightingOnLoad();
 									<td class="text-center col-xs-12 col-md-2"><b class=" tablesaw-cell-label">Zone Name</b>{{ $zone->description }} </td>
 									<td class="text-center col-xs-12 col-md-2"><b class=" tablesaw-cell-label">Location Type</b>{{ $locationTypes->where('id',$zone->location_type)->first()->description }} </td>
 									<td class="text-center col-xs-12 col-md-2"><b class=" tablesaw-cell-label">Size</b>{{ $locationTypes->where('id',$zone->location_type)->first()->width . 'x' . $locationTypes->where('id',$zone->location_type)->first()->height }} </td>
-									<td class="text-center col-xs-12 col-md-2"><b class=" tablesaw-cell-label">Status</b>{{ $zone->status }}</td> <!--Should toggle between active/inactive -->
+									<td class="text-center col-xs-12 col-md-2"><b class=" tablesaw-cell-label">Status</b>{{ $status_types->where('id', $zone->status)->first()->description }}</td> <!--Should toggle between active/inactive -->
 									<td class="text-center col-xs-12 col-md-4"
 										data-zone_id="{{ $zone->id }}">
 										<b class=" tablesaw-cell-label">Links</b>

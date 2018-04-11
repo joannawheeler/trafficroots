@@ -89,6 +89,7 @@ Route::get('/whoami', 'HomeController@whoAmI');
 Route::get('/activate_bid/{id}', 'SiteController@activateBid');
 Route::get('/decline_bid/{id}', 'SiteController@declineBid');
 Route::get('/preview/{id}', 'SiteController@previewBid');
+Route::get('/zone_preview/{handle}', 'SiteController@previewZone');
 Route::get('/library', 'HomeController@getLibrary');
 Route::get('/faq_advertiser', 'HomeController@advertiserFaq');
 Route::get('/faq_publisher', 'HomeController@publisherFaq');

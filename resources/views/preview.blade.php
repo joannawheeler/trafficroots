@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title','- Sites')
+@section('title','Campaign Preview')
 @section('content')
 <div class="wrapper wrapper-content">
 <h3>Campaign Images and Links</h3>
@@ -15,9 +15,5 @@
    <i class="fa fa-link"></i>  {!! $link !!}
 </div>
 @endforeach
-<h3>Advertiser</h3>
-<div class="contact-box">
-    {{ $advertiser }}
-</div>
 </div>
 @endsection

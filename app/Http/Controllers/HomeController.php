@@ -275,6 +275,24 @@ commission_tiers.publisher_factor
 FROM publisher_bookings
 JOIN commission_tiers
 ON publisher_bookings.commission_tier = commission_tiers.id
+WHERE publisher_bookings.booking_date = DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+AND publisher_bookings.pub_id = $id
+GROUP BY commission_tiers.publisher_factor;";
+        $result = DB::select($sql);
+        $data['earned_yesterday'] = sizeof($result) ? $result[0]->earned : 0.00;
+        $data['impressions_yesterday'] = sizeof($result) ? $result[0]->impressions : 0;
+        $data['clicks_yesterday'] = sizeof($result) ? $result[0]->clicks : 0;
+        $data['cpm_yesterday'] = $data['impressions_yesterday'] ? ($data['earned_yesterday'] / ($data['impressions_yesterday'] / 1000)) : 0.00;        
+
+
+        $sql = "SELECT 
+SUM(publisher_bookings.revenue) * commission_tiers.publisher_factor AS earned,
+SUM(publisher_bookings.impressions) as impressions,
+SUM(publisher_bookings.clicks) as clicks,
+commission_tiers.publisher_factor
+FROM publisher_bookings
+JOIN commission_tiers
+ON publisher_bookings.commission_tier = commission_tiers.id
 WHERE publisher_bookings.booking_date >= '".date('Y-m-d', strtotime('first day of this month'))."'
 AND publisher_bookings.pub_id = $id
 GROUP BY commission_tiers.publisher_factor;";
@@ -362,35 +380,29 @@ ORDER BY publisher_bookings.booking_date;";
             $data['last_thirty_days'][date('m/d/Y',strtotime($mydate))] = array('timestamp' => strtotime($mydate) * 1000, 'impressions' => $impressions, 'clicks' => $clicks, 'earnings' => $earnings);
         } 
 }
-        $data['sites'] = array();
+        $data['active_zones'] = array();
+
 $sql = "SELECT
-SUM(publisher_bookings.revenue) * commission_tiers.publisher_factor AS earned,
-SUM(publisher_bookings.impressions) as impressions,
-SUM(publisher_bookings.clicks) as clicks,
-sites.site_name,
-CASE WHEN `zones`.location_type = 1 THEN 'Leaderboard'
-	 WHEN `zones`.location_type = 2 THEN 'Cube A'
-	 WHEN `zones`.location_type = 4 THEN 'Mobile Banner'
-	 WHEN `zones`.location_type = 7 THEN 'Super Leaderboard'
-END as location_type,
-CASE WHEN `zones`.status = 1 THEN 'Active'
-	 WHEN `zones`.status = 0 THEN 'Declined'
-	 ELSE 'Pending'
-END as status,
-COUNT(publisher_bookings.booking_date) as days_active
-FROM publisher_bookings
-JOIN commission_tiers
-ON publisher_bookings.commission_tier = commission_tiers.id
-JOIN sites
-ON publisher_bookings.site_id = sites.id
-JOIN `zones`
-ON `zones`.site_id = sites.id
-WHERE publisher_bookings.booking_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
-AND publisher_bookings.pub_id = $id;";
+	SUM(publisher_bookings.revenue) * commission_tiers.publisher_factor AS earned,
+	SUM(publisher_bookings.impressions) as impressions,
+	SUM(publisher_bookings.clicks) as clicks,
+	sites.site_name,
+        zones.handle,
+	zones.description
+	FROM publisher_bookings
+	JOIN commission_tiers
+	ON publisher_bookings.commission_tier = commission_tiers.id
+	JOIN sites
+	ON publisher_bookings.site_id = sites.id
+	JOIN zones
+	ON publisher_bookings.zone_id = zones.id
+	WHERE publisher_bookings.booking_date = CURDATE()
+	AND publisher_bookings.pub_id =	$id
+        GROUP BY publisher_bookings.zone_id
+        ORDER BY impressions DESC, clicks DESC;";
         foreach(DB::select($sql) as $row){
-            $data['sites'][] = $row;
+            $data['active_zones'][] = $row;
         }
-        Log::info(print_r($data,true));
         return $data;
     }
 
@@ -476,8 +488,8 @@ AND publisher_bookings.pub_id = $id;";
         $result = DB::select($sql, array($user->id));
         $data['impressions_yesterday'] = sizeof($result) ? $result[0]->impressions : 0;
         $data['clicks_yesterday'] = sizeof($result) ? $result[0]->clicks : 0;
-        $data['ctr_yesterday'] = (float) $data['clicks_yesterday'] ? round($data['clicks_yesterday'] / $data['impressions_yesterday'], 4) : 0.0000;
-        $sql = "SELECT SUM(transaction_amount) AS spend FROM bank WHERE user_id = ? AND created_at = DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND transaction_amount < 0";
+	$data['ctr_yesterday'] = (float) $data['clicks_yesterday'] ? round($data['clicks_yesterday'] / $data['impressions_yesterday'], 4) : 0.0000;
+        $sql = "SELECT SUM(transaction_amount) AS spend FROM bank WHERE user_id = ? AND created_at LIKE'".date('Y-m-d', strtotime("yesterday"))."%' AND transaction_amount < 0";
         $result = DB::select($sql, array($user->id));
         $data['spent_yesterday'] = sizeof($result) ? $result[0]->spend * -1 : 0;
         
