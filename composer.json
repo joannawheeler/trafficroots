@@ -18,7 +18,9 @@
         "google/apiclient": "^2.0",
         "laravel/socialite": "^2.0",
         "google/recaptcha": "~1.1",
-        "barryvdh/laravel-debugbar": "^2.4"
+        "barryvdh/laravel-debugbar": "^2.4",
+        "twilio/sdk": "^5.16",
+        "aloha/twilio": "^3.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

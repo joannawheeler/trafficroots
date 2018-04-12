@@ -27,6 +27,7 @@ use App\StatusType;
 use App\Links;
 use App\SiteTheme;
 use Log;
+use App\SystemLog;
 
 class CUtil extends Controller
 {
@@ -34,6 +35,20 @@ class CUtil extends Controller
     {
         $this->middleware('auth');
     }
+    public function logit($log_entry)
+    {
+        SystemLog::create(['log' => $log_entry, 'created_at' => date('Y-m-d H:i:s')]);
+    }
+    public function sendText($msg = 'testing', $recipient = '+19514915526')
+    {
+        try{
+              Twilio::message($recipient, $msg);
+              Log::info( 'Text sent to '.$recipient );   
+	}catch(Exception $e){
+            Log::error( $e->getMessage() );
+        }
+    }
+
     public function getThemes($id)
 	        {
 		        $targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();

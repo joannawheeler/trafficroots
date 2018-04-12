@@ -10,6 +10,7 @@ use Redirect;
 use Input;
 use App\Bank;
 use App\Transaction;
+use App\Http\Controllers\CUtil;
 use Auth;
 use DB;
 use Log;
@@ -75,7 +76,7 @@ class CreditAchController extends Controller
               $bank = new Bank();
               $bank->fill($data);
               $bank->save();
-              
+               
               $insert = $request->all();
               $insert['user_id'] = $user->id;
               $insert['bank_id'] = $bank->id;
@@ -83,7 +84,11 @@ class CreditAchController extends Controller
               $insert['created_at'] = date('Y-m-d H:i:s');
               $transaction = new Transaction();
               $transaction->fill($insert);
-              $transaction->save();
+	      $transaction->save();
+	      Log::info($user->name." deposited $ ".$request->amount." to make their balance $ ".$running_balance);
+	      $cutil = new CUtil();
+	      $cutil->logit($user->name." deposited $ ".$request->amount." to make their balance $ ".$running_balance);
+	      $cutil->sendText($user->name." deposited $ ".$request->amount." to make their balance $ ".$running_balance);
               return response('OK!',200);
            }else{
               return response('WTF? '.$request->CaptureState,200);

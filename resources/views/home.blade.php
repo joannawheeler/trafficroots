@@ -500,6 +500,7 @@ $( document ).ready(function() {
 				<div class="col-md-12">
 					<h4>Today</h4>
 				</div>
+
 				<div class="col-sm-2 widget-boxs">
 					<div class="ibox float-e-margins">
 						<div class="ibox-title purple-bg">

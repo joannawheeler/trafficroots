@@ -306,6 +306,8 @@ class CampaignController extends Controller
             }
 	}	
 	$this->balanceCreatives($id);
+        $cutil = new CUtil();
+	$cutil->logit($user->name.' created campaign '.$id.' from '.$request->ip());
 	return json_encode(array('result' => 'OK'));
 	}catch(Exception $e){
             Log::error($e->getMessage());

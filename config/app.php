@@ -185,7 +185,7 @@ return [
 
         /* Mobile Detect service provider */
         Riverskies\Laravel\MobileDetect\MobileDetectServiceProvider::class,
-
+        Aloha\Twilio\Support\Laravel\ServiceProvider::class,
     ],
 
     /*
@@ -234,7 +234,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'MobileDetect' => Riverskies\Laravel\MobileDetect\Facades\MobileDetect::class,
-        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+	'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+	'Twilio' => Aloha\Twilio\Support\Laravel\Facade::class,
     ],
 
 ];
