@@ -135,6 +135,7 @@
 										</tr>
 									</thead>
 									<tbody>
+<!--
 										@foreach ($campaign->stats->groupBy('state_code')->all() as $state) 
 												<tr>
 													<td>{{ $state->first()->state->state_name }} </td>
@@ -148,6 +149,7 @@
 														) }}</td>
 												</tr>
 										@endforeach
+-->
 									</tbody>
 								</table>
 							</div>

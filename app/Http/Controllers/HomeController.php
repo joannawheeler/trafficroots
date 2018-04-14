@@ -588,12 +588,13 @@ $sql = "SELECT
         /* campaigns - this month */
         $data['campaigns']['thismonth'] = array();
         $data['campaigns']['lastmonth'] = array();
-        $sql = "SELECT campaigns.campaign_name, campaigns.status, campaigns.campaign_type, campaigns.bid, SUM(stats.impressions) AS impressions, SUM(stats.clicks) AS clicks, COUNT(DISTINCT(stats.stat_date)) AS days_active 
+        $sql = "SELECT campaigns.campaign_name, campaigns.status, campaigns.campaign_type, campaigns.bid, SUM(stats.impressions) AS impressions, SUM(stats.clicks) AS clicks, COUNT(DISTINCT(stats.stat_date)) AS days_active, status_types.description, status_types.classname 
                 FROM stats
                 JOIN bids ON stats.bid_id = bids.id
                 JOIN campaigns ON bids.campaign_id = campaigns.id
-                JOIN users ON users.id = bids.buyer_id
-                WHERE users.id = ?
+		JOIN users ON users.id = bids.buyer_id
+                JOIN status_types ON campaigns.status = status_types.id
+		WHERE users.id = ?
                 AND stats.stat_date >= ?
                 GROUP BY campaign_name, bid;";
         foreach(DB::select($sql,array($user->id,date('Y-m-d',strtotime('first day of this month')))) as $camp){
@@ -608,15 +609,17 @@ $sql = "SELECT
                 $spent = $camp->clicks * $camp->bid;
             }
             $data['campaigns']['thismonth'][$camp->campaign_name]['spend'] = isset($data['campaigns']['thismonth'][$camp->campaign_name]['spend']) ? $data['campaigns']['thismonth'][$camp->campaign_name]['spend'] + $spent : $spent;
-            $data['campaigns']['thismonth'][$camp->campaign_name]['status'] = StatusType::where('id',$camp->status)->pluck('description');
+	    $data['campaigns']['thismonth'][$camp->campaign_name]['status'] = $camp->description;
+	    $data['campaigns']['thismonth'][$camp->campaign_name]['classname'] = $camp->classname;
 	}
 
         /* campaigns - last month */
-        $sql = "SELECT campaigns.campaign_name, campaigns.status, campaigns.campaign_type, campaigns.bid, SUM(stats.impressions) AS impressions, SUM(stats.clicks) AS clicks, COUNT(DISTINCT(stats.stat_date)) AS days_active
+        $sql = "SELECT campaigns.campaign_name, campaigns.status, campaigns.campaign_type, campaigns.bid, SUM(stats.impressions) AS impressions, SUM(stats.clicks) AS clicks, COUNT(DISTINCT(stats.stat_date)) AS days_active, status_types.description, status_types.classname
                 FROM stats
                 JOIN bids ON stats.bid_id = bids.id
                 JOIN campaigns ON bids.campaign_id = campaigns.id
-                JOIN users ON users.id = bids.buyer_id
+		JOIN users ON users.id = bids.buyer_id
+                JOIN status_types ON campaigns.status = status_types.id
                 WHERE users.id = ?
                 AND stats.stat_date BETWEEN ? AND ?
                 GROUP BY campaign_name, bid;";
@@ -632,7 +635,8 @@ $sql = "SELECT
                 $spent = $camp->clicks * $camp->bid;
             }
             $data['campaigns']['lastmonth'][$camp->campaign_name]['spend'] = isset($data['campaigns']['lastmonth'][$camp->campaign_name]['spend']) ? $data['campaigns']['lastmonth'][$camp->campaign_name]['spend'] + $spent : $spent;
-            $data['campaigns']['lastmonth'][$camp->campaign_name]['status'] = StatusType::where('id',$camp->status)->pluck('description');
+	    $data['campaigns']['lastmonth'][$camp->campaign_name]['status'] = $camp->description;
+	    $data['campaigns']['lastmonth'][$camp->campaign_name]['classname'] = $camp->classname;
 
 	}
         return $data;

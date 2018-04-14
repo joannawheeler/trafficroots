@@ -765,7 +765,7 @@ $( document ).ready(function() {
 											<td class="text-center"><b class=" tablesaw-cell-label">Date</b>{{ $key }}</td>
 											<td class="text-center"><b class=" tablesaw-cell-label">Days Active</b>{{ $campaign['days_active'] }} </td>
 											<td class="text-center"><b class=" tablesaw-cell-label">Impressions</b>{{ $campaign['impressions'] }}</td>
-											<td class="text-center"><b class=" tablesaw-cell-label">Status</b></td>
+											<td class="text-center"><b class=" tablesaw-cell-label">Status</b>{{ $campaign['status'] }}</td>
 											<td class="text-center"><b class=" tablesaw-cell-label">Clicks</b>{{ $campaign['clicks'] }}</td>
 											<td class="text-center"><b class=" tablesaw-cell-label">Costs</b>{{ money_format('%(#10n',$campaign['spend']) }}</td>
 											<td class="text-center"><b class=" tablesaw-cell-label">Preview</b>

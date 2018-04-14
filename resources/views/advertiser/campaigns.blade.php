@@ -123,7 +123,7 @@
                                     ${{ $campaign->bid }}
                                 </td>
 								<td class="text-center"><b class=" tablesaw-cell-label">Type</b>
-                                    <span class="badge label">{{ $campaign->type->campaign_type }}</span>
+				    <span class="label<?php if($campaign->type->id == 1){echo ' label-info';}else{echo ' label-success';}?>">{{ $campaign->type->campaign_type }}</span>
                                 </td>
                                 <td class="text-center"><b class=" tablesaw-cell-label">eCPM</b> $ @if($campaign->stats->sum('impressions')){{ 
                                     number_format(
@@ -140,7 +140,7 @@
                                                 return $cost + (($stat->impressions / 1000) * $stat->cpm); 
                                             }), 2
                                         ) }}</td>
-                                <td class="text-center"><b class=" tablesaw-cell-label">Status</b> <span class="currentStatus label">{{ $campaign->status_type->description }}</span></td>
+                                <td class="text-center"><b class=" tablesaw-cell-label">Status</b> <label class="label label-{{ $campaign->status_type->classname }}">{{ $campaign->status_type->description }}</label></td>
                                 <td class="text-center"><b class=" tablesaw-cell-label">Links</b>
                                     <a href="{{ url("stats/campaign/$campaign->id") }}">
 										<button class="campaign-stats btn btn-xs btn-warning alert-info">

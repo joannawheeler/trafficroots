@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class StatusType extends Model
 {
-    protected $fillable = ['description'];
+    protected $fillable = ['description','classname'];
 }

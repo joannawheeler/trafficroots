@@ -213,4 +213,153 @@ class StatsController extends Controller
             Log::error($e->getMessage());
         }
     }
+    public function campaignStats(Request $request)
+    {
+	    $user = Auth::getUser();
+         /* today's traffic by site */
+	    $site_traffic = array();
+	    DB::statement("SET sql_mode = '';");
+        $sql = 'select sum(stats.impressions) as impressions,
+                 sum(stats.clicks) as clicks,
+                 stats.site_id,
+		 sites.site_name,
+                 campaigns.campaign_name
+                 from trafficroots.stats
+                 join trafficroots.sites
+                 on stats.site_id = sites.id
+                 join trafficroots.bids
+                 on stats.bid_id = bids.id
+                 join trafficroots.campaigns
+                 on bids.campaign_id = campaigns.id
+                 where stats.stat_date = curdate()
+		 and campaigns.id = ?
+                 and campaigns.user_id = ?
+                 group by stats.site_id
+                 order by impressions desc;';
+
+        $traffic = DB::select($sql, array($request->id, $user->id));
+        foreach($traffic as $row){
+		$site_traffic[$row->site_id]['impressions'] = isset($site_traffic[$row->site_id]) ? $site_traffic[$row->site_id]['impressions'] + $row->impressions : $row->impressions;
+                $site_traffic[$row->site_id]['clicks'] = isset($site_traffic[$row->site_id]['clicks']) ? $site_traffic[$row->site_id]['clicks'] + $row->clicks : $row->clicks;
+
+		$site_traffic[$row->site_id]['site_name'] = $row->site_name;
+		$campaign_name = $row->campaign_name;
+	}
+        $todays_traffic = 0;
+        $todays_clicks = 0;
+	foreach($site_traffic as $row){ 
+		$todays_traffic += $row['impressions'];
+		$todays_clicks += $row['clicks'];
+	}
+  
+
+        $todays_ctr = $todays_traffic ? round($todays_clicks / $todays_traffic, 4) : 0.0000;
+
+           $sql = 'select sum(stats.impressions) as impressions,
+                  sum(stats.clicks) as clicks,
+                  stats.country_id,
+                  countries.country_short,
+                  countries.country_name
+                  from trafficroots.stats
+                  join trafficroots.countries
+                  on stats.country_id = countries.id
+                  join trafficroots.bids
+                  on stats.bid_id = bids.id
+                  join trafficroots.campaigns
+                  on bids.campaign_id = campaigns.id
+                  where stats.stat_date = curdate()
+		  and campaigns.id = ?
+                  and campaigns.user_id = ?
+                  group by stats.country_id
+                  order by impressions desc;';
+         $geo_traffic = DB::select($sql, array($request->id, $user->id));
+
+         $sql = 'select sum(stats.impressions) as impressions,
+                 sum(stats.clicks) as clicks,
+                 stats.state_code,
+                 states.state_name,
+                 states.state_short
+                 from trafficroots.stats
+                 join trafficroots.states
+                 on stats.state_code = states.id
+                  join trafficroots.bids
+                  on stats.bid_id = bids.id
+                  join trafficroots.campaigns
+                  on bids.campaign_id = campaigns.id
+                  where stats.stat_date = curdate()
+		  and campaigns.id = ?
+                 and campaigns.user_id = ?
+                 and stats.country_id = 840
+                 group by stats.state_code
+                 order by impressions desc
+                 limit 20;';
+          $state_traffic = DB::select($sql, array($request->id, $user->id));
+
+          $sql = 'select sum(stats.impressions) as impressions,
+                 sum(stats.clicks) as clicks,
+                 stats.platform,
+                 platforms.platform as description
+                 from trafficroots.stats
+                 join trafficroots.platforms
+                 on stats.platform = platforms.id
+                  join trafficroots.bids
+                  on stats.bid_id = bids.id
+                  join trafficroots.campaigns
+                  on bids.campaign_id = campaigns.id
+                  where stats.stat_date = curdate()
+		  and campaigns.id = ?
+                 and campaigns.user_id = ?
+                 group by stats.platform
+                 order by impressions desc;';
+          $platforms = DB::select($sql, array($request->id, $user->id));
+
+          $sql = 'select sum(stats.impressions) as impressions,
+                 sum(stats.clicks) as clicks,
+                 stats.browser,
+                 browsers.browser as description
+                 from trafficroots.stats
+                 join trafficroots.browsers
+                 on stats.browser = browsers.id
+                  join trafficroots.bids
+                  on stats.bid_id = bids.id
+                  join trafficroots.campaigns
+                  on bids.campaign_id = campaigns.id
+                  where stats.stat_date = curdate()
+		  and campaigns.id = ?
+                  and campaigns.user_id = ?
+                 group by stats.browser
+                 order by impressions desc;';
+          $browsers = DB::select($sql, array($request->id, $user->id));
+
+          $sql = 'select sum(stats.impressions) as impressions,
+                 sum(stats.clicks) as clicks,
+                 stats.os,
+                 operating_systems.os as description
+                 from trafficroots.stats
+                 join trafficroots.operating_systems
+                 on stats.os = operating_systems.id
+                  join trafficroots.bids
+                  on stats.bid_id = bids.id
+                  join trafficroots.campaigns
+                  on bids.campaign_id = campaigns.id
+                  where stats.stat_date = curdate()
+		  and campaigns.id = ?
+                  and campaigns.user_id = ?
+                 group by stats.os
+                 order by impressions desc;';
+          $operating_systems = DB::select($sql, array($request->id, $user->id));
+
+	return view('campaign_stats', array('site_traffic' => $site_traffic, 
+		                            'campaign_id' => $request->id, 
+					    'todays_traffic' => $todays_traffic, 
+					    'todays_clicks' => $todays_clicks, 
+					    'todays_ctr' => $todays_ctr,
+				            'campaign_name' => $campaign_name,
+                                            'geo_traffic' => $geo_traffic,
+                                            'state_traffic' => $state_traffic,
+                                            'platforms' => $platforms,
+                                            'browsers' => $browsers,
+					    'operating_systems' => $operating_systems,
+				            'datestring' => date('l jS \of F Y h:i:s A')));
+    }
 }

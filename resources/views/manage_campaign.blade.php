@@ -68,7 +68,7 @@
 									</form>
 								</td>
 				    			<td class="text-center"><b class=" tablesaw-cell-label">Option</b>
-                                    <a href={{ url("stats/campaign/$campaign->id") }}" data-toggle="tooltip" title="View Campaign Stats" class="camp-stats" id="camp_stats_{{ $campaign->id }}"><i class="fa fa-bar-chart" aria-hidden="true"></i></a>
+                                    <!--<a href={{ url("stats/campaign/$campaign->id") }}" data-toggle="tooltip" title="View Campaign Stats" class="camp-stats" id="camp_stats_{{ $campaign->id }}"><i class="fa fa-bar-chart" aria-hidden="true"></i></a> -->
 									@if( $campaign->status == 3)
 									&nbsp;<a href="#" data-toggle="tooltip" title="Start this Campaign" class="camp-start" id="camp_start_{{ $campaign->id }}"><i class="fa fa-play" aria-hidden="true"></i></a>
 									@endif

@@ -50,7 +50,7 @@ Route::get('/stats/zone/{zone}', 'StatsController@zone');
 Route::post('sites/{site}/zones', 'ZoneController@store');
 Route::get('/stats/pub', 'StatsController@pub');
 Route::post('/stats/pub', 'StatsController@filtered');
-Route::get('/stats/campaign/{campaign}', 'StatsController@campaign');
+Route::get('/stats/campaign/{id}', 'StatsController@campaignStats');
 Route::post('/stats/campaign', 'StatsController@campaign');
 Route::get('/getzones/{site_id}', 'ZoneController@getZones');
 Route::post('/getzones', 'ZoneController@postGetZones');
