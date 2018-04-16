@@ -1,9 +1,13 @@
 @extends('layouts.app') 
 @section('css')
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/plugins/iCheck/custom.css" rel="stylesheet"> 
-<link href="css/custom.css" rel="stylesheet">
-<link href="css/style.css" rel="stylesheet">
+<link href="{{ URL::asset('css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ URL::asset('css/plugins/iCheck/custom.css') }}" rel="stylesheet">
+<link href="{{ URL::asset('css/custom.css') }}" rel="stylesheet">
+<link href="{{ URL::asset('css/style.css') }}" rel="stylesheet">
+
+<style>
+
+</style>
 @endsection 
 
 @section('content')
@@ -35,7 +39,7 @@
                             <p>Please fill out your information below.</p><br>
                             {{ csrf_field() }} 
                             
-                                <div class="form-group">
+                                <div class="form-group" style="display:none;">
                                     <label for="selectRole" class="col-lg-2 control-label">Select role</label>
                                     <div class="col-lg-10">
                                         <select name="selectRole" class="form-control" required>
@@ -112,11 +116,11 @@
                                 <div class="col-xs-12 text-center"><br>
                                     <div class="form-group">
                                         <div class="checkbox i-checks"><label> 	
-                                            <div class="icheckbox_square-green" required style="position: relative;">
-                                                <input type="checkbox" required style="opacity:inherit;">
+                                            <div class="icheckbox_square-green" required style="position: relative; margin-right: 5px;">
+                                                <input type="checkbox" required style="opacity:inherit; display:none;">
                                                 <ins class="iCheck-helper"></ins>
                                             </div>
-                                            <a href="terms"> Agree to the terms and Conditions</a></label>
+                                            <a href="terms">Agree to the Terms and Conditions</a></label>
                                         </div>
                                     </div>
                                     <!--recaptcha-->
@@ -127,12 +131,10 @@
                                     </div>
                                 </div>
                                 <hr>
-                                <div class="form-group">
-                                    <div class="col-md-6 col-md-offset-3 text-center">
-                                        <h4>or...login with</h4>
-                                        <a href="{{ url('/auth/google') }}" class="btn btn-google"><i class="fa fa-google"></i> Google</a>
-                                        <a href="{{ url('/auth/facebook') }}" class="btn btn-facebook"><i class="fa fa-facebook"></i> Facebook</a>
-                                    </div>
+                                <div class="text-center">
+									<h4>or...login with</h4>
+									<a href="{{ url('/auth/google') }}" class="btn btn-google"><i class="fa fa-google"></i> Google</a>
+									<a href="{{ url('/auth/facebook') }}" class="btn btn-facebook"><i class="fa fa-facebook"></i> Facebook</a>
                                 </div>
                         </form>
                     </div>
@@ -198,6 +200,10 @@
                                     @endif
                             </div>
                         </div>
+						<div class="form-group">
+							<textarea class="form-control" id="textarea" rows="8" cols="30" maxlength="99" ></textarea>
+							<div id="textarea_feedback"></div>
+						</div>
 
                         <div class="form-group">
                             <label for="password-confirm" class="col-md-4 control-label">Confirm Password</label>
@@ -214,14 +220,14 @@
                                 </button>
                             </div>
                         </div>
-    <hr>
-    <div class="form-group">
-        <div class="col-md-6 col-md-offset-3 text-center">
-            <h4>or...login with</h4>
-            <a href="{{ url('/auth/google') }}" class="btn btn-google"><i class="fa fa-google"></i> Google</a>
-            <a href="{{ url('/auth/facebook') }}" class="btn btn-facebook"><i class="fa fa-facebook"></i> Facebook</a>
-        </div>
-    </div>
+						<hr>
+						<div class="form-group">
+							<div class="col-md-6 col-md-offset-3 text-center">
+								<h4>or...login with</h4>
+								<a href="{{ url('/auth/google') }}" class="btn btn-google"><i class="fa fa-google"></i> Google</a>
+								<a href="{{ url('/auth/facebook') }}" class="btn btn-facebook"><i class="fa fa-facebook"></i> Facebook</a>
+							</div>
+						</div>
                     </form>
                 </div>
             </div>
@@ -239,6 +245,16 @@ $(document).ready(function() {
     $('.i-checks').iCheck({
         checkboxClass: 'icheckbox_square-green',
         radioClass: 'iradio_square-green',
+    });
+	
+	    var text_max = 99;
+    $('#textarea_feedback').html(text_max + ' characters remaining');
+
+    $('#textarea').keyup(function() {
+        var text_length = $('#textarea').val().length;
+        var text_remaining = text_max - text_length;
+
+        $('#textarea_feedback').html(text_remaining + ' characters remaining');
     });
 	
 	$('.icheckbox_square-green input').css("opacity", "inherit");

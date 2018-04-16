@@ -98,23 +98,24 @@
 									<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack" name="media_table" id="media_table">
 										<thead>
 											<tr>
-												<th>Media Name</th>
+												<th>Name</th>
 												<th>Category</th>
 												<th>Location Type</th>
 												<th>Status</th>
 												<th>Date Uploaded</th>
-												<th>Links</th>
+<!--												<th>Links</th>-->
 												<th>Preview</th>
 											</tr>
 										</thead>
 										<tbody>
 										@foreach ($media as $file)
 											<tr class="media_row" id="media_row_{{ $file->id }}">
-												<td class="text-center"><b class=" tablesaw-cell-label">Media Name</b> {{ $file->media_name }} </td>
+												<td class="text-center"><b class=" tablesaw-cell-label">Name</b> {{ $file->media_name }} </td>
 												<td class="text-center"><b class=" tablesaw-cell-label">Category</b> {{ $categories[$file->category] }} </td>
 												<td class="text-center"><b class=" tablesaw-cell-label">Location Type</b> {{ $location_types[$file->location_type] }} </td>
 												<td class="text-center"><b class=" tablesaw-cell-label">Status</b><span class="currentStatus label"> {{ $status_types[$file->status] }} </span></td>
 												<td class="text-center"><b class=" tablesaw-cell-label">Date Uploaded</b> {{ Carbon\Carbon::parse($file->created_at)->toDayDateTimeString() }} </td>
+<!--
 												<td class="text-center"><b class=" tablesaw-cell-label">Update</b>
 													<a href="#">
 														<button class="btn btn-xs btn-success alert-success">
@@ -123,6 +124,7 @@
 														</span> Edit</button>
 													</a>
 												</td>
+-->
 												<td class="text-center"><b class=" tablesaw-cell-label">Preview</b> <a href="#" class="tr-preview" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="" data-content="<img src='https://publishers.trafficroots.com/{{ $file->file_location }}' width='100%' height='auto'>" id="view_media_{{ $file->id }}"><i class="fa fa-camera" aria-hidden="true"></a></i> </td>
 											</tr>
 										@endforeach
@@ -147,22 +149,31 @@
 										<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack" name="links_table" id="links_table">
 										   <thead>
 												<tr>
-													<th>Link Name</th>
+													<th>Name</th>
 													<th>Category</th>
 													<th>URL</th>
 													<th>Status</th>
 													<th>Date Created</th>
-													<th>Modify</th>
+<!--													<th>Modify</th>-->
 												</tr>
 											</thead>
 											<tbody>
 											@foreach ($links as $link)
 												<tr class="link_row" id="link_row_{{ $link->id }}">
-													<td class="text-center"><b class=" tablesaw-cell-label">Link Name</b> {{ $link->link_name }} </td>
+													<td class="text-center"><b class=" tablesaw-cell-label">Name</b> {{ $link->link_name }} </td>
 													<td class="text-center"><b class=" tablesaw-cell-label">Category</b> {{ $categories[$link->category] }} </td>
 													<td class="text-center"><b class=" tablesaw-cell-label">URL</b> <a href="{{ $link->url }}" target="blank">{{substr($link->url,0,25)}}</a></td>
-													<td class="text-center"><b class=" tablesaw-cell-label">Status</b><span class="currentStatus label"> {{ $status_types[$link->status] }} </span></td>
+													<td class="text-center"><b class=" tablesaw-cell-label">Status</b>
+														@if($status_types[$link->status] == 'Active')
+															<span class="label label-info">Active</span>
+														@elseif($status_types[$link->status] == 'Declined')
+															<span class="label label-info">Declined</span>
+														@else
+															<span class="label label-warning">Pending</span>
+														@endif
+													</td>
 													<td class="text-center"><b class=" tablesaw-cell-label">Date Created</b> {{ Carbon\Carbon::parse($link->created_at)->toDayDateTimeString() }} </td>
+<!--
 													<td class="text-center"><b class=" tablesaw-cell-label">Modify</b>
 														<a href="#">
 															<button class="btn btn-xs btn-success alert-success">
@@ -171,6 +182,7 @@
 															</span> Edit</button>
 														</a>
 													</td>
+-->
 												</tr>
 											@endforeach
 											</tbody>
@@ -252,11 +264,11 @@
 		}, pageLength: 10,
 		responsive: true
 	});
-	
+
 	$("#image_file").change(function() {
 		uploadImgURL(this);
 	});
-	
+
 	function uploadImgURL(input) {
 	  if (input.files && input.files[0]) {
 		var reader = new FileReader();
@@ -270,15 +282,6 @@
 	}
 
     jQuery(document).ready(function ($) {
-		var currentStatus = $(".currentStatus").text();
-		if (currentStatus = "Active"){
-			$(".currentStatus").addClass('label-primary');
-		} else if (currentStatus = "Declined"){
-			$(".currentStatus").addClass('label-danger');
-		} else {
-			$(".currentStatus").addClass('label-warning');
-		}
-		
    	    $('#media_tab').click();
     });
 </script>

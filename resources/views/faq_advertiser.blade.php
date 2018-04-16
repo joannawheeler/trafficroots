@@ -11,9 +11,9 @@
 			<div class="col-xs-12">
 				<ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
                     <li  class="active"><a data-toggle="tab">FAQ</a></li>
-                    <li><a href="" data-toggle="tab">State Regulations</a></li>
+<!--                    <li><a href="" data-toggle="tab">State Regulations</a></li>-->
                 </ul>
-				<div class="panel panel-default">									
+				<div class="panel panel-default" style="border: none;">
 					<div class="ibox-content">
 						@foreach($faqs as $faq)
 						<div class="faq-item">

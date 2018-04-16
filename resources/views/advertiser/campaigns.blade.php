@@ -17,7 +17,7 @@
 
 		div.tableSearchOnly {
 			padding-top: 55px;
-			
+
 		}
 		.content .ibox .ibox-content {
 			overflow: visible;
@@ -33,6 +33,8 @@
 <div class="content">
     <div class="row">
         <div class="col-lg-12">
+			<div class="ibox-title" style="display:none;">
+			</div>
 			<div class="row">
 				<div class="col-md-12">
 					<div class="panel panel-default">
@@ -84,9 +86,9 @@
 					</div>
 				</div>
 			</div>
-			
-			
-			
+
+
+
             <div class="ibox">
                 <div class="ibox-title">
                     <h5>Campaigns</h5>
@@ -94,11 +96,11 @@
                     	<a href="{{ URL::to('campaign') }}" class="btn btn-xs btn-primary"><i class="fa fa-plus-square-o"></i>&nbsp;&nbsp; New Campaign</a>
 					</div>
                 </div>
-				
-                <div class="ibox-content" >	
-					<div class="tableSearchOnly"> 					
+
+                <div class="ibox-content" >
+					<div class="tableSearchOnly">
 						<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack">
-						<thead> 
+						<thead>
 								<tr>
 									<th>Name</th>
 									<th>Category</th>
@@ -109,7 +111,7 @@
 									<th>eCPM <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Used to calculate the effectiveness of an advertising campaign, independently of the actual pricing model. (CPC, CPM, CPA…)."></span></th>
 									<th>Cost</th>
 									<th>Status</th>
-									<th>Links</th>
+									<th>Options</th>
 								</tr>
                         </thead>
                         <tbody>
@@ -125,19 +127,19 @@
 								<td class="text-center"><b class=" tablesaw-cell-label">Type</b>
 				    <span class="label<?php if($campaign->type->id == 1){echo ' label-info';}else{echo ' label-success';}?>">{{ $campaign->type->campaign_type }}</span>
                                 </td>
-                                <td class="text-center"><b class=" tablesaw-cell-label">eCPM</b> $ @if($campaign->stats->sum('impressions')){{ 
+                                <td class="text-center"><b class=" tablesaw-cell-label">eCPM</b> $ @if($campaign->stats->sum('impressions')){{
                                     number_format(
-                                            $campaign->stats->reduce(function($cost, $stat) { 
-                                                return $cost + (($stat->impressions / 1000) * $stat->cpm); 
+                                            $campaign->stats->reduce(function($cost, $stat) {
+                                                return $cost + (($stat->impressions / 1000) * $stat->cpm);
                                             }) * 1000 / $campaign->stats->sum('impressions'), 2
-                                        ) 
+                                        )
                                     }}@else()0
                                     @endif
-                                    
+
                                 </td>
                                 <td class="text-center"><b class=" tablesaw-cell-label">Cost</b> ${{ number_format(
-                                            $campaign->stats->reduce(function($cost, $stat) { 
-                                                return $cost + (($stat->impressions / 1000) * $stat->cpm); 
+                                            $campaign->stats->reduce(function($cost, $stat) {
+                                                return $cost + (($stat->impressions / 1000) * $stat->cpm);
                                             }), 2
                                         ) }}</td>
                                 <td class="text-center"><b class=" tablesaw-cell-label">Status</b> <label class="label label-{{ $campaign->status_type->classname }}">{{ $campaign->status_type->description }}</label></td>
@@ -210,7 +212,7 @@
 </div>
 <script src="{{ URL::asset('js/plugins/flot/jquery.flot.js') }}"></script>
 <script src="{{ URL::asset('js/plugins/flot/jquery.flot.tooltip.min.js') }}"></script>
-   
+
    <script type="text/javascript">
    $(document).ready(function(){
 	   $('[data-toggle="tooltip"]').tooltip();
@@ -220,24 +222,26 @@
 			  "sSearch": "Search Table"
 			}, pageLength: 10,
 			responsive: true
-		});	
-	   
-	   	var currentStatus = $(".currentStatus").text();
-		if (currentStatus == "Active"){
-			$(".currentStatus").addClass('label-primary');
-		} else if (currentStatus == "Declined"){
-			$(".currentStatus").addClass('label-danger');
-		} else {
-			$(".currentStatus").addClass('label-warning');
-		}
-	   
+		});
+
+  	 var currentStatus = $(".currentStatus").text();
+  		if (currentStatus == "Active"){
+  			$(".currentStatus").addClass('label-primary');
+  		} else if (currentStatus == "Declined"){
+  			$(".currentStatus").addClass('label-danger');
+  		} else {
+  			$(".currentStatus").addClass('label-warning');
+  		}
+
+      // console.log("Current Status Text determining Color====", currentStatus)
+
 		var bidType = $(".badge").text();
 		if (bidType == "CPM"){
 			$(".badge").addClass('label-success');
 		} else {
 			$(".badge").addClass('label-danger');
 		}
-	   
+
        jQuery(document).ready(function ($) {
 	       $('.nav-click').removeClass("active");
 	       $('#nav_buyer_campaigns').addClass("active");
