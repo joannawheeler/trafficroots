@@ -19,6 +19,7 @@ use App\Country;
 use App\City;
 use App\State;
 use App\User;
+use App\ServiceLevel;
 use DOMDocument;
 use DOMXPath;
 use Illuminate\Support\Facades\Mail;
@@ -26,6 +27,8 @@ use App\Mail\ConfirmUser;
 
 class GatherKeysController extends Controller
 {
+    public $impressions = 0;
+
     public function __construct()
     {
 
@@ -34,7 +37,8 @@ class GatherKeysController extends Controller
     {
         $this->gatherSiteKeys();
         $this->gatherImpressions();
-        $this->gatherDefaultImpressions();
+	$this->gatherDefaultImpressions();
+	$this->recordServiceLevel();
         $this->gatherClicks();
 	$this->gatherSales();
 	$this->enforceBudgets();
@@ -42,6 +46,14 @@ class GatherKeysController extends Controller
 	//$this->populateZipsTable();
 	$this->sendUserConfirmation();
 	$this->bounceUsers();
+    }
+    public function recordServiceLevel()
+    {
+	    $data = array('impressions' => $this->impressions);
+	    $row = new ServiceLevel();
+	    $row->fill($data);
+	    $row->save();
+	    Log::info('Service Level Recorded: '.$this->impressions.' impressions per minute');
     }
     public function gatherDefaultImpressions()
     {
@@ -101,6 +113,7 @@ class GatherKeysController extends Controller
                         .$val.",'"
                         .$stuff[1]."')";
 		$pairs[] = $pair;
+		$this->impressions += $val;
 		}
             }
 	}while(!$keyname == '');
@@ -318,7 +331,8 @@ class GatherKeysController extends Controller
                         .$data['browser'].','
                         .$val.",'"
                         .$stuff[1]."')";
-                 $pairs[] = $pair;
+		$pairs[] = $pair;
+		$this->impressions += $val;
             }
         }while(!$keyname == '');
         if(sizeof($pairs)){
