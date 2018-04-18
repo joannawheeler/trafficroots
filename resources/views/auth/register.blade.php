@@ -34,19 +34,6 @@
 							<input type="hidden" name="formId" value="2W7UI+OZYzFhmO4xQQWvcQ==" />
                             <p>Please fill out your information below.</p><br>
                             {{ csrf_field() }} 
-                            
-                                <div class="form-group">
-                                    <label for="selectRole" class="col-lg-2 control-label">Select role</label>
-                                    <div class="col-lg-10">
-                                        <select name="selectRole" class="form-control" required>
-                                            <option value="">Select A Role</option>
-                                            <option value="publisher">Publisher</option>
-                                            <option value="advertiser">Advertiser</option>
-                                            <option value="both">Both</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            
                             <div class="form-group {{ $errors->has('name') ? ' has-error' : '' }}">
                                 <label for="name" class="col-lg-2 control-label">Name</label>
                                 <div class="col-lg-10">
