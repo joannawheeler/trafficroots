@@ -100,7 +100,7 @@
                                     <div class="form-group">
                                         <div class="checkbox i-checks"><label> 	
                                             <div class="icheckbox_square-green" required style="position: relative;">
-                                                <input type="checkbox" required style="opacity:inherit;">
+                                                <input type="checkbox" required>
                                                 <ins class="iCheck-helper"></ins>
                                             </div>
                                             <a href="terms"> Agree to the terms and Conditions</a></label>
@@ -228,7 +228,7 @@ $(document).ready(function() {
         radioClass: 'iradio_square-green',
     });
 	
-	$('.icheckbox_square-green input').css("opacity", "inherit");
+	$('.icheckbox_square-green input').css("opacity", "0");
     setActiveNav('#nav_register');
 	
 	$("#cancel").click(function (e) {
