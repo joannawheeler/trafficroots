@@ -11,7 +11,6 @@
 			<div class="col-xs-12">
 				<ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
                     <li  class="active"><a data-toggle="tab">FAQ</a></li>
-                    <li><a href="" data-toggle="tab">State Regulations</a></li>
                 </ul>
 				<div class="panel panel-default">									
 					<div class="ibox-content">
