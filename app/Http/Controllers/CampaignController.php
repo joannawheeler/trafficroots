@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\CUtil;
@@ -529,6 +528,7 @@ class CampaignController extends Controller
     }
     public function campaigns(Request $request)
     {
+	    ini_set('memory_limit','512M');
 	    $user = Auth::user();
 	    if (Gate::allows('unconfirmed_user')) {
 		$user = Auth::getUser();

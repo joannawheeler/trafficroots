@@ -14,7 +14,12 @@
 </style>
 <div class="login-container">
     <div id="wrapper">
-        <div id="page-wrapper" class="gray-bg tree-bg" style="margin: 0px;">
+	<div id="page-wrapper" class="gray-bg tree-bg" style="margin: 0px;">
+                   @if (session('status'))
+                        <div class="alert alert-success">
+                            {{ session('status') }}
+                        </div>
+                   @endif
             <div class="wrapper wrapper-content animated fadeInRight">
                 <div class="row">
                     <div class="col-md-4 col-md-offset-4 m-t-lg" id="SignIN">
