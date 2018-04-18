@@ -131,7 +131,7 @@
 <p>The section headings contained in these Terms are solely for the purpose of reference and will not in any way affect the meaning or interpretation of these Terms.</p>
 <p>You represent and warrant that by accepting these Terms and/or using the Services in any way, that you are not breaching any duty or obligation to any third-party and that the person executing this Agreement on behalf of it is the duly authorized representative of such party and authorized to bind it to the terms of this Agreement.</p>
 <h4>Violations</h4>
-<p>If you believe there have been any violations of these Terms, whether by you or another, you agree to report it to <a href="mailto:info@traffichaus.com">info (at)TrafficRoots.com</a> as soon as possible.</p>
+<p>If you believe there have been any violations of these Terms, whether by you or another, you agree to report it to <a href="mailto:info@traffichaus.com">info&#64;TrafficRoots.com</a> as soon as possible.</p>
 
 					</div>
 				</div>
