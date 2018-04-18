@@ -13,34 +13,40 @@
    }
 </style>
 <div class="login-container">
-    <div id="wrapper">
-		<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="wrapper">
+	<div id="page-wrapper" class="gray-bg tree-bg" style="margin: 0px;">
+                   @if (session('status'))
+                        <div class="alert alert-success">
+                            {{ session('status') }}
+                        </div>
+                   @endif
+            <div class="wrapper wrapper-content animated fadeInRight">
                 <div class="row">
                     <div class="col-md-4 col-md-offset-4 m-t-lg" id="SignIN">
                         <div class="ibox-title"><h3>Forgot Password</h3>
 						</div>
                         <div class="ibox-content">
-							<div class="col-xs-12">
+				<div class="col-xs-12">
                             	<form class="form-horizontal" role="form" id="forgot-password" method="POST" action="{{ url('/password/email') }}">
-                                {{ csrf_field() }} {{--
-									<p>Sign in today for more experience.</p> --}}
-									<div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
-										<label for="email">Email</label>
-										<input type="email" placeholder="Email" name="email" class="form-control" required>
-										@if ($errors->has('email'))
-										<span class="help-block m-b-none">{{ $errors->first('email') }}</span>
-										@endif
-									</div>
-									<div class="centered-block"><br>
-										<button class="btn btn-primary" type="submit" value="Submit" id="submit"><strong>Send Email</strong></button>
-										<button class="btn btn-danger" id="cancel"><strong>Cancel</strong></button>
-									</div>
-								</form>
-							</div>
+                                {{ csrf_field() }}
+					<div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
+					<label for="email">Email</label>
+					<input type="email" placeholder="Email" name="email" class="form-control" required>
+					@if ($errors->has('email'))
+					<span class="help-block m-b-none">{{ $errors->first('email') }}</span>
+					@endif
+					</div>
+					<div class="centered-block"><br>
+					<button class="btn btn-primary" type="submit" value="Submit" id="submit"><strong>Send Email</strong></button>
+					<button class="btn btn-danger" id="cancel"><strong>Cancel</strong></button>
+					</div>
+				</form>
+				</div>
                         </div>
                     </div>
                 </div>
-            </div>
+	    </div>
+        </div>
     </div>
 </div>
 @endsection

@@ -18,55 +18,13 @@
        margin: 0;
    }
 </style>
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <h4>Login</h4>
-                </div>
-                <div class="ibox-content">
-					<div class="col-xs-12">
-                    	<form class="form-horizontal" role="form" method="POST" action="{{ url('/password/reset') }}">
-                        {{ csrf_field() }} {{--
-                        <p>Sign in today for more expirience.</p> --}}
-                        <div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label class="col-lg-2 control-label">Email</label>
+<div class="login-container">
+    <div id="wrapper">
+        <div id="page-wrapper" class="gray-bg tree-bg" style="margin: 0px;">
+            <div class="wrapper wrapper-content animated fadeInRight">
+                <div class="row">
+                    <div class="col-md-4 col-md-offset-4 m-t-lg">
 
-                            <div class="col-lg-10">
-                                <input type="email" placeholder="Email" name="email" class="form-control">
-                                @if ($errors->has('email'))
-                                <span class="help-block m-b-none">{{ $errors->first('email') }}</span>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-lg-offset-2 col-lg-10">
-                                <button class="btn btn-sm btn-primary" type="submit">Reset Password</button>
-                            </div>
-                        </div>
-                    </form>
-					</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endsection
-
-@section('js')
-<script>
-
-</script>
-@endsection
-
-
-
-@section('content1')
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="ibox">
                 <div class="ibox-title">Reset Password</div>
 
                 <div class="ibox-content">
@@ -131,6 +89,8 @@
                         </div>
                     </form>
                 </div>
+	    </div>
+            </div>
             </div>
         </div>
     </div>

@@ -209,28 +209,28 @@ class GatherKeysController extends Controller
             $platform = Platform::where('platform', $user['platform'])->get();
             $browser = isset($user['browser']) ? Browser::where('browser', $user['browser'])->get() : 0;
             $os = OperatingSystem::where('os', $user['os'])->get();
-            $country = Country::where('country_short', $user['geo'])->get();
+            $country = Country::where('country_short', addslashes($user['geo']))->get();
             if(!sizeof($country) && strlen($user['geo'])){
                 DB::insert("INSERT INTO countries VALUES(NULL,'".$user['geo']."','',NULL,NULL);");
                 $country = Country::where('country_short', $user['geo'])->get();
             }
-	    $state = State::where('state_name', $user['state'])->where('country_id', $country[0]->id)->get();
+	    $state = State::where('state_name', addslashes($user['state']))->where('country_id', $country[0]->id)->get();
 	    if(!sizeof($state) && strlen($user['state'])){
-                DB::insert('INSERT INTO states (`state_name`, `country_id`, `legal`) VALUES(?,?,?)', array($user['state'],$country[0]->id,0));
-                $state = State::where('country_id', $country[0]->id)->where('state_name', $user['state'])->get();
+                DB::insert('INSERT INTO states (`state_name`, `country_id`, `legal`) VALUES(?,?,?)', array(addslashes($user['state']),$country[0]->id,0));
+                $state = State::where('country_id', $country[0]->id)->where('state_name', addslashes($user['state']))->get();
 	    
 
-                $city = City::where('state_code', $state[0]->id)->where('city_name', $user['city'])->get();
+                $city = City::where('state_code', $state[0]->id)->where('city_name', addslashes($user['city']))->get();
                 if(!sizeof($city) && strlen($user['city'])){
-                    DB::insert("INSERT INTO cities VALUES(NULL,'".$user['city']."',".$state[0]->id.",NULL,NULL);");
+                    DB::insert("INSERT INTO cities VALUES(NULL,'".addslashes($user['city'])."',".$state[0]->id.",NULL,NULL);");
                     $city = City::where('state_code', $state[0]->id)->where('city_name', $user['city'])->get();
 	        }
 	    }else{
 		if(sizeof($state)){    
-                    $city = City::where('state_code', $state[0]->id)->where('city_name', $user['city'])->get();
+                    $city = City::where('state_code', $state[0]->id)->where('city_name', addslashes($user['city']))->get();
                     if(!sizeof($city) && strlen($user['city'])){
-                        DB::insert("INSERT INTO cities VALUES(NULL,'".$user['city']."',".$state[0]->id.",NULL,NULL);");
-                        $city = City::where('state_code', $state[0]->id)->where('city_name', $user['city'])->get();
+                        DB::insert("INSERT INTO cities VALUES(NULL,'".addslashes($user['city'])."',".$state[0]->id.",NULL,NULL);");
+                        $city = City::where('state_code', $state[0]->id)->where('city_name', addslashes($user['city']))->get();
 		    }
 		}
 	    }
@@ -448,7 +448,7 @@ class GatherKeysController extends Controller
                     FROM stats
                     JOIN bids ON stats.bid_id = bids.id
                     JOIN campaigns ON bids.campaign_id = campaigns.id
-		    WHERE stats.stat_date = '2017-12-11'
+		    WHERE stats.stat_date = CURDATE()
                     AND campaigns.status IN (1,8)
                     AND campaigns.daily_budget > 0
 		    GROUP BY cpm;";
@@ -522,8 +522,8 @@ class GatherKeysController extends Controller
     {
         $innerHTML = '';
         if(strlen($zip) == 5){
-        Log::info('Looking up county by zip');
-        Log::info($zip);
+        //Log::info('Looking up county by zip');
+        //Log::info($zip);
         $url = 'http://www.uscounties.com/zipcodes/search.pl?query='.$zip.'&stpos=0&stype=AND';
         $ch = curl_init(); 
 	curl_setopt($ch, CURLOPT_URL, $url); 
@@ -542,8 +542,8 @@ class GatherKeysController extends Controller
 	    $tmp_dom->appendChild($tmp_dom->importNode($node,true));
 	}
 	$innerHTML.=trim($tmp_dom->saveHTML()); 
-	Log::info($innerHTML);
-	Log::info('ok');
+	//Log::info($innerHTML);
+	//Log::info('ok');
 	$x = 0;
 	foreach($tmp_dom->getElementsByTagName('td') as $element){
 		if($x == 2) {
@@ -571,10 +571,10 @@ class GatherKeysController extends Controller
 		$state_id = $states[0]->id;
 		$data= array('zip' => $zip, 'county' => $county, 'state_code' => $state_id);
 		DB::table('trafficroots.zips')->insert($data);
-	        Log::info('Zips table updated');
+	        //Log::info('Zips table updated');
 	     }
 	}else{
-                Log::info('Zip is known to us.');
+                //Log::info('Zip is known to us.');
  	}
 		return true;
         }
