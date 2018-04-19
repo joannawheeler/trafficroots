@@ -83,7 +83,7 @@ class CronController extends Controller
             foreach($campaigns as $camp){
                 $pairs[] = "('"
                            .$zone->handle."',"
-                           .$zone->location_type.",5,"
+                           .$zone->location_type.",1,"
                            .$camp->user_id.","
                            .$camp->id.","
                            .$camp->bid.",'"

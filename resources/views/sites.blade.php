@@ -48,6 +48,7 @@ hljs.initHighlightingOnLoad();
 
 @section('content')
 <div class="content">
+<!--
 	@if(sizeof($pending))
 	<div class="row">
 		<div class="col-xs-12">
@@ -94,6 +95,7 @@ hljs.initHighlightingOnLoad();
 		</div>
 	</div>
 	@endif
+-->
 	<!--Add new Site -->
 	<div class="row">
 		<div class="col-xs-12">
