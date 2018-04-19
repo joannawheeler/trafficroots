@@ -45,7 +45,7 @@
 									<div class="col-md-8">
 										<p>Your E-Mail Address Has Not Been Confirmed!</p>
 										<a href="/send_confirmation">
-											<button class="btn btn-primary">Click Here To Re-Send Confirmation E-Mail</button>
+											<button class="btn btn-primary" style="white-space: normal;">Click Here To Re-Send Confirmation E-Mail</button>
 										</a>
 									</div>
 								</div>

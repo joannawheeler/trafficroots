@@ -34,19 +34,6 @@
 							<input type="hidden" name="formId" value="2W7UI+OZYzFhmO4xQQWvcQ==" />
                             <p>Please fill out your information below.</p><br>
                             {{ csrf_field() }} 
-                            
-                                <div class="form-group">
-                                    <label for="selectRole" class="col-lg-2 control-label">Select role</label>
-                                    <div class="col-lg-10">
-                                        <select name="selectRole" class="form-control" required>
-                                            <option value="">Select A Role</option>
-                                            <option value="publisher">Publisher</option>
-                                            <option value="advertiser">Advertiser</option>
-                                            <option value="both">Both</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            
                             <div class="form-group {{ $errors->has('name') ? ' has-error' : '' }}">
                                 <label for="name" class="col-lg-2 control-label">Name</label>
                                 <div class="col-lg-10">
@@ -113,7 +100,7 @@
                                     <div class="form-group">
                                         <div class="checkbox i-checks"><label> 	
                                             <div class="icheckbox_square-green" required style="position: relative;">
-                                                <input type="checkbox" required style="opacity:inherit;">
+                                                <input type="checkbox" required>
                                                 <ins class="iCheck-helper"></ins>
                                             </div>
                                             <a href="terms"> Agree to the terms and Conditions</a></label>
@@ -241,7 +228,7 @@ $(document).ready(function() {
         radioClass: 'iradio_square-green',
     });
 	
-	$('.icheckbox_square-green input').css("opacity", "inherit");
+	$('.icheckbox_square-green input').css("opacity", "0");
     setActiveNav('#nav_register');
 	
 	$("#cancel").click(function (e) {

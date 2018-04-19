@@ -371,7 +371,7 @@ hljs.initHighlightingOnLoad();
 										   class="zone-code"
 										   data-toggle="modal"
 										   data-target="#zoneCode{{ $zone->id }}" style="color: white;">
-											<button class="btn btn-xs btn-danger"><span class="btn-label"><i class="fa fa-file-code-o"></i></span> Code</span>
+											<button class="btn btn-xs btn-danger"><span class="btn-label"><i class="fa fa-file-code-o"></i></span> Code</button>
 										</a>
 									</td>
 								</tr>

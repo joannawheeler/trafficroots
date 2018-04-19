@@ -117,9 +117,9 @@
         function AbstractChosen(form_field, options) {
             this.form_field = form_field;
             this.options = options != null ? options : {};
-            if (!AbstractChosen.browser_is_supported()) {
-                return;
-            }
+//            if (!AbstractChosen.browser_is_supported()) {
+//                return;
+//            }
             this.is_multiple = this.form_field.multiple;
             this.set_default_text();
             this.set_default_values();
@@ -524,9 +524,9 @@
 
     $.fn.extend({
         chosen: function(options) {
-            if (!AbstractChosen.browser_is_supported()) {
-                return this;
-            }
+//            if (!AbstractChosen.browser_is_supported()) {
+//                return this;
+//            }
             return this.each(function(input_field) {
                 var $this, chosen;
                 $this = $(this);

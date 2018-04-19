@@ -104,3 +104,4 @@ Route::get('/addfunds', array('as' => 'addmoney.paybycceftjs', 'uses' => 'Credit
 Route::post('/deposit', array('as' => 'addmoney.deposit', 'uses' => 'CreditAchController@depositFunds',));
 //Route::get('/addfunds', array('as' => 'addmoney.paybycceft', 'uses' => 'CreditAchController@getIndex',));
 //Route::post('/addfunds', array('as' => 'addmoney.postcceft', 'uses' => 'CreditAchController@postMoney',));
+Route::get('/terms', function () { return view('terms'); });

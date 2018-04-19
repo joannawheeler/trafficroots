@@ -3778,7 +3778,6 @@ video {
 /* WRAPPERS */
 #wrapper {
   width: 100%;
-  overflow-x: hidden;
 }
 .wrapper {
   padding: 0 20px;
@@ -4123,7 +4122,6 @@ code {
   border-image: none;
   border-style: solid solid none;
   border-width: 1px 0;
-  overflow: auto;
 }
 .ibox-footer {
   color: inherit;
