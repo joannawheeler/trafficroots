@@ -1,9 +1,9 @@
 @extends('layouts.app') 
 @section('css')
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/plugins/iCheck/custom.css" rel="stylesheet"> 
-<link href="css/custom.css" rel="stylesheet">
-<link href="css/style.css" rel="stylesheet">
+<link href="{{ URL::asset('css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ URL::asset('css/plugins/iCheck/custom.css') }}" rel="stylesheet">
+<link href="{{ URL::asset('css/custom.css') }}" rel="stylesheet">
+<link href="{{ URL::asset('css/style.css') }}" rel="stylesheet">
 @endsection 
 
 @section('content')
