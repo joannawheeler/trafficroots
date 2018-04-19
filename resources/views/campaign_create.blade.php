@@ -7,6 +7,12 @@
       href="{{ URL::asset('css/plugins/chosen/chosen.css') }}">
 <link rel="stylesheet"
       href="{{ URL::asset('css/custom.css') }}">
+
+<style>
+	#mediaModal > div > button {
+		display:none;
+	}
+</style>
 @endsection
 
 @section('js')
@@ -326,7 +332,7 @@
                                         </div>
                                         <div class="createNew">
                                             <h4 for="imgCreateNew">Add New Image to Library</h4>
-                                                <div>@include('media_upload')</div>
+                                            <button id="btnImage" type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#addMedia"><i class="fa fa-plus-square-o"></i>&nbsp;&nbsp;Add Image</button>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-md-6">
@@ -346,7 +352,7 @@
                                         </div>
                                         <div class="createNew">
                                              <h4 for="linkCreateNew">Add New URL To Library</h4>
-                                                <div>@include('link_upload')</div>
+											 <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#addLink"><i class="fa fa-plus-square-o"></i>&nbsp;&nbsp;Add URL&nbsp;&nbsp;&nbsp;&nbsp;</button>>
                                         </div>
                                     </div>
                                     <div class="clearfix"></div>
@@ -504,8 +510,8 @@
                         </div>
                         </form>
                         <br />
-                        <div class="ibox-content" style="display:none;">
-                            <h5>Add New Media or Links Here:</h5>
+                        <div class="ibox-content" id="mediaModal">
+							<!--<h5>Add New Media or Links Here:</h5>-->
                             <div>@include('media_upload')</div>
                             <br />
                             <div>@include('link_upload')</div>
