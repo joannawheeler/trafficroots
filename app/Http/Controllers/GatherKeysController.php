@@ -19,6 +19,7 @@ use App\Country;
 use App\City;
 use App\State;
 use App\User;
+use App\Bank;
 use App\ServiceLevel;
 use DOMDocument;
 use DOMXPath;
@@ -46,6 +47,28 @@ class GatherKeysController extends Controller
 	//$this->populateZipsTable();
 	$this->sendUserConfirmation();
 	$this->bounceUsers();
+	$this->bankSetup();
+    }
+    public function bankSetup()
+    {
+	    /* make sure all users have a bank entry */
+	    $sql = 'SELECT users.* FROM users
+		    LEFT OUTER JOIN bank
+                    ON users.id = bank.user_id
+                    WHERE bank.user_id IS NULL;';
+            $result = DB::select($sql);
+            if(sizeof($result)){
+		    Log::info('Found ' . sizeof($result) . ' users who need bank setup');
+		    foreach ($result as $row){
+                        $data = array('user_id' => $row->id, 'transaction_amount' => 0.00, 'running_balance' => 0.00, 'created_at' => date('Y-m-d H:i:s'));
+			$newbank = new Bank();
+			$newbank->fill($data);
+			$newbank->save();
+                        Log::info('Created initial bank entry for ' . $row->name); 
+		    }
+		    Log::info('Completed Bank Setup');
+	    }
+
     }
     public function recordServiceLevel()
     {

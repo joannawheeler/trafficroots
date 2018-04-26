@@ -373,6 +373,12 @@ hljs.initHighlightingOnLoad();
 										   data-target="#zoneCode{{ $zone->id }}" style="color: white;">
 											<button class="btn btn-xs btn-danger"><span class="btn-label"><i class="fa fa-file-code-o"></i></span> Code</button>
 										</a>
+                                                                                @if($user->allow_folders)
+										<a href="/zone_manage/{{$zone->handle}}"
+										   style="color: white;">
+											<button class="btn btn-xs btn-info"><span class="btn-label"><i class="fa fa-wrench"></i></span> Manage</button>
+										</a>
+                                                                                @endif
 									</td>
 								</tr>
 								@endforeach

@@ -26,6 +26,20 @@ class ZoneController extends Controller
         $this->middleware("auth");
     }
 
+    public function manageZone(Request $request)
+    {
+	    if(strlen($request->handle)){
+            $user = Auth::getUser();
+            $ads = Ad::where('zone_handle', $request->handle)->get();
+	    $zone = Zone::where('handle', $request->handle)->where('pub_id', $user->id)->first();
+	    $site = Site::where('id', $zone->site_id)->first();
+	    if($zone){
+	       return view('zone_manage', array('ads' => $ads, 'zone' => $zone, 'site' => $site));
+	    }else{
+	       return redirect('/sites');
+	    }
+        }
+    }
 //     public function getZones($site_id)
 //     {
 //         $user = Auth::getUser();
@@ -82,7 +96,8 @@ class ZoneController extends Controller
     {
         try {
             $ad = new Ad();
-            $data = array();
+	    $data = array();
+	    $data['description'] = 'Default Ad';
             $data['zone_handle'] = $handle;
             $data['location_type'] = $location_type;
             $data['weight'] = 100;

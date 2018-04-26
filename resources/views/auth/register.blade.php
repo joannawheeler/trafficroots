@@ -103,7 +103,9 @@
                                                 <input type="checkbox" required>
                                                 <ins class="iCheck-helper"></ins>
                                             </div>
-                                            <a href="terms"> Agree to the terms and Conditions</a></label>
+					    <a href="/terms"> Agree to the terms and Conditions</a></label>
+
+                                            <p><a href="/privacy">Our Privacy Policy</a></p>
                                         </div>
                                     </div>
                                     <!--recaptcha-->

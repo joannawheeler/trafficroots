@@ -15,6 +15,10 @@ class PublicController extends Controller
          return view('about');
     }    //
 
+    public function getPrivacyPage()
+    {
+        return view('privacy');
+    }
     public function getLandingPage()
     {
         /* u.s. data */

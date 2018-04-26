@@ -24,6 +24,7 @@ Route::group(['domain' => 'trafficroots.com'], $landing);
 Route::get('/', function () {
     return redirect('/home');
 });
+Route::get('/privacy', 'PublicController@getPrivacyPage');
 Route::post('/update_payout', 'HomeController@updatePayout');
 Route::post('/changepw', 'HomeController@pwChange');
 Route::get('/pub_type', 'HomeController@pubType');
@@ -32,7 +33,8 @@ Route::get('/both_type', 'HomeController@bothType');
 Route::post('/subscribe', 'PublicController@subscribeUser');
 Route::get('/landing', 'PublicController@getLandingPage');
 Route::get('/pixel/{handle?}', 'PixelController@getIndex');
-Route::get('/analysis/{handle}', 'SiteController@analyzeSite'); 
+Route::get('/analysis/{handle}', 'SiteController@analyzeSite');
+Route::get('/zone_manage/{handle}', 'ZoneController@manageZone');
 Auth::routes();
 Route::get('/send_confirmation', 'HomeController@sendConfirmation');
 Route::get('/charge', 'ChargeController@index');
