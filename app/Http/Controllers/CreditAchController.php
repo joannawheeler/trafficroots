@@ -88,10 +88,10 @@ class CreditAchController extends Controller
 	      Log::info($user->name." deposited $ ".$request->amount." to make their balance $ ".$running_balance);
 	      $cutil = new CUtil();
 	      $cutil->logit($user->name." deposited $ ".$request->amount." to make their balance $ ".$running_balance);
-	      $cutil->sendText($user->name." deposited $ ".$request->amount." to make their balance $ ".$running_balance);
+	      //$cutil->sendText($user->name." deposited $ ".$request->amount." to make their balance $ ".$running_balance);
               return response('OK!',200);
            }else{
-              return response('WTF? '.$request->CaptureState,200);
+              return response('Failed! '.$request->CaptureState,200);
            }
          
       }catch(Exception $e){

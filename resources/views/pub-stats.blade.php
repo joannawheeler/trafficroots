@@ -25,6 +25,11 @@
     display: none;
 }
 	
+div#sites_chosen {
+    width: 100% !important;
+    display: block;
+}
+	
 @media only screen and (min-width: 769px) {
     .stats-tabs:before,
     .stats-tabs:after {

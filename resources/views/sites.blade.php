@@ -48,6 +48,7 @@ hljs.initHighlightingOnLoad();
 
 @section('content')
 <div class="content">
+<!--
 	@if(sizeof($pending))
 	<div class="row">
 		<div class="col-xs-12">
@@ -94,6 +95,7 @@ hljs.initHighlightingOnLoad();
 		</div>
 	</div>
 	@endif
+-->
 	<!--Add new Site -->
 	<div class="row">
 		<div class="col-xs-12">
@@ -380,7 +382,14 @@ hljs.initHighlightingOnLoad();
 												<span class="btn-label">
 													<i class="fa fa-file-code-o"></i>
 												</span> Code</button>
+											<button class="btn btn-xs btn-danger"><span class="btn-label"><i class="fa fa-file-code-o"></i></span> Code</button>
 										</a>
+                                                                                @if($user->allow_folders)
+										<a href="/zone_manage/{{$zone->handle}}"
+										   style="color: white;">
+											<button class="btn btn-xs btn-info"><span class="btn-label"><i class="fa fa-wrench"></i></span> Manage</button>
+										</a>
+                                                                                @endif
 									</td>
 								</tr>
 								@endforeach

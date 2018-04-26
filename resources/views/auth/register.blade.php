@@ -116,11 +116,13 @@
                                 <div class="col-xs-12 text-center"><br>
                                     <div class="form-group">
                                         <div class="checkbox i-checks"><label> 	
-                                            <div class="icheckbox_square-green" required style="position: relative; margin-right: 5px;">
-                                                <input type="checkbox" required style="opacity:inherit; display:none;">
+                                            <div class="icheckbox_square-green" required style="position: relative;">
+                                                <input type="checkbox" required>
                                                 <ins class="iCheck-helper"></ins>
                                             </div>
-                                            <a href="terms">Agree to the Terms and Conditions</a></label>
+					    <a href="/terms"> Agree to the terms and Conditions</a></label>
+
+                                            <p><a href="/privacy">Our Privacy Policy</a></p>
                                         </div>
                                     </div>
                                     <!--recaptcha-->
@@ -247,6 +249,7 @@ $(document).ready(function() {
         radioClass: 'iradio_square-green',
     });
 	
+<<<<<<< HEAD
 	    var text_max = 99;
     $('#textarea_feedback').html(text_max + ' characters remaining');
 
@@ -258,6 +261,9 @@ $(document).ready(function() {
     });
 	
 	$('.icheckbox_square-green input').css("opacity", "inherit");
+=======
+	$('.icheckbox_square-green input').css("opacity", "0");
+>>>>>>> master
     setActiveNav('#nav_register');
 	
 	$("#cancel").click(function (e) {

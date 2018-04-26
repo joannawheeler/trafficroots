@@ -21,7 +21,7 @@
 			    <div class="ibox-content">
                             <div class="ibox"><div class="ibox-content">
                             <h4>Today's Traffic - {{ $todays_traffic }} impressions - {{ $todays_clicks }} clicks - CTR {{ $todays_ctr }} %</h4>
-                            <div id="sitechart" class="amchartdiv"></div>
+                            <!-- <div id="sitechart" class="amchartdiv"></div> -->
                             </div></div>
                             <div class="ibox"><div class="ibox-content">
                             <h4>Geo Breakdown (Top 20)</h4>
@@ -107,8 +107,8 @@ $(document).ready(function(){
         "enabled": true
     }
     });
-
-     /* site chart */
+/*
+     
     var chart = AmCharts.makeChart("sitechart", {
     "type": "pie",
     "theme": "light",
@@ -128,7 +128,7 @@ $(document).ready(function(){
         "enabled": true
     }
     });
-
+ */
     /* default geo traffic chart */
 var chart = AmCharts.makeChart("geochartdiv", {
     "theme": "light",

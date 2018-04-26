@@ -7,13 +7,13 @@ use Log;
 use Auth;
 use DB;
 use App\Site;
+use App\Campaign;
 use App\Stat;
 use App\Zone;
 use App\Country;
 use App\Browser;
 use App\Platform;
 use App\OperatingSystem;
-use App\Campaign;
 use Carbon\Carbon;
 
 class StatsController extends Controller
@@ -216,6 +216,12 @@ class StatsController extends Controller
     public function campaignStats(Request $request)
     {
 	    $user = Auth::getUser();
+            $campaign = Campaign::where('id', $request->id)->where('user_id', $user->id)->first();
+	    if($campaign){
+		    $campaign_name = $campaign['campaign_name'];
+            }else{
+		    return redirect('/campaigns');
+	    }
          /* today's traffic by site */
 	    $site_traffic = array();
 	    DB::statement("SET sql_mode = '';");
