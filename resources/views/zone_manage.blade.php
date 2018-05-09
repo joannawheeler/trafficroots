@@ -100,8 +100,49 @@ hljs.initHighlightingOnLoad();
                 </div>
                 <div class="modal-body">
                     <h3>Required Data</h3>
-                    <div style="overflow-wrap: break-word;">
-                        lallallalalalal
+                    <div style="ibox-content">
+			<form name="custom_ad_form" id="custom_ad_form" action="/custom_ad" method="POST">
+                        <div class="form-group">
+                        <label for="description">Name / Description</label>
+			<input class="form-control" type="text" maxlength="64" id="description" name="description" value="" required>
+                        </div>
+                        <div class="form-group">
+                        <label for="weight">Ad Weight</label>
+			<input class="form-control" type="number" id="weight" name="weight" value="0" required>
+                        </div>
+                        <div class="form-group">
+                        <label for="country_id">Geo Targeting</label>
+			<select class="form-control chosen chosen-multi" id="country_id" name="country_id[]">
+                        {!! $countries !!}
+                        </select>
+                        </div>
+                        <div class="form-group">
+                        <label for="state_id">State Targeting</label>
+			<select class="form-control chosen chosen-multi" id="state_id" name="state_id[]" multiple><option value="0" selected>All States</option>
+                        
+                        </select>
+                        </div>
+                        <div class="form-group">
+                        <label for="county_id">County Targeting</label>
+			<select class="form-control chosen chosen-multi" id="county_id" name="county_id[]" multiple><option value="0" selected>All Counties</option>
+                        
+			</select>
+                        </div>
+                        <div class="form-group">
+                        <label for="device_id">Device Targeting</label>
+			<select class="form-control chosen chosen-multi" id="device_id" name="device_id[]" multiple>
+                        {!! $devices !!}
+                        </select>
+                        </div>
+
+                        </div>
+
+			{{ csrf_field() }}
+                        <div class="form-group">
+			<input class="form-control" type="submit" id="submit_custom_ad"  value="Submit">
+                        </div>
+                      
+                        </form>
                     </div>
                 </div>
             </div>

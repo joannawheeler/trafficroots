@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -15,6 +14,8 @@ use App\Browser;
 use App\Platform;
 use App\OperatingSystem;
 use Carbon\Carbon;
+ini_set('memory_limit','2048M');
+set_time_limit(0);
 
 class StatsController extends Controller
 {

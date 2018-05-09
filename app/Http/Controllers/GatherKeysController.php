@@ -555,6 +555,7 @@ class GatherKeysController extends Controller
 	curl_close($ch);
 	$doc = new DOMDocument();
 	libxml_use_internal_errors(true);
+	if(strlen($output)){
         $doc->loadHTML($output);
         $classname = 'results';
 	$finder = new DomXPath($doc);
@@ -598,8 +599,10 @@ class GatherKeysController extends Controller
 	     }
 	}else{
                 //Log::info('Zip is known to us.');
- 	}
-		return true;
+	}
+	
+	return true;
+	}
         }
                return false;
     }

@@ -125,10 +125,10 @@
 								<input name="keyword_targets" id="keyword_targets" class="form-control" type="text" value="{!! $keywords !!}">
 							</div>
 						</form>
-					<div class="clearfix"></div>
+					<div class="clearfix">
 					<br>
 					<div class="col-xs-12 no-padding">
-						<button type="button" class="btn btn-primary btn-xs pull-right" id="add_creative" href="/creatives/{{ $campaign->id }}">Add Creative</button>
+						<a href="/creatives/{{ $campaign->id }}"><button type="button" class="btn btn-primary btn-xs pull-right" id="add_creative" href="/creatives/{{ $campaign->id }}">Add Creative</button></a>
 						<h2 class="text-success" id="creative_heading"><strong>Creatives</strong></h2>
 					</div>
 					<div class="col-xs-12 table-responsive" id="creative_div">

@@ -9,6 +9,8 @@ use App\Zone;
 use App\ModuleType;
 use App\LocationType;
 use App\PublisherBooking;
+use App\Country;
+use App\Platform;
 use DB;
 use Log;
 use Auth;
@@ -33,8 +35,18 @@ class ZoneController extends Controller
             $ads = Ad::where('zone_handle', $request->handle)->get();
 	    $zone = Zone::where('handle', $request->handle)->where('pub_id', $user->id)->first();
 	    $site = Site::where('id', $zone->site_id)->first();
+            $countries = '<option value="0" selected>All Countries</option><option value="840">US - United States of America</option><option value="124">CA - Canada</option>';
+            $nations = Country::all();
+            foreach($nations as $nation){
+		$countries .= '<option value="'.$nation->id.'">'.$nation->country_short.' - '.$nation->country_name.'</option>';
+	    }
+            $platforms = Platform::all();
+	    $platform_targets = '<option value="0" selected>All Platforms</option>';
+	    foreach($platforms as $row){
+               $platform_targets .= '<option value="'.$row->id.'">'.$row->platform.'</option>';
+      	    }
 	    if($zone){
-	       return view('zone_manage', array('ads' => $ads, 'zone' => $zone, 'site' => $site));
+	       return view('zone_manage', array('ads' => $ads, 'zone' => $zone, 'site' => $site, 'countries' => $countries, 'devices' => $platform_targets));
 	    }else{
 	       return redirect('/sites');
 	    }

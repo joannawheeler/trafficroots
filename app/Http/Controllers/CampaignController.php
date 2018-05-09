@@ -528,7 +528,7 @@ class CampaignController extends Controller
     }
     public function campaigns(Request $request)
     {
-	    ini_set('memory_limit','512M');
+	    ini_set('memory_limit','2048M');
 	    $user = Auth::user();
 	    if (Gate::allows('unconfirmed_user')) {
 		$user = Auth::getUser();
