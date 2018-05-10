@@ -2,8 +2,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\CUtil;
+use App\Http\Controllers\CreditAchController;
 use Illuminate\Http\Request;
 use App\Ad;
+use App\Bank;
 use App\Bid;
 use App\Creative;
 use App\BidCreative;
@@ -205,8 +207,16 @@ class CampaignController extends Controller
         $creatives = Creative::where('campaign_id', $request->campaign_id);
         return $creatives;
     }
+    public function checkBank()
+    {
+         $bank = new CreditAchController();
+	 $balance = intval($bank->getBalance());
+         if(!$balance) return false;
+         return true;
+    }
     public function createCampaign()
     {
+	if(!$this->checkBank()) return redirect('/addfunds');
         $campaign_types = CampaignType::all();
 	$categories = Category::all();
 	$themes = SiteTheme::all();
@@ -266,7 +276,8 @@ class CampaignController extends Controller
                                        'states' => $states]);
     }
     public function postCampaign(Request $request)
-    {
+    {   
+	if(!$this->checkBank()) return redirect('/addfunds');
 	try{
         $user = Auth::getUser();
         $campaign = new Campaign();
@@ -327,6 +338,7 @@ class CampaignController extends Controller
     }
     public function createCreative(Request $request)
     {
+	if(!$this->checkBank()) return redirect('/addfunds');
         $user = Auth::getUser();
         $campaign = Campaign::where([['id', $request->id],['user_id', $user->id]])->first();
         $creatives = Creative::where([['campaign_id', $request->id],['user_id', $user->id]])->get();
@@ -337,6 +349,7 @@ class CampaignController extends Controller
     }
     public function postCreative(Request $request)
     {
+	if(!$this->checkBank()) return redirect('/addfunds');
         $user = Auth::getUser();
         $data = $request->all();
         $data['user_id'] = $user->id;
@@ -362,6 +375,7 @@ class CampaignController extends Controller
 
     public function createMedia()
     {
+	if(!$this->checkBank()) return redirect('/addfunds');
         $location_types = LocationType::all();
         $categories = Category::all();
         return view('media_upload', ['location_types' => $location_types, 'categories' => $categories]);
@@ -369,6 +383,7 @@ class CampaignController extends Controller
 
     public function postMedia(Request $request)
     {
+	if(!$this->checkBank()) return redirect('/addfunds');
         try{
         $this->validate($request, [
             'media_name' => 'required|string',
@@ -404,6 +419,7 @@ class CampaignController extends Controller
 
     public function createFolder()
     {
+	if(!$this->checkBank()) return redirect('/addfunds');
         $location_types = LocationType::all();
         $categories = Category::all();
         return view('html5_upload', ['location_types' => $location_types, 'categories' => $categories]);
@@ -411,6 +427,7 @@ class CampaignController extends Controller
 
     public function postFolder(Request $request)
     {
+	if(!$this->checkBank()) return redirect('/addfunds');
         $data = $request->all();
         $folder = new Folder();
         $user = Auth::getUser();
@@ -426,12 +443,14 @@ class CampaignController extends Controller
     }
     public function createLink()
     {
+	if(!$this->checkBank()) return redirect('/addfunds');
         $categories = Category::all();
         return view('create_link', ['categories' => $categories]);
     }
 
     public function postLink(Request $request)
     {
+	if(!$this->checkBank()) return redirect('/addfunds');
         $this->validate($request, [
             'link_name' => 'required|string',
             'link_category' => 'required|exists:categories,id',
@@ -456,6 +475,7 @@ class CampaignController extends Controller
     }
     public function editCampaign(Request $request)
     {
+	if(!$this->checkBank()) return redirect('/addfunds');
         $user = Auth::getUser();
         $CUtil = new CUtil();
         $campaign = DB::select('select * from campaigns where id = '.$request->id.' and user_id = '.$user->id);
@@ -540,8 +560,8 @@ class CampaignController extends Controller
 	        $startDate = Carbon::parse($dateRange[0]);
 		$endDate = Carbon::parse($dateRange[1]);
 	}else{
-            $startDate = Carbon::now()->firstOfMonth()->toDateString();
-            $endDate = Carbon::now()->endOfMonth()->toDateString();
+            $startDate = Carbon::now()->toDateString();
+            $endDate = Carbon::now()->toDateString();
 	}
         $campaigns = Campaign::with(['stats' => function ($query) use ($startDate, $endDate) {
             $query

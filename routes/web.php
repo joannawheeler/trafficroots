@@ -42,6 +42,7 @@ Route::get('/about', 'PublicController@aboutUs');
 Route::get('/home', 'HomeController@index');
 Route::get('/advertiser', 'HomeController@advertiser');
 Route::get('/campaigns', 'CampaignController@campaigns');
+Route::post('/campaigns', 'CampaignController@campaigns');
 Route::get('/buyers/{tab?}', 'HomeController@buyers');
 Route::get('/sites', 'SiteController@index');
 Route::post('/sites', 'SiteController@store');

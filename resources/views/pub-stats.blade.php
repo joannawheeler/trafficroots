@@ -53,7 +53,7 @@ div#sites_chosen {
 		<div class="col-xs-12">
 			<div class="ibox-title" style="display:none;">
 				<h5>
-					Stats for: <span id="dateRangeDisplay">{{ $startDate->toFormattedDateString() }}@if($endDate) - {{ $endDate->toFormattedDateString() }}@endif</span>
+					Stats for: <span id="dateRangeDisplay">{{ $startDate }}@if($endDate) - {{ $endDate }}@endif</span>
 				</h5>
 			</div>
 			<div class="row">
