@@ -1,12 +1,47 @@
 @extends('layouts.app')
-@section('content')
-<!-- Styles -->
-<style>
+@section('css')
+<link rel="stylesheet"
+      href="{{ URL::asset('css/plugins/daterangepicker/daterangepicker.css') }}">
+<link rel="stylesheet"
+      href="{{ URL::asset('css/plugins/select2/select2.min.css') }}">
+<link rel="stylesheet"
+      href="{{ URL::asset('css/custom.css') }}">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+    <style type="text/css">
+        .hide {
+            display: none;
+        }
+        .badge {
+            font-size: 8px;
+        }
+
+		div.tableSearchOnly {
+			padding-top: 55px;
+			
+		}
+		.content .ibox .ibox-content {
+			overflow: visible;
+		}
+   #reportrange {
+    width: unset;
+    }
 .amchartdiv {
     width	: 100%;
     height	: 500px;
-}												
-</style>
+}	
+
+
+    </style>
+
+@endsection
+@section('js')
+    <script src="{{ URL::asset('js/plugins/footable/footable.all.min.js') }}"></script>
+    <script src="{{ URL::asset('js/plugins/daterangepicker/daterangepicker.js') }}"></script>
+    <script src="{{ URL::asset('js/plugins/select2/select2.full.min.js') }}"></script>
+
+
+@endsection
+@section('content')
 
 <!-- Resources -->
 <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
@@ -17,8 +52,44 @@
 <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
 
                            <div class="ibox">
-                            <div class="ibox-title">Campaign Information - {{ $campaign_name }} - {{ $datestring }}</div>
+                            <div class="ibox-title">Zone Stats - {{ $zone }}  - <span id="dateRangeDisplay">{{ $startDate }}@if($endDate) - {{ $endDate }}@endif</span> </div>
 			    <div class="ibox-content">
+                        <div class="row">
+                                <div class="col-md-12">
+                                        <div class="panel panel-default">
+                                                <h4 class="p-title">Filter</h4>
+                                                <div class="ibox-content">
+                                                        <div class="row">
+                                                                <div class="col-xs-12 col-md-5">
+                                                                <form name="filter_form"
+                                                                  method="POST">
+                                                                <label>Dates</label>
+                                                                {{ csrf_field() }}
+                                                                <div class="row">
+                                                                        <div class="col-xs-12 form-group">
+                                                                                <input hidden="true"
+                                                                                           type="text"
+                                                                                           name="daterange" />
+                                                                                <div id="reportrange"
+                                                                                         class="form-control">
+                                                                                        <i class="fa fa-calendar" style="float: right;"></i>
+                                                                                        <span></span>
+                                                                                </div>
+                                                                        <label class="error hide"
+                                                                                   for="dates"></label>
+                                                                        </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                        <div class="col-xs-12 col-md-6">
+                                                                                <div class="form-group">
+                                                                                        <button type="submit" class="btn btn-xs btn-primary btn-block">Submit</button>
+                                                                                </div>
+                                                                        </div>
+
+                                                                </div>
+                                                        </form>
+                                                                </div>
+                                                        </div>
                             <div class="ibox"><div class="ibox-content">
                             <h4>Today's Traffic - {{ $todays_traffic }} impressions - {{ $todays_clicks }} clicks - CTR {{ $todays_ctr }} %</h4>
                             <!-- <div id="sitechart" class="amchartdiv"></div> -->
@@ -49,6 +120,52 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
+    let text = $('#dateRangeDisplay').text().split(' - '),
+        start = text[0],
+        end = text[1],
+        initialRange = `${start} - ${end}`;
+           $('.footable').footable();
+    $('.footable').removeClass('hide');
+    
+
+    $('#reportrange span').html(initialRange);
+    $('input[name="daterange"]').val(initialRange);
+
+    $('#reportrange').daterangepicker({
+        format: 'MM/DD/YYYY',
+        dateLimit: { days: 60 },
+        showDropdowns: true,
+        showWeekNumbers: true,
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        opens: 'right',
+        drops: 'down',
+        buttonClasses: ['btn', 'btn-sm'],
+        applyClass: 'btn-primary',
+        cancelClass: 'btn-default',
+        separator: ' to ',
+        locale: {
+            applyLabel: 'Submit',
+            cancelLabel: 'Cancel',
+            fromLabel: 'From',
+            toLabel: 'To',
+            customRangeLabel: 'Custom',
+            daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+            monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            firstDay: 1
+        }
+    }, (start, end, label) => {
+        console.log(start.toISOString(), end.toISOString(), label);
+        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        $('input[name="daterange"]').val(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+    });	       
+
      var chart = AmCharts.makeChart("browserchart", {
     "type": "pie",
     "theme": "light",

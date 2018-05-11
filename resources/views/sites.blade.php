@@ -48,6 +48,7 @@ hljs.initHighlightingOnLoad();
 
 @section('content')
 <div class="content">
+<!--
 	@if(sizeof($pending))
 	<div class="row">
 		<div class="col-xs-12">
@@ -94,6 +95,7 @@ hljs.initHighlightingOnLoad();
 		</div>
 	</div>
 	@endif
+-->
 	<!--Add new Site -->
 	<div class="row">
 		<div class="col-xs-12">
@@ -371,6 +373,12 @@ hljs.initHighlightingOnLoad();
 										   data-target="#zoneCode{{ $zone->id }}" style="color: white;">
 											<button class="btn btn-xs btn-danger"><span class="btn-label"><i class="fa fa-file-code-o"></i></span> Code</button>
 										</a>
+                                                                                @if($user->allow_folders)
+										<a href="/zone_manage/{{$zone->handle}}"
+										   style="color: white;">
+											<button class="btn btn-xs btn-info"><span class="btn-label"><i class="fa fa-wrench"></i></span> Manage</button>
+										</a>
+                                                                                @endif
 									</td>
 								</tr>
 								@endforeach
@@ -401,7 +409,7 @@ hljs.initHighlightingOnLoad();
                 <div class="modal-body">
                     <h3>Your Traffic Roots Analysis Pixel</h3>
                     <div style="overflow-wrap: break-word;">
-                        <pre><code class="html">{{ htmlspecialchars('<img alt="Traffic Roots Pixel" src="'.env('APP_URL', 'http://localhost').'/pixel/'.$site->site_handle.'" style="display:none;">') }}
+                        <pre><code class="html">{{ htmlspecialchars('<img alt="Traffic Roots Pixel" src="//trafficroots.com/pixel/'.$site->site_handle.'" style="display:none;">') }}
                         </code></pre>
                     </div>
                 </div>

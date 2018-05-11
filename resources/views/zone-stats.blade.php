@@ -1,13 +1,53 @@
 @extends('layouts.app') 
 @section('title', 'Publisher Zone/Stats')
 @section('css')
+<link rel="stylesheet"
+      href="{{ URL::asset('css/plugins/daterangepicker/daterangepicker.css') }}">
+<link rel="stylesheet"
+      href="{{ URL::asset('css/plugins/select2/select2.min.css') }}">
+<link rel="stylesheet"
+      href="{{ URL::asset('css/plugins/chosen/chosen.css') }}">
+<link rel="stylesheet"
+      href="{{ URL::asset('css/custom.css') }}">
+<link rel="stylesheet"
+      href="{{ URL::asset('css/plugins/tablesaw/tablesaw.css') }}">
+    <link href="{{ URL::asset('css/plugins/footable/footable.core.css') }}" rel="stylesheet">
+
 <style type="text/css">
-    .hide {
-        display: none;
+	
+    #reportrange {
+        width: unset;
     }
+    .hide {
+    	display: none;
+    	    }
+    .footable th:last-child .footable-sort-indicator {
+            display: none;
+            pointer-events: none;
+        }   		    	
+    @media only screen and (min-width: 769px) {
+        .stats-tabs:before,
+        .stats-tabs:after {
+           display: none;
+        }
+     }
+        .badge {
+            font-size: 8px;
+        }
+
+                div.tableSearchOnly {
+                        padding-top: 55px;
+
+                }
+                .content .ibox .ibox-content {
+                        overflow: visible;
+                }
 </style>
 @endsection
 @section('js')
+    <script src="{{ URL::asset('js/plugins/footable/footable.all.min.js') }}"></script>
+<script src="{{ URL::asset('js/plugins/daterangepicker/daterangepicker.js') }}"></script>
+@endsection
 @section('content')
 <div class="content">
 	<div class="row">
@@ -16,8 +56,48 @@
 				<a href="{{ URL::to('/sites') }}" class="btn btn-primary btn-xs pull-right m-t m-r">
 					<span class="fa fa-arrow-circle-left"></span>&nbsp;Back to Sites</a>
 				</a>
-        		<h4 class="p-title">{{ $zone->description }} <small class="m-l-sm">Month to date</small> </a></h4>
-    		</div>
+        		<h4 class="p-title">{{ $zone->description }} <small class="m-l-sm"><span id="dateRangeDisplay">{{ $startDate }}@if($endDate) - {{ $endDate }}@endif</span></small> </a></h4>
+		</div>
+                                                <div class="ibox-content">
+                                                        <div class="row">
+                                                                <div class="col-xs-12 col-md-5">
+<!--
+                                                        <form name="stats_form"
+                                                                  id="stats_form"
+                                                                  action="{{ url('/stats/pub') }}"
+                                                                  method="POST">
+                                                                {{ csrf_field() }}
+-->
+                                                                        <form name="zone_form"
+                                                                  method="POST">
+                                                                <label>Dates</label>
+                                                                {{ csrf_field() }}
+                                                                <div class="row">
+                                                                        <div class="col-xs-12 form-group">
+                                                                                <input hidden="true"
+                                                                                           type="text"
+                                                                                           name="daterange" />
+                                                                                <div id="reportrange"
+                                                                                         class="form-control">
+                                                                                        <i class="fa fa-calendar" style="float: right;"></i>
+                                                                                        <span></span>
+                                                                                </div>
+                                                                        <label class="error hide"
+                                                                                   for="dates"></label>
+                                                                        </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                        <div class="col-xs-12 col-md-6">
+                                                                                <div class="form-group">
+                                                                                        <button type="submit" class="btn btn-xs btn-primary btn-block">Submit</button>
+                                                                                </div>
+                                                                        </div>
+
+                                                                </div>
+                                                        </form>
+                                                                </div>
+                                                        </div>
+                                                </div>
     		<div class="tabs-container">
 				<ul class="nav nav-tabs">
 					<li class="active">
@@ -255,6 +335,51 @@
 	       $('#nav_pub_stats').addClass("active");
 	       $('#nav_pub').addClass("active");
 	       $('#nav_pub_menu').removeClass("collapse");
+  let text = $('#dateRangeDisplay').text().split(' - '),
+	          start = text[0],
+		          end = text[1],
+			          initialRange = `${start} - ${end}`;
+	           $('.footable').footable();
+	           $('.footable').removeClass('hide');
+		       
+
+		       $('#reportrange span').html(initialRange);
+		       $('input[name="daterange"]').val(initialRange);
+
+		           $('#reportrange').daterangepicker({
+			           format: 'MM/DD/YYYY',
+					           dateLimit: { days: 60 },
+						           showDropdowns: true,
+							           showWeekNumbers: true,
+								           ranges: {
+									               'Today': [moment(), moment()],
+											                   'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+													               'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+														                   'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+																               'This Month': [moment().startOf('month'), moment().endOf('month')],
+																	                   'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+																			           },
+																					           opens: 'right',
+																						           drops: 'down',
+																							           buttonClasses: ['btn', 'btn-sm'],
+																								           applyClass: 'btn-primary',
+																									           cancelClass: 'btn-default',
+																										           separator: ' to ',
+																											           locale: {
+																												               applyLabel: 'Submit',
+																														                   cancelLabel: 'Cancel',
+																																               fromLabel: 'From',
+																																	                   toLabel: 'To',
+																																			               customRangeLabel: 'Custom',
+																																				                   daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+																																						               monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+																																							                   firstDay: 1
+																																									           }
+				       }, (start, end, label) => {
+				               console.log(start.toISOString(), end.toISOString(), label);
+					               $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+					               $('input[name="daterange"]').val(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+						           });
        });
    </script>
     

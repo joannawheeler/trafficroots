@@ -81,9 +81,11 @@ class CronController extends Controller
             
              
             foreach($campaigns as $camp){
+                $creatives = DB::select('SELECT * FROM creatives WHERE campaign_id = ?', array($camp->id));
+		if(sizeof($creatives)){
                 $pairs[] = "('"
                            .$zone->handle."',"
-                           .$zone->location_type.",5,"
+                           .$zone->location_type.",1,"
                            .$camp->user_id.","
                            .$camp->id.","
                            .$camp->bid.",'"
@@ -95,7 +97,10 @@ class CronController extends Controller
                            .$camp->operating_systems."','"
                            .$camp->browsers."','"
                            .$camp->keywords."',NOW(),NOW())";
-                 
+		}else{
+			//Log::info('No Creatives for Campaign ' . $camp->id);
+			DB::update('UPDATE bids SET status = 5 WHERE campaign_id = ?', array($camp->id));
+		}
             }
             }else{
                 Log::info("No Categories found for zone ".$zone->handle);
@@ -150,7 +155,8 @@ class CronController extends Controller
 	    Log::info('Removing '.count($inactive).' inactive campaigns');
 	    Log::info($sql);
 	    Log::info(DB::delete($sql));
-        }
+	}
+	Log::info("Bid Roller Completed");
     }
     
     /* activate any pending bids after 36 hours */

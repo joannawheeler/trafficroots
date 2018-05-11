@@ -20,7 +20,8 @@
         "google/recaptcha": "~1.1",
         "barryvdh/laravel-debugbar": "^2.4",
         "twilio/sdk": "^5.16",
-        "aloha/twilio": "^3.0"
+        "aloha/twilio": "^3.0",
+        "gumlet/php-image-resize": "^1.8"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

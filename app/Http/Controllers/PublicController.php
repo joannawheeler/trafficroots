@@ -15,6 +15,10 @@ class PublicController extends Controller
          return view('about');
     }    //
 
+    public function getPrivacyPage()
+    {
+        return view('privacy');
+    }
     public function getLandingPage()
     {
         /* u.s. data */
@@ -130,10 +134,15 @@ class PublicController extends Controller
         Log::info('begin subscribe function');
         $return = array();
         $return['result'] = 'error';
-         Log::info('request validated');
-         $api_key = env('SENDLANE_API_KEY');
-         $hash_key = env('SENDLANE_HASH_KEY');
-         $api_url = env('SENDLANE_API_URL');
+	Log::info('request validated');
+         $api_key = env('SENDLANE_API_KEY','6d507e5b8b5474d');
+         $hash_key = env('SENDLANE_HASH_KEY','f7322a3aef2bb58d8aabf9f380e17d59');
+	 $api_url = env('SENDLANE_API_URL','https://trafficroots.sendlane.com/api/v1/');
+
+	 $pw = env('MAIL_PASSWORD');
+	 Log::info("PW = $pw");
+	 $pw = env('MAIL_PASSWORD','fuck');
+	 Log::info("PW = $pw");
          $command = 'list-subscriber-add';
          $list_id = intval($request->list_id);
          $email = $request->email;
@@ -143,11 +152,16 @@ class PublicController extends Controller
          $process = false;
  
          if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $process = true;
+		 $process = true;
+		 Log::info("Posting to $url");
+	 }else{
+
+            Log::error('Invalid subscribe attempt using '.$email);     
             $return['response'] = "Invalid email";  
          }
          if($process && $this->checkCache()){
-         $post = array('api' => $api_key, 'hash' => $hash_key, 'list_id' => $list_id, 'email' => $email, 'first_name' => $first_name, 'last_name' => $last_name);
+		 $post = array('api' => $api_key, 'hash' => $hash_key, 'list_id' => $list_id, 'email' => $email, 'first_name' => $first_name, 'last_name' => $last_name);
+		 Log::info(print_r($_ENV, true));
          $ch = curl_init();
          Log::info('cUrl initiated');
          curl_setopt($ch,CURLOPT_URL, $url);
@@ -167,7 +181,9 @@ class PublicController extends Controller
                 
                 Log::error('Failed getting '.$info['url'].' : response code '.$info['http_code']);
             }
-         }
+	 }else{
+		 Log::error('Curl Error No: '.curl_errno($ch));
+	 }
          } 
          return json_encode($return);
     }
