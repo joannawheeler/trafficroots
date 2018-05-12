@@ -91,7 +91,7 @@
                                                                 </div>
                                                         </div>
                             <div class="ibox"><div class="ibox-content">
-                            <h4>Today's Traffic - {{ $todays_traffic }} impressions - {{ $todays_clicks }} clicks - CTR {{ $todays_ctr }} %</h4>
+                            <h4>Traffic - {{ $todays_traffic }} impressions - {{ $todays_clicks }} clicks - CTR {{ $todays_ctr }} %</h4>
                             <!-- <div id="sitechart" class="amchartdiv"></div> -->
                             </div></div>
                             <div class="ibox"><div class="ibox-content">
