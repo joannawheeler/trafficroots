@@ -1,6 +1,14 @@
 @extends('layouts.app')
 @section('title','Campaigns')
 @section('css')
+<link rel="stylesheet"
+      href="{{ URL::asset('css/plugins/daterangepicker/daterangepicker.css') }}">
+<link rel="stylesheet"
+      href="{{ URL::asset('css/plugins/select2/select2.min.css') }}">
+<link rel="stylesheet"
+      href="{{ URL::asset('css/custom.css') }}">
+<link rel="stylesheet"
+      href="{{ URL::asset('css/plugins/tablesaw/tablesaw.css') }}">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
     <link href="{{ URL::asset('css/plugins/footable/footable.core.css') }}" rel="stylesheet">
     <style type="text/css">
@@ -22,12 +30,33 @@
 		.content .ibox .ibox-content {
 			overflow: visible;
 		}
+   #reportrange {
+    width: unset;
+    }
+
+    .chosen-select {
+            width: 100%;
+    }
+    div#sites_chosen {
+        width: 100% !important;
+       display: block;
+    }
+
+    @media only screen and (min-width: 769px) {
+       .stats-tabs:before,
+       .stats-tabs:after {
+           display: none;
+       }
+     }
+                                 
 
     </style>
 @endsection
 
 @section('js')
     <script src="{{ URL::asset('js/plugins/footable/footable.all.min.js') }}"></script>
+    <script src="{{ URL::asset('js/plugins/daterangepicker/daterangepicker.js') }}"></script>
+    <script src="{{ URL::asset('js/plugins/select2/select2.full.min.js') }}"></script>
 @endsection
 @section('content')
 <div class="content">
@@ -52,6 +81,7 @@
 									<form name="campaign_form"
 								  method="POST">
 								<label>Dates</label>
+                                                                {{ csrf_field() }}
 								<div class="row">
 									<div class="col-xs-12 form-group">
 										<input hidden="true"
@@ -69,15 +99,10 @@
 								<div class="row">
 									<div class="col-xs-12 col-md-6">
 										<div class="form-group">
-											<button type="submit" class="btn btn-primary btn-block">Submit</button>
+											<button type="submit" class="btn btn-xs btn-primary btn-block">Submit</button>
 										</div>
 									</div>
 
-									<div class="col-xs-12 col-md-6">
-										<div class="form-group">
-											<button type="submit" class="btn btn-danger 	btn-block" id="resetFilter">Reset Filter</button>
-										</div>
-									</div>
 								</div>
 							</form>
 								</div>
@@ -91,9 +116,8 @@
 
             <div class="ibox">
                 <div class="ibox-title">
-                    <h5>Campaigns</h5>
-					<div class="pull-right">
-                    	<a href="{{ URL::to('campaign') }}" class="btn btn-xs btn-primary"><i class="fa fa-plus-square-o"></i>&nbsp;&nbsp; New Campaign</a>
+                    <h5>Campaigns - <span id="dateRangeDisplay">{{ $startDate }}@if($endDate) - {{ $endDate }}@endif</span> </h5>
+					<div class="pull-right"><a href="{{ URL::to('addfunds') }}" class="btn btn-xs btn-info"><i class="fa fa-cc-visa"></i>&nbsp;<i class="fa fa-cc-mastercard"></i>&nbsp; Add Funds</a>&nbsp;<a href="{{ URL::to('campaign') }}" class="btn btn-xs btn-primary"><i class="fa fa-plus-square-o"></i>&nbsp;&nbsp; New Campaign</a>
 					</div>
                 </div>
 
@@ -247,6 +271,51 @@
 	       $('#nav_buyer_campaigns').addClass("active");
 	       $('#nav_buyer').addClass("active");
 	       $('#nav_buyer_menu').removeClass("collapse");
+    let text = $('#dateRangeDisplay').text().split(' - '),
+        start = text[0],
+        end = text[1],
+        initialRange = `${start} - ${end}`;
+           $('.footable').footable();
+    $('.footable').removeClass('hide');
+    
+
+    $('#reportrange span').html(initialRange);
+    $('input[name="daterange"]').val(initialRange);
+
+    $('#reportrange').daterangepicker({
+        format: 'MM/DD/YYYY',
+        dateLimit: { days: 60 },
+        showDropdowns: true,
+        showWeekNumbers: true,
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        opens: 'right',
+        drops: 'down',
+        buttonClasses: ['btn', 'btn-sm'],
+        applyClass: 'btn-primary',
+        cancelClass: 'btn-default',
+        separator: ' to ',
+        locale: {
+            applyLabel: 'Submit',
+            cancelLabel: 'Cancel',
+            fromLabel: 'From',
+            toLabel: 'To',
+            customRangeLabel: 'Custom',
+            daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+            monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            firstDay: 1
+        }
+    }, (start, end, label) => {
+        console.log(start.toISOString(), end.toISOString(), label);
+        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        $('input[name="daterange"]').val(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+    });	       
        });
    </script>
 @endsection

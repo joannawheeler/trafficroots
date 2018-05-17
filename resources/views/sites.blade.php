@@ -420,7 +420,7 @@ hljs.initHighlightingOnLoad();
                 <div class="modal-body">
                     <h3>Your Traffic Roots Analysis Pixel</h3>
                     <div style="overflow-wrap: break-word;">
-                        <pre><code class="html">{{ htmlspecialchars('<img alt="Traffic Roots Pixel" src="'.env('APP_URL', 'http://localhost').'/pixel/'.$site->site_handle.'" style="display:none;">') }}
+                        <pre><code class="html">{{ htmlspecialchars('<img alt="Traffic Roots Pixel" src="//trafficroots.com/pixel/'.$site->site_handle.'" style="display:none;">') }}
                         </code></pre>
                     </div>
                 </div>

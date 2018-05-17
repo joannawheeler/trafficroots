@@ -449,7 +449,8 @@ $sql = "SELECT
         $data = array();
         /* balance */ 
         $sql = "SELECT running_balance AS balance FROM bank WHERE user_id = ? ORDER BY id DESC LIMIT 1";
-        $data['current_balance'] = sizeof($bank = DB::select($sql, array($user->id))) ? $bank[0]->balance : 0.00; 
+	$data['current_balance'] = sizeof($bank = DB::select($sql, array($user->id))) ? $bank[0]->balance : 0.00;
+        $t1 = microtime(true);	
         /* today */
         $sql = "SELECT SUM(stats.impressions) AS impressions, SUM(stats.clicks) AS clicks, stats.stat_date
                 FROM stats
@@ -458,26 +459,33 @@ $sql = "SELECT
                 WHERE users.id = ?
                 AND stats.stat_date = CURDATE();";
         $result = DB::select($sql, array($user->id));
+        $t2 = microtime(true);
+	Log::info('Got Today in '.round($t2 - $t1, 4).' seconds');
         $data['impressions_today'] = sizeof($result) ? $result[0]->impressions : 0;
         $data['clicks_today'] = sizeof($result) ? $result[0]->clicks : 0;
-        $data['ctr_today'] = (float) $data['clicks_today'] ? round($data['clicks_today'] / $data['impressions_today'], 4) : 0.0000;
-        $sql = "SELECT SUM(transaction_amount) AS spend FROM bank WHERE user_id = ? AND created_at >= CURDATE() AND transaction_amount < 0";
-        $result = DB::select($sql, array($user->id));
-        $data['spent_today'] = sizeof($result) ? $result[0]->spend * -1 : 0;
+	$data['ctr_today'] = (float) $data['clicks_today'] ? round($data['clicks_today'] / $data['impressions_today'], 4) : 0.0000;
+	$t1 = microtime(true);
+        $sql = "SELECT spent FROM spend WHERE user_id = ? AND spend_date >= CURDATE() AND spent < 0";
+	$result = DB::select($sql, array($user->id));
+        $t2 = microtime(true);
+	Log::info('Got Spend in '.round($t2 - $t1, 4).' seconds');
+        $data['spent_today'] = sizeof($result) ? $result[0]->spent * -1 : 0;
 
         $data['cpm_today'] = (float) $data['impressions_today'] ? round($data['spent_today'] / ($data['impressions_today'] / 1000), 4) : 0.00;
         $data['cpc_today'] = (float) $data['clicks_today'] ? round($data['spent_today'] / $data['clicks_today'], 4) : 0.00;
-
+        $t1 = microtime(true);
         $sql = "SELECT DISTINCT(campaigns.id)
                 FROM stats
                 JOIN bids ON stats.bid_id = bids.id
                 JOIN campaigns ON bids.campaign_id = campaigns.id
                 WHERE campaigns.user_id = ?
                 AND stats.stat_date = CURDATE();";
-        $result = DB::select($sql, array($user->id));
+         $result = DB::select($sql, array($user->id));
+        $t2 = microtime(true);
+        Log::info('Got Active Campaigns in '.round($t2 - $t1, 4).' seconds');
         $data['active_campaigns_yesterday'] = sizeof($result);
 
-
+        $t1 = microtime(true);
         /* yesterday */
         $sql = "SELECT SUM(stats.impressions) AS impressions, SUM(stats.clicks) AS clicks, stats.stat_date
                 FROM stats
@@ -486,16 +494,21 @@ $sql = "SELECT
                 WHERE users.id = ?
                 AND stats.stat_date = DATE_SUB(CURDATE(), INTERVAL 1 DAY);";
         $result = DB::select($sql, array($user->id));
+        $t2 = microtime(true);
+        Log::info('Got Yesterday in '.round($t2 - $t1, 4).' seconds');
         $data['impressions_yesterday'] = sizeof($result) ? $result[0]->impressions : 0;
         $data['clicks_yesterday'] = sizeof($result) ? $result[0]->clicks : 0;
 	$data['ctr_yesterday'] = (float) $data['clicks_yesterday'] ? round($data['clicks_yesterday'] / $data['impressions_yesterday'], 4) : 0.0000;
-        $sql = "SELECT SUM(transaction_amount) AS spend FROM bank WHERE user_id = ? AND created_at LIKE'".date('Y-m-d', strtotime("yesterday"))."%' AND transaction_amount < 0";
-        $result = DB::select($sql, array($user->id));
-        $data['spent_yesterday'] = sizeof($result) ? $result[0]->spend * -1 : 0;
+	$t1 = microtime(true);
+        $sql = "SELECT SUM(spent) AS spent FROM spend WHERE user_id = ? AND spend_date = '".date('Y-m-d', strtotime("yesterday"))."' AND spent < 0";
+	$result = DB::select($sql, array($user->id));
+        $t2 = microtime(true);
+        Log::info('Got Yesterday Spent in '.round($t2 - $t1, 4).' seconds');	
+        $data['spent_yesterday'] = sizeof($result) ? $result[0]->spent * -1 : 0;
         
         $data['cpm_yesterday'] = (float) $data['impressions_yesterday'] ? round($data['spent_yesterday'] / ($data['impressions_yesterday'] / 1000), 4) : 0.00;
         $data['cpc_yesterday'] = (float) $data['clicks_yesterday'] ? round($data['spent_yesterday'] / $data['clicks_yesterday'], 4) : 0.00;
-
+        $t1 = microtime(true);
         $sql = "SELECT DISTINCT(campaigns.id)
                 FROM stats
                 JOIN bids ON stats.bid_id = bids.id
@@ -503,8 +516,10 @@ $sql = "SELECT
                 WHERE campaigns.user_id = ?
                 AND stats.stat_date = DATE_SUB(CURDATE(), INTERVAL 1 DAY);";
         $result = DB::select($sql, array($user->id));
+        $t2 = microtime(true);
+	Log::info('Got Yesterday Active Campaigns in '.round($t2 - $t1, 4).' seconds');
         $data['active_campaigns_yesterday'] = sizeof($result);
-
+        $t1 = microtime(true);
         /* this month */
         $sql = "SELECT SUM(stats.impressions) AS impressions, SUM(stats.clicks) AS clicks, stats.stat_date
                 FROM stats
@@ -512,27 +527,33 @@ $sql = "SELECT
                 JOIN users ON users.id = bids.buyer_id
                 WHERE users.id = ?
                 AND stats.stat_date >= '".date('Y-m-d', strtotime('first day of this month'))."';";
-        $result = DB::select($sql, array($user->id));
+	$result = DB::select($sql, array($user->id));
+        $t2 = microtime(true);
+	        Log::info('Got This Month in '.round($t2 - $t1, 4).' seconds');
         $data['impressions_this_month'] = sizeof($result) ? $result[0]->impressions : 0;
         $data['clicks_this_month'] = sizeof($result) ? $result[0]->clicks : 0;
         $data['ctr_this_month'] = (float) $data['clicks_this_month'] ? round($data['clicks_this_month'] / $data['impressions_this_month'], 4) : 0.0000;
-
-        $sql = "SELECT SUM(transaction_amount) AS spend FROM bank WHERE user_id = ? AND created_at >= '".date('Y-m-d', strtotime('first day of this month'))."' AND transaction_amount < 0";
-        $result = DB::select($sql, array($user->id));
-        $data['spent_this_month'] = sizeof($result) ? $result[0]->spend * -1: 0;
+        $t1 = microtime(true);
+        $sql = "SELECT SUM(spent) AS spent FROM spend WHERE user_id = ? AND spend_date >= '".date('Y-m-d', strtotime('first day of this month'))."' AND spent < 0";
+	$result = DB::select($sql, array($user->id));
+        $t2 = microtime(true);
+	        Log::info('Got This Month Spend in '.round($t2 - $t1, 4).' seconds');
+        $data['spent_this_month'] = sizeof($result) ? $result[0]->spent * -1: 0;
 
         $data['cpm_this_month'] = (float) $data['impressions_this_month'] ? round($data['spent_this_month'] / ($data['impressions_this_month'] / 1000), 4) : 0.00;
         $data['cpc_this_month'] = (float) $data['clicks_this_month'] ? round($data['spent_this_month'] / $data['clicks_this_month'], 4) : 0.00;
-
+        $t1 = microtime(true);
         $sql = "SELECT DISTINCT(campaigns.id)
                 FROM stats
                 JOIN bids ON stats.bid_id = bids.id
                 JOIN campaigns ON bids.campaign_id = campaigns.id
                 WHERE campaigns.user_id = ?
                 AND stats.stat_date >= '".date('Y-m-d', strtotime('first day of this month'))."'";
-        $result = DB::select($sql, array($user->id));
+	$result = DB::select($sql, array($user->id));
+        $t2 = microtime(true);
+	        Log::info('Got This Month Active Campaigns in '.round($t2 - $t1, 4).' seconds');
         $data['active_campaigns_this_month'] = sizeof($result);
-
+        $t1 = microtime(true);
         /* last month */
         $sql = "SELECT SUM(stats.impressions) AS impressions, SUM(stats.clicks) AS clicks, stats.stat_date
                 FROM stats
@@ -541,20 +562,24 @@ $sql = "SELECT
                 WHERE users.id = ?
                 AND stats.stat_date >= '".date('Y-m-d', strtotime('first day of last month'))."'
                 AND stats.stat_date < '".date('Y-m-d', strtotime('first day of this month'))."';";
-        $result = DB::select($sql, array($user->id));
+	$result = DB::select($sql, array($user->id));
+        $t2 = microtime(true);
+	        Log::info('Got Last Month in '.round($t2 - $t1, 4).' seconds');
         $data['impressions_last_month'] = sizeof($result) ? $result[0]->impressions : 0;
         $data['clicks_last_month'] = sizeof($result) ? $result[0]->clicks : 0;
         $data['ctr_last_month'] = (float) $data['clicks_last_month'] ? round($data['clicks_last_month'] / $data['impressions_last_month'], 4) : 0.0000;
-
-        $sql = "SELECT SUM(transaction_amount) AS spend FROM bank WHERE user_id = ? 
-                AND bank.created_at >= '".date('Y-m-d', strtotime('first day of last month'))."'
-                AND bank.created_at < '".date('Y-m-d', strtotime('first day of this month'))."' AND transaction_amount < 0";
-        $result = DB::select($sql, array($user->id));
-        $data['spent_last_month'] = sizeof($result) ? $result[0]->spend * -1 : 0;
+        $t1 = microtime(true);
+        $sql = "SELECT SUM(spent) AS spent FROM spend WHERE user_id = ? 
+                AND spend_date >= '".date('Y-m-d', strtotime('first day of last month'))."'
+                AND spend_date < '".date('Y-m-d', strtotime('first day of this month'))."' AND spent < 0";
+	$result = DB::select($sql, array($user->id));
+        $t2 = microtime(true);
+	        Log::info('Got Last Month Spent in '.round($t2 - $t1, 4).' seconds');
+        $data['spent_last_month'] = sizeof($result) ? $result[0]->spent * -1 : 0;
 
         $data['cpm_last_month'] = (float) $data['impressions_last_month'] ? round($data['spent_last_month'] / ($data['impressions_last_month'] / 1000), 4) : 0.00;
         $data['cpc_last_month'] = (float) $data['clicks_last_month'] ? round($data['spent_last_month'] / $data['clicks_last_month'], 4) : 0.00;
-
+        $t1 = microtime(true);
         $sql = "SELECT DISTINCT(campaigns.id)
                 FROM stats
                 JOIN bids ON stats.bid_id = bids.id
@@ -562,9 +587,11 @@ $sql = "SELECT
                 WHERE campaigns.user_id = ?
                 AND stats.stat_date >= '".date('Y-m-d', strtotime('first day of last month'))."'
                 AND stats.stat_date < '".date('Y-m-d', strtotime('first day of this month'))."';";
-        $result = DB::select($sql, array($user->id));
+	$result = DB::select($sql, array($user->id));
+        $t2 = microtime(true);
+	        Log::info('Got Last Month Active Campaigns in '.round($t2 - $t1, 4).' seconds');
         $data['active_campaigns_last_month'] = sizeof($result);
-
+        $t1 = microtime(true);
         /* last thirty days */
         $data['last_thirty_days'] = array();
         for($i = 60; $i >= 0; $i--){
@@ -578,13 +605,16 @@ $sql = "SELECT
                 AND stats.stat_date = ?;";
                $data['last_thirty_days'][date('m/d/Y',strtotime($mydate))] = array('impressions' => 0, 'clicks' => 0, 'spend' => 0);
             foreach(DB::select($sql, array($user->id, $mydate)) as $row){
-                $sql = "SELECT SUM(transaction_amount) AS spend FROM bank WHERE user_id = ? AND created_at LIKE '$mydate%' AND transaction_amount < 0";
-                $spend = sizeof($daily = DB::select($sql, array($user->id))) ? $daily[0]->spend * -1 : 0.00;
+                $sql = "SELECT spent FROM spend WHERE user_id = ? AND spend_date = ? AND spent < 0";
+                $spend = sizeof($daily = DB::select($sql, array($user->id, $mydate))) ? $daily[0]->spent * -1 : 0.00;
                 $impressions = intval($row->impressions);
                 $clicks = intval($row->clicks);
                 $data['last_thirty_days'][date('m/d/Y',strtotime($mydate))] = array('timestamp' => strtotime($mydate) * 1000, 'impressions' => $impressions, 'clicks' => $clicks, 'spend' => $spend);
             }
-        }
+	}
+        $t2 = microtime(true);
+	Log::info('Got Last Thirty Days in '.round($t2 - $t1, 4).' seconds');
+        if(1){	
         /* campaigns - this month */
         $data['campaigns']['thismonth'] = array();
         $data['campaigns']['lastmonth'] = array();
@@ -637,7 +667,10 @@ $sql = "SELECT
             $data['campaigns']['lastmonth'][$camp->campaign_name]['spend'] = isset($data['campaigns']['lastmonth'][$camp->campaign_name]['spend']) ? $data['campaigns']['lastmonth'][$camp->campaign_name]['spend'] + $spent : $spent;
 	    $data['campaigns']['lastmonth'][$camp->campaign_name]['status'] = $camp->description;
 	    $data['campaigns']['lastmonth'][$camp->campaign_name]['classname'] = $camp->classname;
-
+        } 
+	}else{
+          $data['campaigns']['thismonth'] = array();
+	  $data['campaigns']['lastmonth'] = array();
 	}
         return $data;
     }  

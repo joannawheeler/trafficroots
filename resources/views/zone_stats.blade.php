@@ -52,7 +52,7 @@
 <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
 
                            <div class="ibox">
-                           <div class="ibox-title">Campaign Information - {{ $campaign_name }}  - <span id="dateRangeDisplay">{{ $startDate }}@if($endDate) - {{ $endDate }}@endif</span> </div>
+                            <div class="ibox-title">Zone Stats - {{ $zone }}  - <span id="dateRangeDisplay">{{ $startDate }}@if($endDate) - {{ $endDate }}@endif</span> </div>
 			    <div class="ibox-content">
                         <div class="row">
                                 <div class="col-md-12">
@@ -164,7 +164,8 @@ $(document).ready(function(){
         console.log(start.toISOString(), end.toISOString(), label);
         $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
         $('input[name="daterange"]').val(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-    });	
+    });	       
+
      var chart = AmCharts.makeChart("browserchart", {
     "type": "pie",
     "theme": "light",

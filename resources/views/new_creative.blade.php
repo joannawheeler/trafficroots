@@ -11,7 +11,7 @@
 		<div class="col-xs-12">
 			<div class="panel panel-default">
 				<a href="/manage_campaign/{{ $campaign->id }}" class="btn btn-primary btn-xs pull-right m-t m-r">
-					<span class="fa fa-arrow-circle-left"></span>&nbsp;Back to Creative</a>
+					<span class="fa fa-arrow-circle-left"></span>&nbsp;Back to Campaign</a>
                 <h4 class="p-title">New Creative for Campaign {{ $campaign->id }} - {{ $campaign->campaign_name }}</h4>
 
                 <div class="ibox-content">

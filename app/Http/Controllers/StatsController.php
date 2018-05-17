@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -15,6 +14,8 @@ use App\Browser;
 use App\Platform;
 use App\OperatingSystem;
 use Carbon\Carbon;
+ini_set('memory_limit','4096M');
+set_time_limit(0);
 
 class StatsController extends Controller
 {
@@ -102,15 +103,21 @@ class StatsController extends Controller
         return view('campaign-stats', compact('campaign', 'startDate', 'endDate'));
     }
 
-    public function zone(Zone $zone)
+    public function zone(Request $request, Zone $zone)
     {
-        // $this->authorize('view', $zone);
-        $startDate = Carbon::now()->firstOfMonth()->toDateString();
-        $endDate = Carbon::now()->endOfMonth()->toDateString();
-        $stats = $zone->stats
-          ->where('stat_date', '>=', $startDate)
-          ->where('stat_date', '<=', $endDate);
-
+	    // $this->authorize('view', $zone);
+	if($request->has('daterange')){
+            $stuff = explode(' - ', $request->get('daterange'));
+	    $startDate = date('Y-m-d', strtotime($stuff[0]));
+	    $endDate = date('Y-m-d', strtotime($stuff[1]));
+	}else{
+            $startDate = Carbon::now()->toDateString();
+	    $endDate = Carbon::now()->toDateString();
+	}
+            $stats = $zone->stats
+              ->where('stat_date', '>=', $startDate)
+              ->where('stat_date', '<=', $endDate);
+        
         return view('zone-stats', compact('zone', 'stats', 'startDate', 'endDate'));
     }
     /**
@@ -222,6 +229,18 @@ class StatsController extends Controller
             }else{
 		    return redirect('/campaigns');
 	    }
+	if($request->has('daterange')){
+            $stuff = explode(' - ', $request->get('daterange'));
+	    $startDate = date('F j, Y', strtotime($stuff[0]));
+	    $endDate = date('F j, Y', strtotime($stuff[1]));
+	    $startQ = date('Y-m-d', strtotime($startDate));
+	    $endQ = date('Y-m-d', strtotime($endDate));
+	}else{
+            $startDate = date('F j, Y');
+	    $endDate = date('F j, Y');
+	    $startQ = date('Y-m-d', strtotime($startDate));
+	    $endQ = date('Y-m-d', strtotime($endDate));
+	}
          /* today's traffic by site */
 	    $site_traffic = array();
 	    DB::statement("SET sql_mode = '';");
@@ -237,13 +256,13 @@ class StatsController extends Controller
                  on stats.bid_id = bids.id
                  join trafficroots.campaigns
                  on bids.campaign_id = campaigns.id
-                 where stats.stat_date = curdate()
+                 where stats.stat_date between ? and ?
 		 and campaigns.id = ?
                  and campaigns.user_id = ?
                  group by stats.site_id
                  order by impressions desc;';
 
-        $traffic = DB::select($sql, array($request->id, $user->id));
+        $traffic = DB::select($sql, array($startQ, $endQ, $request->id, $user->id));
         foreach($traffic as $row){
 		$site_traffic[$row->site_id]['impressions'] = isset($site_traffic[$row->site_id]) ? $site_traffic[$row->site_id]['impressions'] + $row->impressions : $row->impressions;
                 $site_traffic[$row->site_id]['clicks'] = isset($site_traffic[$row->site_id]['clicks']) ? $site_traffic[$row->site_id]['clicks'] + $row->clicks : $row->clicks;
@@ -273,12 +292,12 @@ class StatsController extends Controller
                   on stats.bid_id = bids.id
                   join trafficroots.campaigns
                   on bids.campaign_id = campaigns.id
-                  where stats.stat_date = curdate()
+                  where stats.stat_date between ? and ?
 		  and campaigns.id = ?
                   and campaigns.user_id = ?
                   group by stats.country_id
                   order by impressions desc;';
-         $geo_traffic = DB::select($sql, array($request->id, $user->id));
+         $geo_traffic = DB::select($sql, array($startQ, $endQ, $request->id, $user->id));
 
          $sql = 'select sum(stats.impressions) as impressions,
                  sum(stats.clicks) as clicks,
@@ -292,14 +311,14 @@ class StatsController extends Controller
                   on stats.bid_id = bids.id
                   join trafficroots.campaigns
                   on bids.campaign_id = campaigns.id
-                  where stats.stat_date = curdate()
+                  where stats.stat_date between ? and ?
 		  and campaigns.id = ?
                  and campaigns.user_id = ?
                  and stats.country_id = 840
                  group by stats.state_code
                  order by impressions desc
                  limit 20;';
-          $state_traffic = DB::select($sql, array($request->id, $user->id));
+          $state_traffic = DB::select($sql, array($startQ, $endQ, $request->id, $user->id));
 
           $sql = 'select sum(stats.impressions) as impressions,
                  sum(stats.clicks) as clicks,
@@ -312,12 +331,12 @@ class StatsController extends Controller
                   on stats.bid_id = bids.id
                   join trafficroots.campaigns
                   on bids.campaign_id = campaigns.id
-                  where stats.stat_date = curdate()
+                  where stats.stat_date between ? and ?
 		  and campaigns.id = ?
                  and campaigns.user_id = ?
                  group by stats.platform
                  order by impressions desc;';
-          $platforms = DB::select($sql, array($request->id, $user->id));
+          $platforms = DB::select($sql, array($startQ, $endQ, $request->id, $user->id));
 
           $sql = 'select sum(stats.impressions) as impressions,
                  sum(stats.clicks) as clicks,
@@ -330,12 +349,12 @@ class StatsController extends Controller
                   on stats.bid_id = bids.id
                   join trafficroots.campaigns
                   on bids.campaign_id = campaigns.id
-                  where stats.stat_date = curdate()
+                  where stats.stat_date between ? and ?
 		  and campaigns.id = ?
                   and campaigns.user_id = ?
                  group by stats.browser
                  order by impressions desc;';
-          $browsers = DB::select($sql, array($request->id, $user->id));
+          $browsers = DB::select($sql, array($startQ, $endQ, $request->id, $user->id));
 
           $sql = 'select sum(stats.impressions) as impressions,
                  sum(stats.clicks) as clicks,
@@ -348,12 +367,12 @@ class StatsController extends Controller
                   on stats.bid_id = bids.id
                   join trafficroots.campaigns
                   on bids.campaign_id = campaigns.id
-                  where stats.stat_date = curdate()
+                  where stats.stat_date between ? and ?
 		  and campaigns.id = ?
                   and campaigns.user_id = ?
                  group by stats.os
                  order by impressions desc;';
-          $operating_systems = DB::select($sql, array($request->id, $user->id));
+          $operating_systems = DB::select($sql, array($startQ, $endQ, $request->id, $user->id));
 
 	return view('campaign_stats', array('site_traffic' => $site_traffic, 
 		                            'campaign_id' => $request->id, 
@@ -366,6 +385,124 @@ class StatsController extends Controller
                                             'platforms' => $platforms,
                                             'browsers' => $browsers,
 					    'operating_systems' => $operating_systems,
+					    'startDate' => $startDate,
+					    'endDate' => $endDate,
 				            'datestring' => date('l jS \of F Y h:i:s A')));
     }
+    public function zoneStats(Request $request)
+    {
+	    $user = Auth::getUser();
+            $zone = Zone::where('id', $request->zone)->where('pub_id', $user->id)->first();
+	    if($zone){
+		    $zone_name = $zone['description'];
+            }else{
+		    return redirect('/sites');
+	    }
+	if($request->has('daterange')){
+            $stuff = explode(' - ', $request->get('daterange'));
+	    $startDate = date('F j, Y', strtotime($stuff[0]));
+	    $endDate = date('F j, Y', strtotime($stuff[1]));
+	    $startQ = date('Y-m-d', strtotime($startDate));
+	    $endQ = date('Y-m-d', strtotime($endDate));
+	}else{
+            $startDate = date('F j, Y');
+	    $endDate = date('F j, Y');
+	    $startQ = date('Y-m-d', strtotime($startDate));
+	    $endQ = date('Y-m-d', strtotime($endDate));
+	}
+
+	    $sql = 'select sum(stats.impressions) as impressions,
+		    sum(stats.clicks) as clicks
+                    from trafficroots.stats
+                    where stats.zone_id = ?
+                    and stats.stat_date BETWEEN ? AND ?';
+            $result = DB::select($sql, array($request->zone,$startQ, $endQ));
+            $todays_traffic = intval($result[0]->impressions);
+	    $todays_clicks = intval($result[0]->clicks);
+            $todays_ctr = $todays_traffic ? round($todays_clicks / $todays_traffic, 4) : 0.0000;
+
+	    $sql = 'select sum(stats.impressions) as impressions,
+                  sum(stats.clicks) as clicks,
+                  stats.country_id,
+                  countries.country_short,
+                  countries.country_name
+                  from trafficroots.stats
+                  join trafficroots.countries
+                  on stats.country_id = countries.id
+                  where stats.stat_date between ? and ?
+                  and stats.zone_id = ?
+                  group by stats.country_id
+                  order by impressions desc;';
+         $geo_traffic = DB::select($sql, array($startQ, $endQ, $request->zone));
+
+         $sql = 'select sum(stats.impressions) as impressions,
+                 sum(stats.clicks) as clicks,
+                 stats.state_code,
+                 states.state_name,
+                 states.state_short
+                 from trafficroots.stats
+                 join trafficroots.states
+                 on stats.state_code = states.id
+                  where stats.stat_date between ? and ?
+                 and stats.zone_id = ?
+                 and stats.country_id = 840
+                 group by stats.state_code
+                 order by impressions desc
+                 limit 20;';
+          $state_traffic = DB::select($sql, array($startQ, $endQ, $request->zone));
+
+          $sql = 'select sum(stats.impressions) as impressions,
+                 sum(stats.clicks) as clicks,
+                 stats.platform,
+                 platforms.platform as description
+                 from trafficroots.stats
+                 join trafficroots.platforms
+                 on stats.platform = platforms.id
+                  where stats.stat_date between ? and ?
+                 and stats.zone_id = ?
+                 group by stats.platform
+                 order by impressions desc;';
+          $platforms = DB::select($sql, array($startQ, $endQ, $request->zone));
+
+          $sql = 'select sum(stats.impressions) as impressions,
+                 sum(stats.clicks) as clicks,
+                 stats.browser,
+                 browsers.browser as description
+                 from trafficroots.stats
+                 join trafficroots.browsers
+                 on stats.browser = browsers.id
+                  where stats.stat_date between ? and ?
+                  and stats.zone_id = ?
+                 group by stats.browser
+                 order by impressions desc;';
+          $browsers = DB::select($sql, array($startQ, $endQ, $request->zone));
+
+          $sql = 'select sum(stats.impressions) as impressions,
+                 sum(stats.clicks) as clicks,
+                 stats.os,
+                 operating_systems.os as description
+                 from trafficroots.stats
+                 join trafficroots.operating_systems
+                 on stats.os = operating_systems.id
+                  where stats.stat_date between ? and ?
+                  and stats.zone_id = ?
+                 group by stats.os
+                 order by impressions desc;';
+          $operating_systems = DB::select($sql, array($startQ, $endQ, $request->zone));
+
+	return view('zone_stats', array( 
+		                            'zone' => $zone_name, 
+					    'todays_traffic' => $todays_traffic, 
+					    'todays_clicks' => $todays_clicks, 
+					    'todays_ctr' => $todays_ctr,
+                                            'geo_traffic' => $geo_traffic,
+                                            'state_traffic' => $state_traffic,
+                                            'platforms' => $platforms,
+                                            'browsers' => $browsers,
+					    'operating_systems' => $operating_systems,
+					    'startDate' => $startDate,
+					    'endDate' => $endDate,
+				            'datestring' => date('l jS \of F Y h:i:s A')));
+    }
+
 }

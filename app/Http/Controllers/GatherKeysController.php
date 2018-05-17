@@ -48,6 +48,7 @@ class GatherKeysController extends Controller
 	$this->sendUserConfirmation();
 	$this->bounceUsers();
 	$this->bankSetup();
+	$this->populateSpend();
     }
     public function bankSetup()
     {
@@ -304,6 +305,25 @@ class GatherKeysController extends Controller
         }while(!$keyname == '');
         Log::info("gatherSales completed processing $count keys");
     }
+    public function populateSpend($date = '')
+    {
+	    if($date == '') $date = date('Y-m-d');
+	
+		
+	Log::info('Beginning Spend Population');
+        $buyers = DB::select("SELECT distinct(user_id) FROM bank WHERE created_at LIKE '$date%' AND transaction_amount < 0");
+	foreach($buyers as $buyer)
+	{
+            $spend = DB::select("SELECT SUM(transaction_amount) AS spent FROM bank WHERE user_id = ? AND created_at LIKE '$date%' AND transaction_amount < 0;", array($buyer->user_id));
+	    $spent = $spend[0]->spent;
+	    $data = array($buyer->user_id, $date, $spent, date('Y-m-d H:i:s'), date('Y-m-d H:i:s'));
+	    DB::insert("INSERT INTO spend (user_id,spend_date,spent,created_at,updated_at) VALUES(?,?,?,?,?) ON DUPLICATE KEY UPDATE spent = $spent, updated_at = NOW();",$data);
+	}
+        Log::info("Processed $date");
+	
+
+        Log::info('Spend Populaion Completed!');
+    }	    
     public function processBankTransaction($amount, $user_id)
     {
         if($amount && $user_id){
@@ -555,6 +575,7 @@ class GatherKeysController extends Controller
 	curl_close($ch);
 	$doc = new DOMDocument();
 	libxml_use_internal_errors(true);
+	if(strlen($output)){
         $doc->loadHTML($output);
         $classname = 'results';
 	$finder = new DomXPath($doc);
@@ -598,8 +619,10 @@ class GatherKeysController extends Controller
 	     }
 	}else{
                 //Log::info('Zip is known to us.');
- 	}
-		return true;
+	}
+	
+	return true;
+	}
         }
                return false;
     }
