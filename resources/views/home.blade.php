@@ -531,11 +531,11 @@ $( document ).ready(function() {
 					<div class="ibox float-e-margins">
 						<div class="ibox-title navy-bg">
 							<span class="fa fa-money"></span>
-							<span>Costs</span>
+							<span>Balance</span>
 						</div>
 						<div class="ibox-content">
 							<span class="totalStat">
-								$ {{ $buyer_data['spent_today'] }}
+								$ {{ $buyer_data['current_balance'] }}
 							</span>
 						</div>
 					</div>
