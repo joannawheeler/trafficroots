@@ -25,20 +25,7 @@
 
     <div class="row">
         <div class="col-xs-12">
-			<div class="row">
-				<div class="col-xs-12">
-					<div class="panel panel-default">
-						<h4 class="p-title">Filter</h4>
-						<div class="ibox-content">
-							<div class="row">
-								<div class="col-xs-12 col-md-5">
-<!--
-							<form name="stats_form"
-								  id="stats_form"
-								  action="{{ url('/stats/pub') }}"
-								  method="POST">
-								{{ csrf_field() }}
--->
+			<!--
 									<form name="library_form"
 										  method="POST">
 										<label>Dates</label>
@@ -76,6 +63,8 @@
 					</div>
 				</div>
 			</div>
+			
+-->
 			<div class="row">
 				<div class="col-xs-12">
 					<ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
@@ -103,7 +92,7 @@
 												<th>Location Type</th>
 												<th>Status</th>
 												<th>Date Uploaded</th>
-<!--												<th>Links</th>-->
+												<th>Options</th>
 												<th>Preview</th>
 											</tr>
 										</thead>
@@ -112,11 +101,10 @@
 											<tr class="media_row" id="media_row_{{ $file->id }}">
 												<td class="text-center"><b class=" tablesaw-cell-label">Name</b> {{ $file->media_name }} </td>
 												<td class="text-center"><b class=" tablesaw-cell-label">Category</b> {{ $categories[$file->category] }} </td>
-												<td class="text-center"><b class=" tablesaw-cell-label">Location Type</b> {{ $location_types[$file->location_type] }} </td>
+												<td class="text-center get_location_type_id"><b class=" tablesaw-cell-label">Location Type</b> {{ $location_types[$file->location_type] }} </td>
 												<td class="text-center"><b class=" tablesaw-cell-label">Status</b><span class="currentStatus label"> {{ $status_types[$file->status] }} </span></td>
 												<td class="text-center"><b class=" tablesaw-cell-label">Date Uploaded</b> {{ Carbon\Carbon::parse($file->created_at)->toDayDateTimeString() }} </td>
-<!--
-												<td class="text-center"><b class=" tablesaw-cell-label">Update</b>
+												<td class="text-center"><b class=" tablesaw-cell-label">Options</b>
 													<a href="#">
 														<button class="btn btn-xs btn-success alert-success">
 														<span class="btn-label">
@@ -124,7 +112,6 @@
 														</span> Edit</button>
 													</a>
 												</td>
--->
 												<td class="text-center"><b class=" tablesaw-cell-label">Preview</b> <a href="#" class="tr-preview" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="" data-content="<img src='https://publishers.trafficroots.com/{{ $file->file_location }}' width='100%' height='auto'>" id="view_media_{{ $file->id }}"><i class="fa fa-camera" aria-hidden="true"></a></i> </td>
 											</tr>
 										@endforeach
@@ -154,7 +141,7 @@
 													<th>URL</th>
 													<th>Status</th>
 													<th>Date Created</th>
-<!--													<th>Modify</th>-->
+													<th>Options</th>
 												</tr>
 											</thead>
 											<tbody>
@@ -163,18 +150,9 @@
 													<td class="text-center"><b class=" tablesaw-cell-label">Name</b> {{ $link->link_name }} </td>
 													<td class="text-center"><b class=" tablesaw-cell-label">Category</b> {{ $categories[$link->category] }} </td>
 													<td class="text-center"><b class=" tablesaw-cell-label">URL</b> <a href="{{ $link->url }}" target="blank">{{substr($link->url,0,25)}}</a></td>
-													<td class="text-center"><b class=" tablesaw-cell-label">Status</b>
-														@if($status_types[$link->status] == 'Active')
-															<span class="label label-info">Active</span>
-														@elseif($status_types[$link->status] == 'Declined')
-															<span class="label label-info">Declined</span>
-														@else
-															<span class="label label-warning">Pending</span>
-														@endif
-													</td>
+													<td class="text-center"><b class=" tablesaw-cell-label">Status</b><span class="currentStatus label"> {{ $status_types[$link->status] }} </span></td>
 													<td class="text-center"><b class=" tablesaw-cell-label">Date Created</b> {{ Carbon\Carbon::parse($link->created_at)->toDayDateTimeString() }} </td>
-<!--
-													<td class="text-center"><b class=" tablesaw-cell-label">Modify</b>
+													<td class="text-center"><b class=" tablesaw-cell-label">Options</b>
 														<a href="#">
 															<button class="btn btn-xs btn-success alert-success">
 															<span class="btn-label">
@@ -182,7 +160,6 @@
 															</span> Edit</button>
 														</a>
 													</td>
--->
 												</tr>
 											@endforeach
 											</tbody>
@@ -258,39 +235,36 @@
     </div>
 
 <script type="text/javascript">
+jQuery(document).ready(function ($) {
+	$('.nav-click').removeClass("active");
+	$('#nav_buyer_library').addClass("active");
+	$('#nav_buyer').addClass("active");
+	$('#nav_buyer_menu').removeClass("collapse");
+
+	setStatus();
+	$('#media_tab').click();
+
 	$('.dataTableSearchOnly').DataTable({
 		"oLanguage": {
 		  "sSearch": "Search Table"
 		}, pageLength: 10,
 		responsive: true
-	});
-
-	$("#image_file").change(function() {
-		uploadImgURL(this);
-	});
-
-	function uploadImgURL(input) {
-	  if (input.files && input.files[0]) {
-		var reader = new FileReader();
-
-		reader.onload = function(e) {
-		  $('#previewImgFile').attr('src', e.target.result);
+	});	
+});		
+	
+function setStatus() {
+	var currentStatus = Array.from($(".currentStatus"));
+	currentStatus.forEach(function(element) {
+		if (element.innerText == "Active") {
+		  element.classList.add("label-primary");
+		} else if (element.innerText == "Declined") {
+		  element.classList.add("label-danger");
+		} else if (element.innerText == "Disabled") {
+		  element.classList.add("label-default");
+		} else {
+		  element.classList.add("label-warning");
 		};
-
-		reader.readAsDataURL(input.files[0]);
-	  }
-	}
-
-    jQuery(document).ready(function ($) {
-   	    $('#media_tab').click();
-    });
+	});
+};
 </script>
-   <script type="text/javascript">
-       jQuery(document).ready(function ($) {
-	       $('.nav-click').removeClass("active");
-	       $('#nav_buyer_library').addClass("active");
-	       $('#nav_buyer').addClass("active");
-	       $('#nav_buyer_menu').removeClass("collapse");
-       });
-   </script>
 @endsection
