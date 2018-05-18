@@ -23,9 +23,7 @@
                   class="form-horizontal"
                   role="form"
 		  method="POST"
-                  @if( $_SERVER['REQUEST_URI'] == '/campaign')
 		  onsubmit="return submitLinkForm();"
-                  @endif
                   action="{{ url('/links') }}">
                 {{ csrf_field() }}
                 <div class="modal-body">
@@ -86,19 +84,21 @@
         </div>
     </div>
 </div>
-@if($_SERVER['REQUEST_URI'] == '/campaign')
 <script type="text/javascript">
 function submitLinkForm(){
 	$.post('/links', $('#link_form').serialize())
 		.done(function (response) {
-			toastr.success('Link Added Successfully!');
+			toastr.success('Link Added Successfully!', '', 
+			   {onHidden: function () {
+				   if(window.location.href.indexOf("/library") > -1) {
+						window.location.href = "/library";
+				   }
+			   }});
 			$('#addLink').modal('hide');
-                  })
-                .fail(function (response) {
+		  }).fail(function (response) {
 			toastr.error('Failed to add Link!');
 			$('addLink').modal('hide');
 		 });
     return false;
 }
 </script>
-@endif

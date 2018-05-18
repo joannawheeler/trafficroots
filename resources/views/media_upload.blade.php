@@ -24,9 +24,7 @@
                   enctype="multipart/form-data"
                   role="form"
 		  method="POST"
-                  @if( $_SERVER['REQUEST_URI'] == '/campaign')
                   onsubmit="return submitMediaForm();"
-                  @endif
                   action="{{ url('/media') }}">
                 {{ csrf_field() }}
                 <div class="modal-body">                    
@@ -60,10 +58,11 @@
                     <div class="form-group">
                         <label>Location Type</label>
                         <select class="form-control m-b"
-                                value=""
+                                id="location_type_id"
+								value=""
                                 name="image_size"
                                 required>
-                            <option value="">Choose Image Size</option>
+							<option value="">Choose Image Size</option>
                             @foreach(App\LocationType::all() as $locationType)
                             <option value="{{ $locationType->id }}">{{ $locationType->width . 'x' . $locationType->height . ' ' . $locationType->description }}</option>
                             @endforeach
@@ -79,16 +78,15 @@
                             <span class="bold">Upload</span>
                         </label>
 						<br>
-						<!-- <div class="text-center image-preview" style="border: 0px;">
-							<img id="previewImgFile" src="#" alt="Preview Image" />
-						</div> -->
-                        <input type="file"
-                               name="file"
-                               id="image_file"
-                               accept="image/*"
-                               required
-                               class="hide"
-                               hidden/>
+						<input type="file"
+							   name="file"
+							   id="image_file"
+							   accept="image/*"
+							   style="z-index: -1; position: relative;"
+							   required
+							   />
+						<p id="upload_path"></p>
+						<p id="image_dimensions"></p>
                         <label class="error mt-10"
                                style="display: none;"
                                for="image_file">
@@ -114,6 +112,7 @@
                         <div class="well">
                             <ul>
                                 <li>Media uploaded must be image files.</li>
+								<li>The uploaded image needs to fit the exact dimensions of the location type.</li>
                                 <li>To avoid duplication, we offer a Media Library feature.</li>
                                 <li>Upload and Categorize your images here and they will be available across all your campaigns.</li>
                                 <li>On this page you are creating a new Media item by naming it and selecting a Location Type and Category.</li>
@@ -142,8 +141,61 @@
         </div>
     </div>
 </div>
-@if($_SERVER['REQUEST_URI'] == '/campaign')
 <script type="text/javascript">
+jQuery(document).ready(function ($) {
+	//new media - location type selected before upload
+	$("#location_type_id").change(function (e) {
+		var getLocationType = $("#location_type_id option:selected").text();
+		getLocationType = getLocationType.substr(0,getLocationType.indexOf(' '));
+		var getImageSize = $("#image_dimensions")
+			.clone()	//clone the element
+			.children()	//select all the children
+			.remove()	//remove all the children
+			.end()	//again go back to selected element
+			.text();	//get the text of element
+		if (getImageSize) {
+			if (getImageSize == getLocationType) {
+				$("#btnSubmit").prop("disabled", false);
+			} else {
+				$("#btnSubmit").prop("disabled", true);
+				//event.preventDefault();
+				alert("the uploaded image is " + getImageSize + " and doesn't match the exact dimensions of the selected location type.  Please select another image or adjust the image to correct size.");
+				return false;
+			}
+		}
+	});
+	
+	//new media - image upload
+	$("#image_file").change(function (e) {
+		var _URL = window.URL || window.webkitURL;	
+		var file, img, getImageSize, getLocationType, filepath;
+		if ((file = this.files[0])) {
+			img = new Image();
+			img.onload = function () {
+				getImageSize = this.width+'x'+this.height;
+				filepath = document.getElementById("image_file").value;
+				filepath = filepath.replace(/^.*[\\\/]/, '')
+				$('#upload_path').html("<label>File Uploaded: </label>" + filepath );
+				$('#image_dimensions').html("<label>File Size: </label>" + getImageSize );
+				
+				//if location type has been selected.
+				getLocationType = $("#location_type_id option:selected").text();
+				if (getLocationType != "Choose Image Size") {
+					getLocationType = getLocationType.substr(0,getLocationType.indexOf(' '));
+					if (getImageSize == getLocationType) {
+						$("#btnSubmit").prop("disabled", false);
+					} else {
+						$("#btnSubmit").prop("disabled", true);
+						//event.preventDefault();
+						alert("the uploaded image is " + getImageSize + " and doesn't match the exact dimensions of the selected location type.  Please select another image or adjust the image to correct size.");
+						return false;
+					}
+				}
+			};
+			img.src = _URL.createObjectURL(file);
+		}
+	});
+});
 	
 function submitMediaForm(){
         // Get form
@@ -154,7 +206,6 @@ function submitMediaForm(){
 
 		// If you want to add an extra field for the FormData
         //data.append("CustomField", "This is some extra data, testing");
-
 		// disabled the submit button
         $("#btnSubmit").prop("disabled", true);
 
@@ -172,7 +223,12 @@ function submitMediaForm(){
                 $("#btnSubmit").prop("disabled", false);
                 $("#addMedia").modal('hide');
                 toastr.success('Upload Complete!');
-                reloadMedia();
+
+				if(window.location.href.indexOf("/library") > -1) {
+					window.location.href = "/library";
+				} else {
+					reloadMedia();
+				}
             },
             error: function (e) {
 
@@ -181,8 +237,7 @@ function submitMediaForm(){
                 $("#btnSubmit").prop("disabled", false);
 
             }
-        });	
+       });
 		    return false;
 }
 </script>
-@endif
