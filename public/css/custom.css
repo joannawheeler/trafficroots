@@ -123,7 +123,7 @@ nav .nav li.active .nav-second-level li a {
 
 .widget-boxs .ibox.float-e-margins { text-align: center;}
 
-.widget-boxs .ibox.float-e-margins .ibox-title {     
+.widget-boxs .ibox.float-e-margins .ibox-title {
 	padding: 15px 0px;
     font-weight: 700;
     font-size: 14px;
@@ -134,7 +134,7 @@ nav .nav li.active .nav-second-level li a {
 	padding-right: 5px;
 }
 
-#side-menu span.fa.arrow { 
+#side-menu span.fa.arrow {
  -webkit-transform:rotateY(180deg);
   -moz-transform:rotateY(180deg);
   -o-transform:rotateY(180deg);
@@ -455,4 +455,32 @@ table span.bid-type {
 .loginBtn--google:hover,
 .loginBtn--google:focus {
   background: #E74B37;
+}
+
+
+/* Buttons on Sites / Campaign Pg */
+.tablesaw .text-center .btn {
+  margin: 3px;
+}
+
+.tablesaw .text-center div {
+	display: inline-block;
+	padding-right: 5px;
+	word-break: break-all;
+}
+
+#site_form .modal-body .btn-success {
+  margin: 10px 4px 15px;
+}
+
+#allowed_category___chosen ul li input {
+	width: 200px !important;
+}
+
+/* Buttons on Campaign pg */
+ .btn-success {
+  padding-right: 11px;
+}
+ .tablesaw .text-center .btn-success span.btn-label {
+  padding-right: 10px;
 }
