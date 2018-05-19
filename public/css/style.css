@@ -705,6 +705,14 @@ a.paginate_button.current {
     width: calc(100% / 7);
 }
 
+.steps-content .col-md-3 {
+	text-align: left;
+}
+
+.content .ibox .ibox-content {
+    overflow: auto;
+}
+
 @media (max-width: 768px) {
   .top-navigation .navbar-header {
     display: block;
@@ -1227,6 +1235,7 @@ button.dim:active:before {
 .label-warning-light,
 .badge-warning-light {
   background-color: #f8ac59;
+
   color: #ffffff;
 }
 .label-danger,
@@ -3779,6 +3788,7 @@ video {
 #wrapper {
   width: 100%;
 }
+
 .wrapper {
   padding: 0 20px;
 }
@@ -8657,7 +8667,6 @@ body.md-skin {
   display: none;
 }
 @media (min-width: 768px) {
-/*jackie*/
 	#page-wrapper {
 		position: inherit;
 		margin: 0 0 0 220px;
@@ -8731,6 +8740,10 @@ body.md-skin {
   .navbar-top-links .dropdown-tasks,
   .navbar-top-links .dropdown-alerts {
     margin-left: auto;
+  }
+	
+  .steps-content .col-md-3 {
+	text-align: right;
   }
 }
 

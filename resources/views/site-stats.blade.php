@@ -23,26 +23,26 @@
 			<div class="tabs-container">
 				<ul class="nav nav-tabs">
 					<li class="active">
-						<a data-toggle="tab" href="#dates">Dates</a>
-					</li>
+						<a data-toggle="tab" href="#dates"><span class="fa fa-calendar"></span><div>Dates</div></a>
+				  	</li>
 					<li class="nav nav-tabs">
-						<a data-toggle="tab" href="#countries">Countries</a>
-					</li>
-					<li class="nav nav-tabs">
-						<a data-toggle="tab" href="#states">States</a>
-					</li>
-					<li class="nav nav-tabs">
-						<a data-toggle="tab" href="#cities">Cities</a>
-					</li>
-					<li class="nav nav-tabs">
-						<a data-toggle="tab" href="#platforms">Platforms</a>
-					</li>
-					<li class="nav nav-tabs">
-						<a data-toggle="tab" href="#os">Operating Systems</a>
-					</li>
-					<li class="nav nav-tabs">
-						<a data-toggle="tab" href="#browsers">Browsers</a>
-					</li>
+						<a data-toggle="tab" href="#countries"><span class="fa fa-globe"></span><div>Countries</div></a>
+				  	</li>
+				  	<li class="nav nav-tabs">
+					    <a data-toggle="tab" href="#states"><span class="fa fa-location-arrow"></span><div>States</div></a>
+				  	</li>
+				  	<!-- <li class="nav nav-tabs">
+						<a data-toggle="tab" href="#cities"><span class="fa fa-map-marker"></span><div>Cities</div></a>
+				  	</li> -->
+				  	<li class="nav nav-tabs">
+						<a data-toggle="tab" href="#platforms"><span class="fa fa-mobile"></span><div>Platforms</div></a>
+				  	</li>
+				  	<li class="nav nav-tabs">
+						<a data-toggle="tab" href="#os"><span class="fa fa-desktop"></span><div>Operating Systems</div></a>
+				  	</li>
+				  	<li class="nav nav-tabs">
+						<a data-toggle="tab" href="#browsers"><span class="fa fa-laptop"></span><div>Browsers</div></a>
+				  	</li>
 				</ul>
         		<div class="tab-content">
 					<div id="dates" class="tab-pane active">
