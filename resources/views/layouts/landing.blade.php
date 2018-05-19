@@ -36,7 +36,8 @@
                     </button>
                             <a class="navbar-brand" href="{{ url('/') }}">
                                <div class="text-center">
-                               <img src="{{ url('/img/white_tree_logo.png') }}"  alt="TrafficRoots" width="75" height="76">
+                               <img src="{{ url('/img/white_tree_logo.png') }}"  alt="TrafficRoots" width="75" height="76" class="image1">
+                               <img src="{{ url('/img/white_long_logo.png') }}"  alt="TrafficRoots" class="image2">
                                </div>
                             </a>
                 </div>
