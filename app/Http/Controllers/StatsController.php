@@ -411,11 +411,11 @@ class StatsController extends Controller
 	    $endQ = date('Y-m-d', strtotime($endDate));
 	}
 
-	    $sql = 'select sum(stats.impressions) as impressions,
-		    sum(stats.clicks) as clicks
-                    from trafficroots.stats
-                    where stats.zone_id = ?
-                    and stats.stat_date BETWEEN ? AND ?';
+	    $sql = 'select sum(zone_stats.impressions) as impressions,
+		    sum(zone_stats.clicks) as clicks
+                    from trafficroots.zone_stats
+                    where zone_stats.zone_id = ?
+                    and zone_stats.stat_date BETWEEN ? AND ?';
             $result = DB::select($sql, array($request->zone,$startQ, $endQ));
             $todays_traffic = intval($result[0]->impressions);
 	    $todays_clicks = intval($result[0]->clicks);

@@ -49,6 +49,9 @@ class GatherKeysController extends Controller
 	$this->bounceUsers();
 	$this->bankSetup();
 	$this->populateSpend();
+	$this->populateZoneStats();
+	$this->populateCampaignStats();
+	//$this->updateAllZoneStats();
     }
     public function bankSetup()
     {
@@ -322,8 +325,83 @@ class GatherKeysController extends Controller
         Log::info("Processed $date");
 	
 
-        Log::info('Spend Populaion Completed!');
-    }	    
+        Log::info('Spend Population Completed!');
+    }
+    public function populateZoneStats($date = '')
+    {
+        $pairs = array();	
+	    if($date == '') $date = date('Y-m-d');
+	Log::info('Running Zone Stats for '.$date);
+	DB::statement("SET sql_mode='';");
+        $sql = "SELECT SUM(stats.impressions) impressions, SUM(stats.clicks) clicks, stats.zone_id, zones.pub_id, zones.site_id, zones.handle
+		FROM stats
+		JOIN zones
+		ON stats.zone_id = zones.id
+                WHERE stats.stat_date = ?
+                GROUP BY stats.zone_id;";
+        $zones = DB::select($sql,array($date));
+        foreach($zones as $zone){
+	    $data = array('user_id' => $zone->pub_id, 
+		      'site_id' => $zone->site_id, 
+		      'zone_id' => $zone->zone_id, 
+		      'handle' => $zone->handle, 
+		      'clicks' => $zone->clicks, 
+		      'impressions' => $zone->impressions);
+            $sql = "SELECT SUM(impressions) impressions, SUM(clicks) clicks, zones.site_id, zones.pub_id, zones.handle
+                    FROM affiliate_stats 
+                    JOIN zones ON affiliate_stats.zone_id = zones.id
+		    WHERE zone_id = ? AND stat_date = ?";
+            $result = DB::select($sql, array($zone->zone_id,$date));
+            if(sizeof($result)){
+                $data['impressions'] += $result[0]->impressions;
+		$data['clicks'] += $result[0]->clicks;
+	    }
+	    $pairs[] = "(".$data['user_id'].",".$data['site_id'].",".$data['zone_id'].",'".$data['handle']."','$date',".$data['impressions'].",".$data['clicks'].",NOW())";
+	}
+	    $prefix = "INSERT INTO zone_stats (user_id,site_id,zone_id,handle,stat_date,impressions,clicks,created_at) VALUES";
+	$suffix = " ON DUPLICATE KEY UPDATE impressions = VALUES(impressions), clicks = VALUES(clicks), updated_at = NOW();";
+	$sql = $prefix . implode(",", $pairs) . $suffix;
+             DB::statement($sql);
+	Log::info('Zone Stats for '.$date.' completed!');
+    }
+    public function updateAllZoneStats()
+    {
+        $sql = "SELECT DISTINCT(stat_date) stat_date FROM stats ORDER BY stat_date";
+        $dates = DB::select($sql);
+        foreach($dates as $row){
+	    Log::info('Processing Zone Stats for '.$row->stat_date);
+            $this->populateZoneStats($row->stat_date);	    
+            Log::info('Done');
+            Log::info('Processing Campaign Stats for '.$row->stat_date);
+	    $this->populateCampaignStats($row->stat_date);
+	    Log::info('Done');
+	}
+
+    }
+    public function populateCampaignStats($date = '')
+    {
+	    $pairs = array();
+            DB::statement("SET sql_mode = '';");	    
+	    if($date == '') $date = date('Y-m-d');
+	Log::info('Running Campaign Stats for '.$date);
+        $sql = "SELECT SUM(stats.impressions) impressions, SUM(stats.clicks) clicks, bids.buyer_id, bids.campaign_id
+		FROM stats
+		JOIN bids
+		ON stats.bid_id = bids.id
+                WHERE stats.stat_date = ?
+                GROUP BY bids.campaign_id;";
+        $campaigns = DB::select($sql,array($date));
+        foreach($campaigns as $data){
+	    $pairs[] = "(".$data->buyer_id.",".$data->campaign_id.",'$date',".$data->impressions.",".$data->clicks.",NOW())";
+	}
+	if(sizeof($pairs)){
+	    $prefix = "INSERT INTO campaign_stats (user_id,campaign_id,stat_date,impressions,clicks,created_at) VALUES";
+	    $suffix = " ON DUPLICATE KEY UPDATE impressions = VALUES(impressions), clicks = VALUES(clicks), updated_at = NOW();";
+	    $sql = $prefix . implode(",", $pairs) . $suffix;
+	    DB::statement($sql);
+	}
+	Log::info('Campaign Stats for '.$date.' completed!');
+    }
     public function processBankTransaction($amount, $user_id)
     {
         if($amount && $user_id){

@@ -4,12 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Ad;
+use App\AdCreative;
 use App\Site;
 use App\Zone;
+use App\Media;
+use App\Links;
 use App\ModuleType;
 use App\LocationType;
 use App\PublisherBooking;
 use App\Country;
+use App\Browser;
+use App\OperatingSystem;
+use App\City;
+use App\State;
 use App\Platform;
 use DB;
 use Log;
@@ -27,7 +34,230 @@ class ZoneController extends Controller
     {
         $this->middleware("auth");
     }
+    public function getCustomAd(Request $request)
+    {
+        $handle = $request->handle;
+        $user = Auth::getUser();
+        $zone = Zone::where('handle', $handle)->where('pub_id', $user->id)->first();
+	if(!$zone) return redirect('/sites');
+	Log::info('Zone Id is '.$zone->id);
+        Log::info('Zone Site Id is '.$zone->site_id);
 
+	$site = Site::where('id', $zone->site_id)->first();
+        	
+	$ads = Ad::where('zone_handle', $handle)->where('status', 1)->get();
+	$weight = $rtb_weight = 0;
+	foreach($ads as $ad){
+		if($ad->buyer_id == 0){
+			$rtb_weight = $ad->weight;
+		}else{
+			$weight += $ad->weight;
+		}
+	}
+	$check = $rtb_weight + $weight;
+	if($check == 100){
+		$available = $rtb_weight;
+	} else {
+		return redirect('/sites');
+	}
+
+        $countries = '<option value="0" selected>All Countries</option><option value="840">US - United States of America</option><option value="124">CA - Canada</option>';
+        $nations = Country::all();
+        foreach($nations as $nation){
+	    $countries .= '<option value="'.$nation->id.'">'.$nation->country_short.' - '.$nation->country_name.'</option>';
+        }
+
+	$states = '<option value="0" selected>All States</option>';
+	$result = State::where('country_id', 840)->get();
+        foreach($result as $row){
+	    $states .= '<option value="'.$row->id.'">'.State::find($row->id)->country_name['country_name'].' - '.$row->state_name.'</option>';
+	}
+	$result = State::where('country_id', '<>', 840)->orderby('country_id')->orderby('state_name')->get();
+        foreach($result as $row){
+	    $states .= '<option value="'.$row->id.'">'.State::find($row->id)->country_name['country_name'].' - '.$row->state_name.'</option>';
+	}	
+        $counties = '<option value="0" selected>All Counties</option>'; 
+        $systems = OperatingSystem::all();
+        $operating_systems = '<option value="0" selected>All Operating Systems</option>';
+        foreach($systems as $row){
+            $operating_systems .= '<option value="'.$row->id.'">'.$row->os.'</option>';
+        }
+        
+        $browsers = Browser::all();
+        $browser_targets = '<option value="0" selected>All Browsers</option>';
+        foreach($browsers as $row){
+            $browser_targets .= '<option value="'.$row->id.'">'.$row->browser.'</option>';
+        }
+
+        $platforms = Platform::all();
+        $platform_targets = '<option value="0" selected>All Platforms</option>';
+        foreach($platforms as $row){
+            $platform_targets .= '<option value="'.$row->id.'">'.$row->platform.'</option>';
+	}
+        $user = Auth::getUser();	
+	return view('custom_ad', ['user' => $user,
+		'zone' => $zone,
+		'site' => $site,
+				       'available' => $available,
+		                       'countries' => $countries,
+                                       'browsers' => $browsers,
+                                       'platforms' => $platforms,
+                                       'operating_systems' => $operating_systems,
+                                       'states' => $states,
+                                       'countries' => $countries,
+                                       'platforms' => $platform_targets,
+                                       'browser_targets' => $browser_targets,
+				       'os_targets' => $operating_systems,
+				       'counties' => $counties,
+                                       'states' => $states]);
+    }
+    public function postCustomAd(Request $request)
+    {    try{
+            $user = Auth::getUser();
+            if(!$user->allow_folders) return 'Not Authorized';;
+	    $input = $request->all();
+	    $new_ad = array();
+	    $new_ad['description'] = $input['campaign_name'];
+	    $new_ad['zone_handle'] = $input['handle'];
+            $new_ad['location_type'] = $input['location_type'];
+            $new_ad['buyer_id'] = $user->id;
+
+	    if(date('Y-m-d',strtotime($input['daterange_start'])) > date('Y-m-d')){
+		    $new_ad['status'] = 5;
+            }else{
+		    $new_ad['status'] = 1;
+	    }
+	    $new_ad['start_date'] = date('Y-m-d',strtotime($input['daterange_start']));
+	    $new_ad['end_date'] = strlen($input['daterange_end']) ? date('Y-m-d',strtotime($input['daterange_end'])) : null;
+	    $creatives = array();
+
+	    foreach($input as $key => $value){
+		    if(strpos($key, 'creative') === 0) {
+			    Log::info("$key = $value");
+			    $creatives[] = $value;
+		    }
+	    }
+	    if(!sizeof($creatives)) return ('Looks like there are no creatives defined for your ad');
+	    $zone = Zone::where('handle', $request->handle)->where('pub_id', $user->id)->first();
+            if($zone->site_id){
+		    $sql = 'select * from ads where zone_handle = ? and buyer_id = 0';
+		    $rtb = DB::select($sql, array($request->handle));
+		    $available = $rtb[0]->weight;
+		    if($available - $request->campaign_weight){
+			    if($new_ad['status'] == 1) DB::table('trafficroots.ads')->where('zone_handle', $request->handle)->where('buyer_id', 0)->update(array('weight' => ($available - $request->campaign_weight)));
+                            $new_ad['weight'] = $request->campaign_weight;
+		    }else{
+                            $new_ad['weight'] = round($available / 2);
+		    }
+		    $data = $this->updateTargets($request);
+		    $insert_array = array_merge($new_ad, $data);
+                    $insert_array['created_at'] = date('Y-m-d H:i:s');
+		    $ad = new Ad();
+		    $ad->fill($insert_array);
+		    $ad->save();
+		    $ad_id = $ad->id;
+		    if($ad_id){
+			    foreach($creatives as $key => $creative){
+		            $new_creative = array();
+                            $stuff = explode('|', $creative);
+			    /* create media */
+                            $ins = array();
+			    $ins['user_id'] = $user->id;
+			    $ins['location_type'] = $input['location_type'];
+			    $ins['media_name'] = $stuff[0].'_'.$key;
+			    $ins['category'] = 0;
+			    $ins['file_location'] = $stuff[1];
+			    $ins['created_at'] = date('Y-m-d H:i:s');
+			    $ins['status'] = 1;
+			    $media = new Media();
+			    $media->fill($ins);
+			    $media->save();
+			    $media_id = $media->id;
+
+			    /* create link */
+                            $ins = array();
+			    $ins['user_id'] = $user->id;
+			    $ins['link_name'] = $stuff[0].'_'.$key;
+			    $ins['category'] = 0;
+			    $ins['url'] = $stuff[2];
+			    $ins['created_at'] = date('Y-m-d H:i:s');
+			    $ins['status'] = 1;
+			    $link = new Links();
+			    $link->fill($ins);
+			    $link->save();
+			    $link_id = $link->id;
+
+			    /* make creative */
+                            $ins = array();
+			    $ins['ad_id'] = $ad_id;
+			    $ins['weight'] = 0;
+			    $ins['media_id'] = $media_id;
+			    $ins['link_id'] = $link_id;
+			    $ins['status'] = 1;
+			    $ins['created_at'] = date('Y-m-d H:i:s');
+			    $creative = new AdCreative();
+			    $creative->fill($ins);
+			    $creative->save();
+			}
+		    }
+		    return json_encode(array('result' => 'OK'));
+            }else{
+		    return redirect('/sites');
+	    }
+          }catch(Throwable $t){
+            return $t->getMessage();
+          }
+    }
+   public function updateTargets(Request $request)
+    {
+        try {
+	    $data = array();
+	    if(is_array($request->countries)){
+		$data['countries'] = implode("|",$request->countries);
+	    }else{
+		$data['countries'] = ''.$request->countries;
+            }
+            if (is_array($request->states)) {
+                $data['states'] = implode("|", $request->states);
+            } else {
+                $data['states'] = ''.intval($request->states);
+            }
+            if (is_array($request->counties)) {
+                $data['counties'] = implode("|", $request->counties);
+            } else {
+                $data['counties'] = ''.intval($request->counties);
+            }
+	    if (is_array($request->platform_targets)) {
+                $data['platforms'] = implode("|", $request->platform_targets);
+            } else {
+                $data['platforms'] = ''.$request->platform_targets;
+            }
+            if (is_array($request->operating_systems)) {
+                $data['operating_systems'] = implode("|", $request->operating_systems);
+            } else {
+                $data['operating_systems'] = ''.$request->operating_systems;
+            }
+            if (is_array($request->browser_targets)) {
+                $data['browsers'] = implode("|", $request->browser_targets);
+            } else {
+                $data['browsers'] = ''.$request->browser_targets;
+            }
+            if (strlen(trim($request->keyword_targets))) {
+                $data['keywords'] = str_replace(",", "|", $request->keyword_targets);
+            } else {
+                $data['keywords'] = '';
+            }
+            foreach ($data as $key => $value) {
+                if (is_null($value)) {
+                    $data[$key] = '0';
+                }
+	    }
+	    if(isset($request->frequency_capping)) $data['frequency_capping'] = intval($request->frequency_capping);
+            return $data;
+        } catch (Exception $e) {
+            return ($e->getMessage);
+        }
+    }
     public function manageZone(Request $request)
     {
 	    if(strlen($request->handle)){

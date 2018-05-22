@@ -120,7 +120,18 @@
 							<span class="nav-label"> FAQs</span>
 						</a>
 					</li>
-                    @endif
+                @if(Auth::user()->allow_folders)
+                    <li id="nav_admin" class="nav-click">
+                        <a href="{{ url('/tradm') }}">
+                            <i class="fa fa fa-address-card-o"></i>
+                            <span class="nav-label">Admin</span>
+                        </a>
+                    </li>
+
+
+
+                @endif
+		@endif
 				</ul>
 			</div>
 		</nav>

@@ -35,6 +35,8 @@ Route::get('/landing', 'PublicController@getLandingPage');
 Route::get('/pixel/{handle?}', 'PixelController@getIndex');
 Route::get('/analysis/{handle}', 'SiteController@analyzeSite');
 Route::get('/zone_manage/{handle}', 'ZoneController@manageZone');
+Route::get('/custom_ad/{handle}', 'ZoneController@getCustomAd');
+Route::post('/custom_ad', 'ZoneController@postCustomAd');
 Auth::routes();
 Route::get('/send_confirmation', 'HomeController@sendConfirmation');
 Route::get('/charge', 'ChargeController@index');
@@ -100,6 +102,8 @@ Route::get('/library', 'HomeController@getLibrary');
 Route::get('/faq_advertiser', 'HomeController@advertiserFaq');
 Route::get('/faq_publisher', 'HomeController@publisherFaq');
 Route::post('/update_profile', 'HomeController@updateProfile');
+Route::get('/tradm', 'AdminController@getAdminPage');
+Route::post('/tradmlogin', 'AdminController@postLoginFromAdmin');
 /* paypal routes */
 Route::get('/paywithpaypal', array('as' => 'addmoney.paywithpaypal','uses' => 'AddMoneyController@payWithPaypal',));
 Route::post('paypal', array('as' => 'addmoney.paypal','uses' => 'AddMoneyController@postPaymentWithpaypal',));
