@@ -33,6 +33,10 @@
 #page-wrapper .container .ibox-content {
     overflow: visible;
 }
+	
+	#overview_content .row.m-t div > div {
+		word-wrap: break-word;
+	}
 
 #wizard {
     overflow: visible;
@@ -352,7 +356,7 @@
                                         </div>
                                         <div class="createNew">
                                              <h4 for="linkCreateNew">Add New URL To Library</h4>
-											 <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#addLink"><i class="fa fa-plus-square-o"></i>&nbsp;&nbsp;Add URL&nbsp;&nbsp;&nbsp;&nbsp;</button>>
+											 <button type="button" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#addLink"><i class="fa fa-plus-square-o"></i>&nbsp;&nbsp;Add URL&nbsp;&nbsp;&nbsp;&nbsp;</button>
                                         </div>
                                     </div>
                                     <div class="clearfix"></div>
@@ -450,20 +454,7 @@
                                                 </label>
                                                 &nbsp;
                                                 <div class="col-md-6">
-                                                    <select class="form-control" id="daily_budget" name="daily_budget">
-                                                        <option value="">Unlimited</option>
-                                                        <option value="20.00">$20.00</option>
-                                                        <option value="50.00">$50.00</option>
-                                                        <option value="100.00">$100.00</option>
-                                                        <option value="200.00">$200.00</option>
-                                                        <option value="500.00">$500.00</option>
-                                                        <option value="750.00">$750.00</option>
-                                                        <option value="1000.00">$1000.00</option>
-                                                        <option value="2000.00">$2000.00</option>
-                                                        <option value="5000.00">$5000.00</option>
-                                                        <option value="10000.00">$10000.00</option>
-                                                        <option value="20000.00">$20000.00</option>
-                                                    </select>
+                                                    <input type="number" class="form-control" id="daily_budget" name="daily_budget">
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -655,7 +646,7 @@
         $(".creative").each(function(){
             creatives ++;
         });
-        var myhtml =  '<style>.col-md-3 {text-align: right;}</style><div class="ibox-content" style="overflow:hidden"><h2 class="text-success"><strong>General</strong></h2><div class="row m-t"><div class="form-group"><div class="col-md-3"> <label class="control-label p-t-half">Campaign Name</label></div><div class="col-md-4"><div type="text" value="campaign name" class="form-control" disabled> ' + $('#campaign_name').val() + '</div></div></div></div><div class="row m-t"><div class="form-group"><div class="col-md-3"> <label class="control-label p-t-half">Campaign Category</label></div><div class="col-md-4"><div type="text" value="campaign category" class="form-control" disabled> ' + $('#campaign_category option:selected').text() + '</div></div></div></div><div class="row m-t"><div class="form-group"><div class="col-md-3"> <label class="control-label p-t-half">Location Type</label></div><div class="col-md-4"><div type="text" value="campaign category" class="form-control" disabled> ' + $('#location_type option:selected').text() + '</div></div></div></div></div> <br><div class="ibox-content"><h2 class="text-success"><strong>Advanced Targeting</strong></h2><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">Country Targeting</label></div><div class="col-md-4"><div type="text" text="example, example" class="form-control" disabled> ' + $('#countries option:selected').text() + '</div></div></div><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">State Targeting</label></div><div class="col-md-4"><div type="text" text="example, example" class="form-control" disabled> ' + $('#states option:selected').text() + '</div></div></div><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">County Targeting</label></div><div class="col-md-4"> <div type="text" text="example, example" class="form-control" disabled> ' + $('#counties option:selected').text() + ' </div></div></div><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">Platform Targeting</label></div><div class="col-md-4"><div type="text" text="example, example" class="form-control" disabled> ' + $('#platform_targets option:selected').text() + '</div></div></div><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">OS Targeting</label></div><div class="col-md-4"><div type="text" text="example, example" class="form-control" disabled> ' + $('#operating_systems option:selected').text() + '</div></div></div><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">Browser Targeting</label></div><div class="col-md-4"><div type="text" text="example, example" class="form-control" disabled> ' + $('#browser_targets option:selected').text() + '</div></div></div><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">Keyword Targeting</label></div><div class="col-md-4"><div type="text" text="example, example" class="form-control" disabled> ' + $('#keyword_targets').val() + '</div></div></div></div> <style>.col-md-3 {text-align: right;}</style><div class="ibox-content"><h2 class="text-success"><strong>Creatives</strong></h2><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">Number of Creatives</label></div><div class="col-md-4"><div type="text" text="example, example" class="form-control" disabled> ' + creatives + '</div></div><!--ends here -->';
+        var myhtml =  '<div class="ibox-content" style="overflow:hidden"><h2 class="text-success"><strong>General</strong></h2><div class="row m-t"><div class="form-group"><div class="col-md-3"> <label class="control-label p-t-half">Campaign Name</label></div><div class="col-md-4"><div type="text" value="campaign name" class="form-control" disabled> ' + $('#campaign_name').val() + '</div></div></div></div><div class="row m-t"><div class="form-group"><div class="col-md-3"> <label class="control-label p-t-half">Campaign Category</label></div><div class="col-md-4"><div type="text" value="campaign category" class="form-control" disabled> ' + $('#campaign_category option:selected').text() + '</div></div></div></div><div class="row m-t"><div class="form-group"><div class="col-md-3"> <label class="control-label p-t-half">Location Type</label></div><div class="col-md-4"><div type="text" value="campaign category" class="form-control" disabled> ' + $('#location_type option:selected').text() + '</div></div></div></div></div> <br><div class="ibox-content"><h2 class="text-success"><strong>Advanced Targeting</strong></h2><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">Country Targeting</label></div><div class="col-md-4"><div type="text" text="example, example" class="form-control" disabled> ' + $('#countries option:selected').text() + '</div></div></div><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">State Targeting</label></div><div class="col-md-4"><div type="text" text="example, example" class="form-control" disabled> ' + $('#states option:selected').text() + '</div></div></div><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">County Targeting</label></div><div class="col-md-4"> <div type="text" text="example, example" class="form-control" disabled> ' + $('#counties option:selected').text() + ' </div></div></div><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">Platform Targeting</label></div><div class="col-md-4"><div type="text" text="example, example" class="form-control" disabled> ' + $('#platform_targets option:selected').text() + '</div></div></div><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">OS Targeting</label></div><div class="col-md-4"><div type="text" text="example, example" class="form-control" disabled> ' + $('#operating_systems option:selected').text() + '</div></div></div><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">Browser Targeting</label></div><div class="col-md-4"><div type="text" text="example, example" class="form-control" disabled> ' + $('#browser_targets option:selected').text() + '</div></div></div><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">Keyword Targeting</label></div><div class="col-md-4"><div type="text" text="example, example" class="form-control" disabled> ' + $('#keyword_targets').val() + '</div></div></div></div> <style>.col-md-3 {text-align: right;}</style><div class="ibox-content"><h2 class="text-success"><strong>Creatives</strong></h2><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">Number of Creatives</label></div><div class="col-md-4"><div type="text" text="example, example" class="form-control" disabled> ' + creatives + '</div></div><!--ends here -->';
 
         $('#overview_content').html(myhtml);
     }

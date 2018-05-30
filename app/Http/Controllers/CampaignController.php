@@ -669,4 +669,14 @@ class CampaignController extends Controller
             }
 
     }
+	
+	
+	public function filtered(Request $request)
+    {
+        $dateRange = explode(' - ', $request->daterange);
+        $startDate = Carbon::parse($dateRange[0]);
+        $endDate = Carbon::parse($dateRange[1]);
+		
+        return view('campaigns', compact('startDate', 'endDate'));
+    }
 }

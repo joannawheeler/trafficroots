@@ -36,15 +36,13 @@
                 <ul class="nav metismenu" id="side-menu">
 					<li>
                         <div class="dropdown profile-element">
-                            <a href="{{ url('/') }}">
                             	<img src="{{ url('/img/logo.png') }}" alt="TrafficRoots" width="100%">
-                            </a>
                         </div>
                         <div class="logo-element">
 							<img src="{{ url('/img/white_tree_logo.png') }}" alt="TrafficRoots" width="40" height="42">
 						</div>
                     </li>
-						
+
                     <!-- Authentication Links -->
                     @if (Auth::guest())
                     <li id="nav_login" class="active nav-click">
@@ -99,7 +97,7 @@
                             </li>
                             <li id="nav_buyer_library" class="nav-click">
                                 <a href="{{URL::to('/library')}}">Library</a>
-                            </li>                             
+                            </li>
                         </ul>
                     </li>
 		    <li id="nav_profile" class="nav-click">
@@ -162,11 +160,9 @@
 
                 </nav>
             </div>
-			
 			<div class="row">
                 <span class="title-blue">@yield('title')</span>
             </div>
-			
             <div class="wrapper wrapper-content animated fadeInRight">
                 @include('notifications')
                 @yield('content')

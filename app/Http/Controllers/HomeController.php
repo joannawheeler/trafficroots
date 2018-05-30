@@ -418,7 +418,7 @@ $sql = "SELECT
        if(!$user->user_type){
            return view('whoami');
        }
-        $sql = 'SELECT sites.*, site_themes.theme 
+        $sql = 'SELECT sites.*, site_themes.theme
                 FROM sites 
                 JOIN site_themes 
                 ON sites.site_theme = site_themes.id

@@ -125,7 +125,7 @@
 								<input name="keyword_targets" id="keyword_targets" class="form-control" type="text" value="{!! $keywords !!}">
 							</div>
 						</form>
-					<div class="clearfix">
+					<div class="clearfix"></div>
 					<br>
 					<div class="col-xs-12 no-padding">
 						<a href="/creatives/{{ $campaign->id }}"><button type="button" class="btn btn-primary btn-xs pull-right" id="add_creative" href="/creatives/{{ $campaign->id }}">Add Creative</button></a>
@@ -191,33 +191,52 @@ jQuery(document).ready(function ($) {
                     toastr.error(response);
                 });
         });
-	$("#bid").change(function () {
-            var url = "{{ url('/update_bid') }}";
-            var mydata = $("#bid_form").serialize();
-            $.post(url, mydata)
-                .done(function (response) {
-			toastr.success(response.result);
-			if(response.bid_class == 'success') toastr.info(response.bid_range, "Bid Status");
-                        if(response.bid_class == 'info') toastr.info(response.bid_range, "Bid Status");
-                        if(response.bid_class == 'warning') toastr.warning(response.bid_range, "Bid Status");
-                        if(response.bid_class == 'danger') toastr.error(response.bid_range, "Bid Status");
 
-                })
-                .fail(function (response) {
-                    toastr.error(response.result);
+    // Set timeouts on Input change for both Bid and Daily Budget to decrease AJAX calls and Alerts
+    var bidTimeout;
+    $("#bid").on('input', function () {
+      clearTimeout(bidTimeout);
+      bidTimeout = setTimeout(function() {
+        var url = "{{ url('/update_bid') }}";
+        var mydata = $("#bid_form").serialize();
+        $.post(url, mydata)
+            .done(function (response) {
+                    toastr.success(response.result);
+                    if(response.bid_class == 'success') toastr.info(response.bid_range, "Bid Status");
+                    if(response.bid_class == 'info') toastr.info(response.bid_range, "Bid Status");
+                    if(response.bid_class == 'warning') toastr.warning(response.bid_range, "Bid Status");
+                    if(response.bid_class == 'danger') toastr.error(response.bid_range, "Bid Status");
+
+            })
+            .fail(function (response) {
+                toastr.error(response.result);
+            });
+      }, 750);
+  	});
+
+    $("#daily_budget").on('input', function () {
+      clearTimeout(bidTimeout);
+      bidTimeout = setTimeout(function() {
+        var url = "{{ url('/update_budget') }}";
+  	    var mydata = $("#budget_form").serialize();
+  	    $.post(url, mydata)
+  		.done(function (response) {
+                      toastr.success(response);
+                  })
+                  .fail(function (response) {
+  		    toastr.error(response);
                 });
-	});
-        $("#daily_budget").change(function () {
-	    var url = "{{ url('/update_budget') }}";
-	    var mydata = $("#budget_form").serialize();
-	    $.post(url, mydata)
-		.done(function (response) {
-                    toastr.success(response);
-                })
-                .fail(function (response) {
-		    toastr.error(response);
-                });
+          }, 750);
+      });
+
+      // Prevent 'enter' key press from displaying json on post data
+        $("#bid, #daily_budget").keypress(function(event){
+              if (event.keyCode === 10 || event.keyCode === 13)
+                  event.preventDefault();
         });
+
+
+
         $('.camp-start').click(function() {
             if(confirm('Activate this campaign?')){
                 var str =  $(this).attr('id');
@@ -273,7 +292,7 @@ jQuery(document).ready(function ($) {
 		 "onclick": null,
 		 "showDuration": "400",
 		 "hideDuration": "1000",
-		 "timeOut": "10000",
+		 "timeOut": "3000",
 		 "extendedTimeOut": "1000",
 		 "showEasing": "swing",
 		 "hideEasing": "linear",

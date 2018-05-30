@@ -6,14 +6,11 @@ use App\Site;
 @section('title','Publisher Sites/Zones')
 
 @section('css')
-<link rel="stylesheet"
-      href="{{ URL::asset('css/custom.css') }}">
-<link rel="stylesheet"
-      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
-<link href="{{ URL::asset('css/plugins/footable/footable.core.css') }}"
-      rel="stylesheet">
-<link href="{{ URL::asset('css/plugins/iCheck/custom.css') }}"
-      rel="stylesheet">
+<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<link href="{{ URL::asset('css/plugins/footable/footable.core.css') }}" rel="stylesheet">
+<link href="{{ URL::asset('css/plugins/iCheck/custom.css') }}" rel="stylesheet">
+<link href="{{ URL::asset('css/style.css') }}" rel="stylesheet">
+<link href="{{ URL::asset('css/custom.css') }}" rel="stylesheet">
 
 <style type="text/css">
 .footable th:last-child .footable-sort-indicator {
@@ -142,7 +139,7 @@ hljs.initHighlightingOnLoad();
 									<div class="form-group">
 										<label>Url</label>
 										<input type="text"
-											   placeholder="Enter your site url"
+											   placeholder="Must be a valid URL, and include http:// or https://"
 											   class="form-control"
 											   name="site_url"
 											   required>
@@ -168,11 +165,12 @@ hljs.initHighlightingOnLoad();
 												placeholder="Select Categories Allowed on this Site"
 												multiple
 												required>
-											<option class="" value="999">Select All</option>
 											@foreach($categories as $category)
-											<option value="{{ $category->id }}">{{ $category->category }}</option>
+											<option value="{{ $category->id }}" selected>{{ $category->category }}</option>
 											@endforeach
 										</select>
+										<button type="button" class="chosen-toggle select btn-xs btn-success">Select all</button>
+										<button type="button" class="chosen-toggle deselect btn-xs btn-success">Deselect all</button>
 										<label class="error hide"
 											   for="allowed_category[]"></label>
 									</div>
@@ -206,18 +204,19 @@ hljs.initHighlightingOnLoad();
 								<th>Site Name</th>
 								<th>Site Url</th>
 								<th>Site Category</th>
-								<th>Links</th>
+								<th>Options</th>
 							</tr>
 							</thead>
 							<tbody>
 								@foreach ($sites as $site)
 								<tr>
-									<td class="text-center"><b class=" tablesaw-cell-label">Site Name</b> {{ $site->site_name }} </td>
-									<td class="text-center col-xs-12 col-md-3"><b class=" tablesaw-cell-label">Site Url</b>{{ $site->site_url }}</td>
-									<td class="text-center"><b class=" tablesaw-cell-label">Site Theme</b>{{ App\SiteTheme::where('id',$site->site_theme)->first()->theme }}</td>
+									<td class="text-center"><b class=" tablesaw-cell-label">Site Name</b><div>{{ $site->site_name }}</div></td>
+									<td class="text-center col-xs-12 col-md-3"><b class=" tablesaw-cell-label">Site Url</b><div>{{ $site->site_url }}</div></td>
+									<td class="text-center"><b class=" tablesaw-cell-label">Site Theme</b><div>{{ App\SiteTheme::where('id',$site->site_theme)->first()->theme }}</div></td>
 									<td class="text-center" 
 										data-site_id="{{ $site->id }}">
-										<b class=" tablesaw-cell-label">Links</b>
+										<b class=" tablesaw-cell-label">Options</b>
+										<div>
 										<a href="#"
 										   class="site-zones">
 											<button class="btn btn-xs alert-info">
@@ -249,6 +248,7 @@ hljs.initHighlightingOnLoad();
 												<i class="fa fa-file-code-o"></i>
 											</span> Pixel</button>
 										</a>
+										</div>
 									</td>
 								</tr>
 								@endforeach
@@ -344,19 +344,26 @@ hljs.initHighlightingOnLoad();
 										<th>Location Type</th>
 										<th>Size</th>
 										<th>Status</th> <!--Should toggle between active/inactive -->
-										<th>Links</th>
+										<th>Options</th>
 									</tr>
 							</thead>
 							<tbody>
 								@foreach ($site->zones as $zone)
 								<tr>
-									<td class="text-center col-xs-12 col-md-2"><b class=" tablesaw-cell-label">Zone Name</b>{{ $zone->description }} </td>
-									<td class="text-center col-xs-12 col-md-2"><b class=" tablesaw-cell-label">Location Type</b>{{ $locationTypes->where('id',$zone->location_type)->first()->description }} </td>
-									<td class="text-center col-xs-12 col-md-2"><b class=" tablesaw-cell-label">Size</b>{{ $locationTypes->where('id',$zone->location_type)->first()->width . 'x' . $locationTypes->where('id',$zone->location_type)->first()->height }} </td>
-									<td class="text-center col-xs-12 col-md-2"><b class=" tablesaw-cell-label">Status</b>{{ $status_types->where('id', $zone->status)->first()->description }}</td> <!--Should toggle between active/inactive -->
+									<td class="text-center col-xs-12 col-md-2"><b class=" tablesaw-cell-label">Zone Name</b><div>{{ $zone->description }}</div></td>
+									<td class="text-center col-xs-12 col-md-2"><b class=" tablesaw-cell-label">Location Type</b><div>{{ $locationTypes->where('id',$zone->location_type)->first()->description }}</div></td>
+									<td class="text-center col-xs-12 col-md-2"><b class=" tablesaw-cell-label">Size</b><div>{{ $locationTypes->where('id',$zone->location_type)->first()->width . 'x' . $locationTypes->where('id',$zone->location_type)->first()->height }}</div></td>
+									<td class="text-center col-xs-12 col-md-2"><b class=" tablesaw-cell-label">Status</b>
+										@if($zone->status == 1)
+											<span class="label label-info">Active</span>
+										@else
+											<span class="label label-danger">Inactive</span>
+										@endif
+									</td> <!--Should toggle between active/inactive -->
 									<td class="text-center col-xs-12 col-md-4"
 										data-zone_id="{{ $zone->id }}">
-										<b class=" tablesaw-cell-label">Links</b>
+										<b class=" tablesaw-cell-label">Options</b>
+										<div>
 										<a href="/stats/zone/{{ $zone->id }}"
 										   class="zone-stats">
 											<button class="btn btn-xs btn-warning"><span class="btn-label"><i class="fa fa-line-chart"></i></span> Stats</button>
@@ -367,8 +374,9 @@ hljs.initHighlightingOnLoad();
 										   data-target="#editZone{{ $zone->id }}">
 											<button class="btn btn-xs btn-success"><span class="btn-label"><i class="fa fa-edit"></i></span> Edit</button>
 										</a>
+
 										<a href="#"
-										   class="zone-code"
+										   class="zone-code letest"
 										   data-toggle="modal"
 										   data-target="#zoneCode{{ $zone->id }}" style="color: white;">
 											<button class="btn btn-xs btn-danger"><span class="btn-label"><i class="fa fa-file-code-o"></i></span> Code</button>
@@ -379,6 +387,7 @@ hljs.initHighlightingOnLoad();
 											<button class="btn btn-xs btn-info"><span class="btn-label"><i class="fa fa-wrench"></i></span> Manage</button>
 										</a>
                                                                                 @endif
+										</div>
 									</td>
 								</tr>
 								@endforeach
@@ -457,7 +466,7 @@ hljs.initHighlightingOnLoad();
                         <div class="form-group">
                             <label>Url</label>
                             <input type="text"
-                                   placeholder="Enter your site url"
+                                   placeholder="Must be a valid URL, and include http:// or https://"
                                    value="{{ $site->site_url }}"
                                    class="form-control"
                                    name="site_url"
@@ -467,7 +476,7 @@ hljs.initHighlightingOnLoad();
                                    for="site_url"></label>
                         </div>
                         <div class="form-group">
-                            <label>Theme</label>
+                            <label>Site Theme</label>
                             <select class="form-control m-b chosen-select"
                                     value="{{ $site->site_theme }}"
                                     name="site_theme"
@@ -493,6 +502,8 @@ hljs.initHighlightingOnLoad();
                                                 <option @if(Site::join('site_category', 'sites.id', '=', 'site_category.site_id')->where('sites.id', $site->id)->where('site_category.category', $category->id)->count() > 0) selected="selected" @endif value="{{ $category->id }}">{{ $category->category }}</option>
                                                 @endforeach
                                             </select>
+<button type="button" class="chosen-toggle select btn-xs btn-success">Select all</button>
+                							<button type="button" class="chosen-toggle deselect btn-xs btn-success">Deselect all</button>
                                             <label class="error hide"
                                                    for="allowed_category[]"></label>
                                         </div>
@@ -626,7 +637,7 @@ hljs.initHighlightingOnLoad();
 				return false;
 			}
 		});	
-	}); //end of activae-bid   
+	}); //end of activate-bid   
 	
 	//Pending Campaigns decline option, show sweet alert...
 	//if approved the bid will be declined and refresh page
@@ -701,6 +712,11 @@ hljs.initHighlightingOnLoad();
 		responsive: true
 	});	
 	
+  $('.chosen-toggle').each(function(index) {
+    $(this).on('click', function() {
+             $(this).parent().find('option').prop('selected', $(this).hasClass('select')).parent().trigger('chosen:updated');
+    });
+  });
 	   $('.nav-click').removeClass("active");
 	   $('#nav_pub_sites').addClass("active");
 	   $('#nav_pub').addClass("active");
