@@ -4,10 +4,6 @@
 <link href="{{ URL::asset('css/plugins/iCheck/custom.css') }}" rel="stylesheet">
 <link href="{{ URL::asset('css/custom.css') }}" rel="stylesheet">
 <link href="{{ URL::asset('css/style.css') }}" rel="stylesheet">
-
-<style>
-
-</style>
 @endsection 
 
 @section('content')
@@ -38,7 +34,7 @@
 							<input type="hidden" name="formId" value="2W7UI+OZYzFhmO4xQQWvcQ==" />
                             <p>Please fill out your information below.</p><br>
                             {{ csrf_field() }} 
-                            
+                            <!--
                                 <div class="form-group" style="display:none;">
                                     <label for="selectRole" class="col-lg-2 control-label">Select role</label>
                                     <div class="col-lg-10">
@@ -50,7 +46,7 @@
                                         </select>
                                     </div>
                                 </div>
-                            
+                            -->
                             <div class="form-group {{ $errors->has('name') ? ' has-error' : '' }}">
                                 <label for="name" class="col-lg-2 control-label">Name</label>
                                 <div class="col-lg-10">
@@ -249,7 +245,6 @@ $(document).ready(function() {
         radioClass: 'iradio_square-green',
     });
 	
-<<<<<<< HEAD
 	    var text_max = 99;
     $('#textarea_feedback').html(text_max + ' characters remaining');
 
@@ -261,9 +256,7 @@ $(document).ready(function() {
     });
 	
 	$('.icheckbox_square-green input').css("opacity", "inherit");
-=======
 	$('.icheckbox_square-green input').css("opacity", "0");
->>>>>>> master
     setActiveNav('#nav_register');
 	
 	$("#cancel").click(function (e) {
