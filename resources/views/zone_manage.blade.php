@@ -1,5 +1,6 @@
 <?php
 use App\Site;
+use App\StatusType;
 use App\Zone;
 use App\AdCreative;
 ?>
@@ -34,19 +35,40 @@ hljs.initHighlightingOnLoad();
 <script src="{{ URL::asset('js/plugins/select2/select2.full.min.js') }}"></script>
 <script src="{{ URL::asset('js/plugins/chosen/chosen.jquery.js') }}"></script>
 @endsection
-
 @section('content')
 <div class="row">
     <div class="col-lg-12">
+<div class="flash-message">
+  @foreach (['danger', 'warning', 'success', 'info'] as $msg)
+    @if(Session::has('alert-' . $msg))
+    <div class="alert alert-{{ $msg }}">{{ Session::get('alert-' . $msg) }}</div>
+    @endif
+  @endforeach
+</div>	
         <div class="ibox">
             <div class="ibox-title"><h2>Manage Zone {{$zone->handle}}</h2></div>
             <div class="ibox-content">
             <table class="footable table table-striped">           
-	    <thead><tr><th>Ad</th><th>Weight</th><th>Creatives</th><th>Options</th></tr></thead>
+	    <thead><tr><th>Ad</th><th>Weight</th><th>Status</th><th>Options</th></tr></thead>
             <tbody>
 	    @foreach($ads as $ad)
             @if($ad->buyer_id)
-            <tr><td>{{$ad->description}}</td><td>{{$ad->weight}}</td><td>Creatives</td><td>&nbsp;</td></tr>
+	    <tr><td>{{$ad->description}}</td><td>{{$ad->weight}}</td><td>{{ StatusType::where('id', $ad->status)->first()->description }}</td><td>
+            @if($ad->status == 1)
+				    <a href="/pause_custom_ad/{{ $ad->id }}">
+                                        <button class="btn btn-xs alert-warning"><i class="fa fa-pause"></i> Pause</button>
+				    </a>
+            @endif
+            @if($ad->status == 3)
+				    <a href="/resume_custom_ad/{{ $ad->id }}">
+                                        <button class="btn btn-xs alert-success"><i class="fa fa-play"></i> Play</button>
+				    </a>
+            @endif         
+            &nbsp;
+				    <a href="/edit_custom_ad/{{ $ad->id }}">
+                                        <button class="btn btn-xs alert-info"><i class="fa fa-edit"></i> Edit</button>
+				    </a>
+            </td></tr>
             @else
             <tr><td>{{$ad->description}}</td><td>{{$ad->weight}}</td><td>TrafficRoots RTB</td><td>&nbsp;</td></tr>
             @endif

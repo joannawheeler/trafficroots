@@ -542,7 +542,7 @@ jQuery(document).ready(function($){
                    setTimeout(function(){ window.location = '/zone_manage/{{ $zone->handle }}'; }, 2000);
                });
                }else{
-               toastr.error(info);
+               toastr.error(info.result);
                }
        });
        }

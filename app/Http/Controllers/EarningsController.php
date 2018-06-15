@@ -45,7 +45,7 @@ JOIN campaigns ON bids.campaign_id = campaigns.id
 WHERE stats.stat_date = '$mydate'
 GROUP BY site_id, zone_id, pub_id, bid_id, cpm;";
         $result = DB::select($sql);
-        Log::info("Result selected".count($result)." rows");
+        //Log::info("Result selected".count($result)." rows");
         foreach($result as $row){
             $earnings = 0;
             if($row->campaign_type == 1){
@@ -58,7 +58,7 @@ GROUP BY site_id, zone_id, pub_id, bid_id, cpm;";
             $impressions[$row->zone_id] = isset($impressions[$row->zone_id]) ? ($impressions[$row->zone_id] + $row->impressions) : $row->impressions;
             $clicks[$row->zone_id] = isset($clicks[$row->zone_id]) ? ($clicks[$row->zone_id] + $row->clicks) : $row->clicks;
         }
-        Log::info(print_r($zones, true));
+        //Log::info(print_r($zones, true));
         $sql = "SELECT SUM(affiliate_stats.impressions) as impressions, 
 SUM(affiliate_stats.clicks) as clicks, 
 affiliate_stats.cpm, 
@@ -70,14 +70,14 @@ JOIN zones on affiliate_stats.zone_id = zones.id
 WHERE affiliate_stats.stat_date = '$mydate'
 GROUP BY site_id, zone_id, pub_id, cpm;";
         $result = DB::select($sql);
-        Log::info("Result selected".count($result)." rows");
+        //Log::info("Result selected".count($result)." rows");
         foreach($result as $row){
             $earnings = $row->cpm * ($row->impressions / 1000);
             $zones[$row->zone_id] = isset($zones[$row->zone_id]) ? ($zones[$row->zone_id] + $earnings) : $earnings;
             $impressions[$row->zone_id] = isset($impressions[$row->zone_id]) ? ($impressions[$row->zone_id] + $row->impressions) : $row->impressions;
             $clicks[$row->zone_id] = isset($clicks[$row->zone_id]) ? ($clicks[$row->zone_id] + $row->clicks) : $row->clicks;
 	}
-	Log::info(print_r($zones, true));
+	//Log::info(print_r($zones, true));
         foreach($zones as $zone => $earned){
             /* check for publisher booking and enter one if not there */
             $booking = DB::select("SELECT * FROM publisher_bookings WHERE zone_id = $zone AND booking_date = '$mydate'");
@@ -89,7 +89,7 @@ GROUP BY site_id, zone_id, pub_id, cpm;";
                 $booking = DB::select("SELECT * FROM publisher_bookings WHERE zone_id = $zone AND booking_date = '$mydate'");  
             }
             DB::update("UPDATE publisher_bookings SET revenue = $earned, impressions = ".$impressions[$zone].", clicks = ".$clicks[$zone].", updated_at = NOW() WHERE id = ".$booking[0]->id);
-            Log::info("Zone $zone earned $".$earned." on ".$impressions[$zone]." impressions and ".$clicks[$zone]." clicks.");
+            //Log::info("Zone $zone earned $".$earned." on ".$impressions[$zone]." impressions and ".$clicks[$zone]." clicks.");
         }
         Log:info("ProcessEarnings completed normally\n");
     }

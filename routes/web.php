@@ -37,6 +37,9 @@ Route::get('/analysis/{handle}', 'SiteController@analyzeSite');
 Route::get('/zone_manage/{handle}', 'ZoneController@manageZone');
 Route::get('/custom_ad/{handle}', 'ZoneController@getCustomAd');
 Route::post('/custom_ad', 'ZoneController@postCustomAd');
+Route::get('/pause_custom_ad/{id}', 'ZoneController@pauseCustomAd');
+Route::get('/resume_custom_ad/{id}', 'ZoneController@resumeCustomAd');
+
 Auth::routes();
 Route::get('/send_confirmation', 'HomeController@sendConfirmation');
 Route::get('/charge', 'ChargeController@index');

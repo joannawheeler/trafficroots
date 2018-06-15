@@ -25,7 +25,7 @@ use DOMDocument;
 use DOMXPath;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ConfirmUser;
-
+use App\Http\Controllers\CustomAdController;
 class GatherKeysController extends Controller
 {
     public $impressions = 0;
@@ -51,6 +51,9 @@ class GatherKeysController extends Controller
 	$this->populateSpend();
 	$this->populateZoneStats();
 	$this->populateCampaignStats();
+
+        $customAd = new CustomAdController();
+	$customAd->impressionCapper();
 	//$this->updateAllZoneStats();
     }
     public function bankSetup()

@@ -94,7 +94,7 @@ class ZoneController extends Controller
         foreach($platforms as $row){
             $platform_targets .= '<option value="'.$row->id.'">'.$row->platform.'</option>';
 	}
-        $user = Auth::getUser();	
+	$user = Auth::getUser();
 	return view('custom_ad', ['user' => $user,
 		'zone' => $zone,
 		'site' => $site,
@@ -110,6 +110,51 @@ class ZoneController extends Controller
 				       'os_targets' => $operating_systems,
 				       'counties' => $counties,
                                        'states' => $states]);
+    }
+    public function pauseCustomAd(Request $request)
+    {
+         // pause ad and throw its weight back to the RTB
+	 $user = Auth::getUser();
+         if(!$user->allow_folders) return 'Not Authorized';;
+	 $input = $request->all();
+         $ad = DB::table('ads')->where('id', $request->id)->first();
+	 if($ad->buyer_id != $user->id) return redirect('/');
+
+	 $default = DB::table('ads')->where('zone_handle', $ad->zone_handle)->where('buyer_id', 0)->first();
+	 if(!$default) return redirect('/');
+	 DB::table('ads')->where('id', $ad->id)->update(array('status' => 3));
+	 $new_weight = $ad->weight + $default->weight;
+	 if($new_weight > 100) {
+             $new_weight = 100;
+             Log::error('Weight had to be corrected');
+	 }
+	 DB::table('ads')->where('id', $default->id)->update(array('weight' => $new_weight));
+	 Log::info('User '.$user->name.' paused Ad '.$ad->id.' on zone '.$ad->zone_handle);
+	 return redirect('/zone_manage/'.$ad->zone_handle)->with('alert-info', 'Custom Ad Paused Successfully!');
+
+    }
+    public function resumeCustomAd(Request $request)
+    {
+         // pause ad and throw its weight back to the RTB
+	 $user = Auth::getUser();
+         if(!$user->allow_folders) return 'Not Authorized';;
+	 $input = $request->all();
+         $ad = DB::table('ads')->where('id', $request->id)->first();
+	 if($ad->buyer_id != $user->id) return redirect('/');
+
+	 $default = DB::table('ads')->where('zone_handle', $ad->zone_handle)->where('buyer_id', 0)->first();
+	 if(!$default) return redirect('/');
+	 $new_weight = $default->weight - $ad->weight;
+	 if($new_weight < 0) {
+             $new_weight = 0;
+             Log::error('Weight had to be corrected');
+	 }
+
+	 DB::table('ads')->where('id', $ad->id)->update(array('status' => 1));
+	 DB::table('ads')->where('id', $default->id)->update(array('weight' => $new_weight));
+	 Log::info('User '.$user->name.' resumed Ad '.$ad->id.' on zone '.$ad->zone_handle);
+	 return redirect('/zone_manage/'.$ad->zone_handle)->with('alert-info', 'Custom Ad Resumed Successfully');
+
     }
     public function postCustomAd(Request $request)
     {    try{
@@ -129,6 +174,10 @@ class ZoneController extends Controller
 	    }
 	    $new_ad['start_date'] = date('Y-m-d',strtotime($input['daterange_start']));
 	    $new_ad['end_date'] = strlen($input['daterange_end']) ? date('Y-m-d',strtotime($input['daterange_end'])) : null;
+	    if($new_ad['end_date'] && $new_ad['end_date'] < $new_ad['start_date']){
+                return json_encode(array('result' => 'Invalid End Date - cannot be before Start Date'));
+            }
+
 	    $creatives = array();
 
 	    foreach($input as $key => $value){
@@ -274,7 +323,7 @@ class ZoneController extends Controller
 	    $platform_targets = '<option value="0" selected>All Platforms</option>';
 	    foreach($platforms as $row){
                $platform_targets .= '<option value="'.$row->id.'">'.$row->platform.'</option>';
-      	    }
+	    }
 	    if($zone){
 	       return view('zone_manage', array('ads' => $ads, 'zone' => $zone, 'site' => $site, 'countries' => $countries, 'devices' => $platform_targets));
 	    }else{

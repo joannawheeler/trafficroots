@@ -176,8 +176,8 @@ class CronController extends Controller
             foreach($result as $row){
                 $sql = 'UPDATE `bids` SET `status` = ? WHERE `id` = ?';
                 DB::update($sql, array(1, $row->id));
-                $info = 'Campaign '.$row->campaign_id.' Activated on Zone '.$row->zone_handle;
-                Log::info($info);                
+                //$info = 'Campaign '.$row->campaign_id.' Activated on Zone '.$row->zone_handle;
+                //Log::info($info);                
             }
         }else{
             Log::info('No Pending Bids to Activate.');
