@@ -25,8 +25,8 @@
 
 		div.tableSearchOnly {
 			padding-top: 55px;
-
 		}
+
 		.content .ibox .ibox-content {
 			overflow: visible;
 		}
@@ -48,7 +48,7 @@
            display: none;
        }
      }
-                                 
+
 
     </style>
 @endsection
@@ -62,28 +62,19 @@
 <div class="content">
     <div class="row">
         <div class="col-lg-12">
-			<div class="ibox-title" style="display:none;">
-			</div>
 			<div class="row">
-				<div class="col-md-12">
+				<div class="col-xs-12 col-md-6">
 					<div class="panel panel-default">
 						<h4 class="p-title">Filter</h4>
 						<div class="ibox-content">
 							<div class="row">
-								<div class="col-xs-12 col-md-5">
-<!--
-							<form name="stats_form"
-								  id="stats_form"
-								  action="{{ url('/stats/pub') }}"
-								  method="POST">
-								{{ csrf_field() }}
--->
+								<div class="col-xs-12">
 									<form name="campaign_form"
 								  method="POST">
 								<label>Dates</label>
-                                                                {{ csrf_field() }}
+								{{ csrf_field() }}
 								<div class="row">
-									<div class="col-xs-12 form-group">
+									<div class="col-xs-12 col-md-6 form-group">
 										<input hidden="true"
 											   type="text"
 											   name="daterange" />
@@ -113,124 +104,87 @@
 			</div>
 
 
+            <div class="row">
+				<div class="col-lg-12">
+					<div class="ibox float-e-margins">
+						<div class="panel panel-body">
+							<h4 class="p-title" style="display:inline-block;">Campaigns - <span id="dateRangeDisplay">{{ $startDate }}@if($endDate) - {{ $endDate }}@endif</span> </h5>
+							<div class="pull-right m-t m-r"><a href="{{ URL::to('addfunds') }}" class="btn btn-xs btn-info"><i class="fa fa-cc-visa"></i>&nbsp;<i class="fa fa-cc-mastercard"></i>&nbsp; Add Funds</a>&nbsp;<a href="{{ URL::to('campaign') }}" class="btn btn-xs btn-primary"><i class="fa fa-plus-square-o"></i>&nbsp;&nbsp; New Campaign</a>
+							</div>
 
-            <div class="ibox">
-                <div class="ibox-title">
-                    <h5>Campaigns - <span id="dateRangeDisplay">{{ $startDate }}@if($endDate) - {{ $endDate }}@endif</span> </h5>
-					<div class="pull-right"><a href="{{ URL::to('addfunds') }}" class="btn btn-xs btn-info"><i class="fa fa-cc-visa"></i>&nbsp;<i class="fa fa-cc-mastercard"></i>&nbsp; Add Funds</a>&nbsp;<a href="{{ URL::to('campaign') }}" class="btn btn-xs btn-primary"><i class="fa fa-plus-square-o"></i>&nbsp;&nbsp; New Campaign</a>
-					</div>
-                </div>
-
-                <div class="ibox-content" >
-					<div class="tableSearchOnly">
-						<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack">
-						<thead>
+						<div class="ibox-content tableSearchOnly">
+							<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack" style="display: block; overflow-x: auto; white-space: nowrap;;">
+							<thead>
+									<tr>
+										<th>Date</th>
+										<th>Name</th>
+										<th>Category</th>
+										<th>Impressions <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title=" Number of times Advertising Material is served to a person visiting the Publisher’s Website"></span></th>
+										<th>Clicks</th>
+										<th>Bid <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Amount that an advertiser is willing to pay for a click or a thousand impressions."></span></th>
+										<th>Type</th>
+										<th>eCPM <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Used to calculate the effectiveness of an advertising campaign, independently of the actual pricing model. (CPC, CPM, CPA…)."></span></th>
+										<th>Cost</th>
+										<th>Status</th>
+										<th>Options</th>
+									</tr>
+							</thead>
+							<tbody>
+								@foreach ($campaigns as $campaign)
 								<tr>
-									<th>Name</th>
-									<th>Category</th>
-									<th>Impressions <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title=" Number of times Advertising Material is served to a person visiting the Publisher’s Website"></span></th>
-									<th>Clicks</th>
-									<th>Bid <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Amount that an advertiser is willing to pay for a click or a thousand impressions."></span></th>
-									<th>Type</th>
-									<th>eCPM <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Used to calculate the effectiveness of an advertising campaign, independently of the actual pricing model. (CPC, CPM, CPA…)."></span></th>
-									<th>Cost</th>
-									<th>Status</th>
-									<th>Options</th>
+									<td class="text-center"><b class=" tablesaw-cell-label">Date</b><div>
+										{{ Carbon\Carbon::parse($campaign->created_at)->format('m/d/Y') }}</div>
+									</td>
+									<td class="text-center"><b class=" tablesaw-cell-label">Name</b><div>{{ $campaign->campaign_name }}</div></td>
+									<td class="text-center"><b class=" tablesaw-cell-label">Category</b><div>{{ $campaign->category->category }}</div></td>
+									<td><b class=" tablesaw-cell-label">Impressions</b><div>{{ $campaign->stats->sum('impressions') }}</div></td>
+									<td class="text-center"><b class=" tablesaw-cell-label">Clicks</b> {{ $campaign->stats->sum('clicks') }}</td>
+									<td class="text-center"><b class=" tablesaw-cell-label">Bid</b>
+										${{ $campaign->bid }}
+									</td>
+									<td class="text-center"><b class=" tablesaw-cell-label">Type</b>
+						<span class="label<?php if($campaign->type->id == 1){echo ' label-info';}else{echo ' label-success';}?>">{{ $campaign->type->campaign_type }}</span>
+									</td>
+									<td class="text-center"><b class=" tablesaw-cell-label">eCPM</b> $ @if($campaign->stats->sum('impressions')){{
+										number_format(
+												$campaign->stats->reduce(function($cost, $stat) {
+													return $cost + (($stat->impressions / 1000) * $stat->cpm);
+												}) * 1000 / $campaign->stats->sum('impressions'), 2
+											)
+										}}@else()0
+										@endif
+
+									</td>
+									<td class="text-center"><b class=" tablesaw-cell-label">Cost</b> ${{ number_format(
+												$campaign->stats->reduce(function($cost, $stat) {
+													return $cost + (($stat->impressions / 1000) * $stat->cpm);
+												}), 2
+											) }}</td>
+									<td class="text-center"><b class=" tablesaw-cell-label">Status</b> <label class="label label-{{ $campaign->status_type->classname }}">{{ $campaign->status_type->description }}</label></td>
+									<td class="text-center"><b class=" tablesaw-cell-label">Options</b>
+										<a href="{{ url("stats/campaign/$campaign->id") }}">
+											<button class="campaign-stats btn btn-xs btn-warning alert-info">
+												<span class="btn-label">
+													<i class="fa fa-line-chart"></i>
+												</span>&nbsp; Stats&nbsp;&nbsp;
+											</button>
+										</a>
+										<a href="{{ URL::to("/manage_campaign/$campaign->id") }}" >
+											<button class="btn btn-xs btn-success alert-success">
+												<span class="btn-label">
+													<i class="fa fa-edit"></i>
+												</span> Edit</button>
+										</a>
+									</td>
 								</tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($campaigns as $campaign)
-                            <tr>
-                                <td class="text-center"><b class=" tablesaw-cell-label">Name</b> {{ $campaign->campaign_name }} </td>
-                                <td class="text-center"><b class=" tablesaw-cell-label">Impressions</b>{{ $campaign->category->category }}</td>
-                                <td class="text-center"><b class=" tablesaw-cell-label">Impressions</b> {{ $campaign->stats->sum('impressions') }}</td>
-                                <td class="text-center"><b class=" tablesaw-cell-label">Clicks</b> {{ $campaign->stats->sum('clicks') }}</td>
-                                <td class="text-center"><b class=" tablesaw-cell-label">Bid</b>
-                                    ${{ $campaign->bid }}
-                                </td>
-								<td class="text-center"><b class=" tablesaw-cell-label">Type</b>
-				    <span class="label<?php if($campaign->type->id == 1){echo ' label-info';}else{echo ' label-success';}?>">{{ $campaign->type->campaign_type }}</span>
-                                </td>
-                                <td class="text-center"><b class=" tablesaw-cell-label">eCPM</b> $ @if($campaign->stats->sum('impressions')){{
-                                    number_format(
-                                            $campaign->stats->reduce(function($cost, $stat) {
-                                                return $cost + (($stat->impressions / 1000) * $stat->cpm);
-                                            }) * 1000 / $campaign->stats->sum('impressions'), 2
-                                        )
-                                    }}@else()0
-                                    @endif
-
-                                </td>
-                                <td class="text-center"><b class=" tablesaw-cell-label">Cost</b> ${{ number_format(
-                                            $campaign->stats->reduce(function($cost, $stat) {
-                                                return $cost + (($stat->impressions / 1000) * $stat->cpm);
-                                            }), 2
-                                        ) }}</td>
-                                <td class="text-center"><b class=" tablesaw-cell-label">Status</b> <label class="label label-{{ $campaign->status_type->classname }}">{{ $campaign->status_type->description }}</label></td>
-                                <td class="text-center"><b class=" tablesaw-cell-label">Links</b>
-                                    <a href="{{ url("stats/campaign/$campaign->id") }}">
-										<button class="campaign-stats btn btn-xs btn-warning alert-info">
-											<span class="btn-label">
-												<i class="fa fa-line-chart"></i>
-											</span>&nbsp; Stats
-										</button>
-                                    </a>
-                                    <a href="{{ URL::to("/manage_campaign/$campaign->id") }}">
-										<button class="btn btn-xs btn-success alert-success">
-											<span class="btn-label">
-												<i class="fa fa-edit"></i>
-											</span> Edit</button>
-                                    </a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-
-					<!-- <style>
-						.tooltip {
-							position: relative;
-							display: inline-block;
-							border-bottom: 1px dotted black;
-						}
-
-						.tooltip .tooltiptext {
-							visibility: hidden;
-							width: 120px;
-							background-color: #666;
-							color: #fff;
-							text-align: center;
-							border-radius: 6px;
-							padding: 5px 0;
-							position: absolute;
-							z-index: 1;
-							bottom: 125%;
-							left: 50%;
-							margin-left: -60px;
-							opacity: 50;
-							transition: opacity .3s;
-						}
-
-						.tooltip .tooltiptext::after {
-							content: "";
-							position: absolute;
-							top: 100%;
-							left: 50%;
-							margin-left: -5px;
-							border-width: 5px;
-							border-style: solid;
-							border-color: #555 transparent transparent transparent;
-						}
-
-						.tooltip:hover .tooltiptext {
-							visibility: visible;
-							opacity: 1;
-						}
-					</style> -->
-
-                   </div>
-                </div>
-            </div>
+								@endforeach
+							</tbody>
+						</table>
+					   </div>
+						</div>
+					</div>
+				</div>
+			</div>
         </div>
     </div>
 </div>
@@ -248,17 +202,8 @@
 			responsive: true
 		});
 
-  	 var currentStatus = $(".currentStatus").text();
-  		if (currentStatus == "Active"){
-  			$(".currentStatus").addClass('label-primary');
-  		} else if (currentStatus == "Declined"){
-  			$(".currentStatus").addClass('label-danger');
-  		} else {
-  			$(".currentStatus").addClass('label-warning');
-  		}
-
       // console.log("Current Status Text determining Color====", currentStatus)
-
+							   
 		var bidType = $(".badge").text();
 		if (bidType == "CPM"){
 			$(".badge").addClass('label-success');
@@ -277,7 +222,7 @@
         initialRange = `${start} - ${end}`;
            $('.footable').footable();
     $('.footable').removeClass('hide');
-    
+
 
     $('#reportrange span').html(initialRange);
     $('input[name="daterange"]').val(initialRange);
@@ -315,7 +260,7 @@
         console.log(start.toISOString(), end.toISOString(), label);
         $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
         $('input[name="daterange"]').val(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-    });	       
+    });
        });
    </script>
 @endsection
