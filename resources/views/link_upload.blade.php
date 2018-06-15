@@ -22,8 +22,8 @@
                   id="link_form"
                   class="form-horizontal"
                   role="form"
-		  method="POST"
-		  onsubmit="return submitLinkForm();"
+          method="POST"
+          onsubmit="return submitLinkForm();"
                   action="{{ url('/links') }}">
                 {{ csrf_field() }}
                 <div class="modal-body">
@@ -41,7 +41,7 @@
 
                     <div class="form-group">
                         <label>Category</label>
-                        <select class="form-control m-b"
+                        <select class="form-control m-b" id="link_category_id"
                                 name="link_category"
                                 required>
                             <option value="">Choose category</option>
@@ -63,11 +63,11 @@
                         <input type="hidden" 
                                name="return_url"
                                id="return_url"
-			@if( $_SERVER['REQUEST_URI'] == '/campaign')
+            @if( $_SERVER['REQUEST_URI'] == '/campaign')
                                value="campaign">
                         @else
                                value="library">
-	                @endif
+                    @endif
                         <label class="error hide"
                                for="url"></label>
                     </div>                    
@@ -80,25 +80,25 @@
                             name="submit"
                             class="btn btn-primary">Submit</button>
                 </div>
-	    </form>
+        </form>
         </div>
     </div>
 </div>
 <script type="text/javascript">
 function submitLinkForm(){
-	$.post('/links', $('#link_form').serialize())
-		.done(function (response) {
-			toastr.success('Link Added Successfully!', '', 
-			   {onHidden: function () {
-				   if(window.location.href.indexOf("/library") > -1) {
-						window.location.href = "/library";
-				   }
-			   }});
-			$('#addLink').modal('hide');
-		  }).fail(function (response) {
-			toastr.error('Failed to add Link!');
-			$('addLink').modal('hide');
-		 });
+    $.post('/links', $('#link_form').serialize())
+        .done(function (response) {
+            toastr.success('Link Added Successfully!', '', 
+               {onHidden: function () {
+                   if(window.location.href.indexOf("/library") > -1) {
+                        window.location.href = "/library";
+                   }
+               }});
+            $('#addLink').modal('hide');
+          }).fail(function (response) {
+            toastr.error('Failed to add Link!');
+            $('addLink').modal('hide');
+         });
     return false;
 }
 </script>
