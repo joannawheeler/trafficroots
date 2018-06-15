@@ -53,7 +53,7 @@ div#sites_chosen {
 		<div class="col-xs-12">
 			<div class="ibox-title" style="display:none;">
 				<h5>
-					Stats for: <span id="dateRangeDisplay">{{ $startDate }}@if($endDate) - {{ $endDate }}@endif</span>
+					Stats for: <span id="dateRangeDisplay">{{ Carbon\Carbon::parse($startDate)->format('Y-m-d') }}@if($endDate) - {{ Carbon\Carbon::parse($endDate)->format('Y-m-d') }}@endif</span>
 				</h5>
 			</div>
 			<div class="row">
@@ -169,7 +169,8 @@ div#sites_chosen {
 										<tbody>
 											@foreach ($stats->groupBy('stat_date') as $day)
 											<tr>
-												<td class="text-center"><b class=" tablesaw-cell-label">Date</b>{{ $day->first()->stat_date }} </td>
+												<td class="text-center"><b class=" tablesaw-cell-label">Date</b>
+													{{ $day->first()->stat_date}} </td>
 												<td class="text-center"><b class=" tablesaw-cell-label">Impressions</b>{{ $stats->where('stat_date', $day->first()->stat_date)->sum('impressions') }}</td>
 												<td class="text-center"><b class=" tablesaw-cell-label">Clicks</b>{{ $stats->where('stat_date', $day->first()->stat_date)->sum('clicks') }}</td>
 												<td class="text-center"><b class=" tablesaw-cell-label">CTR</b>{{ ($stats->where('stat_date', $day->first()->stat_date)->sum('impressions')/1000) * $stats->where('stat_date', $day->first()->stat_date)->sum('clicks') }}%</td>
