@@ -423,6 +423,17 @@ $sql = "SELECT
                 JOIN site_themes 
                 ON sites.site_theme = site_themes.id
                 WHERE sites.user_id = '.$user->id;
+		
+		
+		if($request->has('daterange')){
+			$dateRange = explode(' - ', $request->daterange);
+	        $startDate = Carbon::parse($dateRange[0]);
+			$endDate = Carbon::parse($dateRange[1]);
+		}else{
+			$startDate = Carbon::now()->toDateString();
+			$endDate = Carbon::now()->toDateString();
+		}
+		
         $sites = DB::select($sql);
         $view_type = isset($input['type']) ? intval($input['type']) : 0;
         if(!$view_type) $view_type = $user->user_type;
@@ -599,17 +610,22 @@ $sql = "SELECT
         /* campaigns - this month */
         $data['campaigns']['thismonth'] = array();
         $data['campaigns']['lastmonth'] = array();
-        $sql = "SELECT campaigns.campaign_name, campaigns.status, campaigns.campaign_type, campaigns.bid, SUM(campaign_stats.impressions) AS impressions, SUM(campaign_stats.clicks) AS clicks, COUNT(DISTINCT(campaign_stats.stat_date)) AS days_active, status_types.description, status_types.classname 
-                FROM campaign_stats
-                JOIN campaigns ON campaign_stats.campaign_id = campaigns.id
-                JOIN status_types ON campaigns.status = status_types.id
+        $sql = "SELECT COUNT(DISTINCT(creatives.id)) as totalCreatives, campaigns.campaign_name, campaigns.status, campaigns.created_at, campaigns.campaign_type, campaigns.bid,
+		SUM(campaign_stats.impressions) AS impressions, SUM(campaign_stats.clicks) AS clicks, COUNT(DISTINCT(campaign_stats.stat_date)) AS days_active, status_types.description,status_types.classname
+			FROM campaign_stats
+			JOIN campaigns ON campaign_stats.campaign_id = campaigns.id
+			JOIN status_types ON campaigns.status = status_types.id
+			LEFT JOIN creatives ON creatives.campaign_id = campaign_stats.campaign_id
 		WHERE campaign_stats.user_id = ?
                 AND campaign_stats.stat_date >= ?
-                GROUP BY campaign_name, bid;";
+				AND creatives.status = 1
+                GROUP BY campaign_name, bid, status, campaign_type, created_at;";
         foreach(DB::select($sql,array($user->id,date('Y-m-d',strtotime('first day of this month')))) as $camp){
             $data['campaigns']['thismonth'][$camp->campaign_name]['impressions'] = isset($data['campaigns']['thismonth'][$camp->campaign_name]['impressions']) ? $data['campaigns']['thismonth'][$camp->campaign_name]['impressions'] + $camp->impressions : $camp->impressions;
             $data['campaigns']['thismonth'][$camp->campaign_name]['clicks'] = isset($data['campaigns']['thismonth'][$camp->campaign_name]['clicks']) ? $data['campaigns']['thismonth'][$camp->campaign_name]['clicks'] + $camp->clicks : $camp->clicks;
             $data['campaigns']['thismonth'][$camp->campaign_name]['days_active'] = isset($data['campaigns']['thismonth'][$camp->campaign_name]['days_active']) ? $data['campaigns']['thismonth'][$camp->campaign_name]['days_active'] + $camp->days_active : $camp->days_active;
+			$data['campaigns']['thismonth'][$camp->campaign_name]['created_at'] = isset($data['campaigns']['thismonth'][$camp->campaign_name]['created_at']) ? $data['campaigns']['thismonth'][$camp->campaign_name]['created_at'] + $camp->created_at : $camp->created_at;
+			
             $spent = 0;
             if($camp->campaign_type == 1){
                 $spent = ($camp->impressions / 1000) * $camp->bid;
@@ -620,20 +636,27 @@ $sql = "SELECT
             $data['campaigns']['thismonth'][$camp->campaign_name]['spend'] = isset($data['campaigns']['thismonth'][$camp->campaign_name]['spend']) ? $data['campaigns']['thismonth'][$camp->campaign_name]['spend'] + $spent : $spent;
 	    $data['campaigns']['thismonth'][$camp->campaign_name]['status'] = $camp->description;
 	    $data['campaigns']['thismonth'][$camp->campaign_name]['classname'] = $camp->classname;
+		//$data['campaigns']['thismonth'][$camp->campaign_name]['totalCreatives'] = $camp->totalCreatives;
 	}
 
         /* campaigns - last month */
-        $sql = "SELECT campaigns.campaign_name, campaigns.status, campaigns.campaign_type, campaigns.bid, SUM(campaign_stats.impressions) AS impressions, SUM(campaign_stats.clicks) AS clicks, COUNT(DISTINCT(campaign_stats.stat_date)) AS days_active, status_types.description, status_types.classname
-                FROM campaign_stats
-                JOIN campaigns ON campaign_stats.campaign_id = campaigns.id
-                JOIN status_types ON campaigns.status = status_types.id
-                WHERE campaign_stats.user_id = ?
+        $sql = "SELECT COUNT(DISTINCT(creatives.id)) as totalCreatives, campaigns.campaign_name, campaigns.status, campaigns.created_at, campaigns.campaign_type, campaigns.bid,
+		SUM(campaign_stats.impressions) AS impressions, SUM(campaign_stats.clicks) AS clicks, COUNT(DISTINCT(campaign_stats.stat_date)) AS days_active, status_types.description,status_types.classname
+			FROM campaign_stats
+			JOIN campaigns ON campaign_stats.campaign_id = campaigns.id
+			JOIN status_types ON campaigns.status = status_types.id
+			LEFT JOIN creatives ON creatives.campaign_id = campaign_stats.campaign_id
+		WHERE campaign_stats.user_id = ?
                 AND campaign_stats.stat_date BETWEEN ? AND ?
-                GROUP BY campaign_name, bid;";
+				AND creatives.status = 1
+                GROUP BY campaign_name, bid, status, campaign_type, created_at;";
         foreach(DB::select($sql,array($user->id,date('Y-m-d',strtotime('first day of last month')),date('Y-m-d',strtotime('first day of this month')))) as $camp){
             $data['campaigns']['lastmonth'][$camp->campaign_name]['impressions'] = isset($data['campaigns']['lastmonth'][$camp->campaign_name]['impressions']) ? $data['campaigns']['lastmonth'][$camp->campaign_name]['impressions'] + $camp->impressions : $camp->impressions;
             $data['campaigns']['lastmonth'][$camp->campaign_name]['clicks'] = isset($data['campaigns']['lastmonth'][$camp->campaign_name]['clicks']) ? $data['campaigns']['lastmonth'][$camp->campaign_name]['clicks'] + $camp->clicks : $camp->clicks;
             $data['campaigns']['lastmonth'][$camp->campaign_name]['days_active'] = isset($data['campaigns']['lastmonth'][$camp->campaign_name]['days_active']) ? $data['campaigns']['lastmonth'][$camp->campaign_name]['days_active'] + $camp->days_active : $camp->days_active;
+			
+			$data['campaigns']['lastmonth'][$camp->campaign_name]['created_at'] = isset($data['campaigns']['lastmonth'][$camp->campaign_name]['created_at']) ? $data['campaigns']['lastmonth'][$camp->campaign_name]['created_at'] + $camp->created_at : $camp->created_at;
+			
             $spent = 0;
             if($camp->campaign_type == 1){
                 $spent = ($camp->impressions / 1000) * $camp->bid;
@@ -644,6 +667,8 @@ $sql = "SELECT
             $data['campaigns']['lastmonth'][$camp->campaign_name]['spend'] = isset($data['campaigns']['lastmonth'][$camp->campaign_name]['spend']) ? $data['campaigns']['lastmonth'][$camp->campaign_name]['spend'] + $spent : $spent;
 	    $data['campaigns']['lastmonth'][$camp->campaign_name]['status'] = $camp->description;
 	    $data['campaigns']['lastmonth'][$camp->campaign_name]['classname'] = $camp->classname;
+		//$data['campaigns']['thismonth'][$camp->campaign_name]['totalCreatives'] = $camp->totalCreatives;
+
         } 
 	}else{
           $data['campaigns']['thismonth'] = array();
@@ -857,4 +882,14 @@ $sql = "SELECT
 	Session::flash('success', 'All Changes Saved!');
 	return redirect('/profile');
     }
+	
+	public function filtered(Request $request)
+    {
+        $dateRange = explode(' - ', $request->daterange);
+        $startDate = Carbon::parse($dateRange[0]);
+        $endDate = Carbon::parse($dateRange[1]);
+		
+        return view('campaigns', compact('startDate', 'endDate'));
+    }
+	
 }
