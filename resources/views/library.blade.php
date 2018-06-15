@@ -63,7 +63,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 -->
 			<div class="row">
 				<div class="col-xs-12">
@@ -249,9 +249,13 @@ jQuery(document).ready(function ($) {
 		  "sSearch": "Search Table"
 		}, pageLength: 10,
 		responsive: true
-	});	
-});		
-	
+	});
+});
+
+$("a.tr-preview").click(function(event){
+    event.preventDefault();
+});
+
 function setStatus() {
 	var currentStatus = Array.from($(".currentStatus"));
 	currentStatus.forEach(function(element) {

@@ -33,7 +33,7 @@
 #page-wrapper .container .ibox-content {
     overflow: visible;
 }
-	
+
 	#overview_content .row.m-t div > div {
 		word-wrap: break-word;
 	}
@@ -65,7 +65,7 @@
     padding-left: 5px;
 }
 
-#wizard-p-1 { 
+#wizard-p-1 {
     background: white;
  }
 
@@ -147,6 +147,12 @@
 
 }
 
+@media (max-width: 768px) {
+    #overview_content .ibox-content .col-md-3 {
+      text-align: left;
+  }
+}
+
 @media (max-width: 680px) {
     #page-wrapper {
       padding: 0;
@@ -207,7 +213,7 @@
                                               <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Category Must Match for the Campaign/Images/URL"></em>
                                             </label>
                                             <div class="col-md-6">
-                                                <select id="campaign_category" class="form-control reload" name="campaign_category" required>
+                                                <select id="campaign_category" class="form-control reload required" name="campaign_category" required>
                                                     <option value="">Choose</option>
                                                     @foreach($categories as $type)
                                                     <option value="{{ $type->id }}">{{$type->category}}</option>
@@ -243,13 +249,13 @@
                         </div>
 
 
-                    <h1>Advanced Targeting</h1>                    
+                    <h1>Advanced Targeting</h1>
                         <div class="step-content">
                             <h5>Target an advertisement based on a specific geographical region, area or location. Geo-targeting is done based on the IP address of the visitor.</h5>
                             <div class="col-md-12">
                                 <h6>Site Targeting - Hold Ctrl to Select Multiple Themes</h6>
 				<select id="themes" name="themes[]" class="chosen-select form-control" multiple>
-                                    <option value="0" selected>All Themes</option>
+                                    <option value="0" selected>All Sites</option>
                                     @foreach($themes as $theme)
                                     <option value="{{ $theme->id }}">{{ $theme->theme }} </option>
                                     @endforeach
@@ -295,7 +301,7 @@
                             </div>
                             <div class="col-md-12" style="margin-top:25px">
                                 <div>
-                                    <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Search terms or phrases targeted by the advertising campaign"></em>                                
+                                    <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Search terms or phrases targeted by the advertising campaign"></em>
                                     <h5 style="display:inline">Keyword Targeting &nbsp;<span style="font:italic 100 12px opensans">(Optional)
                                     </span></h5>
                                 </div>
@@ -305,19 +311,8 @@
 
 
                     <h1>Creatives</h1>
-                    <div class="step-content" style="background: white;">                        
+                    <div class="step-content" style="background: white;">
                         <h2 class="text-success"><strong>Add Creatives</strong></h2>
-                        <div class="instruction">
-                          <ul>
-                              <li>Combine an image and link in order to make a new creative!</li>
-                              <li>Add new images that correspond with the selected Campaign Category and Image Location / Dimensions</li>
-                              <li>Or select existing images from your library that match the current Campaign Category and Image Location / Dimensions</li>
-                          </ul>
-                        </div>
-                          <!-- <div class="text-center image-preview show-icon">
-                                <i class="fa fa-camera"></i>
-                                <img class="newCampaignImg" src"" alt="Preview Image"/>
-                            </div> -->
                                 <div class="media-selection">
                                     <div class="col-xs-12 col-md-6 b-r">
                                       <h3>Step 1)</h3>
@@ -325,9 +320,9 @@
                                             <p><h4>Select Existing or Uploaded Image&nbsp;&nbsp;<i class="fa fa-camera"></i></h4></p>
                                                 <div class="form-group col-xs-12 mediaOptions">
                                                     <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Choose an Image from Corresponding Library Category" style="display:inline;"></em>
-                                                    <select id="media_id" name="media_id" class="form-control">
+                                                    <select id="media_id" name="media_id" class="form-control" required>
                                                         <option value="">Choose</option>
-                                                    </select>                                                    
+                                                    </select>
                                                     @if ($errors->has('media_id'))
                                                         <span class="help-block">
                                                             <strong>{{ $errors->first('media_id') }}</strong>
@@ -345,7 +340,7 @@
                                                 <p><h4>Select Existing or Uploaded URL  &nbsp;<i class="fa fa-link"></i></h4></p>
                                                 <div class="col-xs-12">
                                                   <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Choose a Link from Corresponding Library Category" style="display:inline;"></em>
-                                                    <select id="link_id" name="link_id" class="form-control">
+                                                    <select id="link_id" name="link_id" class="form-control" required>
                                                         <option value="">Choose</option>
                                                     </select>
                                                     @if ($errors->has('link_id'))
@@ -367,9 +362,8 @@
                                         <h4>Combine Image and URL</h4>
                                         <div class="instruction">
                                           <ul>
-                                          	  <li>Combine Image and URL in order to Add a New Campaign Creative</li>
-                                              <li>Multiple Creatives can be added per Campaign!</li>
-                                              <li>All creative image sizes must have a uniform Location / Dimension per Campaign</li>
+											  <li>Multiple Creatives can be added per Campaign!</li>
+											  <li>To add a new Creative please repeat <strong>Steps 1-3</strong> in the Creatives tab.</li>
                                           </ul>
                                         </div>
                                         <label for="description" class="col-md-3 control-label">
@@ -377,14 +371,14 @@
                                           &nbsp;Description:
                                         </label>
                                         <div class="col-md-6">
-                                            <input id="description" type="text" class="form-control" name="description" value=""> @if ($errors->has('description'))
+                                            <input id="description" type="text" class="form-control" name="description" value="" required> @if ($errors->has('description'))
                                             <span class="help-block">
                                                 <strong>{{ $errors->first('description') }}</strong>
                                             </span> @endif
                                         </div>
                                     </div>
                                         <div class="text-center" style="padding:4px;">
-                                            <button class="btn btn-primary" onclick="return addCreative();"><i class="fa fa-plus-square-o"></i>&nbsp;Add Creative</button>
+                                            <button class="btn btn-xs btn-primary" onclick="return addCreative();"><i class="fa fa-plus-square-o"></i>&nbsp;Add Creative</button>
                                             <br />
                                         </div>
                                     </div>
@@ -415,26 +409,27 @@
                                             <div class="form-group{{ $errors->has('campaign_type') ? ' has-error' : '' }}">
                                               <label for="campaign_type" class="col-md-4 control-label">Pricing Model
                                                   <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="CPM (Cost Per Mille)&nbsp;&nbsp;&nbsp; CPC (Cost Per Click)"></em>
-                                                </label>
-                                                <div class="col-md-6">
+                                              </label>
+                                              <div class="col-md-6">
                                                     <select id="campaign_type" class="form-control" name="campaign_type" required>
                                                         <option value="">Choose</option>
                                                         @foreach($campaign_types as $type)
-                                                        <option value="{{ $type->id }}">{{$type->campaign_type}}</option>
-                                                        @endforeach
+															<option value="{{ $type->id }}">{{$type->campaign_type}}</option>
+														@endforeach
                                                     </select>
-                                                    @if ($errors->has('campaign_type'))
-                                                    <span class="help-block">
-                                                                        <strong>{{ $errors->first('campaign_type') }}</strong>
-                                                                    </span> @endif
-                                                </div>
+													@if ($errors->has('campaign_type'))
+													<span class="help-block">
+												  		<strong>{{ $errors->first('campaign_type') }}</strong>
+												  	</span> @endif
+												</div>
+                                               </div>
                                             </div>
                                             <div class="form-group{{ $errors->has('impression_capping') ? ' has-error' : '' }}">
                                                 <label for="frequency_capping" class="col-md-4 control-label">Frequency Capping
                                                   <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Restrict (cap) the number of times (frequency) a specific visitor to a website is shown a particular ad"></em>
                                                 </label>
                                                 <div class="col-md-6">
-                                                    <select id="frequency_capping" class="form-control" name="frequency_capping">
+                                                    <select id="frequency_capping" class="form-control" name="frequency_capping" required>
                                                         <option value="0">Disabled</option>
                                                         <option value="1">1 Impression Per 24 Hours</option>
                                                         <option value="2">2 Impressions Per 24 Hours</option>
@@ -454,7 +449,7 @@
                                                 </label>
                                                 &nbsp;
                                                 <div class="col-md-6">
-                                                    <input type="number" class="form-control" id="daily_budget" name="daily_budget">
+                                                    <input type="number" class="form-control" id="daily_budget" name="daily_budget" required>
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -463,7 +458,7 @@
                                                         <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Amount paid for a click, or one thousand impressions"></em>
                                                     </label>
                                                     <div class="col-md-6">
-                                                        <input type="text" id="bid" class="form-control" name="bid" value="0.00">
+                                                        <input type="text" id="bid" class="form-control" name="bid" placeholder="0.00" required>
                                                         <label class="error hide" for="bid"></label>
                                                     </div>
                                             </div>
@@ -527,7 +522,7 @@
 <script src="{{ URL::asset('js/plugins/sweetalert/sweetalert.min.js') }}"></script>
 <script src="{{ URL::asset('js/plugins/flot/jquery.flot.js') }}"></script>
 <script src="{{ URL::asset('js/plugins/flot/jquery.flot.tooltip.min.js') }}"></script>
-
+<script src="{{ URL::asset('js/plugins/staps/jquery.validate.min.js') }}"></script>
 
 <script type="text/javascript">
     //$('[multiple]').chosen();
@@ -536,50 +531,97 @@
         $(document).on('hidden.bs.modal', function(){
             reloadMedia();
         });
-        $("#wizard").steps({
-                transitionEffect: "fade",
-        autoFocus: true,
-                onStepChanged: function (event, currentIndex, priorIndex)
-            {
-                        updateOverview();
-                },
-                onFinishing: function (event, currentIndex)
-        {
-                   return checkForm();
-                    },
-                onFinished: function (event, currentIndex)
-                    {
-                    $('#campaign_form').submit(function(){
-                                    alert("Submitted");
-                    });
-                  },
-                  onCanceled: function (event, currentIndex)
-                   {
-                     swal({
-               				title: "Cancel Campaign",
-               				text: "Are you sure you want to cancel this campaign?",
-               				icon: "warning",
-               				buttons: true,
-               				dangerMode: true,
-               			}).then((cancel) => {
-               				if (cancel) {
-               					window.location.href = "campaigns";
-               				}
-               			});
-                  }
+		
+		$('#image_category_id').prop('disabled', true);
+		$('#link_category_id').prop('disabled', true);
+		$('#location_type_id').prop('disabled', true);
+		
+		var form = $("#campaign_form");
+		form.validate({
+			errorPlacement: function errorPlacement(error, element) { element.before(error); }
+		});
+		
+        form.children("div").steps({
+			transitionEffect: "fade",
+        	autoFocus: true,
+			onStepChanging: function (event, currentIndex, priorIndex) {
+				
+				
+				// Allways allow previous action even if the current form is not valid!
+				if (currentIndex > priorIndex) {
+					return true;
+				}
+				
+				// Needed in some cases if the user went back (clean up)
+				if (currentIndex < priorIndex) {
+					// To remove error styles
+					form.find(".body:eq(" + priorIndex + ") label.error").remove();
+					form.find(".body:eq(" + priorIndex + ") .error").removeClass("error");
+				}
+				
+				if (currentIndex == 2) {
+					if (($("#media_id option:selected").val() > 0) && 
+						($("#link_id option:selected").val() > 0)) {
+						//alert("validation passed");
+						if ($('input.creative').length === 0){
+							alert('You have not yet added a creative for the selected image and link. Please give the creative a description and click on the "Add Creative" button in STEP 3.');
+							if (!form.valid()) {
+								event.PreventDefault();
+								event.stopPropagation();
+							}
+							return false;
+						}
+					}
+				}
+				
+				form.validate().settings.ignore = ":disabled,:hidden";
+				return form.valid();
+			},
+			onStepChanged: function (event, currentIndex, priorIndex) {
+				updateOverview();
+			},
+			onFinishing: function (event, currentIndex) {
+			   form.validate().settings.ignore = ":disabled";
+				if (form.valid()) {
+					return checkForm();
+				}
+			},
+			onFinished: function (event, currentIndex) {
+				$('#campaign_form').submit(function(){
+					alert("Submitted");
+				});
+		  	},
+		  	onCanceled: function (event, currentIndex) {
+				swal({
+					title: "Cancel Campaign",
+					text: "Are you sure you want to cancel this campaign?",
+					icon: "warning",
+					buttons: true,
+					dangerMode: true,
+				}).then((cancel) => {
+					if (cancel) {
+						window.location.href = "campaigns";
+					}
+				});
+			}
         });
         @if($user->allow_folders)
         $('#folder_id').change(function(){
-            var check = parseInt($(this).val());
-            if(check){
-                $('#link_id').prop("disabled", true);
-                $('#media_id').prop("disabled", true);
-            }else{
-                $('#link_id').prop("disabled", false);
-                $('#media_id').prop("disabled", false);
-            }
-    });
-    @endif
+    	});
+    	@endif
+		
+		$("#campaign_category").change(function (e) {
+			var getCampaign = '"' + $("#campaign_category option:selected").text() + '"';
+			$("#image_category_id option:contains(" + getCampaign + ")").attr('selected', 'selected');
+			$("#link_category_id option:contains(" + getCampaign + ")").attr('selected', 'selected');
+		});
+			
+		$("#location_type").change(function (e) {
+			var getLoctionType = $("#location_type option:selected").text();
+			var getStringLocType = '"' + getLoctionType.substr(0, getLoctionType.indexOf(' -')) + '"'; 
+			$("#location_type_id option:contains(" + getStringLocType + ")").attr('selected', 'selected');
+		});	
+		
         $('.state-control').change(function(){
             var url = "{{ url('/load_counties') }}";
             var mydata = $("#campaign_form").serialize();
@@ -594,7 +636,6 @@
            reloadMedia();
         });
 
-
         if ($("input#websiteUrl").length) {
             $("input#websiteUrl").change(function(){
                 var linkurl = $("#websiteUrl").val();
@@ -608,9 +649,24 @@
                 }
             });
         }
-    $('[data-toggle="tooltip"]').tooltip();
+		$('[data-toggle="tooltip"]').tooltip();
 
+		$('#addMedia .btn-primary').click(function( event ) {
+			$("#image_category_id").prop("disabled", false);
+			$("#location_type_id").prop("disabled", false); 
+		});	
+
+		$('#addLink .btn-primary').click(function( event ) {
+			$("#link_category_id").prop("disabled", false); 
+		});	
     });
+	
+	$('form').submit(function() {
+		$("#image_category_id").prop('disabled', true);
+		$("#link_category_id").prop('disabled', true);
+		$("#location_type_id").prop('disabled', true);
+	});
+	
     function checkForm(){
        if($.trim($('#campaign_name').val()) == ''){
            alert('Campaign must have a name!');
@@ -646,7 +702,7 @@
         $(".creative").each(function(){
             creatives ++;
         });
-        var myhtml =  '<div class="ibox-content" style="overflow:hidden"><h2 class="text-success"><strong>General</strong></h2><div class="row m-t"><div class="form-group"><div class="col-md-3"> <label class="control-label p-t-half">Campaign Name</label></div><div class="col-md-4"><div type="text" value="campaign name" class="form-control" disabled> ' + $('#campaign_name').val() + '</div></div></div></div><div class="row m-t"><div class="form-group"><div class="col-md-3"> <label class="control-label p-t-half">Campaign Category</label></div><div class="col-md-4"><div type="text" value="campaign category" class="form-control" disabled> ' + $('#campaign_category option:selected').text() + '</div></div></div></div><div class="row m-t"><div class="form-group"><div class="col-md-3"> <label class="control-label p-t-half">Location Type</label></div><div class="col-md-4"><div type="text" value="campaign category" class="form-control" disabled> ' + $('#location_type option:selected').text() + '</div></div></div></div></div> <br><div class="ibox-content"><h2 class="text-success"><strong>Advanced Targeting</strong></h2><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">Country Targeting</label></div><div class="col-md-4"><div type="text" text="example, example" class="form-control" disabled> ' + $('#countries option:selected').text() + '</div></div></div><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">State Targeting</label></div><div class="col-md-4"><div type="text" text="example, example" class="form-control" disabled> ' + $('#states option:selected').text() + '</div></div></div><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">County Targeting</label></div><div class="col-md-4"> <div type="text" text="example, example" class="form-control" disabled> ' + $('#counties option:selected').text() + ' </div></div></div><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">Platform Targeting</label></div><div class="col-md-4"><div type="text" text="example, example" class="form-control" disabled> ' + $('#platform_targets option:selected').text() + '</div></div></div><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">OS Targeting</label></div><div class="col-md-4"><div type="text" text="example, example" class="form-control" disabled> ' + $('#operating_systems option:selected').text() + '</div></div></div><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">Browser Targeting</label></div><div class="col-md-4"><div type="text" text="example, example" class="form-control" disabled> ' + $('#browser_targets option:selected').text() + '</div></div></div><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">Keyword Targeting</label></div><div class="col-md-4"><div type="text" text="example, example" class="form-control" disabled> ' + $('#keyword_targets').val() + '</div></div></div></div> <style>.col-md-3 {text-align: right;}</style><div class="ibox-content"><h2 class="text-success"><strong>Creatives</strong></h2><div class="row m-t"><div class="col-md-3"> <label class="control-label p-t-half">Number of Creatives</label></div><div class="col-md-4"><div type="text" text="example, example" class="form-control" disabled> ' + creatives + '</div></div><!--ends here -->';
+        var myhtml =  '<style>.col-md-3{text-align:right}</style><div class=ibox-content style=overflow:hidden><h2 class=text-success><strong>General</strong></h2><div class="m-t row"><div class=col-md-3><label class="control-label p-t-half">Campaign Name</label></div><div class=col-md-4><div class=form-control disabled type=text value="campaign name">' + $('#campaign_name').val() + '</div></div></div><div class="m-t row"><div class=col-md-3><label class="control-label p-t-half">Campaign Category</label></div><div class=col-md-4><div class=form-control disabled type=text value="campaign category">' + $('#campaign_category option:selected').text() + '</div></div></div><div class="m-t row"><div class=col-md-3><label class="control-label p-t-half">Location Type</label></div><div class=col-md-4><div class=form-control disabled type=text value="campaign category">' + $('#location_type option:selected').text() + '</div></div></div></div><br><div class=ibox-content><h2 class=text-success><strong>Advanced Targeting</strong></h2><div class="m-t row"><div class=col-md-3><label class="control-label p-t-half">Country Targeting</label></div><div class=col-md-4><div class=form-control disabled type=text text="example, example">' + $('#countries option:selected').text() + '</div></div></div><div class="m-t row"><div class=col-md-3><label class="control-label p-t-half">State Targeting</label></div><div class=col-md-4><div class=form-control disabled type=text text="example, example">' + $('#states option:selected').text() + '</div></div></div><div class="m-t row"><div class=col-md-3><label class="control-label p-t-half">County Targeting</label></div><div class=col-md-4><div class=form-control disabled type=text text="example, example">' + $('#counties option:selected').text() + '</div></div></div><div class="m-t row"><div class=col-md-3><label class="control-label p-t-half">Platform Targeting</label></div><div class=col-md-4><div class=form-control disabled type=text text="example, example">' + $('#platform_targets option:selected').text() + '</div></div></div><div class="m-t row"><div class=col-md-3><label class="control-label p-t-half">OS Targeting</label></div><div class=col-md-4><div class=form-control disabled type=text text="example, example">' + $('#operating_systems option:selected').text() + '</div></div></div><div class="m-t row"><div class=col-md-3><label class="control-label p-t-half">Browser Targeting</label></div><div class=col-md-4><div class=form-control disabled type=text text="example, example">' + $('#browser_targets option:selected').text() + '</div></div></div><div class="m-t row"><div class=col-md-3><label class="control-label p-t-half">Keyword Targeting</label></div><div class=col-md-4><div class=form-control disabled type=text text="example, example">' + $('#keyword_targets').val() + '</div></div></div></div><style>.col-md-3{text-align:right}</style><div class=ibox-content><h2 class=text-success><strong>Creatives</strong></h2><div class="m-t row"><div class=col-md-3><label class="control-label p-t-half">Number of Creatives</label></div><div class=col-md-4><div class=form-control disabled type=text text="example, example">' + creatives + '</div></div><!--ends here -->';
 
         $('#overview_content').html(myhtml);
     }
@@ -666,13 +722,15 @@
             $('#media_id').html("<option value=''>Choose</option>");
         }
     }
+	
     function addCreative(){
         var description = $.trim($('#description').val());
         if(description == ''){
             alert("Creative must have a description.");
             $('#description').focus();
             return false;
-            }
+		}
+
         var media_id = parseInt($('#media_id').val());
             if(!media_id || isNaN(media_id)){
             alert("Please select a media image.");
@@ -691,7 +749,7 @@
         if($('#creative_' + media_id + '_' + link_id).length){
             alert("This creative already exists.");
             return false;
-            }
+		}
         var this_creative = '<div class="row" id="row_' + media_id + '_' + link_id + '" style="padding:2px;"><div class="col-md-3">&nbsp;</div><div class="col-md-6"><input class="creative" name="creative_' + media_id + '_' + link_id + '" id="creative_' + media_id + '_' + link_id + '" type="hidden" value="' + description + '">' + description + ':   ' + media_option + ' - ' + link_option + '</div><div class="col-md-3"><button class="btn btn-xs btn-danger" onclick="$(this).parent().parent().remove();"><i class="fa fa-remove"></i>&nbsp;Remove</button></div></div>';
        $('#creatives').html(current_creatives + this_creative);
     return false;

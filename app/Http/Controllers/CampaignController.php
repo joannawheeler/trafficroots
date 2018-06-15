@@ -56,10 +56,10 @@ class CampaignController extends Controller
             }
             $response['media'] = "<option value=''>Choose One</option>";
             $response['links'] = "<option value=''>Choose One</option>";
-            foreach(Media::where('user_id', $user->id)->where('location_type', intval($request->location_type))->where('category', intval($request->category))->get() as $media){
+            foreach(Media::where('user_id', $user->id)->where('location_type', intval($request->location_type))->where('category', intval($request->category))->orderby('media_name')->get() as $media){
                 $response['media'] .= "<option value='".$media->id."'>".$media->media_name."</option>";
             }
-            foreach(Links::where('user_id', $user->id)->where('category', intval($request->category))->get() as $link){
+            foreach(Links::where('user_id', $user->id)->where('category', intval($request->category))->orderby('link_name')->get() as $link){
                 $response['links'] .= "<option value='".$link->id."'>".$link->link_name."</option>";
             }            
             return response()->json($response); 
@@ -214,17 +214,18 @@ class CampaignController extends Controller
          if(!$balance) return false;
          return true;
     }
+	
     public function createCampaign()
     {
 	if(!$this->checkBank()) return redirect('/addfunds');
         $campaign_types = CampaignType::all();
-	$categories = Category::all();
-	$themes = SiteTheme::all();
-        $location_types = LocationType::all();
+		$categories = Category::orderBy('category')->get();
+		$themes = SiteTheme::orderBy('theme')->get();
+        $location_types = LocationType::orderBy('description')->get();
         $module_types = ModuleType::all();
         
         $countries = '<option value="0" selected>All Countries</option><option value="840">US - United States of America</option><option value="124">CA - Canada</option>';
-        $nations = Country::all();
+        $nations = Country::orderBy('country_short')->get();
         foreach($nations as $nation){
 	    $countries .= '<option value="'.$nation->id.'">'.$nation->country_short.' - '.$nation->country_name.'</option>';
         }
@@ -239,13 +240,13 @@ class CampaignController extends Controller
 	    $states .= '<option value="'.$row->id.'">'.State::find($row->id)->country_name['country_name'].' - '.$row->state_name.'</option>';
 	}	
         $counties = '<option value="0" selected>All Counties</option>'; 
-        $systems = OperatingSystem::all();
+        $systems = OperatingSystem::orderBy('os')->get();
         $operating_systems = '<option value="0" selected>All Operating Systems</option>';
         foreach($systems as $row){
             $operating_systems .= '<option value="'.$row->id.'">'.$row->os.'</option>';
         }
         
-        $browsers = Browser::all();
+        $browsers = Browser::orderBy('browser')->get();
         $browser_targets = '<option value="0" selected>All Browsers</option>';
         foreach($browsers as $row){
             $browser_targets .= '<option value="'.$row->id.'">'.$row->browser.'</option>';
@@ -498,7 +499,7 @@ class CampaignController extends Controller
                 $row = DB::table('campaign_targets')->where('campaign_id', $camp->id)->first();
                 $media = DB::select('select * from media where user_id = '.$user->id.' and location_type = '.$camp->location_type);
 		$links = DB::select('select * from links where user_id = '.$user->id.' and category = '.$camp->campaign_category);
-
+			
 		/* get bid status */
 		$topbid = $this->getTopBid($camp->location_type);
 
