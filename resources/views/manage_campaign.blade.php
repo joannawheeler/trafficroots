@@ -243,6 +243,13 @@ jQuery(document).ready(function ($) {
             toastr.error(response);
                 });
         });
+	
+		// Prevent 'enter' key press from displaying json on post data	
+        $("#bid, #daily_budget").keypress(function(event){	
+        	if (event.keyCode === 10 || event.keyCode === 13)	
+				event.preventDefault();	
+         });
+	
         $('.camp-start').click(function() {
             if(confirm('Activate this campaign?')){
                 var str =  $(this).attr('id');
