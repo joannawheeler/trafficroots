@@ -125,6 +125,26 @@ class CampaignController extends Controller
                 return $e->getMessage();
  	 } 
     }
+	
+	public function updateFrequencyCap(Request $request)
+    {
+	$user = Auth::getUser();
+        try{
+            $frequency = (float)($request->frequency_cap);
+            if($frequency){
+                $campaign = intval($request->camp_id);
+				Campaign::where('id', $campaign)->where('user_id', $user->id)->update(array('frequency_capping' => $frequency));
+				Log::info($user->name.' updated Frequency Capping for campaign '.$request->camp_id.' to $'.$frequency);
+                return('All Changes Saved');
+            }else{
+                /* bid evaluates to false - invalid */
+                return('Invalid Frequency Capping');
+			}
+         }catch(Exception $e){
+                return $e->getMessage();
+ 	 	} 
+    }
+	
     public function updateCounties(Request $request)
     {
 	    try{
@@ -193,7 +213,7 @@ class CampaignController extends Controller
 	    }
 	    if(isset($request->frequency_capping)) $data['frequency_capping'] = intval($request->frequency_capping);
 	    $result = DB::select('SELECT * FROM campaign_targets WHERE campaign_id = '.$request->campaign_id);
-	    if(!sizeof($result)) Log::info("WTF? No record yet??");
+	    if(!sizeof($result)) Log::info("There is no record yet??");
 	    if(DB::table('campaign_targets')->where('campaign_id', intval($request->campaign_id))->update($data))
 	    Log::info($user->name.' updated targets on campaign '.$request->campaign_id);
 	    Log::info(print_r($data, true));
@@ -523,9 +543,12 @@ class CampaignController extends Controller
 			    $bid_class = 'danger';
                     }
 	        }	
-	
+			
+			$frequencyCapping = '<option value="0">Disabled</option><option value="1">1 Impression Per 24 Hours</option><option value="2">2 Impressions Per 24 Hours</option><option value="3">3 Impressions Per 24 Hours</option><option value="4">4 Impressions Per 24 Hours</option><option value="5">5 Impressions Per 24 Hours</option>';
+		
                 return view('manage_campaign', [
                     'campaign' => $camp,
+					'frequencyCapping' => $frequencyCapping,
                     'media' => $media,
 		    'links' => $links,
 		    'themes' => $themes,
@@ -572,7 +595,7 @@ class CampaignController extends Controller
 		->where('user_id', $user->id)
 		->orderby('campaigns.created_at', 'DESC')
             ->get();
-        
+		
         return view(
             'advertiser.campaigns',
             compact('campaigns', 'startDate', 'endDate')
