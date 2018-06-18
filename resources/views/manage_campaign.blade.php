@@ -41,9 +41,9 @@
                                 <th>Location Type</th>
                                 <th>Bid</th>
                                 <th>Daily Budget</th>
+								<th>Frequency Capping</th>
                                 <th>Status</th>
                                 <th>Options</th>
-                                <!--<th>Preview</th>-->
                             </tr>
                         </thead>
                         <tbody>
@@ -67,6 +67,16 @@
                                     <input type="hidden" id="camp_id" name="camp_id" value="{{ $campaign->id }}">
                                     </form>
                                 </td>
+								<td class="text-center"><b class=" tablesaw-cell-label">Frequency Capping</b>
+                                    <form name="frequency_form" id="frequency_form" role="form" class="form-horizontal" action="/update_frequency" method="POST">
+                                    {{ csrf_field() }}
+									<select id="frequency_cap" name="frequency_cap" required>
+                                    	{!! $frequencyCapping !!}
+									</select>		
+									<input type="hidden" id="frequency_id" value="{{$campaign->frequency_capping}}">
+                                    <input type="hidden" id="camp_id" name="camp_id" value="{{ $campaign->id }}">
+                                    </form>
+								</td>
                                 <td class="text-center"><b class=" tablesaw-cell-label">Status</b><span class="currentStatus label"> {{ $status_types[$campaign->status] }} </span></td>
                                 <td class="text-center"><b class=" tablesaw-cell-label">Options</b>
                                     @if( $campaign->status == 3)
@@ -191,7 +201,7 @@ jQuery(document).ready(function ($) {
         }, pageLength: 10,
         responsive: true
     });
-    
+	
     $('[data-toggle="tooltip"]').tooltip();
         $(".form-control").change(function () {
             var url = "{{ url('/update_targets') }}";
@@ -243,6 +253,22 @@ jQuery(document).ready(function ($) {
             toastr.error(response);
                 });
         });
+	
+		/*frequency capping*/
+		var frequencyid =   $('#frequency_id').val();
+		$('#frequency_cap option')[frequencyid].selected = true;
+	
+		$("#frequency_cap").change(function () {
+			var url = "{{ url('/update_frequency') }}";
+			var mydata = $("#frequency_form").serialize();
+			$.post(url, mydata)
+			.done(function (response) {
+						toastr.success(response);
+					})
+					.fail(function (response) {
+				toastr.error(response);
+					});
+		});
 	
 		// Prevent 'enter' key press from displaying json on post data	
         $("#bid, #daily_budget").keypress(function(event){	
