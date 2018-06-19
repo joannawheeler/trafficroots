@@ -55,8 +55,8 @@ class CUtil extends Controller
 		        $theme_targets = explode("|",$targets->themes);
 		        $themes = '<option value="0"';
 			if($theme_targets[0] == '0') $themes .= ' selected';
-        	        $themes .= '>All States</option>';
-		        $result = SiteTheme::all();
+        	        $themes .= '>All Sites</option>';
+		        $result = SiteTheme::orderBy('theme')->get();;
 		        foreach($result as $row){
 		            $themes .= '<option value="'.$row->id.'"';
 	                    if(in_array($row->id, $theme_targets)) $themes .= ' selected';
@@ -66,23 +66,62 @@ class CUtil extends Controller
 		        return $themes;
 
 		}
+	public function getCountries($id)
+    {
+        $targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
+        $country_targets = explode("|",$targets->countries);
+        $countries = '<option value="0"';
+        if($country_targets[0] == '0') $countries .= ' selected';
+        $countries .= '>All Countries</option>';
+        $result = Country::orderby('id', 'DESC')->whereIn('id', [840, 124])->get();
+        foreach($result as $row){
+			$countries .= '<option value="'.$row->id.'"';
+			if(in_array($row->id, $country_targets)) $countries .= ' selected';
+			$countries .= '>'.$row->country_short.' - '.$row->country_name.'</option>';
+        }
+		
+		$result = Country::whereNotIn('id', [840, 124])->orderBy('country_short')->get();
+		foreach($result as $row){
+			$countries .= '<option value="'.$row->id.'"';
+			if(in_array($row->id, $country_targets)) $countries .= ' selected';
+			$countries .= '>'.$row->country_short.' - '.$row->country_name.'</option>';
+        }
+
+        return $countries;
+
+    }
+	
+	
     public function getStates($id)
     {
         $targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
         $state_targets = explode("|",$targets->states);
+		//$country_targets = implode(",",explode("|",$targets->countries));
         $states = '<option value="0"';
         if($state_targets[0] == '0') $states .= ' selected';
         $states .= '>All States</option>';
-        $result = State::all();
+
+		$result = State::where('country_id', 840)->get();
         foreach($result as $row){
             $states .= '<option value="'.$row->id.'"';
             if(in_array($row->id, $state_targets)) $states .= ' selected';
-            $states .= '>'.$row->state_name.'</option>';
+				$states .= '>'.$row->state_name.'</option>';
         }
-
+		
+		$result = State::where('country_id', '<>', 840)->orderby('country_id')->orderby('state_name')->get();
+		foreach($result as $row){
+			$states .= '<option value="'.$row->id.'"';
+            if(in_array($row->id, $state_targets)) $states .= ' selected';
+				$states .= '>'.$row->state_name.'</option>';
+		}	
+		
         return $states;
 
     }
+	
+	
+	
+	
     public function getCounties($id)
     {
         $targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
@@ -164,7 +203,7 @@ class CUtil extends Controller
     {
         $targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
         $os_targets = explode("|",$targets->operating_systems);
-        $systems = OperatingSystem::all();
+        $systems = OperatingSystem::orderBy('os')->get();
         $operating_systems = '<option value="0"';
         if($os_targets[0] == '0') $operating_systems .= ' selected';
         $operating_systems .= '>All Operating Systems</option>';
@@ -179,7 +218,7 @@ class CUtil extends Controller
     {
         $targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
         $b_targets = explode("|",$targets->browsers);
-        $browsers = Browser::all();
+        $browsers = Browser::orderBy('browser')->get();
         $browser_targets = '<option value="0"';
         if($b_targets[0] == '0') $browser_targets .= ' selected';
         $browser_targets .= '>All Browsers</option>';
