@@ -486,7 +486,7 @@ jQuery(document).ready(function($){
 					});
 
 					if(!creatives){
-						alert('Please add at least one Creative! Please fill out the form and then click the ADD CREATIVE button." );
+						alert('Please add at least one Creative! In order to add a creative please fill out the form and then click the ADD CREATIVE button.');
 
 						if (!form.valid()) {
 							event.PreventDefault();
