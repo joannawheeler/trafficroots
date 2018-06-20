@@ -290,7 +290,7 @@
                                           &nbsp;Description:
                                         </label>
                                         <div class="col-md-9">
-                                            <input id="description" type="text" class="form-control" name="description" value=""> @if ($errors->has('description'))
+                                            <input id="description" type="text" class="form-control" name="description" value="" required autofocus> @if ($errors->has('description'))
                                             <span class="help-block">
                                                 <strong>{{ $errors->first('description') }}</strong>
                                             </span> @endif
@@ -302,7 +302,7 @@
                                           &nbsp;Banner Link:
                                         </label>
                                         <div class="col-md-9">
-                                            <input id="banner_link" type="url" class="form-control" name="banner_link" value=""> @if ($errors->has('banner_link'))
+                                            <input id="banner_link" type="url" class="form-control" name="banner_link" value="" required autofocus> @if ($errors->has('banner_link'))
                                             <span class="help-block">
                                                 <strong>{{ $errors->first('banner_link') }}</strong>
                                             </span> @endif
@@ -314,7 +314,7 @@
                                           &nbsp;Click Link:
                                         </label>
                                         <div class="col-md-9">
-                                            <input id="click_link" type="text" class="form-control" name="click_link" value=""> @if ($errors->has('click_link'))
+                                            <input id="click_link" type="text" class="form-control" name="click_link" value="" required autofocus> @if ($errors->has('click_link'))
                                             <span class="help-block">
                                                 <strong>{{ $errors->first('click_link') }}</strong>
                                             </span> @endif
@@ -353,7 +353,7 @@
                                                   <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Restrict (cap) the number of times (frequency) a specific visitor to a website is shown a particular ad"></em>
                                                 </label>
                                                 <div class="col-md-6">
-                                                    <select id="frequency_capping" class="form-control" name="frequency_capping">
+                                                    <select id="frequency_capping" class="form-control" name="frequency_capping" required>
                                                         <option value="0">Disabled</option>
                                                         <option value="1">1 Impression Per 24 Hours</option>
                                                         <option value="2">2 Impressions Per 24 Hours</option>
@@ -446,6 +446,7 @@
 <script src="{{ URL::asset('js/plugins/sweetalert/sweetalert.min.js') }}"></script>
 <script src="{{ URL::asset('js/plugins/flot/jquery.flot.js') }}"></script>
 <script src="{{ URL::asset('js/plugins/flot/jquery.flot.tooltip.min.js') }}"></script>
+<script src="{{ URL::asset('js/plugins/staps/jquery.validate.min.js') }}"></script>
 
 
 <script type="text/javascript">
@@ -456,37 +457,90 @@ jQuery(document).ready(function($){
         $(document).on('hidden.bs.modal', function(){
             reloadMedia();
         });
-        $("#wizard").steps({
-                transitionEffect: "fade",
-                autoFocus: true,
-                onStepChanged: function (event, currentIndex, priorIndex)
-            {
-                        updateOverview();
-                },
-                onFinishing: function (event, currentIndex)
-        {
-                   return checkForm();
-                    },
-                onFinished: function (event, currentIndex)
-                    {
-                    $('#campaign_form').submit(function(){
-                                    alert("Submitted");
-                    });
-                  },
-                  onCanceled: function (event, currentIndex)
-                   {
-                     swal({
-               				title: "Cancel Campaign",
-               				text: "Are you sure you want to cancel this campaign?",
-               				icon: "warning",
-               				buttons: true,
-               				dangerMode: true,
-               			}).then((cancel) => {
-               				if (cancel) {
-               					window.location.href = "campaigns";
-               				}
-               			});
-                  }
+	
+		var form = $("#campaign_form");
+		form.validate({
+			errorPlacement: function errorPlacement(error, element) { element.before(error); }
+		});
+		
+        form.children("div").steps({
+			transitionEffect: "fade",
+			autoFocus: true,
+			onStepChanging: function (event, currentIndex, priorIndex) {
+				// Allways allow previous action even if the current form is not valid!
+				if (currentIndex > priorIndex) {
+					return true;
+				}
+				
+				// Needed in some cases if the user went back (clean up)
+				if (currentIndex < priorIndex) {
+					// To remove error styles
+					form.find(".body:eq(" + priorIndex + ") label.error").remove();
+					form.find(".body:eq(" + priorIndex + ") .error").removeClass("error");
+				}
+				
+				if (currentIndex == 2) {
+					var creatives = 0;
+					$(".creative").each(function(){
+						creatives++
+					});
+
+					if(!creatives){
+						alert('Please add at least one Creative! Please fill out the form and then click the ADD CREATIVE button." );
+
+						if (!form.valid()) {
+							event.PreventDefault();
+							event.stopPropagation();
+						}
+
+						return false;
+					} else {
+						$("#description").prop('required',false);
+						$("#banner_link").prop('required',false);
+						$("#click_link").prop('required',false);
+
+						form.find(".body:eq(" + priorIndex + ") label.error").remove();
+						form.find(".body:eq(" + priorIndex + ") .error").removeClass("error");
+						return true;
+					}
+				}
+				
+				if (currentIndex == 3) {
+					$("#description").prop('required',false);
+					$("#banner_link").prop('required',false);
+					$("#click_link").prop('required',false);
+				}
+				
+				form.validate().settings.ignore = ":disabled,:hidden";
+				return form.valid();
+			},
+			onStepChanged: function (event, currentIndex, priorIndex){
+				updateOverview();
+			},
+			onFinishing: function (event, currentIndex){
+				form.validate().settings.ignore = ":disabled";
+				if (form.valid()) {
+					return checkForm();
+				}
+			},
+			onFinished: function (event, currentIndex) {
+				$('#campaign_form').submit(function(){
+					alert("Submitted");
+				});
+		  	},
+		  	onCanceled: function (event, currentIndex){
+	 			swal({
+					title: "Cancel Campaign",
+					text: "Are you sure you want to cancel this campaign?",
+					icon: "warning",
+					buttons: true,
+					dangerMode: true,
+				}).then((cancel) => {
+					if (cancel) {
+						window.location.href = "campaigns";
+					}
+				});
+			}
         });
         $('.state-control').change(function(){
             var url = "{{ url('/load_counties') }}";
@@ -525,14 +579,7 @@ jQuery(document).ready(function($){
            $('#campaign_name').focus();
            return false;
        }
-       var creatives = 0;
-       $(".creative").each(function(){
-           creatives++
-       });
-       if(!creatives){
-           alert('Please add at least one Creative!');
-       return false;
-       }
+       
        if(confirm("Submit this campaign?")){
            var data = $('#campaign_form').serialize();
            $.post('/custom_ad', data).done(function(result){
@@ -588,7 +635,7 @@ jQuery(document).ready(function($){
             return false;
 	}      
         var current_creatives = $('#creatives').html();
-	var this_creative = '<div class="ibox"><div class="ibox-content"><div class="row" id="row_' + banner_link + '_' + click_link + '" style="padding:2px;"><div class="col-md-2">&nbsp;</div><div class="col-md-8"><input class="creative" name="creative_' + banner_link + '_' + click_link + '" id="creative_' + banner_link + '_' + click_link + '" type="hidden" value="' + encodeURI(description) + '|' + encodeURI(banner_link) + '|' + encodeURI(click_link) + '"><b>' + description + ':</b> <br /><b>Banner Link: </b> ' + encodeURI(banner_link) + '<br /><b>Click Through Link: </b>' + encodeURI(click_link) + '<br /><a href="' + click_link + '"><img src="' + banner_link + '"></img></a></div><div class="col-md-2"><button class="btn btn-xs btn-danger" onclick="$(this).parent().parent().remove();"><i class="fa fa-remove"></i>&nbsp;Remove</button></div><hr><br/></div></div></div>';
+	var this_creative = '<div class="row" id="row_' + banner_link + '_' + click_link + '" style="padding:2px;"><div class="col-md-2">&nbsp;</div><div class="col-md-8"><input class="creative" name="creative_' + banner_link + '_' + click_link + '" id="creative_' + banner_link + '_' + click_link + '" type="hidden" value="' + encodeURI(description) + '|' + encodeURI(banner_link) + '|' + encodeURI(click_link) + '"><b>' + description + ':</b> <br /><b>Banner Link: </b> ' + encodeURI(banner_link) + '<br /><b>Click Through Link: </b>' + encodeURI(click_link) + '<br /><a href="' + click_link + '"><img src="' + banner_link + '"></img></a></div><div class="col-md-2"><button class="btn btn-xs btn-danger" onclick="$(this).parent().parent().remove();"><i class="fa fa-remove"></i>&nbsp;Remove</button></div><hr><br/></div><br>';
        $('#creatives').html(current_creatives + this_creative);
        $('#description').val('');
        $('#banner_link').val('');
