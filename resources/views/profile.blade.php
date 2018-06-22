@@ -22,15 +22,9 @@
 		<div class="tabs-container">
 			<ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
 				<li><a id="account_tab" href="#account-tab" data-toggle="tab"><span class="fa fa-user"></span><div>My Profile</div></a></li>
-				@if($pub)
 				<li><a id="payout_tab" href="#payout-tab" data-toggle="tab"><span class="fa fa-credit-card"></span><div>Payment Information</div></a></li>
-				@endif
-				@if($pub)
 				<li><a id="publisher_tab" href="#publisher-tab" data-toggle="tab"><span class="fa fa-copy"></span><div>Publisher Account</div></a></li>
-				@endif
-				@if($buyer)
 				<li><a id="adertiser_tab" href="#advertiser-tab" data-toggle="tab"><span class="fa fa-money"></span><div>Advertiser Account</div></a></li>
-				@endif
 			</ul>
 			<div id="my-tab-content" class="tab-content">
 				<div class="tab-pane table-responsive active" id="account-tab">
