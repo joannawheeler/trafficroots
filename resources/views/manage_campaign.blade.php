@@ -175,8 +175,10 @@
                                     <tr class="creative_row" id="creative_row_{{ $file->id }}">
                                         <td class="text-center"><b class=" tablesaw-cell-label">Date</b> {{ $file->created_at->format('m/d/Y') }} </td>
                                         <td class="text-center"><b class=" tablesaw-cell-label">Creative Name</b>{{ $file->description }} </td>
-                                        <td class="text-center"><b class=" tablesaw-cell-label">Media</b> {{ $file->medias->media_name }} </td>
-                                        <td class="text-center"><b class=" tablesaw-cell-label">Link</b> {{ $file->links->link_name }} </td>
+                                        <td class="text-center"><b class=" tablesaw-cell-label">Media</b>
+											<a href="#" class="tr-preview" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="" data-content="<img src='https://publishers.trafficroots.com/{{ $file->medias->file_location }}' width='100%' height='auto'>" id="view_media_{{ $file->id }}"><span>{{ $file->medias->media_name }}</span></a> 
+										</td>
+                                        <td class="text-center"><b class=" tablesaw-cell-label">Link</b><a href="{{ $file->links->url }}" target="_blank"> {{ $file->links->link_name }} </a></td>
                                         <td class="text-center"><b class=" tablesaw-cell-label">Status</b><span class="currentStatus label"> {{ $status_types[$file->status] }} </span></td>
                                     </tr>
                                     @endforeach
