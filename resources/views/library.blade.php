@@ -112,7 +112,7 @@
 														</span> Edit</button>
 													</a>
 												</td>
-												<td class="text-center"><b class=" tablesaw-cell-label">Preview</b> <a href="#" class="tr-preview" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="" data-content="<img src='https://publishers.trafficroots.com/{{ $file->file_location }}' width='100%' height='auto'>" id="view_media_{{ $file->id }}"><i class="fa fa-camera" aria-hidden="true"></a></i> </td>
+												<td class="text-center"><b class=" tablesaw-cell-label">Preview</b> <a href="#" class="tr-preview" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="" data-content="<img src='https://publishers.trafficroots.com/{{ $file->file_location }}' width='100%' height='auto'>" id="view_media_{{ $file->id }}"><i class="fa fa-camera" aria-hidden="true"></i></a> </td>
 											</tr>
 										@endforeach
 										</tbody>

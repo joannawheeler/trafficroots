@@ -279,7 +279,6 @@ class CampaignController extends Controller
 	}
         $user = Auth::getUser();	
 	return view('campaign_create', ['user' => $user,
-		                       'countries' => $countries,
 		                       'campaign_types' => $campaign_types,
 				       'categories' => $categories,
 				       'themes' => $themes,
@@ -507,6 +506,7 @@ class CampaignController extends Controller
             $location = $CUtil->getLocationTypes();
 	    foreach ($campaign as $camp) {
 		$themes = $CUtil->getThemes($camp->id);
+				$countries = $CUtil->getCountries($camp->id);
                 $states = $CUtil->getStates($camp->id);
                 $os_targets = $CUtil->getOperatingSystems($camp->id);
                 $platforms = $CUtil->getPlatforms($camp->id);
@@ -557,6 +557,7 @@ class CampaignController extends Controller
                     'status_types' => $status_types,
                     'location_types' => $location,
                     'creatives' => $creatives,
+					'countries' => $countries,
                     'states' => $states,
                     'os_targets' => $os_targets,
                     'browser_targets' => $browser_targets,
