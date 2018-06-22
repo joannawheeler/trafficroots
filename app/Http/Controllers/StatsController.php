@@ -13,6 +13,10 @@ use App\Country;
 use App\Browser;
 use App\Platform;
 use App\OperatingSystem;
+use App\CityStat;
+use App\BrowserStat;
+use App\OsStat;
+use App\PlatformStat;
 use Carbon\Carbon;
 ini_set('memory_limit','4096M');
 set_time_limit(0);
@@ -505,4 +509,189 @@ class StatsController extends Controller
 				            'datestring' => date('l jS \of F Y h:i:s A')));
     }
 
+    public function bigData($date = '')
+    {
+        /* populate stats tables */
+        if($date == '') $date = date('Y-m-d', strtotime("yesterday"));
+        Log::info('Running Big Data for '.$date);
+        CityStat::where('stat_date', $date)->delete();
+        BrowserStat::where('stat_date', $date)->delete();
+        PlatformStat::where('stat_date', $date)->delete();
+        OsStat::where('stat_date', $date)->delete();
+        Log::info('Cleared stats tables for '.$date);
+        $sql = "SELECT DISTINCT(zone_id), stats.site_id, zones.pub_id  
+                FROM stats 
+                JOIN zones ON stats.zone_id = zones.id
+                WHERE stat_date = ?";
+        $zones = DB::select($sql, array($date));
+        Log::info(count($zones).' zones found');
+        foreach($zones as $zone){
+            Log::info('Running Zone '.$zone->zone_id);
+            /* city stats */
+
+            $insert = array();
+            $sql = "SELECT SUM(impressions) AS impressions,
+            SUM(clicks) AS clicks,
+            zone_id,
+            city_code AS id,
+            state_code
+            FROM stats
+            WHERE zone_id = ?
+            AND stat_date = ?
+            GROUP BY zone_id, id, state_code
+            ORDER BY impressions DESC;";
+            $result = DB::select($sql, array($zone->zone_id, $date));
+            $counter = 0;
+            foreach($result as $row){
+                $data = array('user_id' => $zone->pub_id, 
+                              'zone_id' => $row->zone_id,
+                              'site_id' => $zone->site_id,
+                              'city_code' => $row->id,
+                              'state_code' => $row->state_code,
+                              'stat_date' => $date,
+                              'impressions' => $row->impressions,
+                              'clicks' => $row->clicks,
+                              'created_at' => date('Y-m-d H:i:s'),
+                              'updated_at' => date('Y-m-d H:i:s'));
+                $insert[] = $data;
+                $counter += 1;
+                if($counter >= 1000){
+                    CityStat::insert($insert);
+                    $insert = array();
+                    Log::info('Inserted '.$counter.' records');
+                    $counter = 0;
+                }
+            }
+            if($counter) {
+                CityStat::insert($insert);
+                Log::info('Inserted '.$counter.' records');  
+            }
+            /* browser stats */
+
+            $insert = array();
+            $sql = "SELECT SUM(impressions) AS impressions,
+            SUM(clicks) AS clicks,
+            zone_id, 
+            browser
+            FROM stats
+            WHERE zone_id = ?
+            AND stat_date = ?
+            GROUP BY zone_id, browser
+            ORDER BY impressions DESC;";
+            $result = DB::select($sql, array($zone->zone_id, $date));
+            $counter = 0;
+            foreach($result as $row){
+                $data = array('user_id' => $zone->pub_id, 
+                              'site_id' => $zone->site_id,
+                              'zone_id' => $row->zone_id,
+                              'browser' => $row->browser,
+                              'stat_date' => $date,
+                              'impressions' => $row->impressions,
+                              'clicks' => $row->clicks,
+                              'created_at' => date('Y-m-d H:i:s'),
+                              'updated_at' => date('Y-m-d H:i:s'));
+                $insert[] = $data;
+                $counter += 1;
+                if($counter >= 1000){
+                    BrowserStat::insert($insert);
+                    $insert = array();
+                    Log::info('Inserted '.$counter.' records');
+                    $counter = 0;
+                }
+            }
+            if($counter) {
+                BrowserStat::insert($insert);
+                Log::info('Inserted '.$counter.' records');
+            }
+
+            /* platform stats */
+            
+            $insert = array();
+            $sql = "SELECT SUM(impressions) AS impressions,
+            SUM(clicks) AS clicks,
+            zone_id, 
+            platform
+            FROM stats
+            WHERE zone_id = ?
+            AND stat_date = ?
+            GROUP BY zone_id, platform
+            ORDER BY impressions DESC;";
+            $result = DB::select($sql, array($zone->zone_id, $date));
+            $counter = 0;
+            foreach($result as $row){
+                $data = array('user_id' => $zone->pub_id, 
+                              'site_id' => $zone->site_id,
+                              'zone_id' => $row->zone_id,
+                              'platform' => $row->platform,
+                              'stat_date' => $date,
+                              'impressions' => $row->impressions,
+                              'clicks' => $row->clicks,
+                              'created_at' => date('Y-m-d H:i:s'),
+                              'updated_at' => date('Y-m-d H:i:s'));
+                $insert[] = $data;
+                $counter += 1;
+                if($counter >= 1000){
+                    PlatformStat::insert($insert);
+                    $insert = array();
+                    Log::info('Inserted '.$counter.' records');
+                    $counter = 0;
+                }
+            }
+            if($counter) {
+                PlatformStat::insert($insert);
+                Log::info('Inserted '.$counter.' records');
+            }
+        
+
+            /* os stats */
+            
+            $insert = array();
+            $sql = "SELECT SUM(impressions) AS impressions,
+            SUM(clicks) AS clicks,
+            zone_id,
+            os
+            FROM stats
+            WHERE zone_id = ?
+            AND stat_date = ?
+            GROUP BY zone_id, os
+            ORDER BY impressions DESC;";
+            $result = DB::select($sql, array($zone->zone_id, $date));
+            $counter = 0;
+            foreach($result as $row){
+                $data = array('user_id' => $zone->pub_id, 
+                              'site_id' => $zone->site_id,
+                              'zone_id' => $row->zone_id,
+                              'os' => $row->os,
+                              'stat_date' => $date,
+                              'impressions' => $row->impressions,
+                              'clicks' => $row->clicks,
+                              'created_at' => date('Y-m-d H:i:s'),
+                              'updated_at' => date('Y-m-d H:i:s'));
+                $insert[] = $data;
+                $counter += 1;
+                if($counter >= 1000){
+                    OsStat::insert($insert);
+                    $insert = array();
+                    Log::info('Inserted '.$counter.' records');
+                    $counter = 0;
+                }
+            }
+            if($counter) {
+                OsStat::insert($insert);
+                Log::info('Inserted '.$counter.' records');
+            }
+        }
+        Log::info('Big Data Completed!');
+    }
+
+    public function reloadBigData()
+    {
+        $date = strtotime('2018-01-01');
+        $now = time();
+        do{
+            $mydate = date('Y-m-d', $date);
+            $this->bigData($mydate);
+            $date += 86400;
+        }while($date < $now);
+    }
 }
