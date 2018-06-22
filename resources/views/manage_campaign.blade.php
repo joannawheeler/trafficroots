@@ -116,6 +116,12 @@
                                  {!! $themes !!}
                                  </select>
                             </div>
+							<div class="col-xs-12 form-group">
+                                 <label>Country / Geo Targeting - Hold Ctrl to Select Multiple Countries</label>
+                                 <select id="countries" name="countries[]" class="chosen-select form-control" multiple>
+                                    {!! $countries !!}
+                                </select>
+                            </div>
                             <div class="col-xs-12 form-group">
                                  <label>State Targeting - Hold Ctrl to Select Multiple States</label>
                                  <select id="states[]" name="states[]" class="chosen-select form-control state-control" data-placeholder="Choose a state..." multiple>
