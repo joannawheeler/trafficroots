@@ -123,6 +123,10 @@
 .step-content .media-selection .col-xs-12 .chkRadioBtn {
     display: inline-block;
 }
+	
+input, select {
+	margin-top: 15px;
+}
 
 
 .image-preview i.fa { display: none; }
@@ -368,7 +372,7 @@
                                         </div>
                                         <label for="description" class="col-md-3 control-label">
                                           <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Add description to unique Image and URL combination"></em>
-                                          &nbsp;Description:
+                                          &nbsp;Creative Name:
                                         </label>
                                         <div class="col-md-6">
                                             <input id="description" type="text" class="form-control" name="description" value="" required> @if ($errors->has('description'))
