@@ -484,3 +484,12 @@ table span.bid-type {
  .tablesaw .text-center .btn-success span.btn-label {
   padding-right: 10px;
 }
+
+.btn-hide > button, .btn-hide > button:hover {
+	background-color: transparent;
+	background-repeat: no-repeat;
+	border: none; 
+	color: #f3f3f4;
+	cursor: default;
+	overflow: hidden;
+}
