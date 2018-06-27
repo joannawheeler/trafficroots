@@ -30,81 +30,122 @@
                 <div class="ibox-content" id="bid_status_div"></div>
                 <br>
                 <div class="ibox-content">
-                    <h2 class="text-success"><strong>Campaign Information</strong></h2>
-                    <table class="table tablesaw tablesaw-stack" name="campaigns_table" id="campaigns_table" data-tablesaw-mode="stack">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Campaign Name</th>
-                                <th>Type</th>
-                                <th>Category</th>
-                                <th>Location Type</th>
-                                <th>Bid</th>
-                                <th>Daily Budget</th>
-								<th>Frequency Capping</th>
-                                <th>Status</th>
-                                <th>Options</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="camp_row" id="camp_row_{{ $campaign->id }}">
-                                <td class="text-center"><b class=" tablesaw-cell-label">Date</b> {{ Carbon\Carbon::parse($campaign->created_at)->format('m/d/Y') }} </td>
-                                <td class="text-center"><b class=" tablesaw-cell-label">Campaign Name</b> {{ $campaign->campaign_name }} </td>
-                                <td class="text-center"><b class=" tablesaw-cell-label">Type</b> {{ $campaign_types[$campaign->campaign_type] }} </td>
-                                <td class="text-center"><b class=" tablesaw-cell-label">Category</b> {{ $categories[$campaign->campaign_category] }} </td>
-                                <td class="text-center"><b class=" tablesaw-cell-label">Location Type</b> {{ $location_types[$campaign->location_type] }}</td>
-                                <td class="text-center"><b class=" tablesaw-cell-label">Bid</b>
-                                    <form name="bid_form" id="bid_form" role="form" class="form-horizontal" action="/update_bid" method="POST">
-                                    {{ csrf_field() }}
-                                    <input type="number" id="bid" name="bid" value="{{ $campaign->bid }}" size="5">
-                                    <input type="hidden" id="camp_id" name="camp_id" value="{{ $campaign->id }}">
-                                    </form>
-                                </td>
-                                <td class="text-center"><b class=" tablesaw-cell-label">Daily Budget</b>
-                                    <form name="budget_form" id="budget_form" role="form" class="form-horizontal" action="/update_budget" method="POST">
-                                    {{ csrf_field() }}
-                                    <input type="number" id="daily_budget" name="daily_budget" value="{{ $campaign->daily_budget }}" size="5">
-                                    <input type="hidden" id="camp_id" name="camp_id" value="{{ $campaign->id }}">
-                                    </form>
-                                </td>
-								<td class="text-center"><b class=" tablesaw-cell-label">Frequency Capping</b>
-                                    <form name="frequency_form" id="frequency_form" role="form" class="form-horizontal" action="/update_frequency" method="POST">
-                                    {{ csrf_field() }}
-									<select id="frequency_cap" name="frequency_cap" required>
-                                    	{!! $frequencyCapping !!}
-									</select>		
-									<input type="hidden" id="frequency_id" value="{{$campaign->frequency_capping}}">
-                                    <input type="hidden" id="camp_id" name="camp_id" value="{{ $campaign->id }}">
-                                    </form>
-								</td>
-                                <td class="text-center"><b class=" tablesaw-cell-label">Status</b><span class="currentStatus label"> {{ $status_types[$campaign->status] }} </span></td>
-                                <td class="text-center"><b class=" tablesaw-cell-label">Options</b>
-                                    @if( $campaign->status == 3)
-                                    &nbsp;<a href="#" data-toggle="tooltip" title="Start this Campaign" class="camp-start" id="camp_start_{{ $campaign->id }}"><i class="fa fa-play" aria-hidden="true"></i></a>
-                                    @endif
-                                    @if( $campaign->status == 1)
-                                    &nbsp;<a href="#" data-toggle="tooltip" title="Pause this Campaign" class="camp-stop" id="camp_stop_{{ $campaign->id }}"><i class="fa fa-pause" aria-hidden="true"></i></a>
-                                    @else 
-                                    &nbsp;<i class="fa fa-pause" aria-hidden="true"></i>
-                                    @endif
-                                    &nbsp;&nbsp;&nbsp;
-                                    <a href="{{ url("stats/campaign/$campaign->id") }}" >
-                                        <button class="campaign-stats btn btn-xs btn-warning alert-info">
-                                            <span class="btn-label">
-                                                <i class="fa fa-line-chart"></i>
-                                            </span>&nbsp; Stats&nbsp;&nbsp;
-                                        </button>
-                                    </a>
-                                </td>
-                                <!--
-                                 <td class="text-center">
-                                     <b class=" tablesaw-cell-label">Preview</b> 
-                                         <i class="fa fa-camera" aria-hidden="true"></a></i> 
-                                </td>
-                                -->
-                            </tr>
-                        </tbody>
-                    </table>
+					<h2 class="text-success"><strong>Campaign Information</strong></h2>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="panel no-border">
+								<div class="panel-body col-md-5">
+									
+									<table class="table">
+										<thead>
+											<tr></tr>
+											<tr></tr>
+											<tr></tr>
+											<tr></tr>
+											<tr></tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td><strong>Date</strong></td>
+												<td>
+													{{ Carbon\Carbon::parse($campaign->created_at)->format('m/d/Y') }} 
+												</td>
+											</tr>
+											<tr>
+												<td><strong>Campaign Name</strong></td>
+												<td> {{ $campaign->campaign_name }} </td>
+											</tr>
+											<tr>
+												<td><strong>Type</strong></td>
+												<td>
+													<span class="badge label">{{$campaign_types[$campaign->campaign_type]}}</span>
+												</td>
+											</tr>
+											<tr>
+												<td><strong>Category</strong></td>
+												<td> {{ $categories[$campaign->campaign_category] }} </td>
+											</tr>
+											<tr>
+												<td><strong>Location Type</strong></td>
+												<td> {{ $location_types[$campaign->location_type] }} </td>
+											</tr>
+											<tr>
+												<td><strong>Status</strong></td>
+												<td><span class="currentStatus label">{{ $status_types[$campaign->status] }}</span></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+					<h2 class="text-success"><strong>Edit Information</strong></h2>
+					<div class="row">
+						<div class="col-xs-12">
+							<table class="table tablesaw tablesaw-stack" name="campaigns_table" id="campaigns_table" data-tablesaw-mode="stack">
+								<thead>
+									<tr>
+										<th>Bid</th>
+										<th>Daily Budget</th>
+										<th>Frequency Capping</th>
+										<th>Options</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class="camp_row" id="camp_row_{{ $campaign->id }}">
+										<td class="text-center"><b class=" tablesaw-cell-label">Bid</b>
+											<form name="bid_form" id="bid_form" role="form" class="form-horizontal" action="/update_bid" method="POST">
+											{{ csrf_field() }}
+											<input type="number" id="bid" name="bid" value="{{ $campaign->bid }}" size="5">
+											<input type="hidden" id="camp_id" name="camp_id" value="{{ $campaign->id }}">
+											</form>
+										</td>
+										<td class="text-center"><b class=" tablesaw-cell-label">Daily Budget</b>
+											<form name="budget_form" id="budget_form" role="form" class="form-horizontal" action="/update_budget" method="POST">
+											{{ csrf_field() }}
+											<input type="number" id="daily_budget" name="daily_budget" value="{{ $campaign->daily_budget }}" size="5">
+											<input type="hidden" id="camp_id" name="camp_id" value="{{ $campaign->id }}">
+											</form>
+										</td>
+										<td class="text-center"><b class=" tablesaw-cell-label">Frequency Capping</b>
+											<form name="frequency_form" id="frequency_form" role="form" class="form-horizontal" action="/update_frequency" method="POST">
+											{{ csrf_field() }}
+											<select id="frequency_cap" name="frequency_cap" required>
+												{!! $frequencyCapping !!}
+											</select>		
+											<input type="hidden" id="frequency_id" value="{{$campaign->frequency_capping}}">
+											<input type="hidden" id="camp_id" name="camp_id" value="{{ $campaign->id }}">
+											</form>
+										</td>
+										<td class="text-center"><b class=" tablesaw-cell-label">Options</b>
+											@if( $campaign->status == 3)
+											&nbsp;<a href="#" data-toggle="tooltip" title="Start this Campaign" class="camp-start" id="camp_start_{{ $campaign->id }}"><i class="fa fa-play" aria-hidden="true"></i></a>
+											@endif
+											@if( $campaign->status == 1)
+											&nbsp;<a href="#" data-toggle="tooltip" title="Pause this Campaign" class="camp-stop" id="camp_stop_{{ $campaign->id }}"><i class="fa fa-pause" aria-hidden="true"></i></a>
+											@else 
+											&nbsp;<i class="fa fa-pause" aria-hidden="true"></i>
+											@endif
+											&nbsp;&nbsp;&nbsp;
+											<a href="{{ url("stats/campaign/$campaign->id") }}" >
+												<button class="campaign-stats btn btn-xs btn-warning alert-info">
+													<span class="btn-label">
+														<i class="fa fa-line-chart"></i>
+													</span>&nbsp; Stats&nbsp;&nbsp;
+												</button>
+											</a>
+										</td>
+										<!--
+										 <td class="text-center">
+											 <b class=" tablesaw-cell-label">Preview</b> 
+												 <i class="fa fa-camera" aria-hidden="true"></a></i> 
+										</td>
+										-->
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
                     <br>
                     <form name="target_form" id="target_form" role="form" class="form-horizontal" target="#" method="POST">
                             {{ csrf_field() }}
@@ -168,6 +209,7 @@
                                         <th>Media</th>
                                         <th>Link</th>
                                         <th>Status</th>
+										<th>Options</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -180,6 +222,14 @@
 										</td>
                                         <td class="text-center"><b class=" tablesaw-cell-label">Link</b><a href="{{ $file->links->url }}" target="_blank"> {{ $file->links->link_name }} </a></td>
                                         <td class="text-center"><b class=" tablesaw-cell-label">Status</b><span class="currentStatus label"> {{ $status_types[$file->status] }} </span></td>
+										<td class="text-center"><b class=" tablesaw-cell-label">Options</b>
+											<a href="{{ URL::to("/edit_creative/$file->id") }}" >
+												<button class="btn btn-xs btn-success alert-success">
+													<span class="btn-label">
+														<i class="fa fa-edit"></i>
+													</span> Edit</button>
+											</a>
+										</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -255,6 +305,13 @@ jQuery(document).ready(function ($) {
             toastr.error(response);
                 });
         });
+	
+		var bidType = $(".badge").text();
+		if (bidType == "CPM"){
+			$(".badge").addClass('label-success');
+		} else {
+			$(".badge").addClass('label-danger');
+		}
 	
 		/*frequency capping*/
 		var frequencyid =   $('#frequency_id').val();

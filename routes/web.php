@@ -19,7 +19,7 @@ $landing = function() {
     Route::post('/pub_subscribe', 'PublicController@subscribeUser');
 };
 Route::group(['domain' => 'www.trafficroots.com'], $landing);
-Route::group(['domain' => 'trafficroots.com'], $landing);
+Route::group(['domain' => 'trafficroots.com'], $landing); 
 
 Route::get('/', function () {
     return redirect('/home');
@@ -39,6 +39,7 @@ Route::get('/custom_ad/{handle}', 'ZoneController@getCustomAd');
 Route::post('/custom_ad', 'ZoneController@postCustomAd');
 Route::get('/pause_custom_ad/{id}', 'ZoneController@pauseCustomAd');
 Route::get('/resume_custom_ad/{id}', 'ZoneController@resumeCustomAd');
+Route::post('/update_frequencyAd', 'ZoneController@updateFrequencyCap');
 
 Auth::routes();
 Route::get('/send_confirmation', 'HomeController@sendConfirmation');
@@ -89,6 +90,8 @@ Route::post('/links', 'CampaignController@postLink');
 Route::get('manage_campaign/{id}', 'CampaignController@editCampaign');
 Route::get('/creatives/{id}', 'CampaignController@createCreative');
 Route::post('/creatives', 'CampaignController@postCreative');
+Route::get('/edit_creative/{id}', 'CampaignController@editCreative');
+Route::post('/edit_creative', 'CampaignController@updateCreative');
 Route::post('/update_targets', 'CampaignController@updateTargets');
 Route::post('/update_bid', 'CampaignController@updateBid');
 Route::post('/update_budget', 'CampaignController@updateBudget');
