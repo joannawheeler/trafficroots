@@ -87,11 +87,11 @@
 									<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack" name="media_table" id="media_table">
 										<thead>
 											<tr>
+												<th>Date</th>
 												<th>Name</th>
 												<th>Category</th>
 												<th>Location Type</th>
 												<th>Status</th>
-												<th>Date Uploaded</th>
 												<th>Options</th>
 												<th>Preview</th>
 											</tr>
@@ -99,13 +99,16 @@
 										<tbody>
 										@foreach ($media as $file)
 											<tr class="media_row" id="media_row_{{ $file->id }}">
+												<td class="text-center"><b class=" tablesaw-cell-label">Date</b> {{ Carbon\Carbon::parse($file->created_at)->format('m/d/Y') }} </td>
 												<td class="text-center"><b class=" tablesaw-cell-label">Name</b> {{ $file->media_name }} </td>
 												<td class="text-center"><b class=" tablesaw-cell-label">Category</b> {{ $categories[$file->category] }} </td>
 												<td class="text-center get_location_type_id"><b class=" tablesaw-cell-label">Location Type</b> {{ $location_types[$file->location_type] }} </td>
 												<td class="text-center"><b class=" tablesaw-cell-label">Status</b><span class="currentStatus label"> {{ $status_types[$file->status] }} </span></td>
-												<td class="text-center"><b class=" tablesaw-cell-label">Date Uploaded</b> {{ Carbon\Carbon::parse($file->created_at)->toDayDateTimeString() }} </td>
 												<td class="text-center"><b class=" tablesaw-cell-label">Options</b>
-													<a href="#">
+													<a href="#"
+													   class="media-edit"
+													   data-toggle="modal"
+													   data-target="#editMedia{{ $file->id }}">
 														<button class="btn btn-xs btn-success alert-success">
 														<span class="btn-label">
 															<i class="fa fa-edit"></i>
@@ -153,7 +156,10 @@
 													<td class="text-center"><b class=" tablesaw-cell-label">Status</b><span class="currentStatus label"> {{ $status_types[$link->status] }} </span></td>
 													<td class="text-center"><b class=" tablesaw-cell-label">Date Created</b> {{ Carbon\Carbon::parse($link->created_at)->toDayDateTimeString() }} </td>
 													<td class="text-center"><b class=" tablesaw-cell-label">Options</b>
-														<a href="#">
+														<a href="#"
+														   class="link-edit"
+														   data-toggle="modal"
+														   data-target="#editLink{{ $link->id }}">
 															<button class="btn btn-xs btn-success alert-success">
 															<span class="btn-label">
 																<i class="fa fa-edit"></i>
@@ -234,6 +240,241 @@
         </div>
     </div>
 
+
+@foreach ($media as $file)
+<div class="modal inmodal"
+     id="editMedia{{ $file->id }}"
+     tabindex="-1"
+     role="dialog"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header">
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title"><i class="fa fa-edit"></i> Edit Image</h4>
+            </div>
+            <form name="media_form"
+                  id="media_form"
+                  class="form-horizontal"
+                  enctype="multipart/form-data"
+                  role="form"
+				  method="POST"
+                  onsubmit="return submitMediaForm();"
+                  action="{{ url('/update_media') }}"> {{ method_field('PATCH') }}
+                    <div class="modal-body">
+                        {{ csrf_field() }}   
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text"
+                               placeholder="Enter your image name"
+                               value="{{ $file->media_name }}"
+                               class="form-control"
+                               name="media_name"
+                               required>
+                        <label class="error hide"
+                               for="media_name"></label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Category</label>
+                        @if($_SERVER['REQUEST_URI'] == '/campaign') 
+                            <div class="display: inline-block">To a select a different Category please go back to Step 1</div>
+                        @endif
+                        <select class="form-control m-b" id="image_category_id"
+                                name="image_category"
+                                required>
+                            <option value="">Choose Image Category</option>
+                            @foreach(App\Category::all() as $category)
+                            <option value="{{ $category->id }}" {{ $file->category == $category->id ? 'selected="selected"' : '' }}>{{ $category->category }}</option>
+                            @endforeach
+                        </select>
+                        <label class="error hide"
+                               for="image_category"></label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Location Type</label>
+                        @if($_SERVER['REQUEST_URI'] == '/campaign') 
+                            <div class="display: inline-block">To a select a different Location Type please go back to Step 1 </div>
+                        @endif
+                        <select class="form-control m-b"
+                                id="location_type_id"
+                                value=""
+                                name="image_size"
+                                required>
+                            <option value="">Choose Image Size</option>
+                            @foreach(App\LocationType::all() as $locationType)
+                            <option value="{{ $locationType->id }}" {{ $file->location_type == $locationType->id ? 'selected="selected"' : '' }}>{{ $locationType->width . 'x' . $locationType->height . ' ' . $locationType->description }}</option>
+                            @endforeach
+                        </select>
+
+                        <label class="error hide"
+                               for="image_size"></label>
+                    </div>
+                    <div class="form-group">
+                        <label class="btn btn-success btn-block"
+                               for="image_file">
+                            <i class="fa fa-upload"></i>&nbsp;&nbsp;
+                            <span class="bold">Upload</span>
+                        </label>
+                        <br>
+                        <input type="file"
+                               name="file"
+                               id="image_file"
+                               accept="image/*"
+                               style="z-index: -1; position: relative;"
+                               disabled
+                               />
+                        <p id="upload_path">{{ $file->file_location }}</p>
+                        <p id="image_size"></p>
+                        <p id="image_dimensions"></p>
+                        <label class="error mt-10"
+                               style="display: none;"
+                               for="image_file">
+                            <i class="text-danger fa fa-exclamation-triangle"></i>&nbsp;&nbsp;
+                            <span class="text-danger"></span>
+                        </label>
+                        <label class="success mt-10"
+                               style="display: none;"
+                               for="image_file">
+                            <p>
+                                <i class="text-success fa fa-check"></i>&nbsp;&nbsp;
+                                <span class="text-primary"></span>
+                            </p>
+                            <div class="ibox-content w-160">
+                                <img src=""
+                                     alt="preview"
+                                     width="120"
+                                     height="120">
+                            </div>
+                        </label>
+                    </div>
+                    <div>      
+                        <div class="well">
+                            <ul>
+                                <li>Media uploaded must be image files.</li>
+                                <li>The uploaded image needs to fit the exact dimensions of the location type.</li>
+                                <li>To avoid duplication, we offer a Media Library feature.</li>
+                                <li>Upload and Categorize your images here and they will be available across all your campaigns.</li>
+                                <li>On this page you are creating a new Media item by naming it and selecting a Location Type and Category.</li>
+                             </ul>
+                        </div>
+                    </div>
+                </div>                
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-white"
+                            data-dismiss="modal">Cancel</button>
+                    <button type="submit"
+                            name="submit"
+                            id="btnSubmit"
+                            class="btn btn-primary">Submit</button>
+        </div>
+                        <input type="hidden"
+                               name="return_url"
+                               id="return_url"
+                        @if( $_SERVER['REQUEST_URI'] == '/campaign')
+                               value="campaign">
+                        @else
+                               value="library">
+                        @endif
+            </form>
+        </div>
+    </div>
+</div>
+@endforeach
+
+@foreach ($links as $link)
+<div class="modal inmodal"
+     id="editLink{{ $link->id }}"
+     tabindex="-1"
+     role="dialog"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated fadeIn">
+            <div class="modal-header">
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title"><i class="fa fa-edit"></i> Edit URL</h4>
+            </div>
+            <form name="link_form"
+                  id="link_form"
+                  class="form-horizontal"
+                  role="form"
+          method="POST"
+          onsubmit="return submitLinkForm();"
+                  action="{{ url('/links') }}"> {{ method_field('PATCH') }}
+                    <div class="modal-body">
+                        {{ csrf_field() }}  
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text"
+                               placeholder="Link name"
+							   value = "{{ $link->link_name }}"
+                               class="form-control"
+                               name="link_name"
+                               required>
+
+                        <label class="error hide"
+                               for="link_name"></label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select class="form-control m-b" id="link_category_id"
+                                name="link_category"
+                                required>
+                            <option value="">Choose category</option>
+                            @foreach(App\Category::all() as $category)
+                            <option value="{{ $category->id }}"  {{ $link->category == $category->id ? 'selected="selected"' : '' }}>{{ $category->category }}</option>
+                            @endforeach
+                        </select>
+                        <label class="error hide"
+                               for="link_category"></label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>URL</label>
+                        <input type="url"
+                               placeholder="Must be a valid URL, with http:// or https://"
+							   value = "{{ $link->url }}"
+                               class="form-control"
+                               name="url"
+                               required>
+                        <input type="hidden" 
+                               name="return_url"
+                               id="return_url"
+            @if( $_SERVER['REQUEST_URI'] == '/campaign')
+                               value="campaign">
+                        @else
+                               value="library">
+                    @endif
+                        <label class="error hide"
+                               for="url"></label>
+                    </div>                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-white"
+                            data-dismiss="modal">Cancel</button>
+                    <button type="submit"
+                            name="submit"
+                            class="btn btn-primary">Submit</button>
+                </div>
+        </form>
+        </div>
+    </div>
+</div>
+@endforeach
 <script type="text/javascript">
 jQuery(document).ready(function ($) {
 	$('.nav-click').removeClass("active");
@@ -270,5 +511,49 @@ function setStatus() {
 		};
 	});
 };
+	
+function submitMediaForm(){
+	// Get form
+	var form = $('#media_form')[0];
+
+	// Create an FormData object
+	var data = new FormData(form);
+
+	// If you want to add an extra field for the FormData
+	//data.append("CustomField", "This is some extra data, testing");
+	// disabled the submit button
+	$("#btnSubmit").prop("disabled", true);
+
+	$.ajax({
+		type: "POST",
+		enctype: 'multipart/form-data',
+		url: "/media",
+		data: data,
+		processData: false,
+		contentType: false,
+		cache: false,
+		timeout: 600000,
+		success: function (data) {
+			console.log("SUCCESS : ", data);
+			$("#btnSubmit").prop("disabled", false);
+			$("#addMedia").modal('hide');
+			toastr.success('Upload Complete!');
+
+			if(window.location.href.indexOf("/library") > -1) {
+				window.location.href = "/library";
+			} else {
+				reloadMedia();
+			}
+		},
+		error: function (e) {
+			toastr.error(e.responseText);
+			console.log("ERROR : ", e);
+			$("#btnSubmit").prop("disabled", false);
+
+		}
+   });
+		return false;
+}	
+	
 </script>
 @endsection
