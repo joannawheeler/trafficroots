@@ -139,22 +139,22 @@
 										<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack" name="links_table" id="links_table">
 										   <thead>
 												<tr>
+													<th>Date</th>
 													<th>Name</th>
 													<th>Category</th>
 													<th>URL</th>
 													<th>Status</th>
-													<th>Date Created</th>
 													<th>Options</th>
 												</tr>
 											</thead>
 											<tbody>
 											@foreach ($links as $link)
 												<tr class="link_row" id="link_row_{{ $link->id }}">
+													<td class="text-center"><b class=" tablesaw-cell-label">Date</b> {{ Carbon\Carbon::parse($link->created_at)->format('m/d/Y') }} </td>
 													<td class="text-center"><b class=" tablesaw-cell-label">Name</b> {{ $link->link_name }} </td>
 													<td class="text-center"><b class=" tablesaw-cell-label">Category</b> {{ $categories[$link->category] }} </td>
 													<td class="text-center"><b class=" tablesaw-cell-label">URL</b> <a href="{{ $link->url }}" target="blank">{{substr($link->url,0,25)}}</a></td>
 													<td class="text-center"><b class=" tablesaw-cell-label">Status</b><span class="currentStatus label"> {{ $status_types[$link->status] }} </span></td>
-													<td class="text-center"><b class=" tablesaw-cell-label">Date Created</b> {{ Carbon\Carbon::parse($link->created_at)->toDayDateTimeString() }} </td>
 													<td class="text-center"><b class=" tablesaw-cell-label">Options</b>
 														<a href="#"
 														   class="link-edit"
@@ -244,6 +244,7 @@
 @foreach ($media as $file)
 <div class="modal inmodal"
      id="editMedia{{ $file->id }}"
+	 class="editMedia" 
      tabindex="-1"
      role="dialog"
      aria-hidden="true">
@@ -264,10 +265,13 @@
                   enctype="multipart/form-data"
                   role="form"
 				  method="POST"
-                  onsubmit="return submitMediaForm();"
-                  action="{{ url('/update_media') }}"> {{ method_field('PATCH') }}
+                  action="{{ url('/edit_media') }}"> {{ method_field('PATCH') }}
                     <div class="modal-body">
-                        {{ csrf_field() }}   
+                        {{ csrf_field() }}
+						<input type="hidden"
+							   value = "{{ $file->id }}"
+                               class="form-control"
+                               name="id"> 
                     <div class="form-group">
                         <label>Name</label>
                         <input type="text"
@@ -326,13 +330,14 @@
                         <input type="file"
                                name="file"
                                id="image_file"
+							   class="image_file" 
                                accept="image/*"
                                style="z-index: -1; position: relative;"
-                               disabled
+                               required
                                />
-                        <p id="upload_path">{{ $file->file_location }}</p>
-                        <p id="image_size"></p>
-                        <p id="image_dimensions"></p>
+                        <p class="upload_path"></p>
+                        <p class="image_size"></p>
+                        <p class="image_dimensions"></p>
                         <label class="error mt-10"
                                style="display: none;"
                                for="image_file">
@@ -374,15 +379,15 @@
                             name="submit"
                             id="btnSubmit"
                             class="btn btn-primary">Submit</button>
-        </div>
-                        <input type="hidden"
-                               name="return_url"
-                               id="return_url"
-                        @if( $_SERVER['REQUEST_URI'] == '/campaign')
-                               value="campaign">
-                        @else
-                               value="library">
-                        @endif
+        		</div>
+					<input type="hidden"
+						   name="return_url"
+						   id="return_url"
+					@if( $_SERVER['REQUEST_URI'] == '/campaign')
+						   value="campaign">
+					@else
+						   value="library">
+					@endif
             </form>
         </div>
     </div>
@@ -406,15 +411,16 @@
                 </button>
                 <h4 class="modal-title"><i class="fa fa-edit"></i> Edit URL</h4>
             </div>
-            <form name="link_form"
-                  id="link_form"
-                  class="form-horizontal"
-                  role="form"
-          method="POST"
-          onsubmit="return submitLinkForm();"
-                  action="{{ url('/links') }}"> {{ method_field('PATCH') }}
+            <form name="edit_link_form"
+                  id="edit_link_form"
+				  method="POST"
+				  action="{{ url("/edit_link") }}"> {{ method_field('PATCH') }}
                     <div class="modal-body">
-                        {{ csrf_field() }}  
+                        {{ csrf_field() }} 
+						<input type="hidden"
+							   value = "{{ $link->id }}"
+                               class="form-control"
+                               name="id"> 
                     <div class="form-group">
                         <label>Name</label>
                         <input type="text"
@@ -491,12 +497,64 @@ jQuery(document).ready(function ($) {
 		}, pageLength: 10,
 		responsive: true
 	});
+	
+	//new media - image upload
+    $(".image_file").change(function (e) {
+		alert("test");
+        var _URL = window.URL || window.webkitURL;  
+        var file, img, getImageSize, getLocationType, filepath, getImageDimensions;
+        if ((file = this.files[0])) {
+            img = new Image();
+            img.onload = function () {
+                getImageSize = (($(".image_file")[0].files[0].size)/1024);
+                getImageSize = (Math.round(getImageSize * 100) / 100) + 'KB';
+                getImageDimensions = this.width+'x'+this.height;
+                filepath = document.getElementsByClassName("image_file").value;
+                filepath = filepath.replace(/^.*[\\\/]/, '')
+                $('.upload_path').html("<label>File Uploaded: </label>" + filepath );
+                $('.image_size').html("<label>File Size: </label>" + getImageSize );
+                $('.image_dimensions').html("<label>File Dimensions: </label>" + getImageDimensions);
+                
+                //if location type has been selected.
+                getLocationType = $("#location_type_id option:selected").text();
+                if (getLocationType != "Choose Image Size") {
+                    getLocationType = getLocationType.substr(0,getLocationType.indexOf(' '));
+                    if (getImageDimensions == getLocationType) {
+                        $(".editMedia #btnSubmit").prop("disabled", false);
+                    } else {
+                        $(".editMedia #btnSubmit").prop("disabled", true);
+                        //event.preventDefault();
+                        alert("the uploaded image is " + getImageDimensions + " and doesn't match the exact dimensions of the selected location type.  Please select another image or adjust the image to correct size.");
+                        return false;
+                    }
+                }
+            }
+            img.src = _URL.createObjectURL(file);
+        }
+    });
 });
 
 $("a.tr-preview").click(function(event){
     event.preventDefault();
 });
 
+function submitEditLinkForm(){
+    $.post('/edit_link', $('#edit_link_form').serialize())
+        .done(function (response) {
+            toastr.success('Link Added Successfully!', '', 
+               {onHidden: function () {
+                   if(window.location.href.indexOf("/library") > -1) {
+                        window.location.href = "/library";
+                   }
+               }});
+            $('#addLink').modal('hide');
+          }).fail(function (response) {
+            toastr.error('Failed to add Link!');
+            $('addLink').modal('hide');
+         });
+    return false;
+}	
+	
 function setStatus() {
 	var currentStatus = Array.from($(".currentStatus"));
 	currentStatus.forEach(function(element) {
@@ -511,49 +569,6 @@ function setStatus() {
 		};
 	});
 };
-	
-function submitMediaForm(){
-	// Get form
-	var form = $('#media_form')[0];
-
-	// Create an FormData object
-	var data = new FormData(form);
-
-	// If you want to add an extra field for the FormData
-	//data.append("CustomField", "This is some extra data, testing");
-	// disabled the submit button
-	$("#btnSubmit").prop("disabled", true);
-
-	$.ajax({
-		type: "POST",
-		enctype: 'multipart/form-data',
-		url: "/media",
-		data: data,
-		processData: false,
-		contentType: false,
-		cache: false,
-		timeout: 600000,
-		success: function (data) {
-			console.log("SUCCESS : ", data);
-			$("#btnSubmit").prop("disabled", false);
-			$("#addMedia").modal('hide');
-			toastr.success('Upload Complete!');
-
-			if(window.location.href.indexOf("/library") > -1) {
-				window.location.href = "/library";
-			} else {
-				reloadMedia();
-			}
-		},
-		error: function (e) {
-			toastr.error(e.responseText);
-			console.log("ERROR : ", e);
-			$("#btnSubmit").prop("disabled", false);
-
-		}
-   });
-		return false;
-}	
 	
 </script>
 @endsection
