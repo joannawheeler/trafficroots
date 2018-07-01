@@ -39,7 +39,16 @@ Route::get('/custom_ad/{handle}', 'ZoneController@getCustomAd');
 Route::post('/custom_ad', 'ZoneController@postCustomAd');
 Route::get('/pause_custom_ad/{id}', 'ZoneController@pauseCustomAd');
 Route::get('/resume_custom_ad/{id}', 'ZoneController@resumeCustomAd');
+Route::patch('/zones/{zone}', 'ZoneController@edit');
+Route::get('/edit_custom_ad/{id}', 'ZoneController@editCustomAd');
 Route::post('/update_frequencyAd', 'ZoneController@updateFrequencyCap');
+Route::post('/update_impressionCap', 'ZoneController@updateImpressionCap');
+Route::post('/update_weight', 'ZoneController@updateWeight');
+Route::post('/update_start', 'ZoneController@updateStartDate');
+Route::post('/update_end', 'ZoneController@updateEndDate');
+Route::get('/custom_creatives/{id}', 'ZoneController@createCreative');
+Route::post('/update_adTargets', 'CampaignController@updateTargets');
+Route::post('/update_adCounties', 'CampaignController@updateCounties');
 
 Auth::routes();
 Route::get('/send_confirmation', 'HomeController@sendConfirmation');

@@ -458,6 +458,30 @@ class CampaignController extends Controller
             return response()->json(['result' => $t->getMessage()]);
         }
     }
+	
+	public function editMedia(Request $request)
+    {
+		if(!$this->checkBank()) return redirect('/addfunds');
+        $this->validate($request, [
+            'media_name' => 'required|string'
+        ]);
+		$user = Auth::getUser()->id;
+		$media = Media::where([['id', $request->id],['user_id', $user]])->first();
+		$media->media_name = $request->media_name;
+		$media->location_type = $request->image_size;
+		$media->category = $request->image_category;
+		$media->save();
+
+		if($request->return_url == 'library'){
+			$url = '/' . $request->return_url;
+			return redirect($url);
+		} else{
+				return response()->json([
+				'newid' => $link->id,
+				'result' => 'OK',
+				]);
+		}
+    }
 
 	public function editMedia(Request $request)
     {
