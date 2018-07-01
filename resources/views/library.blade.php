@@ -320,7 +320,6 @@
                                for="image_size"></label>
                     </div>
                     <div class="form-group">
-                        <label class="btn btn-success btn-block"
                         <label class="btn btn-success btn-block image_file"
                                for="image_file">
                             <i class="fa fa-upload"></i>&nbsp;&nbsp;
@@ -333,10 +332,9 @@
 							   class="image_file" 
                                accept="image/*"
                                style="z-index: -1; position: relative;"
+							   value = "{{ $file->file_location }}"
                                required
                                />
-                               accept="image/*" 
-							   value = "{{ $file->file_location }}" />
                         <p class="upload_path"></p>
                         <p class="image_size"></p>
                         <p class="image_dimensions"></p>

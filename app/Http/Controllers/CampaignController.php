@@ -482,7 +482,7 @@ class CampaignController extends Controller
 				]);
 		}
     }
-
+	
 	public function editMedia(Request $request)
     {
 		if(!$this->checkBank()) return redirect('/addfunds');
