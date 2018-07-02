@@ -19,7 +19,7 @@ $landing = function() {
     Route::post('/pub_subscribe', 'PublicController@subscribeUser');
 };
 Route::group(['domain' => 'www.trafficroots.com'], $landing);
-Route::group(['domain' => 'trafficroots.com'], $landing);
+Route::group(['domain' => 'trafficroots.com'], $landing); 
 
 Route::get('/', function () {
     return redirect('/home');
@@ -39,6 +39,16 @@ Route::get('/custom_ad/{handle}', 'ZoneController@getCustomAd');
 Route::post('/custom_ad', 'ZoneController@postCustomAd');
 Route::get('/pause_custom_ad/{id}', 'ZoneController@pauseCustomAd');
 Route::get('/resume_custom_ad/{id}', 'ZoneController@resumeCustomAd');
+Route::patch('/zones/{zone}', 'ZoneController@edit');
+Route::get('/edit_custom_ad/{id}', 'ZoneController@editCustomAd');
+Route::post('/update_frequencyAd', 'ZoneController@updateFrequencyCap');
+Route::post('/update_impressionCap', 'ZoneController@updateImpressionCap');
+Route::post('/update_weight', 'ZoneController@updateWeight');
+Route::post('/update_start', 'ZoneController@updateStartDate');
+Route::post('/update_end', 'ZoneController@updateEndDate');
+Route::get('/custom_creatives/{id}', 'ZoneController@createCreative');
+Route::post('/update_adTargets', 'CampaignController@updateTargets');
+Route::post('/update_adCounties', 'CampaignController@updateCounties');
 
 Auth::routes();
 Route::get('/send_confirmation', 'HomeController@sendConfirmation');
@@ -84,11 +94,16 @@ Route::post('/campaign', 'CampaignController@postCampaign');
 Route::get('/media', 'CampaignController@createMedia');
 Route::post('/media', 'CampaignController@postMedia');
 Route::get('/getmedia', 'CampaignController@getUserMedia');
+Route::get('/edit_media/{id}', 'CampaignController@editMedia');
+Route::patch('/edit_media', 'CampaignController@updateMedia');
 Route::get('/links', 'CampaignController@createLink');
 Route::post('/links', 'CampaignController@postLink');
+Route::patch('/edit_link', 'CampaignController@editLink');
 Route::get('manage_campaign/{id}', 'CampaignController@editCampaign');
 Route::get('/creatives/{id}', 'CampaignController@createCreative');
 Route::post('/creatives', 'CampaignController@postCreative');
+Route::get('/edit_creative/{id}', 'CampaignController@editCreative');
+Route::post('/edit_creative', 'CampaignController@updateCreative');
 Route::post('/update_targets', 'CampaignController@updateTargets');
 Route::post('/update_bid', 'CampaignController@updateBid');
 Route::post('/update_budget', 'CampaignController@updateBudget');
