@@ -22,7 +22,6 @@
             </ul>
         </div>
     @endif
-
     <div class="row">
         <div class="col-xs-12">
 			<!--
@@ -240,6 +239,7 @@
         </div>
     </div>
 
+
 @foreach ($media as $file)
 <div class="modal inmodal"
      id="editMedia{{ $file->id }}"
@@ -320,7 +320,7 @@
                                for="image_size"></label>
                     </div>
                     <div class="form-group">
-                        <label class="btn btn-success btn-block image_file"
+                        <label class="btn btn-success btn-block"
                                for="image_file">
                             <i class="fa fa-upload"></i>&nbsp;&nbsp;
                             <span class="bold">Upload</span>
@@ -332,7 +332,6 @@
 							   class="image_file" 
                                accept="image/*"
                                style="z-index: -1; position: relative;"
-							   value = "{{ $file->file_location }}"
                                required
                                />
                         <p class="upload_path"></p>
@@ -395,7 +394,7 @@
 @endforeach
 
 @foreach ($links as $link)
-<div class="modal inmodal"
+<div class="editLink modal inmodal"
      id="editLink{{ $link->id }}"
      tabindex="-1"
      role="dialog"
@@ -413,8 +412,9 @@
             </div>
             <form name="edit_link_form"
                   id="edit_link_form"
-				  method="POST"
-				  action="{{ url("/edit_link") }}"> {{ method_field('PATCH') }}
+				  role="form" 
+				  method="POST" 
+				  action="{{ url('/edit_link/') }}"> {{ method_field('PATCH') }}
                     <div class="modal-body">
                         {{ csrf_field() }} 
 						<input type="hidden"
@@ -487,114 +487,25 @@ jQuery(document).ready(function ($) {
 	$('#nav_buyer_library').addClass("active");
 	$('#nav_buyer').addClass("active");
 	$('#nav_buyer_menu').removeClass("collapse");
-	
+
 	setStatus();
 	$('#media_tab').click();
-	
-	var editMediaId = '';
-	$(".media-edit").click(function() {
-		editMediaId = $(this).data("target");
-		alert(editMediaId);
-		return editMediaId;
-	});
-	
-		//new media - image upload
-    $( "#image_file").change(function (e) {
-        var _URL = window.URL || window.webkitURL;  
-        var file, img, getImageSize, getLocationType, filepath, getImageDimensions;
-        if ((file = this.files[0])) {
-            img = new Image();
-            img.onload = function () {
-                getImageSize = (($("#image_file")[0].files[0].size)/1024);
-                getImageSize = (Math.round(getImageSize * 100) / 100) + 'KB';
-                getImageDimensions = this.width+'x'+this.height;
-                filepath = document.getElementById("image_file").value;
-                filepath = filepath.replace(/^.*[\\\/]/, '')
-                $(editMediaId + ' .upload_path').html("<label>File Uploaded: </label>" + filepath );
-                $(editMediaId + ' .image_size').html("<label>File Size: </label>" + getImageSize );
-                $(editMediaId + ' .image_dimensions').html("<label>File Dimensions: </label>" + getImageDimensions);
-                alert(editMediaId + ' .upload_path');
-                //if location type has been selected.
-                getLocationType = $(editMediaId + " #location_type_id option:selected").text();
-                if (getLocationType != "Choose Image Size") {
-                    getLocationType = getLocationType.substr(0,getLocationType.indexOf(' '));
-                    if (getImageDimensions == getLocationType) {
-                        $(editMediaId + " #btnSubmit").prop("disabled", false);
-                    } else {
-                        $(editMediaId + " #btnSubmit").prop("disabled", true);
-                        //event.preventDefault();
-                        alert("the uploaded image is " + getImageDimensions + " and doesn't match the exact dimensions of the selected location type.  Please select another image or adjust the image to correct size.");
-                        return false;
-                    }
-                }
-            }
-            img.src = _URL.createObjectURL(file);
-        }
-    });
-	
+
 	$('.dataTableSearchOnly').DataTable({
 		"oLanguage": {
 		  "sSearch": "Search Table"
 		}, pageLength: 10,
 		responsive: true
 	});
-	
-	//new media - image upload
-    $(".image_file").change(function (e) {
-		alert("test");
-        var _URL = window.URL || window.webkitURL;  
-        var file, img, getImageSize, getLocationType, filepath, getImageDimensions;
-        if ((file = this.files[0])) {
-            img = new Image();
-            img.onload = function () {
-                getImageSize = (($(".image_file")[0].files[0].size)/1024);
-                getImageSize = (Math.round(getImageSize * 100) / 100) + 'KB';
-                getImageDimensions = this.width+'x'+this.height;
-                filepath = document.getElementsByClassName("image_file").value;
-                filepath = filepath.replace(/^.*[\\\/]/, '')
-                $('.upload_path').html("<label>File Uploaded: </label>" + filepath );
-                $('.image_size').html("<label>File Size: </label>" + getImageSize );
-                $('.image_dimensions').html("<label>File Dimensions: </label>" + getImageDimensions);
-                
-                //if location type has been selected.
-                getLocationType = $("#location_type_id option:selected").text();
-                if (getLocationType != "Choose Image Size") {
-                    getLocationType = getLocationType.substr(0,getLocationType.indexOf(' '));
-                    if (getImageDimensions == getLocationType) {
-                        $(".editMedia #btnSubmit").prop("disabled", false);
-                    } else {
-                        $(".editMedia #btnSubmit").prop("disabled", true);
-                        //event.preventDefault();
-                        alert("the uploaded image is " + getImageDimensions + " and doesn't match the exact dimensions of the selected location type.  Please select another image or adjust the image to correct size.");
-                        return false;
-                    }
-                }
-            }
-            img.src = _URL.createObjectURL(file);
-        }
-    });
 });
 
 $("a.tr-preview").click(function(event){
     event.preventDefault();
 });
-
-function submitEditLinkForm(){
-    $.post('/edit_link', $('#edit_link_form').serialize())
-        .done(function (response) {
-            toastr.success('Link Added Successfully!', '', 
-               {onHidden: function () {
-                   if(window.location.href.indexOf("/library") > -1) {
-                        window.location.href = "/library";
-                   }
-               }});
-            $('#addLink').modal('hide');
-          }).fail(function (response) {
-            toastr.error('Failed to add Link!');
-            $('addLink').modal('hide');
-         });
-    return false;
-}	
+	
+@if(session()->has('link_updated'))
+	toastr.success("{{ Session::get('link_updated') }}");
+@endif
 	
 function setStatus() {
 	var currentStatus = Array.from($(".currentStatus"));
@@ -611,47 +522,5 @@ function setStatus() {
 	});
 };
 	
-function submitMediaForm(){
-	// Get form
-	var form = $('#media_form')[0];
-
-	// Create an FormData object
-	var data = new FormData(form);
-
-	// If you want to add an extra field for the FormData
-	//data.append("CustomField", "This is some extra data, testing");
-	// disabled the submit button
-	$("#btnSubmit").prop("disabled", true);
-
-	$.ajax({
-		type: "POST",
-		enctype: 'multipart/form-data',
-		url: "/media",
-		data: data,
-		processData: false,
-		contentType: false,
-		cache: false,
-		timeout: 600000,
-		success: function (data) {
-			console.log("SUCCESS : ", data);
-			$("#btnSubmit").prop("disabled", false);
-			$("#addMedia").modal('hide');
-			toastr.success('Upload Complete!');
-
-			if(window.location.href.indexOf("/library") > -1) {
-				window.location.href = "/library";
-			} else {
-				reloadMedia();
-			}
-		},
-		error: function (e) {
-			toastr.error(e.responseText);
-			console.log("ERROR : ", e);
-			$("#btnSubmit").prop("disabled", false);
-
-		}
-   });
-		return false;
-}
 </script>
 @endsection

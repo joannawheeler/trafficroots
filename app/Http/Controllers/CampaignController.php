@@ -472,39 +472,7 @@ class CampaignController extends Controller
 		$media->category = $request->image_category;
 		$media->save();
 
-		if($request->return_url == 'library'){
-			$url = '/' . $request->return_url;
-			return redirect($url);
-		} else{
-				return response()->json([
-				'newid' => $link->id,
-				'result' => 'OK',
-				]);
-		}
-    }
-	
-	public function editMedia(Request $request)
-    {
-		if(!$this->checkBank()) return redirect('/addfunds');
-        $this->validate($request, [
-            'media_name' => 'required|string'
-        ]);
-		$user = Auth::getUser()->id;
-		$media = Media::where([['id', $request->id],['user_id', $user]])->first();
-		$media->media_name = $request->media_name;
-		$media->location_type = $request->image_size;
-		$media->category = $request->image_category;
-		$media->save();
-
-		if($request->return_url == 'library'){
-			$url = '/' . $request->return_url;
-			return redirect($url);
-		} else{
-				return response()->json([
-				'newid' => $link->id,
-				'result' => 'OK',
-				]);
-		}
+		return response()->json(['result' => 'OK',]);
     }
 	
     public function createFolder()
@@ -572,6 +540,7 @@ class CampaignController extends Controller
             'link_category' => 'required|exists:categories,id',
             'url' => 'required|url'
         ]);
+		
 		$user = Auth::getUser();
 		$link = DB::select('select * from links where url = '."'".$request->url."'".' and user_id = '.$user->id.' and status = 1');
 		if ($link) {
@@ -590,18 +559,16 @@ class CampaignController extends Controller
 		$link->url = $request->url;
 		$link->save();
 		
-		session()->flash('status', [
-            'type' => 'success',
-            'message' => 'Link has been updated successfully.'
-        ]);
-		if($request->return_url == 'library'){
-			$url = '/' . $request->return_url;
-			return redirect($url);
-		}else{
-				return response()->json([
-				'newid' => $link->id,
-				'result' => 'OK',
-				]);
+		$creativeLink = Creative::where([['link_id', $request->id],['user_id', $user->id],['status', 5]])->get();
+        $linkExists = sizeof($creativeLink);
+        if ($linkExists) {
+			$update = array('status' => 5, 'updated_at' => DB::raw('NOW()'));
+			DB::table('creatives')->where([['link_id', $request->id],['user_id', $user->id]])->update($update);
+			Log::info($user->name." Set creatives to pending tied to link id ".$request->id);
+			return redirect()->back()->with('link_updated', 'Success! Link has been updated. This link is pending so the creative(s) tied to it will be paused until they have been approved.');
+		} else {
+			return redirect()->back()->with('link_updated', 'Success! Link has been updated.');
+
 		}
     }
 	
