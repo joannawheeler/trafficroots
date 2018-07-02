@@ -461,18 +461,41 @@ class CampaignController extends Controller
 	
 	public function editMedia(Request $request)
     {
+		$user = Auth::getUser();
+		$media = Media::where([['id', $request->id],['user_id', $user->id]])->first();
+		return view('edit_media', ['user' => $user->id, 'media' => $media]);
+     }	     
+	
+	public function updateMedia(Request $request)
+    {
 		if(!$this->checkBank()) return redirect('/addfunds');
         $this->validate($request, [
             'media_name' => 'required|string'
         ]);
-		$user = Auth::getUser()->id;
-		$media = Media::where([['id', $request->id],['user_id', $user]])->first();
+		$user = Auth::getUser();
+		$media = Media::where([['id', $request->media_id],['user_id', $user->id]])->first();
 		$media->media_name = $request->media_name;
 		$media->location_type = $request->image_size;
 		$media->category = $request->image_category;
+		if ($request->file('file')){
+			$destination = 'uploads/'.$user->id;
+        	$path = $request->file('file')->store($destination);
+			$media->file_location = $path;
+		}
 		$media->save();
 
-		return response()->json(['result' => 'OK',]);
+		$creativeMedia = Creative::where([['media_id', $request->media_id],['user_id', $user->id],['status', 5]])->get();
+        $mediaExists = sizeof($creativeMedia);
+        if ($mediaExists) {
+			$update = array('status' => 5, 'updated_at' => DB::raw('NOW()'));
+			DB::table('creatives')->where([['media_id', $request->media_id],['user_id', $user->id]])->update($update);
+			Log::info($user->name." Set creatives to pending tied to media id ".$request->media_id);
+			return redirect('/library')->with('media_updated', 'Success! Media has been updated. This media is pending so the creative(s) tied to it will be paused until it have been approved.');
+		} else {
+			return redirect('/library')->with('media_updated', 'Success! Media has been updated.');
+
+		}
+
     }
 	
     public function createFolder()
