@@ -566,6 +566,38 @@ class StatsController extends Controller
                 CityStat::insert($insert);
                 Log::info('Inserted '.$counter.' records');  
             }
+            $pairs = array();
+            $sql = "SELECT SUM(impressions) AS impressions,
+            SUM(clicks) AS clicks,
+            zone_id,
+            city_code AS id,
+            state_code
+            FROM affiliate_stats
+            WHERE zone_id = ?
+            AND stat_date = ?
+            GROUP BY zone_id, id, state_code
+            ORDER BY impressions DESC;";
+            $result = DB::select($sql, array($zone->zone_id, $date));
+            $counter = 0;
+            $prefix = "INSERT INTO city_stats (`user_id`,`zone_id`,`site_id`,`city_code`,`state_code`,`stat_date`,`impressions`,`clicks`,`created_at`,`updated_at`) VALUES";
+            $suffix = " ON DUPLICATE KEY UPDATE impressions = impressions + VALUES(`impressions`), clicks = clicks + VALUES(`clicks`), updated_at = CURDATE();";
+            foreach($result as $row){
+                $set = "(".$zone->pub_id.",".$row->zone_id.",".$zone->site_id.",".$row->id.",".$row->state_code.",'".$date."',".$row->impressions.",".$row->clicks.",'".date('Y-m-d H:i:s')."','".date('Y-m-d H:i:s')."')";
+                $pairs[] = $set;
+                $counter += 1;
+                if($counter >= 1000){
+                    $sql = $prefix . implode(",",$pairs) . $suffix;
+                    DB::insert($sql);
+                    $pairs = array();
+                    $counter = 0;
+                }                   
+            }
+            if($counter){
+                $sql = $prefix . implode(",",$pairs) . $suffix;
+                DB::insert($sql);
+                $pairs = array();
+                $counter = 0;
+            }  
             /* browser stats */
 
             $insert = array();
@@ -603,7 +635,37 @@ class StatsController extends Controller
                 BrowserStat::insert($insert);
                 Log::info('Inserted '.$counter.' records');
             }
-
+            $pairs = array();
+            $sql = "SELECT SUM(impressions) AS impressions,
+            SUM(clicks) AS clicks,
+            zone_id, 
+            browser
+            FROM affiliate_stats
+            WHERE zone_id = ?
+            AND stat_date = ?
+            GROUP BY zone_id, browser
+            ORDER BY impressions DESC;";
+            $result = DB::select($sql, array($zone->zone_id, $date));
+            $counter = 0;
+            $prefix = "INSERT INTO browser_stats (`user_id`,`zone_id`,`site_id`,`browser`,`stat_date`,`impressions`,`clicks`,`created_at`,`updated_at`) VALUES";
+            $suffix = " ON DUPLICATE KEY UPDATE impressions = impressions + VALUES(`impressions`), clicks = clicks + VALUES(`clicks`), updated_at = CURDATE();";
+            foreach($result as $row){
+                $set = "(".$zone->pub_id.",".$row->zone_id.",".$zone->site_id.",".$row->browser.",'".$date."',".$row->impressions.",".$row->clicks.",'".date('Y-m-d H:i:s')."','".date('Y-m-d H:i:s')."')";
+                $pairs[] = $set;
+                $counter += 1;
+                if($counter >= 1000){
+                    $sql = $prefix . implode(",",$pairs) . $suffix;
+                    DB::insert($sql);
+                    $pairs = array();
+                    $counter = 0;
+                }                   
+            }
+            if($counter){
+                $sql = $prefix . implode(",",$pairs) . $suffix;
+                DB::insert($sql);
+                $pairs = array();
+                $counter = 0;
+            } 
             /* platform stats */
             
             $insert = array();
@@ -641,7 +703,37 @@ class StatsController extends Controller
                 PlatformStat::insert($insert);
                 Log::info('Inserted '.$counter.' records');
             }
-        
+            $pairs = array();
+            $sql = "SELECT SUM(impressions) AS impressions,
+            SUM(clicks) AS clicks,
+            zone_id, 
+            platform
+            FROM affiliate_stats
+            WHERE zone_id = ?
+            AND stat_date = ?
+            GROUP BY zone_id, platform
+            ORDER BY impressions DESC;";
+            $result = DB::select($sql, array($zone->zone_id, $date));
+            $counter = 0;
+            $prefix = "INSERT INTO platform_stats (`user_id`,`zone_id`,`site_id`,`platform`,`stat_date`,`impressions`,`clicks`,`created_at`,`updated_at`) VALUES";
+            $suffix = " ON DUPLICATE KEY UPDATE impressions = impressions + VALUES(`impressions`), clicks = clicks + VALUES(`clicks`), updated_at = CURDATE();";
+            foreach($result as $row){
+                $set = "(".$zone->pub_id.",".$row->zone_id.",".$zone->site_id.",".$row->platform.",'".$date."',".$row->impressions.",".$row->clicks.",'".date('Y-m-d H:i:s')."','".date('Y-m-d H:i:s')."')";
+                $pairs[] = $set;
+                $counter += 1;
+                if($counter >= 1000){
+                    $sql = $prefix . implode(",",$pairs) . $suffix;
+                    DB::insert($sql);
+                    $pairs = array();
+                    $counter = 0;
+                }                   
+            }
+            if($counter){
+                $sql = $prefix . implode(",",$pairs) . $suffix;
+                DB::insert($sql);
+                $pairs = array();
+                $counter = 0;
+            }         
 
             /* os stats */
             
@@ -680,6 +772,39 @@ class StatsController extends Controller
                 OsStat::insert($insert);
                 Log::info('Inserted '.$counter.' records');
             }
+        
+        $pairs = array();
+        $sql = "SELECT SUM(impressions) AS impressions,
+        SUM(clicks) AS clicks,
+        zone_id,
+        os
+        FROM affiliate_stats
+        WHERE zone_id = ?
+        AND stat_date = ?
+        GROUP BY zone_id, os
+        ORDER BY impressions DESC;";
+        $result = DB::select($sql, array($zone->zone_id, $date));
+        $counter = 0;
+        $prefix = "INSERT INTO os_stats (`user_id`,`zone_id`,`site_id`,`os`,`stat_date`,`impressions`,`clicks`,`created_at`,`updated_at`) VALUES";
+        $suffix = " ON DUPLICATE KEY UPDATE impressions = impressions + VALUES(`impressions`), clicks = clicks + VALUES(`clicks`), updated_at = CURDATE();";
+        foreach($result as $row){
+            $set = "(".$zone->pub_id.",".$row->zone_id.",".$zone->site_id.",".$row->os.",'".$date."',".$row->impressions.",".$row->clicks.",'".date('Y-m-d H:i:s')."','".date('Y-m-d H:i:s')."')";
+            $pairs[] = $set;
+            $counter += 1;
+            if($counter >= 1000){
+                $sql = $prefix . implode(",",$pairs) . $suffix;
+                DB::insert($sql);
+                $pairs = array();
+                $counter = 0;
+            }                   
+        }
+        if($counter){
+            $sql = $prefix . implode(",",$pairs) . $suffix;
+            DB::insert($sql);
+            $pairs = array();
+            $counter = 0;
+        }  
+        
         }
         Log::info('Big Data Completed!');
     }
