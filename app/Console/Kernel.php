@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         Commands\GatherKeys::class,
         Commands\BidRoller::class,
         Commands\CalculateEarnings::class,
+        Commands\BigData::class,
     ];
 
     /**
@@ -26,8 +27,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        $schedule->command('stats:gather_keys')->everyMinute();
+        $schedule->command('stats:bigdata')->daily();
     }
 
     /**

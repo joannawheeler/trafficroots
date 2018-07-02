@@ -2,6 +2,7 @@
 @section('title', '- Add Funds!')
 @section('content')
 <script src="https://api.cert.nabcommerce.com/1.2/post.js" type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/clipboard.js/1.5.3/clipboard.min.js"></script>
 <script src='https://www.google.com/recaptcha/api.js'></script>
 <div class="container">
     <div class="row">
