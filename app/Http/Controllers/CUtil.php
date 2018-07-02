@@ -62,12 +62,9 @@ class CUtil extends Controller
 	                    if(in_array($row->id, $theme_targets)) $themes .= ' selected';
                             $themes .= '>'.$row->theme.'</option>';
 			}
-			return $themes;
-	}
-    public function getStates($id)
-    {
-		$targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
-		$state_targets = explode("|",$targets->states);
+
+		        return $themes;
+
 		}
 	public function getCountries($id)
     {
@@ -121,12 +118,15 @@ class CUtil extends Controller
         return $states;
 
     }
-  
+	
+	
+	
+	
     public function getCounties($id)
     {
-		$targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
-		$county_targets = explode("|",$targets->counties);
-		$state_targets = implode(",",explode("|",$targets->states));
+        $targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
+	$county_targets = explode("|",$targets->counties);
+	$state_targets = implode(",",explode("|",$targets->states));
         $counties = '<option value="0"';
         if($county_targets[0] == '0') $counties .= ' selected';
         $counties .= '>All Counties</option>';
@@ -231,8 +231,8 @@ class CUtil extends Controller
     }
     public function getPlatforms($id)
     {
-		$targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
-		$p_targets = explode("|",$targets->platforms);
+        $targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
+        $p_targets = explode("|",$targets->platforms);
         $platforms = Platform::all();
         $platform_targets = '<option value="0"';
         if($p_targets[0] == '0') $platform_targets .= ' selected';

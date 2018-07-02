@@ -22,6 +22,7 @@
             </ul>
         </div>
     @endif
+
     <div class="row">
         <div class="col-xs-12">
 			<!--
@@ -86,11 +87,11 @@
 									<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack" name="media_table" id="media_table">
 										<thead>
 											<tr>
-												<th>Date</th>
 												<th>Name</th>
 												<th>Category</th>
 												<th>Location Type</th>
 												<th>Status</th>
+												<th>Date Uploaded</th>
 												<th>Options</th>
 												<th>Preview</th>
 											</tr>
@@ -98,13 +99,13 @@
 										<tbody>
 										@foreach ($media as $file)
 											<tr class="media_row" id="media_row_{{ $file->id }}">
-												<td class="text-center"><b class=" tablesaw-cell-label">Date</b> {{ Carbon\Carbon::parse($file->created_at)->format('m/d/Y') }} </td>
 												<td class="text-center"><b class=" tablesaw-cell-label">Name</b> {{ $file->media_name }} </td>
 												<td class="text-center"><b class=" tablesaw-cell-label">Category</b> {{ $categories[$file->category] }} </td>
 												<td class="text-center get_location_type_id"><b class=" tablesaw-cell-label">Location Type</b> {{ $location_types[$file->location_type] }} </td>
 												<td class="text-center"><b class=" tablesaw-cell-label">Status</b><span class="currentStatus label"> {{ $status_types[$file->status] }} </span></td>
+												<td class="text-center"><b class=" tablesaw-cell-label">Date Uploaded</b> {{ Carbon\Carbon::parse($file->created_at)->toDayDateTimeString() }} </td>
 												<td class="text-center"><b class=" tablesaw-cell-label">Options</b>
-													<a href="{{ URL::to("/edit_media/$file->id") }}" >
+													<a href="#">
 														<button class="btn btn-xs btn-success alert-success">
 														<span class="btn-label">
 															<i class="fa fa-edit"></i>
@@ -135,27 +136,24 @@
 										<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack" name="links_table" id="links_table">
 										   <thead>
 												<tr>
-													<th>Date</th>
 													<th>Name</th>
 													<th>Category</th>
 													<th>URL</th>
 													<th>Status</th>
+													<th>Date Created</th>
 													<th>Options</th>
 												</tr>
 											</thead>
 											<tbody>
 											@foreach ($links as $link)
 												<tr class="link_row" id="link_row_{{ $link->id }}">
-													<td class="text-center"><b class=" tablesaw-cell-label">Date</b> {{ Carbon\Carbon::parse($link->created_at)->format('m/d/Y') }} </td>
 													<td class="text-center"><b class=" tablesaw-cell-label">Name</b> {{ $link->link_name }} </td>
 													<td class="text-center"><b class=" tablesaw-cell-label">Category</b> {{ $categories[$link->category] }} </td>
 													<td class="text-center"><b class=" tablesaw-cell-label">URL</b> <a href="{{ $link->url }}" target="blank">{{substr($link->url,0,25)}}</a></td>
 													<td class="text-center"><b class=" tablesaw-cell-label">Status</b><span class="currentStatus label"> {{ $status_types[$link->status] }} </span></td>
+													<td class="text-center"><b class=" tablesaw-cell-label">Date Created</b> {{ Carbon\Carbon::parse($link->created_at)->toDayDateTimeString() }} </td>
 													<td class="text-center"><b class=" tablesaw-cell-label">Options</b>
-														<a href="#"
-														   class="link-edit"
-														   data-toggle="modal"
-														   data-target="#editLink{{ $link->id }}">
+														<a href="#">
 															<button class="btn btn-xs btn-success alert-success">
 															<span class="btn-label">
 																<i class="fa fa-edit"></i>
@@ -236,94 +234,6 @@
         </div>
     </div>
 
-@foreach ($links as $link)
-<div class="editLink modal inmodal"
-     id="editLink{{ $link->id }}"
-     tabindex="-1"
-     role="dialog"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content animated fadeIn">
-            <div class="modal-header">
-                <button type="button"
-                        class="close"
-                        data-dismiss="modal">
-                    <span aria-hidden="true">&times;</span>
-                    <span class="sr-only">Close</span>
-                </button>
-                <h4 class="modal-title"><i class="fa fa-edit"></i> Edit URL</h4>
-            </div>
-            <form name="edit_link_form"
-                  id="edit_link_form"
-				  role="form" 
-				  method="POST" 
-				  action="{{ url('/edit_link/') }}"> {{ method_field('PATCH') }}
-                    <div class="modal-body">
-                        {{ csrf_field() }} 
-						<input type="hidden"
-							   value = "{{ $link->id }}"
-                               class="form-control"
-                               name="id"> 
-                    <div class="form-group">
-                        <label>Name</label>
-                        <input type="text"
-                               placeholder="Link name"
-							   value = "{{ $link->link_name }}"
-                               class="form-control"
-                               name="link_name"
-                               required>
-
-                        <label class="error hide"
-                               for="link_name"></label>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Category</label>
-                        <select class="form-control m-b" id="link_category_id"
-                                name="link_category"
-                                required>
-                            <option value="">Choose category</option>
-                            @foreach(App\Category::all() as $category)
-                            <option value="{{ $category->id }}"  {{ $link->category == $category->id ? 'selected="selected"' : '' }}>{{ $category->category }}</option>
-                            @endforeach
-                        </select>
-                        <label class="error hide"
-                               for="link_category"></label>
-                    </div>
-
-                    <div class="form-group">
-                        <label>URL</label>
-                        <input type="url"
-                               placeholder="Must be a valid URL, with http:// or https://"
-							   value = "{{ $link->url }}"
-                               class="form-control"
-                               name="url"
-                               required>
-                        <input type="hidden" 
-                               name="return_url"
-                               id="return_url"
-            @if( $_SERVER['REQUEST_URI'] == '/campaign')
-                               value="campaign">
-                        @else
-                               value="library">
-                    @endif
-                        <label class="error hide"
-                               for="url"></label>
-                    </div>                    
-                </div>
-                <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-white"
-                            data-dismiss="modal">Cancel</button>
-                    <button type="submit"
-                            name="submit"
-                            class="btn btn-primary">Submit</button>
-                </div>
-        </form>
-        </div>
-    </div>
-</div>
-@endforeach
 <script type="text/javascript">
 jQuery(document).ready(function ($) {
 	$('.nav-click').removeClass("active");
@@ -345,15 +255,7 @@ jQuery(document).ready(function ($) {
 $("a.tr-preview").click(function(event){
     event.preventDefault();
 });
-	
-@if(session()->has('media_updated'))
-toastr.success("{{ Session::get('media_updated') }}");
-@endif	
-	
-@if(session()->has('link_updated'))
-	toastr.success("{{ Session::get('link_updated') }}");
-@endif
-	
+
 function setStatus() {
 	var currentStatus = Array.from($(".currentStatus"));
 	currentStatus.forEach(function(element) {
@@ -368,6 +270,5 @@ function setStatus() {
 		};
 	});
 };
-	
 </script>
 @endsection
