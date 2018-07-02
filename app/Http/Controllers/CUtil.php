@@ -49,16 +49,10 @@ class CUtil extends Controller
         }
     }
 
-    public function getThemes($id, $isAdCampaign = null)
+    public function getThemes($id)
 	{
-		if (!$isAdCampaign) {
-        	$targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
-			$theme_targets = explode("|",$targets->themes);
-		} else {
-			$targets = DB::table('ads')->where('id', $id)->first();
-			$theme_targets = explode("|",$targets->city_id);
-		}
-		
+		$targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
+		$theme_targets = explode("|",$targets->themes);
 		$themes = '<option value="0"';
 		if($theme_targets[0] == '0') $themes .= ' selected';
 			$themes .= '>All Sites</option>';
@@ -72,16 +66,10 @@ class CUtil extends Controller
 			return $themes;
 
 	}
-    public function getStates($id, $isAdCampaign = null)
+    public function getStates($id)
     {
-		if (!$isAdCampaign) {
-        	$targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
-			$state_targets = explode("|",$targets->states);
-		} else {
-			$targets = DB::table('ads')->where('id', $id)->first();
-			$state_targets = explode("|",$targets->state_id);
-		}
-		
+		$targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
+		$state_targets = explode("|",$targets->states);
         $states = '<option value="0"';
         if($state_targets[0] == '0') $states .= ' selected';
         $states .= '>All States</option>';
@@ -97,16 +85,9 @@ class CUtil extends Controller
     }
     public function getCounties($id, $isAdCampaign = null)
     {
-		if (!$isAdCampaign) {
-        	$targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
-			$county_targets = explode("|",$targets->counties);
-			$state_targets = implode(",",explode("|",$targets->states));
-		} else {
-			$targets = DB::table('ads')->where('id', $id)->first();
-			$county_targets = explode("|",$targets->county_id);
-			$state_targets = implode(",",explode("|",$targets->state_id));
-		}
-		
+		$targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
+		$county_targets = explode("|",$targets->counties);
+		$state_targets = implode(",",explode("|",$targets->states));
         $counties = '<option value="0"';
         if($county_targets[0] == '0') $counties .= ' selected';
         $counties .= '>All Counties</option>';
@@ -179,16 +160,10 @@ class CUtil extends Controller
         }
         return $location;
     }
-    public function getOperatingSystems($id, $isAdCampaign = null)
+    public function getOperatingSystems($id)
     {
-		if (!$isAdCampaign) {
-        	$targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
-        	$os_targets = explode("|",$targets->operating_systems);
-		} else {
-			$targets = DB::table('ads')->where('id', $id)->first();
-			$os_targets = explode("|",$targets->os_id);
-		}
-		
+		$targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
+		$os_targets = explode("|",$targets->operating_systems);
         $systems = OperatingSystem::all();
         $operating_systems = '<option value="0"';
         if($os_targets[0] == '0') $operating_systems .= ' selected';
@@ -200,16 +175,10 @@ class CUtil extends Controller
         }
         return $operating_systems;
     }   
-    public function getBrowsers($id, $isAdCampaign = null)
+    public function getBrowsers($id)
     {
-		if (!$isAdCampaign) {
-        	$targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
-        	$b_targets = explode("|",$targets->browsers);
-		} else {
-			$targets = DB::table('ads')->where('id', $id)->first();
-			$b_targets = explode("|",$targets->browser_id);
-		}
-		
+		$targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
+		$b_targets = explode("|",$targets->browsers);
         $browsers = Browser::all();
         $browser_targets = '<option value="0"';
         if($b_targets[0] == '0') $browser_targets .= ' selected';
@@ -221,16 +190,10 @@ class CUtil extends Controller
         }
         return $browser_targets;;
     }
-    public function getPlatforms($id, $isAdCampaign = null)
+    public function getPlatforms($id)
     {
-		if (!$isAdCampaign) {
-        	$targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
-        	$p_targets = explode("|",$targets->platforms);
-		} else {
-			$targets = DB::table('ads')->where('id', $id)->first();
-			$p_targets = explode("|",$targets->device_id);
-		}
-		
+		$targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
+		$p_targets = explode("|",$targets->platforms);
         $platforms = Platform::all();
         $platform_targets = '<option value="0"';
         if($p_targets[0] == '0') $platform_targets .= ' selected';
