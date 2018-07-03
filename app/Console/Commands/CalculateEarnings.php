@@ -12,7 +12,7 @@ class CalculateEarnings extends Command
      *
      * @var string
      */
-    protected $signature = 'revenues:calculate_earnings';
+    protected $signature = 'revenues:calculate_earnings {date?}';
 
     /**
      * The console command description.
@@ -38,7 +38,8 @@ class CalculateEarnings extends Command
      */
     public function handle()
     {
-        $thread = new EarningsController(date('Y-m-d'));
+	$date = strlen($this->argument('date')) ? $this->argument('date') : date('Y-m-d');
+        $thread = new EarningsController($date);
         $thread->processEarnings(); 
     }
 }

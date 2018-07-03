@@ -28,7 +28,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('stats:gather_keys')->everyMinute();
-        $schedule->command('stats:bigdata')->daily();
+	$schedule->command('stats:bigdata')->daily();
+	$schedule->command('adserver:bid_roller')->everyFiveMinutes();
+	$schedule->command('revenues:calculate_earnings')->everyTenMinutes();
     }
 
     /**
