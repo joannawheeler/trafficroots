@@ -457,6 +457,7 @@ input, select {
                                                 </div>
                                             </div>
                                             <div class="form-group">
+												<div id="bid-tips"></div>
 												<label class="col-md-4 control-label">Place Your Bid
 													<em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Amount paid for a click, or one thousand impressions"></em>
 												</label>
