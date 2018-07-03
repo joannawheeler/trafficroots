@@ -183,61 +183,6 @@ class HomeController extends Controller
 				     'endDate' => $endDate, 
                                      'folders' => $folders));
     }    
-	
-	public function store(Request $request)
-    {
-        $this->validate($request, [
-            'site_name' => [
-                'required',
-                'max:60',
-                Rule::unique('sites')
-                    ->where('user_id', Auth::user()->id)
-            ],
-            'site_url' => 'required|url|unique:sites,site_url',
-	    'site_theme' => 'required|exists:site_themes,id',
-	    'allowed_category' => 'required'
-        ]);
-        $newsite = Site::create([
-            'site_name' => $request->site_name,
-            'site_url' => $request->site_url,
-            'site_theme' => $request->site_theme,
-            'user_id' => Auth::user()->id,
-            'site_handle' => uniqid()
-        ]);
-        if(is_array($request->allowed_category) && count($request->allowed_category)){
-            foreach($request->allowed_category as $k => $v){
-	        $sql = "INSERT INTO trafficroots.site_category (site_id, category) VALUES(?,?);";
-		DB::insert($sql, array($newsite->id, $v));
-            }
-	}	    
-        /* create standard zones on demand */
-        $msg = '';
-        if($request->has('zone_create')){
-            /* TODO: move this to some config file */
-            $standard_zones = array(
-                'Leaderboard' => 1,
-                'Super Leaderboard' => 7,
-                'Cube A' => 2,
-                'Cube B' => 2,
-                'Cube C' => 2,
-                'Mobile Banner' => 4,
-                'Mobile Footer' => 4,
-                'Footer' => 1,
-                'Large Footer' => 7,
-            );
-            foreach($standard_zones as $key => $value){
-                $newsite->addZone($key, $value);
-            }
-            $msg = "\nStandard Zones Created Successfully!";
-        }
-        session()->flash('status', [
-            'type' => 'success',
-            'message' => 'Site created successfully.  Site handle: '.$newsite->site_handle.$msg
-        ]);
-        return;
-    }
-	
-	
     /**
      * Show the advertiser`s dashboard.
      *
