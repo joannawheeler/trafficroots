@@ -147,12 +147,12 @@ class CampaignController extends Controller
 	
     public function updateCounties(Request $request)
     {
-	    try{
-            $this->updateTargets($request);
-	    $CUtil = new CUtil();
-            $output = $CUtil->getCounties($request->campaign_id);		    
+		try{
+			$this->updateTargets($request);
+			$CUtil = new CUtil();
+			$output = $CUtil->getCounties($request->campaign_id);
             return($output);
-	}catch(Throwable $t){
+		}catch(Throwable $t){
             Log::error($t->getMessage());
 	}
     }
@@ -210,14 +210,16 @@ class CampaignController extends Controller
                 if (is_null($value)) {
                     $data[$key] = '0';
                 }
-	    }
-	    if(isset($request->frequency_capping)) $data['frequency_capping'] = intval($request->frequency_capping);
-	    $result = DB::select('SELECT * FROM campaign_targets WHERE campaign_id = '.$request->campaign_id);
-	    if(!sizeof($result)) Log::info("There is no record yet??");
-	    if(DB::table('campaign_targets')->where('campaign_id', intval($request->campaign_id))->update($data))
-	    Log::info($user->name.' updated targets on campaign '.$request->campaign_id);
-	    Log::info(print_r($data, true));
-            return('All Changes Saved');
+	    	}
+			
+			if(isset($request->frequency_capping)) $data['frequency_capping'] = intval($request->frequency_capping);
+			$result = DB::select('SELECT * FROM campaign_targets WHERE campaign_id = '.$request->campaign_id);
+			if(!sizeof($result)) Log::info("There is no record yet??");
+			if(DB::table('campaign_targets')->where('campaign_id', intval($request->campaign_id))->update($data))
+			Log::info($user->name.' updated targets on campaign '.$request->campaign_id);
+			Log::info(print_r($data, true));
+			return('All Changes Saved');
+			
         } catch (Exception $e) {
             return ($e->getMessage);
         }
@@ -279,6 +281,7 @@ class CampaignController extends Controller
 	}
         $user = Auth::getUser();	
 	return view('campaign_create', ['user' => $user,
+		                       'countries' => $countries,
 		                       'campaign_types' => $campaign_types,
 				       'categories' => $categories,
 				       'themes' => $themes,
@@ -362,9 +365,9 @@ class CampaignController extends Controller
         $user = Auth::getUser();
         $campaign = Campaign::where([['id', $request->id],['user_id', $user->id]])->first();
         $creatives = Creative::where([['campaign_id', $request->id],['user_id', $user->id]])->get();
-        $media = Media::where([['status', 1],['location_type', $campaign->location_type],['user_id', $user->id]])->get();
-        $folders = Folder::where([['status', 1],['location_type', $campaign->location_type],['user_id', $user->id]])->get();
-        $links = Links::where([['status', 1],['user_id', $user->id]])->get();
+        $media = Media::where([['location_type', $campaign->location_type],['category', $campaign->campaign_category],['user_id', $user->id]])->whereIn('status', [1, 5])->orderby('media_name', 'ASC')->get();
+        $folders = Folder::where([['location_type', $campaign->location_type],['user_id', $user->id]])->whereIn('status', [1, 5])->get();
+        $links = Links::where([['category', $campaign->campaign_category],['user_id', $user->id]])->whereIn('status', [1, 5])->orderby('link_name', 'ASC')->get();
         return view('new_creative', ['user' => $user, 'campaign' => $campaign, 'media' => $media, 'links' => $links, 'folders' => $folders]);
     }
     public function postCreative(Request $request)
@@ -377,20 +380,76 @@ class CampaignController extends Controller
             $data['folder_id'] = intval($data['folder_id']);
         }
         $current = Creative::where([['campaign_id', $data['campaign_id']],['user_id', $user->id],['status', 1]])->get();
+	
         $ads = sizeof($current);
         if ($ads) {
             $weight = (100 / ($ads + 1));
             $creative = new Creative();
             $creative->fill($data);
             $creative->save();
-            Creative::where([['campaign_id', $data['campaign_id']],['user_id', $user->id],['status', 1]])->update(['weight' => $weight]);
+			
+			Creative::where([['campaign_id', $data['campaign_id']],['user_id', $user->id],['status', 1]])->update(['weight' => $weight]);
         } else {
             $data['weight'] = 100;
             $creative = new Creative();
+			
+			$media = Media::where([['id', $current->media_id],['user_id', $user->id]])->first();
+			if ($media) {
+				if($media->status == 5){
+					Creative::where([['campaign_id', $data['campaign_id']],['user_id', $user->id],['media_id', $media->id]])->update(['weight' => $weight], ['status', 5]);
+				}
+			}
             $creative->fill($data);
             $creative->save();
         }
         return redirect('/manage_campaign/'.$request->campaign_id);
+    }
+	
+	public function editCreative(Request $request)
+    {
+		$user = Auth::getUser();
+        $creative = Creative::where([['id', $request->id],['user_id', $user->id]])->first();
+		$campaign = Campaign::where([['id', $creative->campaign_id],['user_id', $user->id]])->first();
+        $currentMedia = Media::where([['id', $creative->media_id],['user_id', $user->id]])->first()->id;
+		$media = Media::where([['location_type', $campaign->location_type],['category', $campaign->campaign_category],['user_id', $user->id]])->whereIn('status', [1, 5])->orderby('media_name', 'ASC')->get();
+		$currentLink = Links::where([['id', $creative->link_id],['user_id', $user->id]])->first()->id;
+	 	$links = Links::where([['category', $campaign->campaign_category],['user_id', $user->id]])->whereIn('status', [1, 5])->orderby('link_name', 'ASC')->get();
+		$folders = Folder::where([['id', $creative->folder_id],['user_id', $user->id]])->get();
+
+		return view('edit_creative', ['user' => $user, 'creative' => $creative, 'campaign' => $campaign, 'media' => $media, 'currentMedia' => $currentMedia, 'links' => $links, 'currentLink' => $currentLink, 'folders' => $folders]);
+    }
+	
+	public function updateCreative(Request $request)
+    {
+		if(!$this->checkBank()) return redirect('/addfunds');	
+		try{
+			$user = Auth::getUser();
+			$media = DB::select('select * from media where id = '."'".$request->media_id."'".' and user_id = '.$user->id.' and status = 1');
+			$links = DB::select('select * from links where id = '."'".$request->link_id."'".' and user_id = '.$user->id.' and status = 1');
+			if ($media && $links) {
+				$update = array('status' => 1, 'updated_at' => DB::raw('NOW()'));	
+				DB::table('creatives')->where([['link_id', $request->link_id],['media_id', $request->media_id]])->update($update);
+				Log::info($user->name." Active Creative ".$request->id);
+			} else {
+				$update = array('status' => 5, 'updated_at' => DB::raw('NOW()'));
+				DB::table('creatives')->where([['link_id', $request->link_id],['media_id', $request->media_id]])->update($update);
+				Log::info($user->name." Set Creative to Pending ".$request->id);
+			}
+			
+			$data = $request->all();
+			$data['user_id'] = $user->id;
+			if (isset($data['folder_id'])) {
+				$data['folder_id'] = intval($data['folder_id']);
+			}
+			$creative = Creative::where([['campaign_id', $data['campaign_id']],['user_id', $user->id]])->first();
+			$creative->fill($data);
+			$creative->save();
+
+			return redirect('/manage_campaign/'.$request->campaign_id);
+			
+		} catch(Exception $e){
+            return $e->getMessage();
+        } 
     }
 
     public function createMedia()
@@ -436,7 +495,7 @@ class CampaignController extends Controller
             return response()->json(['result' => $t->getMessage()]);
         }
     }
-
+	
     public function createFolder()
     {
 	if(!$this->checkBank()) return redirect('/addfunds');
@@ -493,6 +552,7 @@ class CampaignController extends Controller
             ]);
 	}
     }
+	
     public function editCampaign(Request $request)
     {
 	if(!$this->checkBank()) return redirect('/addfunds');
@@ -506,7 +566,7 @@ class CampaignController extends Controller
             $location = $CUtil->getLocationTypes();
 	    foreach ($campaign as $camp) {
 		$themes = $CUtil->getThemes($camp->id);
-				$countries = $CUtil->getCountries($camp->id);
+		$countries = $CUtil->getCountries($camp->id);
                 $states = $CUtil->getStates($camp->id);
                 $os_targets = $CUtil->getOperatingSystems($camp->id);
                 $platforms = $CUtil->getPlatforms($camp->id);
