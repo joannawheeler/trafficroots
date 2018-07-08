@@ -92,7 +92,11 @@ div#sites_chosen {
 														tabindex="3">
 													<option value="">Select</option>
 													@foreach(Auth::User()->sites as $site)
-														<option value="{{ $site->id }}">{{ $site->site_name }}</option>
+														<option value="{{ $site->id }}"
+														@if(is_array($filter_sites) && in_array($site->id, $filter_sites))
+														 selected
+														@endif
+														>{{ $site->site_name }}</option>
 													@endforeach
 												</select>
 											<label class="error hide"
@@ -120,7 +124,7 @@ div#sites_chosen {
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-12">
+			<div class="col-md-12">
 					<div class="tabs-container">
 						<ul class="nav nav-tabs stats-tab">
 							<li class="active">
@@ -135,10 +139,6 @@ div#sites_chosen {
 								<a data-toggle="tab"
 								   href="#states"><span class="fa fa-location-arrow"></span><div>States</div></a>
 							</li>
-							<!-- <li class="nav nav-tabs">
-								<a data-toggle="tab"
-								   href="#cities"><span class="fa fa-map-marker"></span><div>Cities</div></a>
-							</li> -->
 							<li class="nav nav-tabs">
 								<a data-toggle="tab"
 								   href="#platforms"><span class="fa fa-mobile"></span><div>Platforms</div></a>
@@ -155,9 +155,10 @@ div#sites_chosen {
 						<div class="tab-content">
 							<div id="dates"
 								 class="tab-pane active">
+								 
 								<div class="ibox-content">
 									<div class="tableSearchOnly">
-										<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack">
+										<table class="tablesaw tablesaw-stack table-striped table-hover dataTableDateSort dateTableFilter" data-tablesaw-mode="stack">
 										<thead>
 											<tr>
 												<th>Date</th>
@@ -167,23 +168,24 @@ div#sites_chosen {
 											</tr>
 										</thead>
 										<tbody>
-											@foreach ($stats->groupBy('stat_date') as $day)
+										@foreach($dates as $day)
 											<tr>
 												<td class="text-center"><b class=" tablesaw-cell-label">Date</b>
-													{{ $day->first()->stat_date}} </td>
-												<td class="text-center"><b class=" tablesaw-cell-label">Impressions</b>{{ $stats->where('stat_date', $day->first()->stat_date)->sum('impressions') }}</td>
-												<td class="text-center"><b class=" tablesaw-cell-label">Clicks</b>{{ $stats->where('stat_date', $day->first()->stat_date)->sum('clicks') }}</td>
-												<td class="text-center"><b class=" tablesaw-cell-label">CTR</b>{{ ($stats->where('stat_date', $day->first()->stat_date)->sum('impressions')/1000) * $stats->where('stat_date', $day->first()->stat_date)->sum('clicks') }}%</td>
+													{{ $day->stat_date}} </td>
+												<td class="text-center" data-order="{{ $day->impressions }}"><b class=" tablesaw-cell-label">Impressions</b>{{ $day->impressions }}</td>
+												<td class="text-center" data-order="{{ $day->clicks }}"><b class=" tablesaw-cell-label">Clicks</b>{{ $day->clicks }}</td>
+												<td class="text-center"><b class=" tablesaw-cell-label">CTR</b>{{ $day->impressions ? round($day->clicks / $day->impressions, 5) : 0 }}%</td>
 											</tr>
-											@endforeach
+										@endforeach
 										</tbody>
 									</table>
 									</div>
 								</div>
+																 
 							</div>
 							<div id="countries"
 								 class="tab-pane">
-								<div class="ibox-content">
+								 <div class="ibox-content">
 									<div class="tableSearchOnly">
 										<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack">
 											<thead>
@@ -195,15 +197,15 @@ div#sites_chosen {
 												</tr>
 											</thead>
 											<tbody>
-												@foreach (App\Country::all() as $country)
-													@if($stats->where('country_id', $country->id)->sum('impressions'))
+												@foreach($country_stats as $country) 
+													
 														<tr>
-															<td class="text-center"><b class=" tablesaw-cell-label">Country</b>{{ $country->country_name }} </td>
-															<td class="text-center"><b class=" tablesaw-cell-label">Impressions</b>{{ $stats->where('country_id', $country->id)->sum('impressions') }}</td>
-															<td class="text-center"><b class=" tablesaw-cell-label">Clicks</b>{{ $stats->where('country_id', $country->id)->sum('clicks') }}</td>
-															<td class="text-center"><b class=" tablesaw-cell-label">CTR</b>{{ ($stats->where('country_id', $country->id)->sum('impressions')/1000) * $stats->where('country_id', $country->id)->sum('clicks') }}%</td>
+															<td class="text-center"><b class=" tablesaw-cell-label">Country</b> {{ $country->country_name }} </td>
+															<td class="text-center" data-order="{{ $country->impressions }}"><b class=" tablesaw-cell-label">Impressions</b>{{ $country->impressions }}</td>
+															<td class="text-center" data-order="{{ $country->clicks }}"><b class=" tablesaw-cell-label">Clicks</b>{{ $country->clicks }}</td>
+															<td class="text-center"><b class=" tablesaw-cell-label">CTR</b>{{ $country->impressions ? round($country->clicks / $country->impressions,5) : 0 }}%</td>
 														</tr>
-													@endif 
+													
 												@endforeach
 											</tbody>
 										</table>
@@ -212,7 +214,7 @@ div#sites_chosen {
 							</div>
 							<div id="states"
 								 class="tab-pane">
-								<div class="ibox-content">
+								 <div class="ibox-content">
 									<div class="tableSearchOnly">
 										<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack">
 											<thead>
@@ -224,44 +226,15 @@ div#sites_chosen {
 												</tr>
 											</thead>
 											<tbody>
-												@foreach (App\State::all() as $state)
-													@if($stats->where('state_code', $state->id)->sum('impressions'))
+												@foreach($state_stats as $state) 
+													
 														<tr>
-															<td class="text-center"><b class=" tablesaw-cell-label">State</b> {{ $state->state_name }} </td>
-															<td class="text-center"><b class=" tablesaw-cell-label">Impressions</b> {{ $stats->where('state_code', $state->id)->sum('impressions') }}</td>
-															<td class="text-center"><b class=" tablesaw-cell-label">Clicks</b> {{ $stats->where('state_code', $state->id)->sum('clicks') }}</td>
-															<td class="text-center"><b class=" tablesaw-cell-label">CTR</b> {{ ($stats->where('state_code', $state->id)->sum('impressions')/1000) * $stats->where('state_code', $state->id)->sum('clicks') }}%</td>
+															<td class="text-center"><b class=" tablesaw-cell-label">State</b> {{ $state->state_name }}, {{ $state->country_short}} </td>
+															<td class="text-center" data-order="{{ $state->impressions }}"><b class=" tablesaw-cell-label">Impressions</b>{{ $state->impressions }}</td>
+															<td class="text-center" data-order="{{ $state->clicks }}"><b class=" tablesaw-cell-label">Clicks</b>{{ $state->clicks }}</td>
+															<td class="text-center"><b class=" tablesaw-cell-label">CTR</b>{{ $state->impressions ? round($state->clicks / $state->impressions,5) : 0 }}%</td>
 														</tr>
-													@endif
-												@endforeach
-											</tbody>
-										</table>
-									</div>
-								</div>
-							</div>
-							<div id="cities"
-								 class="tab-pane">
-								<div class="ibox-content">
-									<div class="tableSearchOnly">
-										<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack">
-											<thead>
-												<tr>
-													<th>City</th>
-													<th>Impressions <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title=" Number of times Advertising Material is served to a person visiting the Publisher’s Website"></span></th>
-													<th>Clicks</th>
-													<th>CTR <span class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title=" Percentage based on the total number of clicks divided by the number of impressions that an advertisement has received."></span></th>
-												</tr>
-											</thead>
-											<tbody>
-												@foreach (App\City::all() as $city) 
-													@if($stats->where('city_code', $city->id)->sum('impressions'))
-														<tr>
-															<td class="text-center"><b class=" tablesaw-cell-label">City</b> {{ $city->city_name }} </td>
-															<td class="text-center"><b class=" tablesaw-cell-label">Impressions</b> {{ $stats->where('city_code', $city->id)->sum('impressions') }}</td>
-															<td class="text-center"><b class=" tablesaw-cell-label">Clicks</b> {{ $stats->where('city_code', $city->id)->sum('clicks') }}</td>
-															<td class="text-center"><b class=" tablesaw-cell-label">CTR</b> {{ ($stats->where('city_code', $city->id)->sum('impressions')/1000) * $stats->where('country_id', $city->id)->sum('clicks') }}%</td>
-														</tr>
-													@endif 
+													
 												@endforeach
 											</tbody>
 										</table>
@@ -270,7 +243,7 @@ div#sites_chosen {
 							</div>
 							<div id="platforms"
 								 class="tab-pane">
-								<div class="ibox-content">
+								 <div class="ibox-content">
 									<div class="tableSearchOnly">
 										<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack">
 											<thead>
@@ -282,16 +255,16 @@ div#sites_chosen {
 												</tr>
 											</thead>
 											<tbody>
-												@foreach (App\Platform::all() as $platform) 
-													@if($stats->where('platform', $platform->id)->sum('impressions'))
+												
+													@foreach($platform_stats as $pstat)
 														<tr>
-															<td class="text-center"><b class=" tablesaw-cell-label">Platform</b> {{ $platform->platform }} </td>
-															<td class="text-center"><b class=" tablesaw-cell-label">Impressions</b> {{ $stats->where('platform', $platform->id)->sum('impressions') }}</td>
-															<td class="text-center"><b class=" tablesaw-cell-label">Clicks</b> {{ $stats->where('platform', $platform->id)->sum('clicks') }}</td>
-															<td class="text-center"><b class=" tablesaw-cell-label">CTR</b> {{ ($stats->where('platform', $platform->id)->sum('impressions')/1000) * $stats->where('platform', $platform->id)->sum('clicks') }}%</td>
+															<td class="text-center"><b class=" tablesaw-cell-label">Platform</b> {{ $pstat->platform }} </td>
+															<td class="text-center" data-order="{{ $pstat->impressions }}"><b class=" tablesaw-cell-label">Impressions</b>{{ $pstat->impressions}}</td>
+															<td class="text-center" data-order="{{ $pstat->clicks }}"><b class=" tablesaw-cell-label">Clicks</b>{{ $pstat->clicks }}</td>
+															<td class="text-center"><b class=" tablesaw-cell-label">CTR</b>{{ $pstat->impressions ? round($pstat->clicks / $pstat->impressions,5) : 0 }}%</td>
 														</tr>
-													@endif
-												@endforeach
+													@endforeach
+											
 											</tbody>
 										</table>
 									</div>
@@ -299,7 +272,7 @@ div#sites_chosen {
 							</div>
 							<div id="os"
 								 class="tab-pane">
-								<div class="ibox-content">
+								 <div class="ibox-content">
 									<div class="tableSearchOnly">
 										<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack">
 											<thead>
@@ -311,15 +284,15 @@ div#sites_chosen {
 												</tr>
 											</thead>
 											<tbody>
-												@foreach (App\OperatingSystem::all() as $os) 
-													@if($stats->where('os', $os->id)->sum('impressions'))
+												@foreach ($os_stats as $os) 
+													
 														<tr>
 															<td class="text-center"><b class=" tablesaw-cell-label">Operating System</b> {{ $os->os }} </td>
-															<td class="text-center"><b class=" tablesaw-cell-label">Impressions</b> {{ $stats->where('os', $os->id)->sum('impressions') }}</td>
-															<td class="text-center"><b class=" tablesaw-cell-label">Clicks</b> {{ $stats->where('os', $os->id)->sum('clicks') }}</td>
-															<td class="text-center"><b class=" tablesaw-cell-label">CTR</b> {{ ($stats->where('os', $os->id)->sum('impressions')/1000) * $stats->where('os', $os->id)->sum('clicks') }}%</td>
+															<td class="text-center" data-order="{{ $os->impressions }}"><b class=" tablesaw-cell-label">Impressions</b> {{ $os->impressions }}</td>
+															<td class="text-center" data-order="{{ $os->clicks }}"><b class=" tablesaw-cell-label">Clicks</b> {{ $os->clicks }}</td>
+															<td class="text-center"><b class=" tablesaw-cell-label">CTR</b> {{ $os->impressions ? round($os->clicks / $os->impressions, 5) : 0 }}%</td>
 														</tr>
-													@endif
+													
 												@endforeach
 											</tbody>
 										</table>
@@ -328,7 +301,7 @@ div#sites_chosen {
 							</div>
 							<div id="browsers"
 								 class="tab-pane">
-								<div class="ibox-content">
+								 <div class="ibox-content">
 									<div class="tableSearchOnly">
 										<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack">
 											<thead>
@@ -340,15 +313,15 @@ div#sites_chosen {
 												</tr>
 											</thead>
 											<tbody>
-												@foreach (App\Browser::all() as $browser) 
-													@if($stats->where('browser', $browser->id)->sum('impressions'))
+												@foreach ($browser_stats as $browser) 
+													
 														<tr>
 															<td class="text-center"><b class=" tablesaw-cell-label">Browser</b> {{ $browser->browser }} </td>
-															<td class="text-center"><b class=" tablesaw-cell-label">Impressions</b> {{ $stats->where('browser', $browser->id)->sum('impressions') }}</td>
-															<td class="text-center"><b class=" tablesaw-cell-label">Clicks</b> {{ $stats->where('browser', $browser->id)->sum('clicks') }}</td>
-															<td class="text-center"><b class=" tablesaw-cell-label">CTR</b> {{ ($stats->where('browser', $browser->id)->sum('impressions')/1000) * $stats->where('browser', $browser->id)->sum('clicks') }}%</td>
+															<td class="text-center" data-order="{{ $browser->impressions }}"><b class=" tablesaw-cell-label">Impressions</b> {{ $browser->impressions }}</td>
+															<td class="text-center" data-order="{{ $browser->clicks }}"><b class=" tablesaw-cell-label">Clicks</b> {{ $browser->clicks }}</td>
+															<td class="text-center"><b class=" tablesaw-cell-label">CTR</b> {{ $browser->impressions ? round($browser->clicks / $browser->impressions,5) : 0 }}%</td>
 														</tr>
-													@endif 
+													
 												@endforeach
 											</tbody>
 										</table>
@@ -357,7 +330,7 @@ div#sites_chosen {
 							</div>
 						</div>
 					</div>
-				</div>
+			</div>
 			</div>
 		</div>
 	</div>
@@ -374,9 +347,16 @@ div#sites_chosen {
 			"oLanguage": {
 			  "sSearch": "Search Table"
 			}, pageLength: 10,
-			responsive: true
+			responsive: true,
+			"order": [[ 1, 'desc' ]]			
 		});	
-	   
+		$('.dataTableDateSort').DataTable({
+			"oLanguage": {
+			  "sSearch": "Search Table"
+			}, pageLength: 10,
+			responsive: true,
+			"order": [[ 0, 'asc' ]]			
+		});		   
        jQuery(document).ready(function ($) {
 	       $('.nav-click').removeClass("active");
 	       $('#nav_pub_stats').addClass("active");
