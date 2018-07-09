@@ -453,45 +453,18 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <div id="bid-tips"></div>
-                                                    <label class="col-md-4 control-label">Place Your Bid
-                                                        <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Amount paid for a click, or one thousand impressions"></em>
-                                                    </label>
-                                                    <div class="col-md-6">
-                                                        <input type="text" id="bid" class="form-control" name="bid" placeholder="0.00" required>
-                                                        <label class="error hide" for="bid"></label>
-                                                    </div>
+												<div id="bid-tips"></div>
+												<label class="col-md-4 control-label">Place Your Bid
+													<em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Amount paid for a click, or one thousand impressions"></em>
+												</label>
+												<div class="col-md-6">
+													<input type="number" id="bid" class="bid form-control" name="bid" placeholder="0.00" min="0" required>
+													<label class="error hide" for="bid"></label>
+												</div>
                                             </div>
-                                            <!-- <div class="form-group">
-                                                <label class="col-md-4 control-label">Start and End Date &nbsp;</label>
-                                                <div class="col-md-4">
-                                                    <div id="date_filter">
-                                                        <input class="date_range_filter date form-control" type="hidden" id="datepicker_from" />
-                                                        <input class="date_range_filter date" type="hidden" id="datepicker_to" />
-                                                    </div>
-                                                    <input type="text" class="form-control dateRangeFilter">
-                                                    <span class="glyphicon glyphicon-calendar fa fa-calendar dateRangeIcon"></span>
-                                                </div>
-                                            </div> -->
-                                            <!-- <div class="form-group control-label">
-                                                                                        <label class="col-md-4" for="exampleInputEmail2">
-                                                                                            Ad Group &nbsp; <span class="fa fa-question-circle" aria-hidden="true"></span>
-                                                                                        </label>
-                                                                                    <div class="col-xs-7 col-md-2">
-                                                                                        <select class="form-control">
-                                                                                            <option>CPM</option>
-                                                                                        </select>
-                                                                                    </div>
-                                                                                    <div class="col-xs-5 col-md-2" style="text-align:  left;">
-                                                                                        <a href="#">Manage Groups</a>
-                                                                                    </div>
-                                                                                </div> -->
                                         </div>
                                     </div>
                                 </div>
-
-
-
                         </div>
                         </div>
                         </form>
@@ -501,10 +474,6 @@
                             <div>@include('media_upload')</div>
                             <br />
                             <div>@include('link_upload')</div>
-                        </div>
-                        <div>
-                            <br />
-                            <br />
                             <h3>Campaign:</h3>
                             <div class="well">
                                 <ul>
@@ -515,6 +484,15 @@
                                 </ul>
                             </div>
                         </div>
+						<div class="hidden">
+							<form name="bid_form" id="bid_form" role="form" class="form-horizontal" action="/view_bid" method="POST">
+								{{ csrf_field() }}
+								<input type="text" id="bid_status" class="form-control" name="bid_status" value="" required>
+								<input type="text" id="camp_category" name="camp_category" value="">
+								<input type="text" id="camp_location" name="camp_location" value="">
+								<input type="text" id="camp_type" name="camp_type" value="">
+							</form>
+						</div>
             </div>
         </div>
     </div>
@@ -614,13 +592,27 @@
 			var getCampaign = '"' + $("#campaign_category option:selected").text() + '"';
 			$("#image_category_id option:contains(" + getCampaign + ")").attr('selected', 'selected');
 			$("#link_category_id option:contains(" + getCampaign + ")").attr('selected', 'selected');
+			var getSelectedOption = $(this).val();
+			$("#camp_category").val(getSelectedOption);
 		});
-			
+		
 		$("#location_type").change(function (e) {
 			var getLoctionType = $("#location_type option:selected").text();
 			var getStringLocType = '"' + getLoctionType.substr(0, getLoctionType.indexOf(' -')) + '"'; 
 			$("#location_type_id option:contains(" + getStringLocType + ")").attr('selected', 'selected');
+			var getSelectedOption = $(this).val();
+			$("#camp_location").val(getSelectedOption);
 		});	
+		
+		$("#campaign_type").change(function () {
+			var getSelectedOption = $(this).val();
+			$("#camp_type").val(getSelectedOption);
+			var bidValue = $("#bid").val();
+			if(bidValue) {
+				$("#bid_status").val(bidValue);
+				$("#bid_status").submit();
+			}
+		});
 		
         $('.state-control').change(function(){
             var url = "{{ url('/load_counties') }}";
@@ -635,7 +627,33 @@
     $('.reload').change(function($){
            reloadMedia();
         });
-
+		
+		$('#bid').keypress(function(event){	
+			if (event.keyCode === 10 || event.keyCode === 13){
+				event.preventDefault();	
+			} 	
+		});
+		
+	var delay = (function(){
+	  var timer = 0;
+	  return function(callback, ms){
+		clearTimeout (timer);
+		timer = setTimeout(callback, ms);
+	  };
+	})();
+		
+	$('#bid').keydown(function(event){
+		if( $('#campaign_type').val() ) {
+			delay(function(){
+			  	var bidValue = $("#bid").val();
+				$("#bid_status").val(bidValue);
+				$("#bid_status").submit();
+			}, 1000 );
+		} else {
+			alert("A Pricing Model is needed first in order to give the current bid status.");
+		}
+	});
+		
         if ($("input#websiteUrl").length) {
             $("input#websiteUrl").change(function(){
                 var linkurl = $("#websiteUrl").val();
@@ -665,6 +683,33 @@
 		$("#image_category_id").prop('disabled', true);
 		$("#link_category_id").prop('disabled', true);
 		$("#location_type_id").prop('disabled', true);
+	});
+	
+	$('#bid_form').submit(function(event) {
+		event.preventDefault;
+		    // Get form
+        var form = $('#bid_form')[0];
+        // Create an FormData object
+        var data = new FormData(form);
+
+        $.ajax({
+            type: "POST",
+            url: "{{ url('/view_bid') }}",
+            data: data,
+            processData: false,
+            contentType: false,
+            cache: true,
+            timeout: 600000,
+            success: function (response) {
+				if(response.bid_class == 'success') toastr.info(response.bid_range, "Bid Status");
+				if(response.bid_class == 'info') toastr.info(response.bid_range, "Bid Status");
+				if(response.bid_class == 'warning') toastr.warning(response.bid_range, "Bid Status");
+				if(response.bid_class == 'danger') toastr.error(response.bid_range, "Bid Status");
+            },
+            error: function (e) {
+            }
+       });
+		return false;
 	});
 	
     function checkForm(){

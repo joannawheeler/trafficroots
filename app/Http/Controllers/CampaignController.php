@@ -569,6 +569,62 @@ class CampaignController extends Controller
             }
         }
     }
+	
+	public function viewBids(Request $request)
+	{
+		try{
+		$bid = $request->bid_status;
+            if($bid){
+				$user = Auth::getUser();
+				$CUtil = new CUtil();
+				$campaign = DB::select('select * from campaigns where campaign_type = '.$request->camp_type.' and location_type = '.$request->camp_location.' and campaign_category = '.$request->camp_category);
+
+				if ($campaign) {
+					foreach ($campaign as $camp) {
+					/* get bid status */
+						$topbid = $this->getTopBid($camp->location_type);
+
+						if($topbid == 0){
+						$bid_range = 'Your bid of $'.$bid.' is in the top 5% of all bids for this location type!';
+						$bid_class = 'success';
+						}else{
+								$ratio = $camp->bid / $topbid;
+							if($ratio > .95){
+							$bid_range = 'Your bid of $'.$bid.' is in the top 5% of all bids for this location type!';
+							$bid_class = 'success';
+							}elseif($ratio > .90){
+							$bid_range = 'Your bid of $'.$bid.' is in the top 10% of all bids for this location type!';
+							$bid_class = 'info';
+
+							}elseif($ratio > .80){
+							$bid_range = 'Your bid of $'.$bid.' is in the top 20% of all bids for this location type.';
+							$bid_class = 'warning';
+							}else{
+							$bid_range = 'Your bid of $'.$bid.' is OUTSIDE the top 20% of all bids for this location type.';
+							$bid_class = 'danger';
+							}
+						}
+
+						$notification = array(
+							'bid_range' => $bid_range, 
+							'bid_class' => $bid_class
+						);
+						
+						return response()->json($notification);
+					}
+				}
+			} else{
+                $notification = array(
+					'bid_range' => "Invalid Bid", 
+					'bid_class' => "error"
+				);
+		    	return response()->json($notification);
+            }
+		}catch(Exception $e){
+			return $e->getMessage();
+		} 
+	}
+	
     public function campaigns(Request $request)
     {
 	    ini_set('memory_limit','2048M');
