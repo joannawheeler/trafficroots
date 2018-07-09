@@ -246,7 +246,7 @@ class GatherKeysController extends Controller
             }
 	    $state = State::where('state_name', addslashes($user['state']))->where('country_id', $country[0]->id)->get();
 	    if(!sizeof($state) && strlen($user['state'])){
-                DB::insert('INSERT INTO states (`state_name`, `country_id`, `legal`) VALUES(?,?,?)', array(addslashes($user['state']),$country[0]->id,0));
+                DB::insert('INSERT INTO states (`state_name`, `country_id`, `legal`) VALUES(?,?,?) ON DUPLICATE KEY UPDATE state_name = VALUES(`state_name`)', array(addslashes($user['state']),$country[0]->id,0));
                 $state = State::where('country_id', $country[0]->id)->where('state_name', addslashes($user['state']))->get();
 	    
 

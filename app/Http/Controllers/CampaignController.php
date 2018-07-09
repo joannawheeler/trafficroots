@@ -462,7 +462,6 @@ class CampaignController extends Controller
 
     public function postMedia(Request $request)
     {
-	if(!$this->checkBank()) return redirect('/addfunds');
         try{
         $this->validate($request, [
             'media_name' => 'required|string',
@@ -529,7 +528,6 @@ class CampaignController extends Controller
 
     public function postLink(Request $request)
     {
-	if(!$this->checkBank()) return redirect('/addfunds');
         $this->validate($request, [
             'link_name' => 'required|string',
             'link_category' => 'required|exists:categories,id',
