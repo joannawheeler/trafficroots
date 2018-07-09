@@ -3,23 +3,22 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Http\Controllers\EarningsController;
-
-class CalculateEarnings extends Command
+use App\Http\Controllers\StatsController;
+class BigData extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'revenues:calculate_earnings {date?}';
+    protected $signature = 'stats:bigdata {date?}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Calculates Publisher Earnings from stats Table';
+    protected $description = 'Compile daily aggregate tables';
 
     /**
      * Create a new command instance.
@@ -38,8 +37,9 @@ class CalculateEarnings extends Command
      */
     public function handle()
     {
-	$date = strlen($this->argument('date')) ? $this->argument('date') : date('Y-m-d');
-        $thread = new EarningsController($date);
-        $thread->processEarnings(); 
+        $date = strlen($this->argument('date')) ? $this->argument('date') : '';
+        $thread = new StatsController();
+        $thread->bigData($date);
+        //$thread->reloadBigData();
     }
 }

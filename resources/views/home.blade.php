@@ -242,7 +242,7 @@
 											</td>
 											<td class="text-center"><b class=" tablesaw-cell-label">CTR</b>
 												@if($zone->clicks)
-												{{ round($zone->clicks / $zone->impressions, 2) }}
+												{{ money_format('%(#10n',round($zone->clicks / $zone->impressions, 2)) }}
 												@else
 												$ 0.00
 												@endif

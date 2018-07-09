@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use DB;
 use Log;
 use Redis;
+use Cache;
 
 class PublicController extends Controller
 {
@@ -22,15 +23,19 @@ class PublicController extends Controller
     public function getLandingPage()
     {
         /* u.s. data */
-        $sql = "SELECT SUM(impressions) as impressions, state 
+         $minutes = (60 * 24);
+         $result = Cache::remember('us_data', $minutes, function(){
+             $sql = "SELECT SUM(impressions) as impressions, state
                 FROM site_analysis
                 JOIN states ON site_analysis.state = states.state_name
-                WHERE geo = 'US'
+                WHERE stat_date >=  DATE_SUB(CURDATE(), INTERVAL 10 DAY)
+                AND geo = 'US'
                 AND legal = 1
                 GROUP BY state
                 ORDER BY impressions DESC
                 LIMIT 20;";
-         $result = DB::select($sql);
+             return DB::select($sql);
+         });
          $targeted_traffic = 0;
          foreach($result as $row){
              $targeted_traffic += $row->impressions;
@@ -44,14 +49,17 @@ class PublicController extends Controller
          $us_display .= '</tbody></table>';
 
         /* global data */
-        $sql = "SELECT SUM(impressions) as impressions, countries.country_name 
+         $result = Cache::remember('global_data', $minutes, function (){
+                $sql = "SELECT SUM(impressions) as impressions, countries.country_name
                 FROM site_analysis
                 JOIN countries ON site_analysis.geo = countries.country_short
-                WHERE countries.targeted = 1
+                WHERE stat_date >= DATE_SUB(CURDATE(), INTERVAL 10 DAY)
+                AND countries.targeted = 1
                 GROUP BY country_name
                 ORDER BY impressions DESC
                 LIMIT 20;";
-         $result = DB::select($sql);
+             return DB::select($sql);
+         });
          $targeted_traffic = 0;
          foreach($result as $row){
              $targeted_traffic += $row->impressions;
