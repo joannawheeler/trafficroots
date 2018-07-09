@@ -47,7 +47,8 @@ Route::post('/update_weight', 'ZoneController@updateWeight');
 Route::post('/update_start', 'ZoneController@updateStartDate');
 Route::post('/update_end', 'ZoneController@updateEndDate');
 Route::get('/custom_creatives/{id}', 'ZoneController@createCreative');
-
+Route::get('/edit_custom_creative/{id}', 'ZoneController@editCreative');
+Route::post('/edit_custom_creative', 'ZoneController@updateCreative');
 
 Auth::routes();
 Route::get('/send_confirmation', 'HomeController@sendConfirmation');

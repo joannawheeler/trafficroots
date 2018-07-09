@@ -10,81 +10,104 @@
             <div class="panel panel-default">
                 <a href="/zone_manage/{{ $ad->zone_handle }}" class="btn btn-primary btn-xs pull-right m-t m-r">
                     <span class="fa fa-arrow-circle-left"></span>&nbsp;Back to Zone Management</a>
-                <h4 class="p-title">Manage Ad {{ $ad->description }}</h4>
+                <h4 class="p-title">Manage Ad: {{ $ad->id }} - {{ $ad->description }}</h4>
 			</div>
 			<div class="ibox-content">
 				<h2 class="text-success"><strong>Campaign Information</strong></h2>
-				<table class="table tablesaw tablesaw-stack" name="campaigns_table" id="campaigns_table" data-tablesaw-mode="stack">
-					<thead>
-						<tr>
-							<th>Date</th>
-							<th>Campaign Name</th>
-							<th>Location Type</th>
-							<th>Weight</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr class="camp_row" id="camp_row_{{ $ad->id }}">
-							<td class="text-center"><b class=" tablesaw-cell-label">Date</b> {{ Carbon\Carbon::parse($ad->created_at)->format('m/d/Y') }} </td>
-							<td class="text-center"><b class=" tablesaw-cell-label">Campaign Name</b> {{ $ad->description }} </td>
-							<td class="text-center"><b class=" tablesaw-cell-label">Location Type</b>
-								{{ $location_types[$ad->location_type] }}
-							</td>
-							<td class="text-center"><b class=" tablesaw-cell-label">Weight</b>
-							<form name="weight_form" id="weight_form" role="form" class="form-horizontal" action="/update_weight" method="POST" size="2" max="75">
-								{{ csrf_field() }}
-								<input type="number" id="weight" name="weight" value="{{ $ad->weight }}" size="3">
-								<input type="hidden" id="ad_id" name="ad_id" value="{{ $ad->id }}">
-							</form>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-				<table class="table tablesaw tablesaw-stack" name="campaigns_table" id="campaigns_table" data-tablesaw-mode="stack">
-					<thead>
-						<tr>
-							<th>Impression Cap</th>
-							<th>Frequency Capping</th>
-							<th>Start Date</th>
-							<th>End Date</th>
-							<th>Status</th>
-						</tr>
-					</thead>
-					<tbody>
-						<td class="text-center"><b class=" tablesaw-cell-label">Impression Cap</b>
-							<form name="impression_form" id="impression_form" role="form" class="form-horizontal" action="/update_impressionCap" method="POST">
-								{{ csrf_field() }}
-								<input type="number" id="impression_cap" name="impression_cap" value="{{ $ad->impression_cap }}" size="3">
-								<input type="hidden" id="ad_id" name="ad_id" value="{{ $ad->id }}">
-							</form>
-						</td>
-						<td class="text-center"><b class=" tablesaw-cell-label">Frequency Capping</b>
-							<form name="frequency_form" id="frequency_form" role="form" class="form-horizontal" action="/update_frequencyAd" method="POST">
-								{{ csrf_field() }}
-								<select id="frequency_cap" name="frequency_cap" required>
-									{!! $frequencyCapping !!}
-								</select>		
-								<input type="hidden" id="frequency_id" value="{{$ad->frequency_capping}}">
-								<input type="hidden" id="ad_id" name="ad_id" value="{{ $ad->id }}">
-							</form>
-						</td>
-						<td class="text-center"><b class=" tablesaw-cell-label">Start Date</b>
-							<form name="start_form" id="start_form" role="form" class="form-horizontal" action="/update_start" method="POST">
-								{{ csrf_field() }}
-								<input type="date" id="start_date" name="start_date" value="{{ $ad->start_date }}">
-								<input type="hidden" id="ad_id" name="ad_id" value="{{ $ad->id }}">
-							</form>
-						</td>
-						<td class="text-center"><b class=" tablesaw-cell-label">End Date</b>
-							<form name="end_form" id="end_form" role="form" class="form-horizontal" action="/update_end" method="POST">
-								{{ csrf_field() }}
-								<input type="date" id="end_date" name="end_date" value="{{ $ad->end_date }}">
-								<input type="hidden" id="ad_id" name="ad_id" value="{{ $ad->id }}">
-							</form>
-						</td>
-						<td class="text-center"><b class=" tablesaw-cell-label">Status</b><span class="currentStatus label">{{ $status_types[$ad->status] }}</span></td>
-					</tbody>
-				</table>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel no-border">
+							<div class="panel-body col-md-5">
+
+								<table class="table">
+									<thead>
+										<tr></tr>
+										<tr></tr>
+										<tr></tr>
+										<tr></tr>
+										<tr></tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td><strong>Date</strong></td>
+											<td>
+												{{ Carbon\Carbon::parse($ad->created_at)->format('m/d/Y') }} 
+											</td>
+										</tr>
+										<tr>
+											<td><strong>Campaign Name</strong></td>
+											<td> {{ $ad->description }} </td>
+										</tr>
+										<tr>
+											<td><strong>Location Type</strong></td>
+											<td> {{ $location_types[$ad->location_type] }} </td>
+										</tr>
+										<tr>
+											<td><strong>Status</strong></td>
+											<td><span class="currentStatus label">{{ $status_types[$ad->status] }}</span></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<h2 class="text-success"><strong>Edit Information</strong></h2>
+				<div class="row">
+					<div class="col-xs-12">
+						<table class="table tablesaw tablesaw-stack" name="campaigns_table" id="campaigns_table" data-tablesaw-mode="stack">
+							<thead>
+								<tr>
+									<th>Weight</th>
+									<th>Impression Cap</th>
+									<th>Frequency Capping</th>
+									<th>Start Date</th>
+									<th>End Date</th>
+								</tr>
+							</thead>
+							<tbody>
+								<td class="text-center"><b class=" tablesaw-cell-label">Weight</b>
+									<form name="weight_form" id="weight_form" role="form" class="form-horizontal" action="/update_weight" method="POST" size="2" max="75">
+										{{ csrf_field() }}
+										<input type="number" id="weight" name="weight" value="{{ $ad->weight }}" size="3">
+										<input type="hidden" id="ad_id" name="ad_id" value="{{ $ad->id }}">
+									</form>
+								</td>
+								<td class="text-center"><b class=" tablesaw-cell-label">Impression Cap</b>
+									<form name="impression_form" id="impression_form" role="form" class="form-horizontal" action="/update_impressionCap" method="POST">
+										{{ csrf_field() }}
+										<input type="number" id="impression_cap" name="impression_cap" value="{{ $ad->impression_cap }}" size="3">
+										<input type="hidden" id="ad_id" name="ad_id" value="{{ $ad->id }}">
+									</form>
+								</td>
+								<td class="text-center"><b class=" tablesaw-cell-label">Frequency Capping</b>
+									<form name="frequency_form" id="frequency_form" role="form" class="form-horizontal" action="/update_frequencyAd" method="POST">
+										{{ csrf_field() }}
+										<select id="frequency_cap" name="frequency_cap" required>
+											{!! $frequencyCapping !!}
+										</select>		
+										<input type="hidden" id="frequency_id" value="{{$ad->frequency_capping}}">
+										<input type="hidden" id="ad_id" name="ad_id" value="{{ $ad->id }}">
+									</form>
+								</td>
+								<td class="text-center"><b class=" tablesaw-cell-label">Start Date</b>
+									<form name="start_form" id="start_form" role="form" class="form-horizontal" action="/update_start" method="POST">
+										{{ csrf_field() }}
+										<input type="date" id="start_date" name="start_date" value="{{ $ad->start_date }}">
+										<input type="hidden" id="ad_id" name="ad_id" value="{{ $ad->id }}">
+									</form>
+								</td>
+								<td class="text-center"><b class=" tablesaw-cell-label">End Date</b>
+									<form name="end_form" id="end_form" role="form" class="form-horizontal" action="/update_end" method="POST">
+										{{ csrf_field() }}
+										<input type="date" id="end_date" name="end_date" value="{{ $ad->end_date }}">
+										<input type="hidden" id="ad_id" name="ad_id" value="{{ $ad->id }}">
+									</form>
+								</td>
+							</tbody>
+						</table>
+					</div>
+				</div>
 				<br>
 				<form name="target_form" id="target_form" role="form" class="form-horizontal" target="#" method="POST">
 					{{ csrf_field() }}
@@ -134,9 +157,10 @@
 
 				<br>
 				<div class="row">
-                    <div class="col-xs-12">
+					<div class="col-xs-12">
                         <br>
                         <h2 class="text-success" id="creative_heading" style="display: inline-block;width: 100px;"><strong>Creatives</strong></h2>
+                        <a class="pull-right m-t" href="/custom_creatives/{{ $ad->id }}"><button type="button" class="btn btn-primary btn-xs pull-right" id="add_creative" href="/custom_creatives/{{ $ad->id }}">Add Creative</button></a>
                     </div>
                     <div class="col-xs-12">
                         <div class="tableSearchOnly" id="creative_div">
@@ -149,6 +173,7 @@
                                         <th>Media</th>
                                         <th>Link</th>
                                         <th>Status</th>
+										<th>Options</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -161,6 +186,14 @@
 										</td>
                                         <td class="text-center"><b class=" tablesaw-cell-label">Link</b><a href="{{ $file->links->url }}" target="_blank"> {{ $file->links->url }} </a></td>
                                         <td class="text-center"><b class=" tablesaw-cell-label">Status</b><span class="currentStatus label"> {{ $status_types[$file->status] }} </span></td>
+										<td class="text-center"><b class=" tablesaw-cell-label">Options</b>
+											<a href="{{ URL::to("/edit_custom_creative/$file->id") }}" >
+												<button class="btn btn-xs btn-success alert-success">
+													<span class="btn-label">
+														<i class="fa fa-edit"></i>
+													</span> Edit</button>
+											</a>
+										</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
