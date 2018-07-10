@@ -488,6 +488,208 @@ class ZoneController extends Controller
         ]);
         return;
     }
+	
+	public function editCustomAd(Request $request)
+    {
+		$user = Auth::getUser();
+		$CUtil = new CUtil();
+		
+		$ad = Ad::where('id', $request->id)->firstOrFail();
+        if ($ad) {
+            $status_types = $CUtil->getStatusTypes();
+            $location = $CUtil->getLocationTypes();
+			
+			foreach ($ad as $ads) {
+				$themes = $CUtil->getThemes(67);
+				$countries = $CUtil->getCountries(67);
+				$states = $CUtil->getStates(67);
+				$os_targets = $CUtil->getOperatingSystems(67);
+				$platforms = $CUtil->getPlatforms(67);
+				$browser_targets = $CUtil->getBrowsers(67);
+				$counties = $CUtil->getCounties(67);
+				$row = DB::table('campaign_targets')->where('campaign_id', 67)->first();
+				$creatives = AdCreative::where('ad_id', $request->id)->get();
+				if (!$creatives) {
+					$creatives = array();
+				}
+			}
+		}
+		
+		$frequencyCapping = '<option value="0">Disabled</option><option value="1">1 Impression Per 24 Hours</option><option value="2">2 Impressions Per 24 Hours</option><option value="3">3 Impressions Per 24 Hours</option><option value="4">4 Impressions Per 24 Hours</option><option value="5">5 Impressions Per 24 Hours</option>';
+
+		return view('zone_manage_customAd', [
+					'ad' => $ad,
+					'frequencyCapping' => $frequencyCapping,
+					'location_types' => $location,
+					'status_types' => $status_types,
+		    		'themes' => $themes,
+					'countries' => $countries,
+                    'states' => $states,
+                    'os_targets' => $os_targets,
+                    'browser_targets' => $browser_targets,
+                    'platforms' => $platforms,
+                    'keywords' => str_replace("|", ",", $row->keywords),
+		    		'counties' => $counties,
+					'creatives' => $creatives
+		]);
+    }
+	
+	public function updateWeight(Request $request)
+    {
+	$user = Auth::getUser();
+        try{
+            $weight = (float)($request->weight);
+            if($weight){
+                $ad = intval($request->ad_id);
+				Ad::where('id', $ad)->update(array('weight' => $weight));
+				Log::info($user->name.' Updated weight for Custom Ad '.$request->ad_id.' to $'.$weight);
+                return('Weight has been updated');
+            }else{
+                /* bid evaluates to false - invalid */
+                return('Invalid Weight');
+			}
+         }catch(Exception $e){
+                return $e->getMessage();
+ 	 	} 
+    }
+	
+	public function updateImpressionCap(Request $request)
+    {
+	$user = Auth::getUser();
+        try{
+            $impression_cap = (float)($request->impression_cap);
+            if($impression_cap){
+                $ad = intval($request->ad_id);
+				Ad::where('id', $ad)->update(array('impression_cap' => $impression_cap));
+				Log::info($user->name.' Updated Impression Capping for Custom Ad '.$request->ad_id.' to $'.$impression_cap);
+                return('Impression Capping has been updated');
+            }else{
+                /* bid evaluates to false - invalid */
+                return('Invalid Impression Capping');
+			}
+         }catch(Exception $e){
+                return $e->getMessage();
+ 	 	} 
+    }
+	
+	public function updateFrequencyCap(Request $request)
+    {
+	$user = Auth::getUser();
+        try{
+            $frequency = (float)($request->frequency_cap);
+            if($frequency){
+                $ad = intval($request->ad_id);
+				Ad::where('id', $ad)->update(array('frequency_capping' => $frequency));
+				Log::info($user->name.' Updated Frequency Capping for Custom Ad '.$request->ad_id.' to $'.$frequency);
+                return('Frequency Capping has been updated');
+            }else{
+                /* bid evaluates to false - invalid */
+                return('Invalid Frequency Capping');
+			}
+         }catch(Exception $e){
+                return $e->getMessage();
+ 	 	} 
+    }
+	
+	public function updateStartDate(Request $request)
+    {
+	$user = Auth::getUser();
+        try{
+            $start_date = ($request->start_date);
+            if($start_date){
+                $ad = intval($request->ad_id);
+				Ad::where('id', $ad)->update(array('start_date' => $start_date));
+				Log::info($user->name.' Updated start date for Custom Ad '.$request->ad_id.' to $'.$start_date);
+                return('Start Date has been updated');
+            }else{
+                /* bid evaluates to false - invalid */
+                return('Invalid Weight');
+			}
+         }catch(Exception $e){
+                return $e->getMessage();
+ 	 	} 
+    }
+	
+	public function updateEndDate(Request $request)
+    {
+	$user = Auth::getUser();
+        try{
+            $end_date = ($request->end_date);
+            if($end_date){
+                $ad = intval($request->ad_id);
+				Ad::where('id', $ad)->update(array('end_date' => $end_date));
+				Log::info($user->name.' Updated End Date for Custom Ad '.$request->ad_id.' to $'.$end_date);
+                return('End Date has been updated');
+            }else{
+                /* bid evaluates to false - invalid */
+                return('Invalid End Date');
+			}
+         }catch(Exception $e){
+                return $e->getMessage();
+ 	 	} 
+    }
+	
+	public function createCreative(Request $request)
+    {
+	if(!$this->checkBank()) return redirect('/addfunds');
+		if(!$this->checkBank()) return redirect('/addfunds');
+        $user = Auth::getUser();
+        $campaign = Ad::where('id', $request->id)->first();
+        $creatives = AdCreative::where('ad_id', $request->id)->get();
+        $media = Media::where([['status', 1],['location_type', $campaign->location_type],['user_id', $user->id]])->get();
+        $links = Links::where([['status', 1],['user_id', $user->id]])->get();
+        return view('new_creative', ['user' => $user, 'campaign' => $campaign, 'media' => $media, 'links' => $links]);
+    }
+	
+	public function editCreative(Request $request)
+    {
+		$user = Auth::getUser();
+        $creative = Ad::where([['id', $request->id],['buyer_id', $user->id]])->first();
+		$campaign = AdCreative::where([['id', $creative->campaign_id],['buyer_id', $user->id]])->first();
+        $currentMedia = Media::where([['id', $creative->media_id],['user_id', $user->id]])->first()->id;
+		$media = Media::where([['location_type', $campaign->location_type],['category', $campaign->campaign_category],['user_id', $user->id]])->whereIn('status', [1, 5])->orderby('media_name', 'ASC')->get();
+		$currentLink = Links::where([['id', $creative->link_id],['user_id', $user->id]])->first()->id;
+	 	$links = Links::where([['category', $campaign->campaign_category],['user_id', $user->id]])->whereIn('status', [1, 5])->orderby('link_name', 'ASC')->get();
+		return view('edit_creative', ['user' => $user, 'creative' => $creative, 'campaign' => $campaign, 'media' => $media, 'edit_creative' => $currentMedia, 'links' => $links, 'currentLink' => $currentLink]);
+    }
+	
+	public function updateCreative(Request $request)
+    {
+		if(!$this->checkBank()) return redirect('/addfunds');	
+		try{
+			$user = Auth::getUser();
+			$data = $request->all();
+			$data['user_id'] = $user->id;
+			$creative = AdCreative::where([['campaign_id', $data['campaign_id']],['buyer_id', $user->id]])->first();
+			$creative->fill($data);
+			$creative->save();
+
+			$media = DB::select('select * from media where id = '."'".$request->media_id."'".' and user_id = '.$user->id.' and status = 1');
+			$links = DB::select('select * from links where id = '."'".$request->link_id."'".' and user_id = '.$user->id.' and status = 1');
+			if ($media && $links) {
+				$update = array('status' => 1, 'updated_at' => DB::raw('NOW()'));	
+				DB::table('creatives')->where([['link_id', $request->link_id],['media_id', $request->media_id]])->update($update);
+				Log::info($user->name." Active Creative ".$request->id);
+			} else {
+				$update = array('status' => 5, 'updated_at' => DB::raw('NOW()'));
+				DB::table('creatives')->where([['link_id', $request->link_id],['media_id', $request->media_id]])->update($update);
+				Log::info($user->name." Set Creative to Pending ".$request->id);
+			}
+			
+			return redirect('/zone_manage_customAd/'.$request->campaign_id);
+			
+		} catch(Exception $e){
+            return $e->getMessage();
+        } 
+    }
+	
+	public function checkBank()
+    {
+		$bank = new CreditAchController();
+	 	$balance = intval($bank->getBalance());
+		if(!$balance) return false;
+		return true;
+    }
 
     public function addZone($site_id)
     {
