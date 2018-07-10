@@ -108,6 +108,7 @@ Route::get('/edit_creative/{id}', 'CampaignController@editCreative');
 Route::post('/edit_creative', 'CampaignController@updateCreative');
 Route::post('/update_targets', 'CampaignController@updateTargets');
 Route::post('/update_bid', 'CampaignController@updateBid');
+Route::post('/view_bid', 'CampaignController@viewBids');
 Route::post('/update_budget', 'CampaignController@updateBudget');
 Route::post('/update_counties', 'CampaignController@updateCounties');
 Route::post('/update_frequency', 'CampaignController@updateFrequencyCap');
