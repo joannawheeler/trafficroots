@@ -11,6 +11,30 @@
 	#mediaModal > div > button {
 		display:none;
 	}
+	
+	fieldset {
+  overflow: hidden
+}
+
+.radioButton {
+  float: left;
+  clear: none;
+}
+
+.radioButton label {
+  float: left;
+  clear: none;
+  display: block;
+  padding: 2px 1em 0 2px;
+}
+
+input[type=radio],
+input.radio {
+  float: left;
+  clear: none;
+  margin: 2px 0 0 2px;
+}
+	
 </style>
 @endsection
 
@@ -203,7 +227,7 @@
                                         <div class="form-group{{ $errors->has('campaign_weight') ? ' has-error' : '' }}">
                                             <label for="campaign_weight" class="col-md-4 control-label">Campaign Weight</label>
                                             <div class="col-md-8">
-						<input id="campaign_weight" type="text" class="form-control" name="campaign_weight" placeholder="Campaign Weight" value="{{ old('campaign_weight') }}" required> 
+						<input id="campaign_weight" type="text" class="form-control" name="campaign_weight" placeholder="Campaign Weight" value="{{ $available }}" min="1" max="{{ $available }}" required> 
 						<span class="help-block">You have {{ $available }} % of this Zone's Weight available for this new Ad.  Please enter a number between 1 and {{ $available }}</span>
 						@if ($errors->has('campaign_weight'))
                                                 <span class="help-block">
@@ -212,7 +236,22 @@
 						@endif
                                             </div>
                                         </div>
-
+										<div class="form-group{{ $errors->has('customize_weight') ? ' has-error' : '' }}">
+											<label for="campaign_weight" class="col-md-4 control-label">Distribute Weight</label>
+											<div class="col-md-8">
+												<div>
+													<div class="radioButton">
+														<input type="radio" id="evenWeight" name="distributeWeight" value="1" checked>
+														<label for="evenWeight">Auto Balance</label>
+													</div>
+													<div class="radioButton">
+														<input type="radio" id="customWeight" name="distributeWeight" value="2">
+														<label for="customWeight">Fixed Balance</label>
+													</div>
+												</div>s
+												<span class="help-block">This option will affect all campaigns tied to zone</span>
+											</div>
+										</div>
                                     </div>
                                 </div>
                             </div>
@@ -635,7 +674,7 @@ jQuery(document).ready(function($){
             return false;
 	}      
         var current_creatives = $('#creatives').html();
-	var this_creative = '<div class="row" id="row_' + banner_link + '_' + click_link + '" style="padding:2px;"><div class="col-md-2">&nbsp;</div><div class="col-md-8"><input class="creative" name="creative_' + banner_link + '_' + click_link + '" id="creative_' + banner_link + '_' + click_link + '" type="hidden" value="' + encodeURI(description) + '|' + encodeURI(banner_link) + '|' + encodeURI(click_link) + '"><b>' + description + ':</b> <br /><b>Banner Link: </b> ' + encodeURI(banner_link) + '<br /><b>Click Through Link: </b>' + encodeURI(click_link) + '<br /><a href="' + click_link + '"><img src="' + banner_link + '"></img></a></div><div class="col-md-2"><button class="btn btn-xs btn-danger" onclick="$(this).parent().parent().remove();"><i class="fa fa-remove"></i>&nbsp;Remove</button></div><hr><br/></div><br>';
+	var this_creative = '<div class="row" id="row_' + banner_link + '_' + click_link + '" style="padding:2px;"><div class="col-md-2">&nbsp;</div><div class="col-md-8"><input class="creative" name="creative_' + banner_link + '_' + click_link + '" id="creative_' + banner_link + '_' + click_link + '" type="hidden" value="' + encodeURI(description) + '|' + encodeURI(banner_link) + '|' + encodeURI(click_link) + '"><b>Description: ' + description + '</b> <br /><b>Banner Link: </b> ' + encodeURI(banner_link) + '<br /><b>Click Through Link: </b>' + encodeURI(click_link) + '<br /><a href="' + click_link + '"><img src="' + banner_link + '"></img></a></div><div class="col-md-2"><button class="btn btn-xs btn-danger" onclick="$(this).parent().parent().remove();"><i class="fa fa-remove"></i>&nbsp;Remove</button></div><hr><br/></div><br>';
        $('#creatives').html(current_creatives + this_creative);
        $('#description').val('');
        $('#banner_link').val('');

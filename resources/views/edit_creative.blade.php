@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Creatives')
+@section('title', 'Edit Creative')
 @section('content')
     @if(Session::has('success'))
         <div class="alert alert-success">
@@ -12,7 +12,7 @@
 			<div class="panel panel-default">
 				<a href="/manage_campaign/{{ $campaign->id }}" class="btn btn-primary btn-xs pull-right m-t m-r">
 					<span class="fa fa-arrow-circle-left"></span>&nbsp;Back to Campaign</a>
-                <h4 class="p-title">New Creative for Campaign {{ $campaign->id }} - {{ $campaign->campaign_name }}</h4>
+                <h4 class="p-title">Edit Creative for Campaign {{ $campaign->id }} - {{ $campaign->campaign_name }}</h4>
 				<input type="hidden" name="campaign_category" id="campaign_category" value="{{ $campaign->campaign_category }}">
 				<input type="hidden" name="location_type" id="location_type" value="{{ $campaign->location_type }}">
 
@@ -20,10 +20,11 @@
 					<div class="row">
 						<div class"col-xs-12">
 						<div class="col-xs-12">
-							<h2 class="text-success"><strong>Add Creatives</strong></h2>
-							<form name="creative_form" id="creative_form" class="form-horizontal" role="form" method="POST" action="{{ url('/creatives') }}">
+							<h2 class="text-success"><strong>Edit Creatives</strong></h2>
+							<form name="creative_form" id="creative_form" class="form-horizontal" role="form" method="POST" action="{{ URL::to("/edit_creative") }}">
 							{{ csrf_field() }}
 							<input type="hidden" name="campaign_id" id="campaign_id" value="{{ $campaign->id }}">
+							<input type="hidden" name="creative_id" id="creative_id" value="{{ $creative->id }}">
 							<div class="media-selection">
 								<div class="col-xs-12 col-md-6 b-r">
 								  <h3>Step 1)</h3>
@@ -37,7 +38,7 @@
 											<select id="media_id" class="form-control" name="media_id" required>
 												<option value="">Choose</option>
 												@foreach($media as $type)
-													<option value="{{ $type->id }}">{{$type->media_name}}</option>
+													<option value="{{ $type->id }}" {{ $currentMedia == $type->id ? 'selected="selected"' : '' }}>{{$type->media_name}}</option>
 												@endforeach
 											</select>
 
@@ -69,7 +70,7 @@
 										  	<select id="link_id" class="form-control" name="link_id" required>
 												<option value="">Choose</option>
 												@foreach($links as $link)
-												<option value="{{ $link->id }}">{{$link->link_name}}</option>
+												<option value="{{ $link->id }}" {{ $currentLink == $link->id ? 'selected="selected"' : '' }}>{{$link->link_name}}</option>
 												@endforeach
 											</select>
 
@@ -99,7 +100,7 @@
                                           &nbsp;Creative Name:
                                         </label>
                                         <div class="col-md-6">
-                                            <input id="description" type="text" class="form-control" maxlength="32" name="description" value="{{ old('description') }}" required autofocus>
+                                            <input id="description" type="text" class="form-control" name="description" maxlength="32" value="{{ $creative->description }}" required autofocus>
 											@if ($errors->has('description'))
 												<span class="help-block">
 													<strong>{{ $errors->first('description') }}</strong>
@@ -109,7 +110,6 @@
                                     </div>
 								</div>
 							</div>
-							<div class="hidden">
 							@if ($folders)
 							@if ($user->allow_folders && count($folders))              
 							<div class="form-group{{ $errors->has('media') ? ' has-error' : '' }}">
@@ -133,7 +133,7 @@
 							</div>
 							@endif
 							@endif
-							</div>
+							
 							<div class="form-group text-center">
 								<div class="col-xs-12">
 								<br><br>

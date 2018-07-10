@@ -89,7 +89,7 @@ GROUP BY site_id, zone_id, pub_id, cpm;";
                 $booking = DB::select("SELECT * FROM publisher_bookings WHERE zone_id = $zone AND booking_date = '$mydate'");  
             }
             DB::update("UPDATE publisher_bookings SET revenue = $earned, impressions = ".$impressions[$zone].", clicks = ".$clicks[$zone].", updated_at = NOW() WHERE id = ".$booking[0]->id);
-            //Log::info("Zone $zone earned $".$earned." on ".$impressions[$zone]." impressions and ".$clicks[$zone]." clicks.");
+            Log::info("Zone $zone earned $".$earned." on ".$impressions[$zone]." impressions and ".$clicks[$zone]." clicks.");
         }
         Log:info("ProcessEarnings completed normally\n");
     }

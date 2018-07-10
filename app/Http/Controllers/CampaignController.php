@@ -147,12 +147,12 @@ class CampaignController extends Controller
 	
     public function updateCounties(Request $request)
     {
-	    try{
+		try{
             $this->updateTargets($request);
-	    $CUtil = new CUtil();
-            $output = $CUtil->getCounties($request->campaign_id);		    
+			$CUtil = new CUtil();
+			$output = $CUtil->getCounties($request->campaign_id);
             return($output);
-	}catch(Throwable $t){
+		}catch(Throwable $t){
             Log::error($t->getMessage());
 	}
     }
@@ -210,13 +210,13 @@ class CampaignController extends Controller
                 if (is_null($value)) {
                     $data[$key] = '0';
                 }
-	    }
-	    if(isset($request->frequency_capping)) $data['frequency_capping'] = intval($request->frequency_capping);
-	    $result = DB::select('SELECT * FROM campaign_targets WHERE campaign_id = '.$request->campaign_id);
-	    if(!sizeof($result)) Log::info("There is no record yet??");
-	    if(DB::table('campaign_targets')->where('campaign_id', intval($request->campaign_id))->update($data))
-	    Log::info($user->name.' updated targets on campaign '.$request->campaign_id);
-	    Log::info(print_r($data, true));
+           }
+           if(isset($request->frequency_capping)) $data['frequency_capping'] = intval($request->frequency_capping);
+           $result = DB::select('SELECT * FROM campaign_targets WHERE campaign_id = '.$request->campaign_id);
+           if(!sizeof($result)) Log::info("There is no record yet??");
+           if(DB::table('campaign_targets')->where('campaign_id', intval($request->campaign_id))->update($data))
+           Log::info($user->name.' updated targets on campaign '.$request->campaign_id);
+           Log::info(print_r($data, true));
             return('All Changes Saved');
         } catch (Exception $e) {
             return ($e->getMessage);
@@ -233,53 +233,6 @@ class CampaignController extends Controller
 	 $balance = intval($bank->getBalance());
          if(!$balance) return false;
          return true;
-    }
-	
-	public function editCreative(Request $request)
-    {
-		$user = Auth::getUser();
-        $creative = Creative::where([['id', $request->id],['user_id', $user->id]])->first();
-		$campaign = Campaign::where([['id', $creative->campaign_id],['user_id', $user->id]])->first();
-        $currentMedia = Media::where([['id', $creative->media_id],['user_id', $user->id]])->first()->id;
-		$media = Media::where([['location_type', $campaign->location_type],['category', $campaign->campaign_category],['user_id', $user->id]])->whereIn('status', [1, 5])->orderby('media_name', 'ASC')->get();
-		$currentLink = Links::where([['id', $creative->link_id],['user_id', $user->id]])->first()->id;
-	 	$links = Links::where([['category', $campaign->campaign_category],['user_id', $user->id]])->whereIn('status', [1, 5])->orderby('link_name', 'ASC')->get();
-		$folders = Folder::where([['id', $creative->folder_id],['user_id', $user->id]])->get();
-
-		return view('edit_creative', ['user' => $user, 'creative' => $creative, 'campaign' => $campaign, 'media' => $media, 'currentMedia' => $currentMedia, 'links' => $links, 'currentLink' => $currentLink, 'folders' => $folders]);
-    }
-	
-	public function updateCreative(Request $request)
-    {
-		if(!$this->checkBank()) return redirect('/addfunds');	
-		try{
-			$user = Auth::getUser();
-			$data = $request->all();
-			$data['user_id'] = $user->id;
-			if (isset($data['folder_id'])) {
-				$data['folder_id'] = intval($data['folder_id']);
-			}
-			$creative = Creative::where([['campaign_id', $data['campaign_id']],['user_id', $user->id]])->first();
-			$creative->fill($data);
-			$creative->save();
-
-			$media = DB::select('select * from media where id = '."'".$request->media_id."'".' and user_id = '.$user->id.' and status = 1');
-			$links = DB::select('select * from links where id = '."'".$request->link_id."'".' and user_id = '.$user->id.' and status = 1');
-			if ($media && $links) {
-				$update = array('status' => 1, 'updated_at' => DB::raw('NOW()'));	
-				DB::table('creatives')->where([['link_id', $request->link_id],['media_id', $request->media_id]])->update($update);
-				Log::info($user->name." Active Creative ".$request->id);
-			} else {
-				$update = array('status' => 5, 'updated_at' => DB::raw('NOW()'));
-				DB::table('creatives')->where([['link_id', $request->link_id],['media_id', $request->media_id]])->update($update);
-				Log::info($user->name." Set Creative to Pending ".$request->id);
-			}
-			
-			return redirect('/manage_campaign/'.$request->campaign_id);
-			
-		} catch(Exception $e){
-            return $e->getMessage();
-        } 
     }
 	
     public function createCampaign()
@@ -406,52 +359,93 @@ class CampaignController extends Controller
     }
     public function createCreative(Request $request)
     {
-	if(!$this->checkBank()) return redirect('/addfunds');
         $user = Auth::getUser();
         $campaign = Campaign::where([['id', $request->id],['user_id', $user->id]])->first();
         $creatives = Creative::where([['campaign_id', $request->id],['user_id', $user->id]])->get();
-        $media = Media::where([['status', 1],['location_type', $campaign->location_type],['user_id', $user->id]])->get();
-        $folders = Folder::where([['status', 1],['location_type', $campaign->location_type],['user_id', $user->id]])->get();
-        $links = Links::where([['status', 1],['user_id', $user->id]])->get();
+        $media = Media::where([['location_type', $campaign->location_type],['category', $campaign->campaign_category],['user_id', $user->id]])->whereIn('status', [1, 5])->orderby('media_name', 'ASC')->get();
+        $folders = Folder::where([['location_type', $campaign->location_type],['user_id', $user->id]])->whereIn('status', [1, 5])->get();
+        $links = Links::where([['category', $campaign->campaign_category],['user_id', $user->id]])->whereIn('status', [1, 5])->orderby('link_name', 'ASC')->get();
         return view('new_creative', ['user' => $user, 'campaign' => $campaign, 'media' => $media, 'links' => $links, 'folders' => $folders]);
     }
     public function postCreative(Request $request)
     {
-	if(!$this->checkBank()) return redirect('/addfunds');
         $user = Auth::getUser();
         $data = $request->all();
         $data['user_id'] = $user->id;
+		$data['status'] = 5;
+		$data['weight'] = 100;
         if (isset($data['folder_id'])) {
             $data['folder_id'] = intval($data['folder_id']);
-        }
-        $current = Creative::where([['campaign_id', $data['campaign_id']],['user_id', $user->id],['status', 1]])->get();
-        $ads = sizeof($current);
-        if ($ads) {
-            $weight = (100 / ($ads + 1));
-            $creative = new Creative();
-            $creative->fill($data);
-            $creative->save();
-            Creative::where([['campaign_id', $data['campaign_id']],['user_id', $user->id],['status', 1]])->update(['weight' => $weight]);
-        } else {
-            $data['weight'] = 100;
-            $creative = new Creative();
-            $creative->fill($data);
-            $creative->save();
-        }
-        return redirect('/manage_campaign/'.$request->campaign_id);
+        }	
+		$creative = new Creative();
+		$creative->fill($data);
+		$creative->save();
+		return redirect('/manage_campaign/'.$request->campaign_id)->with('creative_updated', 'Success! A new creative has been added.');
+    }
+	
+	public function editCreative(Request $request)
+    {
+		$user = Auth::getUser();
+        $creative = Creative::where([['id', $request->id],['user_id', $user->id]])->first();
+		$campaign = Campaign::where([['id', $creative->campaign_id],['user_id', $user->id]])->first();
+        $currentMedia = Media::where([['id', $creative->media_id],['user_id', $user->id]])->first()->id;
+		$media = Media::where([['location_type', $campaign->location_type],['category', $campaign->campaign_category],['user_id', $user->id]])->whereIn('status', [1, 5])->orderby('media_name', 'ASC')->get();
+		$currentLink = Links::where([['id', $creative->link_id],['user_id', $user->id]])->first()->id;
+	 	$links = Links::where([['category', $campaign->campaign_category],['user_id', $user->id]])->whereIn('status', [1, 5])->orderby('link_name', 'ASC')->get();
+		$folders = Folder::where([['id', $creative->folder_id],['user_id', $user->id]])->get();
+
+		return view('edit_creative', ['user' => $user, 'creative' => $creative, 'campaign' => $campaign, 'media' => $media, 'currentMedia' => $currentMedia, 'links' => $links, 'currentLink' => $currentLink, 'folders' => $folders]);
+    }
+	
+	public function updateCreative(Request $request)
+    {
+		try{
+			$user = Auth::getUser();
+			$creative = Creative::find($request->creative_id);
+			if (!($creative->media_id == $request->media_id)) {
+				$creative->status = 5;
+			}
+			if (!($creative->link_id == $request->link_id)) {
+				$creative->status = 5;
+			}
+			if (isset($request->folder_id)) {
+				$creative->folder_id = intval($request->folder_id);
+			}
+			$creative->media_id = $request->media_id;
+			$creative->link_id = $request->link_id;
+			$creative->description = $request->description;
+			$creative->save();
+			
+			if ($creative->status == 5) {
+				$totalcreatives = Creative::where([['campaign_id', $request->campaign_id],['user_id', $user->id]])->count();
+				$campaign = Campaign::where([['id', $request->campaign_id],['user_id', $user->id]])->first();
+				if ($campaign){
+					if($totalcreatives == 1){
+						$update = array('status' => 5, 'updated_at' => DB::raw('NOW()'));
+						DB::table('campaigns')->where([['id', $request->campaign_id],['user_id', $user->id]])->update($update);
+						Log::info($user->name." Set campaign and creative to pending. Campaign has only 1 creative id ".$request->creative_id);
+						return redirect('/manage_campaign/'.$request->campaign_id)->with('creative_updated', 'Success! Creative and Campaign ['.$campaign->campaign_name.'] has been updated and paused. Please allow up to 24 hours for approval.');
+					}
+				}
+				return redirect('/manage_campaign/'.$request->campaign_id)->with('creative_updated', 'Success! Creative has been updated and is paused. Please allow up to 24 hours for approval.');
+			}
+			
+			return redirect('/manage_campaign/'.$request->campaign_id)->with('creative_updated', 'Success! Creative has been updated.');
+			
+		} catch(Exception $e){
+            return $e->getMessage();
+        } 
     }
 
     public function createMedia()
     {
-	if(!$this->checkBank()) return redirect('/addfunds');
-        $location_types = LocationType::all();
-        $categories = Category::all();
+        $location_types = LocationType::orderBy('description')->get();
+        $categories = Category::orderBy('category')->get();
         return view('media_upload', ['location_types' => $location_types, 'categories' => $categories]);
     }
 
     public function postMedia(Request $request)
     {
-	if(!$this->checkBank()) return redirect('/addfunds');
         try{
         $this->validate($request, [
             'media_name' => 'required|string',
@@ -484,10 +478,64 @@ class CampaignController extends Controller
             return response()->json(['result' => $t->getMessage()]);
         }
     }
-
+	
+	public function editMedia(Request $request)
+    {
+		$user = Auth::getUser();
+		$media = Media::where([['id', $request->id],['user_id', $user->id]])->first();
+		return view('edit_media', ['user' => $user->id, 'media' => $media]);
+     }	     
+	
+	public function updateMedia(Request $request)
+    {
+        $this->validate($request, [
+            'media_name' => 'required|string'
+        ]);
+		$user = Auth::getUser();
+		$media = Media::find($request->media_id);
+		$media->media_name = $request->media_name;
+		$media->location_type = $request->image_size;
+		$media->category = $request->image_category;
+		if ($request->file('file')){
+			$destination = 'uploads/'.$user->id;
+        	$path = $request->file('file')->store($destination);
+			$media->file_location = $path;
+			$media->status = 5;
+		}
+		$media->save();
+		
+		if ($media) {
+			if($media->status == 5){
+				$update = array('status' => 5, 'updated_at' => DB::raw('NOW()'));
+				DB::table('creatives')->where([['media_id', $request->media_id],['user_id', $user->id]])->update($update);
+				Log::info($user->name." Set creatives to pending tied to media id ".$request->media_id);
+				$creatives = array();
+				$creatives = DB::table('campaigns')
+				->join('creatives', 'creatives.campaign_id', '=', 'campaigns.id')
+				->join('media', 'media.id', '=', 'creatives.media_id')
+				->select('campaigns.campaign_name', 'creatives.campaign_id', 'creatives.description', 'media.media_name')
+				->where('media.id', $request->media_id)
+				->get();
+				if($creatives){
+					foreach ($creatives as $creative_camp) {
+						$totalcreatives = Creative::where([['campaign_id', $creative_camp->campaign_id],['user_id', $user->id]])->count();
+						if($totalcreatives == 1){
+							DB::table('campaigns')->where([['id', $creative_camp->campaign_id],['user_id', $user->id]])->update($update);
+							Log::info($user->name." Set campaign to pending. Have 1 creative that's tied to a pending media id ".$request->media_id);
+							return redirect('/library')->with('media_updated', 'Success! Media and Campaign ['.$creative_camp->campaign_name.'] has been updated and paused. Please allow up to 24 hours for approval.');
+						} else {
+							return redirect('/library')->with('media_updated', 'Success! Media and Creative ['.$creative_camp->description.'] has been updated and paused. Please refer to Campaign name ['.$creative_camp->campaign_name.'] and allow up to 24 hours for approval.');
+						}
+					}
+				}
+				return redirect('/library')->with('media_updated', 'Success! Media has been updated and currently pending. Please allow up to 24 hours for the media to be approved.');
+			}
+		} 
+		return redirect('/library')->with('media_updated', 'Success! Media has been updated.');
+    }
+	
     public function createFolder()
     {
-	if(!$this->checkBank()) return redirect('/addfunds');
         $location_types = LocationType::all();
         $categories = Category::all();
         return view('html5_upload', ['location_types' => $location_types, 'categories' => $categories]);
@@ -495,7 +543,6 @@ class CampaignController extends Controller
 
     public function postFolder(Request $request)
     {
-	if(!$this->checkBank()) return redirect('/addfunds');
         $data = $request->all();
         $folder = new Folder();
         $user = Auth::getUser();
@@ -511,14 +558,12 @@ class CampaignController extends Controller
     }
     public function createLink()
     {
-	if(!$this->checkBank()) return redirect('/addfunds');
         $categories = Category::all();
         return view('create_link', ['categories' => $categories]);
     }
 
     public function postLink(Request $request)
     {
-	if(!$this->checkBank()) return redirect('/addfunds');
         $this->validate($request, [
             'link_name' => 'required|string',
             'link_category' => 'required|exists:categories,id',
@@ -541,6 +586,55 @@ class CampaignController extends Controller
             ]);
 	}
     }
+	
+	public function editLink(Request $request)
+    {
+        $this->validate($request, [
+            'link_name' => 'required|string',
+            'link_category' => 'required|exists:categories,id',
+            'url' => 'required|url'
+        ]);
+		
+		$user = Auth::getUser();
+		$link = Links::find($request->link_id);
+		$link->link_name = $request->link_name;
+		$link->category = $request->link_category;
+		if (!($link->url == $request->url)){
+			$link->status = 5;
+		}
+		$link->url = $request->url;
+		$link->save();
+		
+		if ($link) {
+			if($link->status == 5){
+				$update = array('status' => 5, 'updated_at' => DB::raw('NOW()'));
+				DB::table('creatives')->where([['link_id', $request->link_id],['user_id', $user->id]])->update($update);
+				Log::info($user->name." Set creatives to pending tied to link id ".$request->link_id);
+				$creatives = array();
+				$creatives = DB::table('campaigns')
+				->join('creatives', 'creatives.campaign_id', '=', 'campaigns.id')
+				->join('links', 'links.id', '=', 'creatives.link_id')
+				->select('campaigns.campaign_name', 'creatives.campaign_id', 'creatives.description', 'links.link_name')
+				->where('links.id', $request->link_id)
+				->get();
+				if($creatives){
+					foreach ($creatives as $creative_camp) {
+						$totalcreatives = Creative::where([['campaign_id', $creative_camp->campaign_id],['user_id', $user->id]])->count();
+						if($totalcreatives == 1){
+							DB::table('campaigns')->where([['id', $creative_camp->campaign_id],['user_id', $user->id]])->update($update);
+							Log::info($user->name." Set campaign to pending. Have 1 creative that's tied to a pending link id ".$request->link_id);
+							return redirect()->back()->with('link_updated', 'Success! Link and Campaign ['.$creative_camp->campaign_name.'] has been updated and paused. Please allow up to 24 hours for approval.');
+						} else {
+							return redirect()->back()->with('link_updated', 'Success! Link and Creative ['.$creative_camp->description.'] has been updated and paused. Please refer to Campaign name ['.$creative_camp->campaign_name.'] and allow up to 24 hours for approval.');
+						}
+					}
+				}
+				return redirect()->back()->with('link_updated', 'Success! Link has been updated and currently pending. Please allow up to 24 hours for the link to be approved.');
+			}
+		} 
+		return redirect()->back()->with('link_updated', 'Success! Media has been updated.');
+    }
+	
     public function editCampaign(Request $request)
     {
 	if(!$this->checkBank()) return redirect('/addfunds');
@@ -554,6 +648,7 @@ class CampaignController extends Controller
             $location = $CUtil->getLocationTypes();
 	    foreach ($campaign as $camp) {
 		$themes = $CUtil->getThemes($camp->id);
+		$countries = $CUtil->getCountries($camp->id);
                 $states = $CUtil->getStates($camp->id);
                 $os_targets = $CUtil->getOperatingSystems($camp->id);
                 $platforms = $CUtil->getPlatforms($camp->id);
@@ -604,6 +699,7 @@ class CampaignController extends Controller
                     'status_types' => $status_types,
                     'location_types' => $location,
                     'creatives' => $creatives,
+					'countries' => $countries,
                     'states' => $states,
                     'os_targets' => $os_targets,
                     'browser_targets' => $browser_targets,
@@ -617,6 +713,62 @@ class CampaignController extends Controller
             }
         }
     }
+	
+	public function viewBids(Request $request)
+	{
+		try{
+		$bid = $request->bid_status;
+            if($bid){
+				$user = Auth::getUser();
+				$CUtil = new CUtil();
+				$campaign = DB::select('select * from campaigns where campaign_type = '.$request->camp_type.' and location_type = '.$request->camp_location.' and campaign_category = '.$request->camp_category);
+
+				if ($campaign) {
+					foreach ($campaign as $camp) {
+					/* get bid status */
+						$topbid = $this->getTopBid($camp->location_type);
+
+						if($topbid == 0){
+						$bid_range = 'Your bid of $'.$bid.' is in the top 5% of all bids for this location type!';
+						$bid_class = 'success';
+						}else{
+								$ratio = $camp->bid / $topbid;
+							if($ratio > .95){
+							$bid_range = 'Your bid of $'.$bid.' is in the top 5% of all bids for this location type!';
+							$bid_class = 'success';
+							}elseif($ratio > .90){
+							$bid_range = 'Your bid of $'.$bid.' is in the top 10% of all bids for this location type!';
+							$bid_class = 'info';
+
+							}elseif($ratio > .80){
+							$bid_range = 'Your bid of $'.$bid.' is in the top 20% of all bids for this location type.';
+							$bid_class = 'warning';
+							}else{
+							$bid_range = 'Your bid of $'.$bid.' is OUTSIDE the top 20% of all bids for this location type.';
+							$bid_class = 'danger';
+							}
+						}
+
+						$notification = array(
+							'bid_range' => $bid_range, 
+							'bid_class' => $bid_class
+						);
+						
+						return response()->json($notification);
+					}
+				}
+			} else{
+                $notification = array(
+					'bid_range' => "Invalid Bid", 
+					'bid_class' => "error"
+				);
+		    	return response()->json($notification);
+            }
+		}catch(Exception $e){
+			return $e->getMessage();
+		} 
+	}
+	
     public function campaigns(Request $request)
     {
 	    ini_set('memory_limit','2048M');

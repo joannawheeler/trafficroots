@@ -246,7 +246,7 @@ class GatherKeysController extends Controller
             }
 	    $state = State::where('state_name', addslashes($user['state']))->where('country_id', $country[0]->id)->get();
 	    if(!sizeof($state) && strlen($user['state'])){
-                DB::insert('INSERT INTO states (`state_name`, `country_id`, `legal`) VALUES(?,?,?)', array(addslashes($user['state']),$country[0]->id,0));
+                DB::insert('INSERT INTO states (`state_name`, `country_id`, `legal`) VALUES(?,?,?) ON DUPLICATE KEY UPDATE state_name = VALUES(`state_name`)', array(addslashes($user['state']),$country[0]->id,0));
                 $state = State::where('country_id', $country[0]->id)->where('state_name', addslashes($user['state']))->get();
 	    
 
@@ -646,8 +646,8 @@ class GatherKeysController extends Controller
     {
         $innerHTML = '';
         if(strlen($zip) == 5){
-        //Log::info('Looking up county by zip');
-        //Log::info($zip);
+        Log::info('Looking up county by zip');
+        Log::info($zip);
         $url = 'http://www.uscounties.com/zipcodes/search.pl?query='.$zip.'&stpos=0&stype=AND';
         $ch = curl_init(); 
 	curl_setopt($ch, CURLOPT_URL, $url); 
@@ -667,7 +667,7 @@ class GatherKeysController extends Controller
 	    $tmp_dom->appendChild($tmp_dom->importNode($node,true));
 	}
 	$innerHTML.=trim($tmp_dom->saveHTML()); 
-	//Log::info($innerHTML);
+	Log::info($innerHTML);
 	//Log::info('ok');
 	$x = 0;
 	foreach($tmp_dom->getElementsByTagName('td') as $element){
@@ -696,10 +696,10 @@ class GatherKeysController extends Controller
 		$state_id = $states[0]->id;
 		$data= array('zip' => $zip, 'county' => $county, 'state_code' => $state_id);
 		DB::table('trafficroots.zips')->insert($data);
-	        //Log::info('Zips table updated');
+	        Log::info('Zips table updated');
 	     }
 	}else{
-                //Log::info('Zip is known to us.');
+                Log::info('Zip is known to us.');
 	}
 	
 	return true;
