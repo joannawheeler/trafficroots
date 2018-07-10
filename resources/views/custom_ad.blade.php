@@ -319,10 +319,6 @@ input.radio {
                               <li>Combine an image and link in order to make a new creative!</li>
                           </ul>
                         </div>
-                          <!-- <div class="text-center image-preview show-icon">
-                                <i class="fa fa-camera"></i>
-                                <img class="newCampaignImg" src"" alt="Preview Image"/>
-                            </div> -->
 				    <div class="form-group{{ $errors->has('description') ? ' has-error' : '' }}" style="margin:0;">
                                         <label for="description" class="col-md-3 control-label">
                                           <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Add description to unique Image and URL combination"></em>

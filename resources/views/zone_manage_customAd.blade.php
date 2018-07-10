@@ -240,6 +240,10 @@
 			 "hideMethod": "fadeOut"
            }
 		   
+		   @if(session()->has('creative_updated'))
+				toastr.success("{{ Session::get('creative_updated') }}");
+		   @endif	
+		   
 		   $("#weight").change(function () {
 				var url = "{{ url('/update_weight') }}";
 				var mydata = $("#weight_form").serialize();

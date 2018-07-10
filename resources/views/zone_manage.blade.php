@@ -63,7 +63,11 @@ hljs.initHighlightingOnLoad();
 							<tbody>
 							@foreach($ads as $ad)
 							@if($ad->buyer_id)
-							<tr><td>{{$ad->description}}</td><td>{{$ad->weight}}</td><td>{{ StatusType::where('id', $ad->status)->first()->description }}</td><td>
+							<tr>
+								<td class="text-center"><b class=" tablesaw-cell-label">Ad</b>{{$ad->description}}</td>
+								<td class="text-center"><b class=" tablesaw-cell-label">Weight</b>{{$ad->weight}}</td>
+								<td class="text-center"><b class=" tablesaw-cell-label">Status</b><span class="currentStatus label">{{ StatusType::where('id', $ad->status)->first()->description }}</div></td>
+								<td class="text-center"><b class=" tablesaw-cell-label">Options</b>
 							@if($ad->status == 1)
 									<a href="/pause_custom_ad/{{ $ad->id }}">
 														<button class="btn btn-xs alert-warning"><i class="fa fa-pause"></i> Pause</button>
@@ -80,7 +84,12 @@ hljs.initHighlightingOnLoad();
 									</a>
 							</td></tr>
 							@else
-							<tr><td>{{$ad->description}}</td><td>{{$ad->weight}}</td><td>TrafficRoots RTB</td><td>&nbsp;</td></tr>
+							<tr>
+								<td class="text-center"><b class=" tablesaw-cell-label">Ad</b>{{$ad->description}}</td>
+								<td class="text-center"><b class=" tablesaw-cell-label">Weight</b>{{$ad->weight}}</td>
+								<td class="text-center"><b class=" tablesaw-cell-label">Status</b><span class="currentStatus label">TrafficRoots RTB</span></td>
+								<td>&nbsp;</td>
+							</tr>
 							@endif
 							@endforeach
 							</tbody>
@@ -117,12 +126,26 @@ hljs.initHighlightingOnLoad();
 			responsive: true
 		});	
 		   
-		   
+	   setStatus();	   
 	   $('.nav-click').removeClass("active");
 	   $('#nav_pub_sites').addClass("active");
 	   $('#nav_pub').addClass("active");
 	   $('#nav_pub_menu').removeClass("collapse");
-
        });
+	   
+	   function setStatus() {
+			var currentStatus = Array.from($(".currentStatus"));
+			currentStatus.forEach(function(element) {
+				if (element.innerText == "Active") {
+				  element.classList.add("label-primary");
+				} else if (element.innerText == "Declined") {
+				  element.classList.add("label-danger");
+				} else if (element.innerText == "Disabled") {
+				  element.classList.add("label-default");
+				} else {
+				  element.classList.add("label-warning");
+				};
+			});
+		};
    </script>
 @endsection

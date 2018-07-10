@@ -58,7 +58,7 @@ class ZoneController extends Controller
 	if($check == 100){
 		$available = $rtb_weight-25;
 	} else {
-		return redirect('/sites');
+		return redirect('/zone_manage/'.$zone->handle);
 	}
 
         $countries = '<option value="0" selected>All Countries</option><option value="840">US - United States of America</option><option value="124">CA - Canada</option>';
@@ -624,14 +624,60 @@ class ZoneController extends Controller
 	
 	public function createCreative(Request $request)
     {
-	if(!$this->checkBank()) return redirect('/addfunds');
-		if(!$this->checkBank()) return redirect('/addfunds');
         $user = Auth::getUser();
-        $campaign = Ad::where('id', $request->id)->first();
+        $ad = Ad::where('id', $request->id)->first();
         $creatives = AdCreative::where('ad_id', $request->id)->get();
-        $media = Media::where([['status', 1],['location_type', $campaign->location_type],['user_id', $user->id]])->get();
+        $media = Media::where([['status', 1],['location_type', $ad->location_type],['user_id', $user->id]])->get();
         $links = Links::where([['status', 1],['user_id', $user->id]])->get();
-        return view('new_creative', ['user' => $user, 'campaign' => $campaign, 'media' => $media, 'links' => $links]);
+        return view('new_creative', ['user' => $user, 'campaign' => $ad, 'media' => $media, 'links' => $links, 'view_type' => 2]);
+    }
+	
+	public function postCreative(Request $request)
+    {
+		try{
+			$user = Auth::getUser();
+			/* create media */
+			$ins = array();
+			$ins['user_id'] = $user->id;
+			$ins['location_type'] = $request->location_type;
+			$ins['category'] = 0;
+			$ins['media_name'] = $request->description.'_0';
+			$ins['file_location'] = $request->banner_link;
+			$ins['created_at'] = date('Y-m-d H:i:s');
+			$ins['status'] = 1;
+			$media = new Media();
+			$media->fill($ins);
+			$media->save();		
+			$media_id = $media->id;
+
+			/* create link */
+			$ins = array();
+			$ins['user_id'] = $user->id;
+			$ins['category'] = 0;
+			$ins['link_name'] = $request->description.'_0';
+			$ins['url'] = $request->click_link;
+			$ins['created_at'] = date('Y-m-d H:i:s');
+			$ins['status'] = 1;
+			$link = new Links();
+			$link->fill($ins);
+			$link->save();
+			$link_id = $link->id;
+
+			/* make creative */
+			$ins = array();
+			$ins['ad_id'] = $request->campaign_id;
+			$ins['weight'] = 0;
+			$ins['media_id'] = $media_id;
+			$ins['link_id'] = $link_id;
+			$ins['status'] = 1;
+			$ins['created_at'] = date('Y-m-d H:i:s');
+			$creative = new AdCreative();
+			$creative->fill($ins);
+			$creative->save();
+			return redirect('/edit_custom_ad/'.$request->campaign_id)->with('creative_updated', 'Success! A new creative has been added.');
+		}catch(Throwable $t){
+		return $t->getMessage();
+	  }
     }
 	
 	public function editCreative(Request $request)

@@ -47,6 +47,7 @@ Route::post('/update_weight', 'ZoneController@updateWeight');
 Route::post('/update_start', 'ZoneController@updateStartDate');
 Route::post('/update_end', 'ZoneController@updateEndDate');
 Route::get('/custom_creatives/{id}', 'ZoneController@createCreative');
+Route::post('/custom_creatives', 'ZoneController@postCreative');
 Route::get('/edit_custom_creative/{id}', 'ZoneController@editCreative');
 Route::post('/edit_custom_creative', 'ZoneController@updateCreative');
 Route::post('/update_adTargets', 'CampaignController@updateTargets');

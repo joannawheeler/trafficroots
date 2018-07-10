@@ -6,6 +6,8 @@
             <h2>{{ Session::get('success') }}</h2>
         </div>
     @endif
+
+@if($view_type == 1)
 <div class="container">
 	<div class="row">	
 		<div class="col-xs-12 col-md-10">
@@ -150,6 +152,93 @@
 	<div class="btn-hide">@include('media_upload')</div>
 	<div class="btn-hide">@include('link_upload')</div>
 </div>
+@else
+<div class="container">
+	<div class="row">	
+		<div class="col-xs-12 col-md-10">
+			<div class="panel panel-default">
+				<a href="/edit_custom_ad/{{ $campaign->id }}" class="btn btn-primary btn-xs pull-right m-t m-r">
+					<span class="fa fa-arrow-circle-left"></span>&nbsp;Back to Custom Ad</a>
+                <h4 class="p-title">New Creative for Custom Ad {{ $campaign->id }} - {{ $campaign->description }}</h4>
+				<div class="ibox-content">
+					<div class="row">
+						<div class"col-xs-12">
+						<div class="col-xs-12">
+							<h2 class="text-success"><strong>Add Creatives</strong></h2>
+							<form name="creative_form" id="creative_form" class="form-horizontal" role="form" method="POST" action="{{ url('/custom_creatives') }}">
+							{{ csrf_field() }}
+							<input type="hidden" name="campaign_id" id="campaign_id" value="{{ $campaign->id }}">
+							<input type="hidden" name="location_type" id="location_type" value="{{ $campaign->location_type }}">
+							<div class="media-selection">
+								<div class="col-xs-12 col-md-6 b-r">
+								  <h3>Step 1)</h3>
+									<div class="col-xs-12 form-group{{ $errors->has('banner_link') ? ' has-error' : '' }}" style="float:none;margin-bottom:0;">
+										<p><h4>Add a Banner Link&nbsp;&nbsp;<i class="fa fa-camera"></i></h4></p>
+										<div class="col-xs-12">
+											<div class="col-xs-1">
+												<em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="The banner link will act as your image for this creative" style="display:inline;"></em>
+											</div>
+											<div class="col-xs-11">
+												<input id="banner_link" type="url" class="form-control" name="banner_link" value="" placeholder="Must be a valid URL" required autofocus> @if ($errors->has('banner_link'))
+												<span class="help-block">
+													<strong>{{ $errors->first('banner_link') }}</strong>
+												</span> @endif
+											</div>
+										</div>
+				    				</div>
+								</div>
+								<div class="col-xs-12 col-md-6">
+									<h3>Step 2)</h3>
+									<div class="col-xs-12 form-group{{ $errors->has('description') ? ' has-error' : '' }}" style="float:none;margin-bottom:22px">
+										<p><h4>Add a Click Link&nbsp;<i class="fa fa-link"></i></h4></p>
+										<div class="col-xs-12">
+											<div class="col-xs-1">
+									  		<em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Add a valid link to your click through destination." style="display:inline;"></em>
+											</div>
+											<div class="col-xs-11">
+												<input id="click_link" type="text" class="form-control" name="click_link" value="" required autofocus> @if ($errors->has('click_link'))
+												<span class="help-block">
+													<strong>{{ $errors->first('click_link') }}</strong>
+												</span> @endif
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="clearfix"></div>
+								<div class="col-xs-12" style="margin-top: 40px;">
+                                  <h3>Step 3)</h3>
+									<div class="col-xs-12 form-group{{ $errors->has('description') ? ' has-error' : '' }}" style="float:none;margin-bottom:22px">
+                                        <h4>Combine Image and URL</h4>
+                                        <label for="description" class="col-md-3 control-label">
+                                          <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Add description to unique Image and URL combination" style="display:inline;"></em>
+                                          &nbsp;Creative Name:
+                                        </label>
+                                        <div class="col-md-6">
+											<input id="description" type="text" class="form-control" name="description" value="" required autofocus> @if ($errors->has('description'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('description') }}</strong>
+                                            </span> @endif
+										</div>
+                                    </div>
+								</div>
+				    		</div>
+							<div class="form-group text-center">
+								<div class="col-xs-12">
+									<br><br>
+									<input class="btn btn-primary btn-sm" type="submit" name="submit" id="submit">
+								</div>
+							</div>
+							</form>
+						</div>
+						</div>
+					</div>
+				</div>
+        	</div>
+		</div>
+    </div>
+</div>
+@endif
+<script src="{{ URL::asset('js/plugins/flot/jquery.flot.tooltip.min.js') }}"></script>
 <script type="text/javascript">
     jQuery(document).ready(function($){
 		$(document).on('hidden.bs.modal', function(){
@@ -201,6 +290,7 @@
 		$("#image_category_id option:eq(" + getCampaign + ")").attr('selected', 'selected');
 		$("#link_category_id option:eq(" + getCampaign + ")").attr('selected', 'selected');
 		$("#location_type_id option:eq(" + getLoctionType + ")").attr('selected', 'selected');
+		$('[data-toggle="tooltip"]').tooltip();
     });
 
 	
