@@ -24,6 +24,7 @@
 							<form name="creative_form" id="creative_form" class="form-horizontal" role="form" method="POST" action="{{ URL::to("/edit_creative") }}">
 							{{ csrf_field() }}
 							<input type="hidden" name="campaign_id" id="campaign_id" value="{{ $campaign->id }}">
+							<input type="hidden" name="creative_id" id="creative_id" value="{{ $creative->id }}">
 							<div class="media-selection">
 								<div class="col-xs-12 col-md-6 b-r">
 								  <h3>Step 1)</h3>
@@ -99,7 +100,7 @@
                                           &nbsp;Creative Name:
                                         </label>
                                         <div class="col-md-6">
-                                            <input id="description" type="text" class="form-control" name="description" value="{{ $creative->description }}" required autofocus>
+                                            <input id="description" type="text" class="form-control" name="description" maxlength="32" value="{{ $creative->description }}" required autofocus>
 											@if ($errors->has('description'))
 												<span class="help-block">
 													<strong>{{ $errors->first('description') }}</strong>

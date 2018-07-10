@@ -158,10 +158,10 @@
                                  </select>
                             </div>
 							<div class="col-xs-12 form-group">
-								<label>Country / Geo Targeting - Hold Ctrl to Select Multiple Countries</label>
+                            	<label>Country / Geo Targeting - Hold Ctrl to Select Multiple Countries</label>
 								<select id="countries" name="countries[]" class="chosen-select form-control" multiple>
 								{!! $countries !!}
-                           		</select>
+								</select>
 							</div>
                             <div class="col-xs-12 form-group">
                                  <label>State Targeting - Hold Ctrl to Select Multiple States</label>
@@ -418,6 +418,10 @@ jQuery(document).ready(function ($) {
            @endif
        });
            
+	@if(session()->has('creative_updated'))
+		toastr.success("{{ Session::get('creative_updated') }}");
+	@endif		   
+		   
     function setStatus() {
        var currentStatus = Array.from($(".currentStatus"));
        currentStatus.forEach(function(element) {

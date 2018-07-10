@@ -35,6 +35,7 @@
 											</div>
 											<div class="col-xs-11">
 											<select id="media_id" class="form-control" name="media_id" required>
+												<option value="">Choose</option>
 												@foreach($media as $type)
 													<option value="{{ $type->id }}">{{$type->media_name}}</option>
 												@endforeach
@@ -98,7 +99,7 @@
                                           &nbsp;Creative Name:
                                         </label>
                                         <div class="col-md-6">
-                                            <input id="description" type="text" class="form-control" name="description" value="{{ old('description') }}" required autofocus>
+                                            <input id="description" type="text" class="form-control" maxlength="32" name="description" value="{{ old('description') }}" required autofocus>
 											@if ($errors->has('description'))
 												<span class="help-block">
 													<strong>{{ $errors->first('description') }}</strong>
@@ -108,6 +109,7 @@
                                     </div>
 								</div>
 							</div>
+							<div class="hidden">
 							@if ($folders)
 							@if ($user->allow_folders && count($folders))              
 							<div class="form-group{{ $errors->has('media') ? ' has-error' : '' }}">
@@ -131,7 +133,7 @@
 							</div>
 							@endif
 							@endif
-							
+							</div>
 							<div class="form-group text-center">
 								<div class="col-xs-12">
 								<br><br>
