@@ -189,7 +189,7 @@
 								</div>
 								<div class="col-xs-12 col-md-6">
 									<h3>Step 2)</h3>
-									<div class="col-xs-12 form-group{{ $errors->has('description') ? ' has-error' : '' }}" style="float:none;margin-bottom:22px">
+									<div class="col-xs-12 form-group{{ $errors->has('click_link') ? ' has-error' : '' }}" style="float:none;margin-bottom:22px">
 										<p><h4>Add a Click Link&nbsp;<i class="fa fa-link"></i></h4></p>
 										<div class="col-xs-12">
 											<div class="col-xs-1">

@@ -394,7 +394,7 @@ class CampaignController extends Controller
 	 	$links = Links::where([['category', $campaign->campaign_category],['user_id', $user->id]])->whereIn('status', [1, 5])->orderby('link_name', 'ASC')->get();
 		$folders = Folder::where([['id', $creative->folder_id],['user_id', $user->id]])->get();
 
-		return view('edit_creative', ['user' => $user, 'creative' => $creative, 'campaign' => $campaign, 'media' => $media, 'currentMedia' => $currentMedia, 'links' => $links, 'currentLink' => $currentLink, 'folders' => $folders]);
+		return view('edit_creative', ['user' => $user, 'creative' => $creative, 'campaign' => $campaign, 'media' => $media, 'currentMedia' => $currentMedia, 'links' => $links, 'currentLink' => $currentLink, 'folders' => $folders, 'view_type' => 1]);
     }
 	
 	public function updateCreative(Request $request)

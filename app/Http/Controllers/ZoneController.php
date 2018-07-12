@@ -237,8 +237,9 @@ class ZoneController extends Controller
 			    $link_id = $link->id;
 
 			    /* make creative */
-                            $ins = array();
+				$ins = array();
 			    $ins['ad_id'] = $ad_id;
+				$ins['description'] = $request->description;
 			    $ins['weight'] = 0;
 			    $ins['media_id'] = $media_id;
 			    $ins['link_id'] = $link_id;
@@ -486,45 +487,44 @@ class ZoneController extends Controller
     {
 		$user = Auth::getUser();
 		$CUtil = new CUtil();
+		$ad = DB::select('select * from ads where id = '.$request->id);
 		
-		$ad = Ad::where('id', $request->id)->firstOrFail();
         if ($ad) {
+			$category = $CUtil->getCategories();
             $status_types = $CUtil->getStatusTypes();
             $location = $CUtil->getLocationTypes();
 			
-			foreach ($ad as $ads) {
-				$themes = $CUtil->getThemes(67);
-				$countries = $CUtil->getCountries(67);
-				$states = $CUtil->getStates(67);
-				$os_targets = $CUtil->getOperatingSystems(67);
-				$platforms = $CUtil->getPlatforms(67);
-				$browser_targets = $CUtil->getBrowsers(67);
-				$counties = $CUtil->getCounties(67);
-				$row = DB::table('campaign_targets')->where('campaign_id', 67)->first();
-				$creatives = AdCreative::where('ad_id', $request->id)->get();
-				if (!$creatives) {
-					$creatives = array();
-				}
+			foreach ($ad as $camp) {
+				$countries = $CUtil->getCountries($camp->id, 1);
+                $states = $CUtil->getStates($camp->id, 1);
+                $os_targets = $CUtil->getOperatingSystems($camp->id, 1);
+                $platforms = $CUtil->getPlatforms($camp->id, 1);
+				$browser_targets = $CUtil->getBrowsers($camp->id, 1);
+				$counties = $CUtil->getCounties($camp->id, 1);
+				$creatives = AdCreative::where('ad_id', $camp->id)->get();
+                if (!$creatives) {
+                    $creatives = array();
+                }
+				$row = $camp->keywords;
 			}
-		}
 		
-		$frequencyCapping = '<option value="0">Disabled</option><option value="1">1 Impression Per 24 Hours</option><option value="2">2 Impressions Per 24 Hours</option><option value="3">3 Impressions Per 24 Hours</option><option value="4">4 Impressions Per 24 Hours</option><option value="5">5 Impressions Per 24 Hours</option>';
+			$frequencyCapping = '<option value="0">Disabled</option><option value="1">1 Impression Per 24 Hours</option><option value="2">2 Impressions Per 24 Hours</option><option value="3">3 Impressions Per 24 Hours</option><option value="4">4 Impressions Per 24 Hours</option><option value="5">5 Impressions Per 24 Hours</option>';
 
-		return view('zone_manage_customAd', [
-					'ad' => $ad,
-					'frequencyCapping' => $frequencyCapping,
-					'location_types' => $location,
-					'status_types' => $status_types,
-		    		'themes' => $themes,
-					'countries' => $countries,
-                    'states' => $states,
-                    'os_targets' => $os_targets,
-                    'browser_targets' => $browser_targets,
-                    'platforms' => $platforms,
-                    'keywords' => str_replace("|", ",", $row->keywords),
-		    		'counties' => $counties,
-					'creatives' => $creatives
-		]);
+			return view('zone_manage_customAd', [
+						'ad' => $camp,
+						'frequencyCapping' => $frequencyCapping,
+						'location_types' => $location,
+						'status_types' => $status_types,
+						'countries' => $countries,
+						'states' => $states,
+						'os_targets' => $os_targets,
+						'browser_targets' => $browser_targets,
+						'platforms' => $platforms,
+						'keywords' => str_replace("|", ",", $row),
+						'counties' => $counties,
+						'creatives' => $creatives
+			]);
+		}
     }
 	
 	public function updateWeight(Request $request)
@@ -666,6 +666,7 @@ class ZoneController extends Controller
 			/* make creative */
 			$ins = array();
 			$ins['ad_id'] = $request->campaign_id;
+			$ins['description'] = $request->description;
 			$ins['weight'] = 0;
 			$ins['media_id'] = $media_id;
 			$ins['link_id'] = $link_id;
@@ -683,43 +684,48 @@ class ZoneController extends Controller
 	public function editCreative(Request $request)
     {
 		$user = Auth::getUser();
-        $creative = Ad::where([['id', $request->id],['buyer_id', $user->id]])->first();
-		$campaign = AdCreative::where([['id', $creative->campaign_id],['buyer_id', $user->id]])->first();
-        $currentMedia = Media::where([['id', $creative->media_id],['user_id', $user->id]])->first()->id;
-		$media = Media::where([['location_type', $campaign->location_type],['category', $campaign->campaign_category],['user_id', $user->id]])->whereIn('status', [1, 5])->orderby('media_name', 'ASC')->get();
-		$currentLink = Links::where([['id', $creative->link_id],['user_id', $user->id]])->first()->id;
-	 	$links = Links::where([['category', $campaign->campaign_category],['user_id', $user->id]])->whereIn('status', [1, 5])->orderby('link_name', 'ASC')->get();
-		return view('edit_creative', ['user' => $user, 'creative' => $creative, 'campaign' => $campaign, 'media' => $media, 'edit_creative' => $currentMedia, 'links' => $links, 'currentLink' => $currentLink]);
+        $creative = AdCreative::find($request->id);
+		$campaign = Ad::find($creative->ad_id);
+		return view('edit_creative', ['creative' => $creative, 'campaign' => $campaign, 'view_type'=>2]);
     }
 	
 	public function updateCreative(Request $request)
     {
-		if(!$this->checkBank()) return redirect('/addfunds');	
 		try{
 			$user = Auth::getUser();
-			$data = $request->all();
-			$data['user_id'] = $user->id;
-			$creative = AdCreative::where([['campaign_id', $data['campaign_id']],['buyer_id', $user->id]])->first();
-			$creative->fill($data);
+			$creative = AdCreative::find($request->creative_id);
+			$creative->status = 1;
+			$creative->description = $request->description;
+			
+			$media = Media::find($creative->media_id);
+			$link = Media::find($creative->link_id);
 			$creative->save();
-
-			$media = DB::select('select * from media where id = '."'".$request->media_id."'".' and user_id = '.$user->id.' and status = 1');
-			$links = DB::select('select * from links where id = '."'".$request->link_id."'".' and user_id = '.$user->id.' and status = 1');
-			if ($media && $links) {
-				$update = array('status' => 1, 'updated_at' => DB::raw('NOW()'));	
-				DB::table('creatives')->where([['link_id', $request->link_id],['media_id', $request->media_id]])->update($update);
-				Log::info($user->name." Active Creative ".$request->id);
-			} else {
-				$update = array('status' => 5, 'updated_at' => DB::raw('NOW()'));
-				DB::table('creatives')->where([['link_id', $request->link_id],['media_id', $request->media_id]])->update($update);
-				Log::info($user->name." Set Creative to Pending ".$request->id);
+			
+			$links = 0;
+			$update = array('status' => 5, 'updated_at' => DB::raw('NOW()'));
+			if (!($media->file_location == $request->banner_link)){
+				DB::table('media')->where([['id', $creative->media_id],['user_id', $user->id]])->update($update);
+				Log::info($user->name." Updated media for AdCreative id ".$request->creative_id);
+				$links = 1;
 			}
 			
-			return redirect('/zone_manage_customAd/'.$request->campaign_id);
+			if (!($link->url == $request->click_link)){
+				DB::table('links')->where([['id', $creative->link_id],['user_id', $user->id]])->update($update);
+				Log::info($user->name." Updated link for AdCreative id ".$request->creative_id);
+				$links = 2;
+			}
+			
+			if ($links == 1) {
+				return redirect('/edit_custom_ad/'.$request->campaign_id)->with('creative_updated', 'Success! Media and Creative has been updated.');
+			} elseif ($links == 2){
+				return redirect('/edit_custom_ad/'.$request->campaign_id)->with('creative_updated', 'Success! Link and Creative has been updated.');
+			}
+			
+			return redirect('/edit_custom_ad/'.$request->campaign_id)->with('creative_updated', 'Success! Creative has been updated.');
 			
 		} catch(Exception $e){
             return $e->getMessage();
-        } 
+        }
     }
 	
 	public function checkBank()

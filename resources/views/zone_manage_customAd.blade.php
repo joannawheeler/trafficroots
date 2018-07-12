@@ -114,12 +114,6 @@
 					<input type="hidden" id="ad_id" name="ad_id" value="{{ $ad->id }}">
 					<h2 class="text-success"><strong>Campaign Targeting Options</strong></h2>
 					<div class="col-xs-12 form-group">
-						 <label>Site Targeting - Hold Ctrl to Select Multiple Themes</label>
-						 <select id="themes[]" name="themes[]" class="chosen-select form-control state-control" data-placeholder="Choose a theme..." multiple>
-						 {!! $themes !!}
-						 </select>
-					</div>
-					<div class="col-xs-12 form-group">
 						<label>Country / Geo Targeting - Hold Ctrl to Select Multiple Countries</label>
 						<select id="countries" name="countries[]" class="chosen-select form-control" multiple>
 						{!! $countries !!}
@@ -175,6 +169,7 @@
                                 <thead>
                                     <tr>
                                         <th>Date</th>
+										<th>Creative Name</th>
 										<th>Weight</th>
                                         <th>Media</th>
                                         <th>Link</th>
@@ -186,6 +181,7 @@
                                     @foreach ($creatives as $file)
                                     <tr class="creative_row" id="creative_row_{{ $file->id }}">
                                         <td class="text-center"><b class=" tablesaw-cell-label">Date</b> {{ $file->created_at->format('m/d/Y') }} </td>
+										<td class="text-center"><b class=" tablesaw-cell-label">Creative Name</b> {{ $file->description }} </td>
 										<td class="text-center"><b class=" tablesaw-cell-label">Weight</b> {{ $file->weight }} </td>
                                         <td class="text-center"><b class=" tablesaw-cell-label">Media</b>
 											<a href="#" class="tr-preview" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="" data-content="<img src='https://publishers.trafficroots.com/{{ $file->medias->file_location }}' width='100%' height='auto'>" id="view_media_{{ $file->id }}"><span>{{ $file->medias->file_location }}</span></a> 
