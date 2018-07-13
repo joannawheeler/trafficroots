@@ -2,8 +2,17 @@
 @section('title','Zone Management')
 @section('css')
 @section('js')
+<script src="{{ URL::asset('js/plugins/select2/select2.full.min.js') }}"></script>
+<script src="{{ URL::asset('js/plugins/chosen/chosen.jquery.js') }}"></script>
+@endsection
 
 @section('content')
+    @if(Session::has('success'))
+        <div class="alert alert-success">
+            <h2>{{ Session::get('success') }}</h2>
+        </div>
+    @endif
+
 <div class="content">
     <div class="row">   
         <div class="col-xs-12">
@@ -71,6 +80,7 @@
 										{{ csrf_field() }}
 										<input type="number" id="weight" name="weight" value="{{ $ad->weight }}" size="3">
 										<input type="hidden" id="ad_id" name="ad_id" value="{{ $ad->id }}">
+										<input type="hidden" id="handle" name="handle" value="{{ $ad->zone_handle }}">
 									</form>
 								</td>
 								<td class="text-center"><b class=" tablesaw-cell-label">Impression Cap</b>
@@ -112,6 +122,8 @@
 				<form name="target_form" id="target_form" role="form" class="form-horizontal" target="#" method="POST">
 					{{ csrf_field() }}
 					<input type="hidden" id="ad_id" name="ad_id" value="{{ $ad->id }}">
+					<input type="hidden" id="ad_handle" name="ad_handle" value="{{ $ad->zone_handle }}">
+					<input type="hidden" id="ad_description" name="ad_description" value="{{ $ad->description }}">
 					<h2 class="text-success"><strong>Campaign Targeting Options</strong></h2>
 					<div class="col-xs-12 form-group">
 						<label>Country / Geo Targeting - Hold Ctrl to Select Multiple Countries</label>
@@ -306,10 +318,11 @@
 			});
 		   
 		   $('[data-toggle="tooltip"]').tooltip();
+
 		   $(".form-control").change(function () {
-			   	var url = "{{ url('/update_targets') }}";
-            	var mydata = $("#target_form").serialize();
-            	$.post(url, mydata)
+            var url = "{{ url('/update_adTargets') }}";
+            var mydata = $("#target_form").serialize();
+            $.post(url, mydata)
                 .done(function (response) {
                     toastr.success(response);
                 })
@@ -317,10 +330,10 @@
                     toastr.error(response);
                 });
         	});
-    		
+		   
 		   $(".state-control").change(function () {
 			   $('#counties').html('');
-				var url = "{{ url('/update_counties') }}";
+				var url = "{{ url('/update_adCounties') }}";
 				var mydata = $("#target_form").serialize();
 				$.post(url, mydata)
 				.done(function (response) {

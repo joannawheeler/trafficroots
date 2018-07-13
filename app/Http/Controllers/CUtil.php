@@ -137,7 +137,7 @@ class CUtil extends Controller
     {
 		if ($ad) {
 			$targets = DB::table('ads')->where('id', $id)->first();
-			$county_targets = explode("|",$targets->country_id);
+			$county_targets = explode("|",$targets->county_id);
 			$state_targets = implode(",",explode("|",$targets->state_id));
 		} else {
 			$targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();

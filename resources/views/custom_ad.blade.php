@@ -16,24 +16,7 @@
   overflow: hidden
 }
 
-.radioButton {
-  float: left;
-  clear: none;
-}
 
-.radioButton label {
-  float: left;
-  clear: none;
-  display: block;
-  padding: 2px 1em 0 2px;
-}
-
-input[type=radio],
-input.radio {
-  float: left;
-  clear: none;
-  margin: 2px 0 0 2px;
-}
 	
 </style>
 @endsection
@@ -227,31 +210,20 @@ input.radio {
                                         <div class="form-group{{ $errors->has('campaign_weight') ? ' has-error' : '' }}">
                                             <label for="campaign_weight" class="col-md-4 control-label">Campaign Weight</label>
                                             <div class="col-md-8">
-						<input id="campaign_weight" type="text" class="form-control" name="campaign_weight" placeholder="Campaign Weight" value="{{ $available }}" min="1" max="{{ $available }}" required> 
-						<span class="help-block">You have {{ $available }} % of this Zone's Weight available for this new Ad.  Please enter a number between 1 and {{ $available }}</span>
-						@if ($errors->has('campaign_weight'))
+												<div class="radio inline-radio">
+													<input id="campaign_weight" type="text" class="form-control" name="campaign_weight" placeholder="Campaign Weight" value="{{ $available }}" min="1" max="{{ $available }}" style="display: inline-block; width: 150px;" required>&nbsp;&nbsp;
+													<label><input type="radio" id="evenWeight" name="distributeWeight" value="0" checked />Auto Balance</label>&nbsp;&nbsp;
+													<label><input type="radio" id="customWeight" name="distributeWeight" value="1" />Fixed Balance</label>
+												</div>
+												
+												<span class="help-block">You have {{ $available }} % of this Zone's Weight available for this new Ad.  Please enter a number between 1 and {{ $available }}.</span>
+												@if ($errors->has('campaign_weight'))
                                                 <span class="help-block">
                                                         <strong>{{ $errors->first('campaign_weight') }}</strong>
                                                 </span> 
-						@endif
+												@endif
                                             </div>
                                         </div>
-										<div class="form-group{{ $errors->has('customize_weight') ? ' has-error' : '' }}">
-											<label for="campaign_weight" class="col-md-4 control-label">Distribute Weight</label>
-											<div class="col-md-8">
-												<div>
-													<div class="radioButton">
-														<input type="radio" id="evenWeight" name="distributeWeight" value="1" checked>
-														<label for="evenWeight">Auto Balance</label>
-													</div>
-													<div class="radioButton">
-														<input type="radio" id="customWeight" name="distributeWeight" value="2">
-														<label for="customWeight">Fixed Balance</label>
-													</div>
-												</div>s
-												<span class="help-block">This option will affect all campaigns tied to zone</span>
-											</div>
-										</div>
                                     </div>
                                 </div>
                             </div>
@@ -319,52 +291,66 @@ input.radio {
                               <li>Combine an image and link in order to make a new creative!</li>
                           </ul>
                         </div>
-				    <div class="form-group{{ $errors->has('description') ? ' has-error' : '' }}" style="margin:0;">
-                                        <label for="description" class="col-md-3 control-label">
-                                          <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Add description to unique Image and URL combination"></em>
-                                          &nbsp;Description:
-                                        </label>
-                                        <div class="col-md-9">
-                                            <input id="description" type="text" class="form-control" name="description" value="" required autofocus> @if ($errors->has('description'))
-                                            <span class="help-block">
-                                                <strong>{{ $errors->first('description') }}</strong>
-                                            </span> @endif
-                                        </div>
-				    </div>
-                                     <div class="form-group{{ $errors->has('banner_link') ? ' has-error' : '' }}" style="margin:0;">
-                                        <label for="banner_link" class="col-md-3 control-label">
-                                          <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Enter a valid link to your desired Banner Image"></em>
-                                          &nbsp;Banner Link:
-                                        </label>
-                                        <div class="col-md-9">
-                                            <input id="banner_link" type="url" class="form-control" name="banner_link" value="" required autofocus> @if ($errors->has('banner_link'))
-                                            <span class="help-block">
-                                                <strong>{{ $errors->first('banner_link') }}</strong>
-                                            </span> @endif
-                                        </div>
-				    </div>
-                                      <div class="form-group{{ $errors->has('description') ? ' has-error' : '' }}" style="margin:0;">
-                                        <label for="click_link" class="col-md-3 control-label">
-                                          <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Add a valid link to your click through destination."></em>
-                                          &nbsp;Click Link:
-                                        </label>
-                                        <div class="col-md-9">
-                                            <input id="click_link" type="text" class="form-control" name="click_link" value="" required autofocus> @if ($errors->has('click_link'))
-                                            <span class="help-block">
-                                                <strong>{{ $errors->first('click_link') }}</strong>
-                                            </span> @endif
-                                        </div>
-				    </div>
-                                 
-                                        <div class="text-center" style="padding:4px;">
-                                            <button class="btn btn-primary" onclick="return addCreative();"><i class="fa fa-plus-square-o"></i>&nbsp;Add Creative</button>
-                                            <br />
-                                        </div>
-                                    <div class="ibox-content" id="creatives">
-                                        <h4>Creatives:</h4>
-                                    </div>
-
-                            </div>
+						<div class="media-selection">
+							<div class="col-xs-12 col-md-6 b-r">
+							  <h3>Step 1)</h3>
+								<div class="col-xs-12 form-group{{ $errors->has('banner_link') ? ' has-error' : '' }}" style="float:none;margin-bottom:0;">
+									<p><h4>Add a Banner Link&nbsp;&nbsp;<i class="fa fa-camera"></i></h4></p>
+									<div class="form-group col-xs-12 mediaOptions">
+										<em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Enter a valid link to your desired Banner Image" style="display:inline;"></em>
+										<div class="col-xs-11">
+											<input id="banner_link" type="url" class="form-control" name="banner_link" value="" placeholder="Must be a valid URL" required autofocus> 
+											@if ($errors->has('banner_link'))
+											<span class="help-block">
+												<strong>{{ $errors->first('banner_link') }}</strong>
+											</span> @endif
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-12 col-md-6">
+								<h3>Step 2)</h3>
+								<div class="col-xs-12 form-group{{ $errors->has('click_link') ? ' has-error' : '' }}" style="float:none;margin-bottom:22px">
+									<p><h4>Add a Click Link&nbsp;<i class="fa fa-link"></i></h4></p>
+									<div class="col-xs-12">
+										<em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Add a valid link to your click through destination." style="display:inline;"></em>
+										<div class="col-xs-11">
+											<input id="click_link" type="text" class="form-control" name="click_link" value="" required autofocus> @if ($errors->has('click_link'))
+											<span class="help-block">
+												<strong>{{ $errors->first('click_link') }}</strong>
+											</span> @endif
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-xs-12" style="margin-top: 40px;">
+								<h3>Step 3)</h3>
+								<div class="form-group{{ $errors->has('description') ? ' has-error' : '' }}" style="margin:0;">
+									<h4>Combine Image and URL</h4>
+									<label for="description" class="col-md-3 control-label">
+									  <em class="fa fa-question-circle" data-toggle="tooltip" data-placement="top" title="Add description to unique Image and URL combination" style="display:inline;"></em>
+									  &nbsp;Creative Name:
+									</label>
+									<div class="col-md-6">
+										<input id="description" type="text" class="form-control" name="description" maxlength="32" value="" required autofocus> @if ($errors->has('description'))
+										<span class="help-block">
+											<strong>{{ $errors->first('description') }}</strong>
+										</span> @endif
+									</div>
+								</div>
+							</div>
+							<div class="clearfix"></div>
+							<br>
+							<div class="text-center" style="padding:4px;">
+								<button class="btn btn-xs btn-primary" onclick="return addCreative();"><i class="fa fa-plus-square-o"></i>&nbsp;Add Creative</button>
+								<br />
+								<br />
+							</div>						</div>
+						
+						<div class="ibox-content" id="creatives">
+							<h4>Creatives:</h4>
+						</div>
+					</div>
 
 
                     <h1>Overview & Options</h1>

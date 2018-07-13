@@ -166,7 +166,7 @@
 						<div class"col-xs-12">
 						<div class="col-xs-12">
 							<h2 class="text-success"><strong>Edit Creatives</strong></h2>
-							<form name="creative_form" id="creative_form" class="form-horizontal" role="form" method="POST" action="{{ URL::to('/custom_creatives') }}">
+							<form name="creative_form" id="creative_form" class="form-horizontal" role="form" method="POST" action="{{ URL::to('/edit_custom_creative') }}">
 							{{ csrf_field() }}
 							<input type="hidden" name="campaign_id" id="campaign_id" value="{{ $campaign->id }}">
 							<input type="hidden" name="location_type" id="location_type" value="{{ $campaign->location_type }}">

@@ -50,15 +50,15 @@ class ZoneController extends Controller
 	foreach($ads as $ad){
 		if($ad->buyer_id == 0){
 			$rtb_weight = $ad->weight;
-		}else{
-			$weight += $ad->weight;
-		}
+		} elseif ($ad->weight_fixed == 1) {
+			$weight  = $ad->weight;
+		} 
 	}
-	$check = $rtb_weight + $weight;
-	if($check == 100){
-		$available = $rtb_weight-25;
+	$check = $weight;
+	if($check == 75){
+		$available = 0;
 	} else {
-		return redirect('/zone_manage/'.$zone->handle);
+		$available = 75 - $weight;
 	}
 
         $countries = '<option value="0" selected>All Countries</option><option value="840">US - United States of America</option><option value="124">CA - Canada</option>';
@@ -198,7 +198,7 @@ class ZoneController extends Controller
 		    }else{
                             $new_ad['weight'] = round($available / 2);
 		    }
-		    $data = $this->updateTargets($request);
+		    $data = $this->updateTargets1($request);
 		    $insert_array = array_merge($new_ad, $data);
                     $insert_array['created_at'] = date('Y-m-d H:i:s');
 		    $ad = new Ad();
@@ -258,7 +258,8 @@ class ZoneController extends Controller
             return $t->getMessage();
           }
     }
-   public function updateTargets(Request $request)
+	
+	public function updateTargets1(Request $request)
     {
         try {
 	    $data = array();
@@ -308,6 +309,78 @@ class ZoneController extends Controller
             return ($e->getMessage);
         }
     }
+
+	
+   	public function updateTargets(Request $request)
+    {
+        try {
+			$data = array();
+			if(is_array($request->countries)){
+			$data['country_id'] = implode("|",$request->countries);
+			}else{
+			$data['country_id'] = ''.$request->countries;
+            }
+            if (is_array($request->states)) {
+                $data['state_id'] = implode("|", $request->states);
+            } else {
+                $data['state_id'] = ''.intval($request->states);
+            }
+            if (is_array($request->counties)) {
+                $data['county_id'] = implode("|", $request->counties);
+            } else {
+                $data['county_id'] = ''.intval($request->counties);
+            }
+	    if (is_array($request->platform_targets)) {
+                $data['device_id'] = implode("|", $request->platform_targets);
+            } else {
+                $data['device_id'] = ''.$request->platform_targets;
+            }
+            if (is_array($request->operating_systems)) {
+                $data['os_id'] = implode("|", $request->operating_systems);
+            } else {
+                $data['os_id'] = ''.$request->operating_systems;
+            }
+            if (is_array($request->browser_targets)) {
+                $data['browser_id'] = implode("|", $request->browser_targets);
+            } else {
+                $data['browser_id'] = ''.$request->browser_targets;
+            }
+            if (strlen(trim($request->keyword_targets))) {
+                $data['keywords'] = str_replace(",", "|", $request->keyword_targets);
+            } else {
+                $data['keywords'] = '';
+            }
+            foreach ($data as $key => $value) {
+                if (is_null($value)) {
+                    $data[$key] = '0';
+                }
+	    	}
+						
+			if(isset($request->frequency_capping)) $data['frequency_capping'] = intval($request->frequency_capping);
+			$result = DB::select('SELECT * FROM ads WHERE id = '.$request->ad_id);
+			if(!sizeof($result)) Log::info("There is no record yet??");
+           	if(DB::table('ads')->where('id', intval($request->ad_id))->update($data))
+           	Log::info($user->name.' updated targets on Ad Campaign '.$request->ad_id);
+           	Log::info(print_r($data, true));
+            return('All Changes Saved');
+			
+		} catch (Exception $e) {
+			return ($e->getMessage);
+		}
+    }
+	
+	public function updateCounties(Request $request)
+    {
+		try{
+            $this->updateTargets($request);
+			$CUtil = new CUtil();
+			$output = $CUtil->getCounties($request->ad_id, 1);
+            return($output);
+		}catch(Throwable $t){
+            Log::error($t->getMessage());
+		}
+    }
+	
     public function manageZone(Request $request)
     {
 	    if(strlen($request->handle)){
@@ -529,21 +602,78 @@ class ZoneController extends Controller
 	
 	public function updateWeight(Request $request)
     {
-	$user = Auth::getUser();
+		$handle = $request->handle;
+		$user = Auth::getUser();
         try{
             $weight = (float)($request->weight);
             if($weight){
-                $ad = intval($request->ad_id);
-				Ad::where('id', $ad)->update(array('weight' => $weight));
-				Log::info($user->name.' Updated weight for Custom Ad '.$request->ad_id.' to $'.$weight);
-                return('Weight has been updated');
-            }else{
+                $currentAd = intval($request->ad_id);
+				
+				$ads = Ad::where('zone_handle', $handle)->where('status', 1)->get();
+				$ad_weight = $rtb_weight = 0;
+				foreach($ads as $ad){
+					if($ad->buyer_id == 0){
+						$rtb_weight = $ad->weight;
+					}else{
+						if ($ad->id == $currentAd){
+							$ad_weight += $weight;
+						} else {
+							$ad_weight += $ad->weight;
+						}
+					}
+				}
+				$check = $rtb_weight + $ad_weight;
+				if($check >= 100){
+					$available = (100 - ($rtb_weight + $ad_weight))* -1;
+					return('You available weight is '.$available.'% out of 100%.');
+				} else {
+					Ad::where('id', $ad)->update(array('weight' => $weight));
+					Log::info($user->name.' Updated weight for Custom Ad '.$request->ad_id.' to $'.$weight);
+                	return('Weight has been updated.');
+				}
+			}else{
                 /* bid evaluates to false - invalid */
                 return('Invalid Weight');
 			}
          }catch(Exception $e){
                 return $e->getMessage();
  	 	} 
+    }
+
+	private function balanceAdCampaigns($id, $zone_handle)
+    {		
+		
+		$this->balanceAdCampaigns($creative->ad_id, $creative->zone_handle); 
+		$fixedAds = Ad::where([['zone_handle', $zone_handle],['status', 1],['weight_fixed', 1]])->get();
+		$weight = $rtb_weight = 0;
+		foreach($fixedAds as $fixed_ad){
+			if($ad->buyer_id == 0){
+				$rtb_weight = $fixed_ad->weight;
+			}else{
+				$weight += $fixed_ad->weight;
+			}
+		}
+		$check = $rtb_weight + $weight;
+		if($check == 100){
+			$available = $rtb_weight;
+		} else {
+			$available = $check;
+		}
+		
+		
+		
+		$sql = "SELECT COUNT(*) AS records FROM ads WHERE ad_id = ".$id." and weight_fixed = 0";
+		$getSum = $sql = "SELECT COUNT(*) AS records FROM ads WHERE ad_id = ".$id." and weight_fixed = 0";
+		
+		$result = DB::select($sql);
+		$count = $result[0]->records;
+		if($count){
+			$weight = round(100 / $count);
+			$sql = "UPDATE ads SET weight = ? WHERE ad_id = ? AND weight_fixed = 0";
+			Log::info($sql);
+			DB::update($sql, array($weight, $id));
+		}
+		return true;
     }
 	
 	public function updateImpressionCap(Request $request)
@@ -675,11 +805,28 @@ class ZoneController extends Controller
 			$creative = new AdCreative();
 			$creative->fill($ins);
 			$creative->save();
+			$this->balanceCreatives($creative->ad_id); 
+			
 			return redirect('/edit_custom_ad/'.$request->campaign_id)->with('creative_updated', 'Success! A new creative has been added.');
 		}catch(Throwable $t){
 		return $t->getMessage();
 	  }
     }
+	
+	private function balanceCreatives($id)
+    {
+		$sql = "SELECT COUNT(*) AS records FROM ad_creatives WHERE ad_id = ".$id;
+		$result = DB::select($sql);
+		$count = $result[0]->records;
+		if($count){
+			$weight = round(100 / $count);
+			$sql = "UPDATE ad_creatives SET weight = ? WHERE ad_id = ?";
+			Log::info($sql);
+			DB::update($sql, array($weight, $id));
+		}
+		return true;
+    }
+	
 	
 	public function editCreative(Request $request)
     {
@@ -696,30 +843,24 @@ class ZoneController extends Controller
 			$creative = AdCreative::find($request->creative_id);
 			$creative->status = 1;
 			$creative->description = $request->description;
-			
 			$media = Media::find($creative->media_id);
 			$link = Media::find($creative->link_id);
-			$creative->save();
 			
-			$links = 0;
-			$update = array('status' => 5, 'updated_at' => DB::raw('NOW()'));
+			
+			
+			$creative->save();
 			if (!($media->file_location == $request->banner_link)){
+				$update = array('file_location' => $request->banner_link, 'updated_at' => DB::raw('NOW()'));
 				DB::table('media')->where([['id', $creative->media_id],['user_id', $user->id]])->update($update);
 				Log::info($user->name." Updated media for AdCreative id ".$request->creative_id);
-				$links = 1;
 			}
-			
 			if (!($link->url == $request->click_link)){
+				$update = array('url' => $request->click_link, 'updated_at' => DB::raw('NOW()'));
 				DB::table('links')->where([['id', $creative->link_id],['user_id', $user->id]])->update($update);
 				Log::info($user->name." Updated link for AdCreative id ".$request->creative_id);
-				$links = 2;
 			}
-			
-			if ($links == 1) {
-				return redirect('/edit_custom_ad/'.$request->campaign_id)->with('creative_updated', 'Success! Media and Creative has been updated.');
-			} elseif ($links == 2){
-				return redirect('/edit_custom_ad/'.$request->campaign_id)->with('creative_updated', 'Success! Link and Creative has been updated.');
-			}
+						
+			$this->balanceCreatives($creative->ad_id); 
 			
 			return redirect('/edit_custom_ad/'.$request->campaign_id)->with('creative_updated', 'Success! Creative has been updated.');
 			
