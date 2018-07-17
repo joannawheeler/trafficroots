@@ -72,6 +72,7 @@
 									<th>Frequency Capping</th>
 									<th>Start Date</th>
 									<th>End Date</th>
+									<th>Balance</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -112,6 +113,15 @@
 										{{ csrf_field() }}
 										<input type="date" id="end_date" name="end_date" value="{{ $ad->end_date }}">
 										<input type="hidden" id="ad_id" name="ad_id" value="{{ $ad->id }}">
+									</form>
+								</td>
+								<td>
+									<form name="fixed_weight_form" id="fixed_weight_form" role="form" class="form-horizontal" action="/update_fixed_weight" method="POST">
+										{{ csrf_field() }}
+										<label><input type="radio" name="distributeWeight" value="0"  {{ $ad->fixed == '0' ? 'checked' : '' }} />Auto</label>&nbsp;&nbsp;
+										<label><input type="radio" name="distributeWeight" value="1" {{ $ad->fixed == '1' ? 'checked' : '' }} />Fixed</label>
+										<input type="hidden" id="ad_id" name="ad_id" value="{{ $ad->id }}">
+										<input type="hidden" id="handle" name="handle" value="{{ $ad->zone_handle }}">
 									</form>
 								</td>
 							</tbody>
@@ -264,9 +274,21 @@
 				});
 			});
 		   
-		   	$("#impression_cap").change(function () {
+		   $("#impression_cap").change(function () {
 				var url = "{{ url('/update_impressionCap') }}";
 				var mydata = $("#impression_form").serialize();
+				$.post(url, mydata)
+				.done(function (response) {
+					toastr.success(response);
+				})
+				.fail(function (response) {
+					toastr.error(response);
+				});
+			});
+		   
+		   $("input[type=radio][name=distributeWeight]").change(function () {
+				var url = "{{ url('/update_fixed_weight') }}";
+				var mydata = $("#fixed_weight_form").serialize();
 				$.post(url, mydata)
 				.done(function (response) {
 					toastr.success(response);

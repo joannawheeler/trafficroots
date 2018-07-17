@@ -212,8 +212,6 @@
                                             <div class="col-md-8">
 												<div class="radio inline-radio">
 													<input id="campaign_weight" type="text" class="form-control" name="campaign_weight" placeholder="Campaign Weight" value="{{ $available }}" min="1" max="{{ $available }}" style="display: inline-block; width: 150px;" required>&nbsp;&nbsp;
-													<label><input type="radio" id="evenWeight" name="distributeWeight" value="0" checked />Auto Balance</label>&nbsp;&nbsp;
-													<label><input type="radio" id="customWeight" name="distributeWeight" value="1" />Fixed Balance</label>
 												</div>
 												
 												<span class="help-block">You have {{ $available }} % of this Zone's Weight available for this new Ad.  Please enter a number between 1 and {{ $available }}.</span>

@@ -166,6 +166,8 @@ class ZoneController extends Controller
 	    $new_ad['zone_handle'] = $input['handle'];
             $new_ad['location_type'] = $input['location_type'];
             $new_ad['buyer_id'] = $user->id;
+			$new_ad['fixed'] =  $request->distributeWeight;
+
 
 	    if(date('Y-m-d',strtotime($input['daterange_start'])) > date('Y-m-d')){
 		    $new_ad['status'] = 5;
@@ -193,12 +195,13 @@ class ZoneController extends Controller
 		    $rtb = DB::select($sql, array($request->handle));
 		    $available = $rtb[0]->weight;
 		    if($available - $request->campaign_weight){
-			    if($new_ad['status'] == 1) DB::table('trafficroots.ads')->where('zone_handle', $request->handle)->where('buyer_id', 0)->update(array('weight' => ($available - $request->campaign_weight)));
+			    if($new_ad['status'] == 1) DB::table('ads')->where('zone_handle', $request->handle)->where('buyer_id', 0)->update(array('weight' => ($available - $request->campaign_weight)));
                             $new_ad['weight'] = $request->campaign_weight;
 		    }else{
                             $new_ad['weight'] = round($available / 2);
 		    }
-		    $data = $this->updateTargets1($request);
+								
+		    $data = $this->createTargets($request);
 		    $insert_array = array_merge($new_ad, $data);
                     $insert_array['created_at'] = date('Y-m-d H:i:s');
 		    $ad = new Ad();
@@ -206,6 +209,9 @@ class ZoneController extends Controller
 		    $ad->save();
 		    $ad_id = $ad->id;
 		    if($ad_id){
+				
+				DB::table('ads')->where('id', $ad_id)->update(array('fixed' => $request->distributeWeight));
+				
 			    foreach($creatives as $key => $creative){
 		            $new_creative = array();
                             $stuff = explode('|', $creative);
@@ -259,45 +265,46 @@ class ZoneController extends Controller
           }
     }
 	
-	public function updateTargets1(Request $request)
+	public function createTargets(Request $request)
     {
         try {
 	    $data = array();
 	    if(is_array($request->countries)){
-		$data['countries'] = implode("|",$request->countries);
+		$data['country_id'] = implode("|",$request->countries);
 	    }else{
-		$data['countries'] = ''.$request->countries;
+		$data['country_id'] = ''.$request->countries;
             }
             if (is_array($request->states)) {
-                $data['states'] = implode("|", $request->states);
+                $data['state_id'] = implode("|", $request->states);
             } else {
-                $data['states'] = ''.intval($request->states);
+                $data['state_id'] = ''.intval($request->states);
             }
             if (is_array($request->counties)) {
-                $data['counties'] = implode("|", $request->counties);
+                $data['county_id'] = implode("|", $request->counties);
             } else {
-                $data['counties'] = ''.intval($request->counties);
+                $data['county_id'] = ''.intval($request->counties);
             }
 	    if (is_array($request->platform_targets)) {
-                $data['platforms'] = implode("|", $request->platform_targets);
+                $data['device_id'] = implode("|", $request->platform_targets);
             } else {
-                $data['platforms'] = ''.$request->platform_targets;
+                $data['device_id'] = ''.$request->platform_targets;
             }
             if (is_array($request->operating_systems)) {
-                $data['operating_systems'] = implode("|", $request->operating_systems);
+                $data['os_id'] = implode("|", $request->operating_systems);
             } else {
-                $data['operating_systems'] = ''.$request->operating_systems;
+                $data['os_id'] = ''.$request->operating_systems;
             }
             if (is_array($request->browser_targets)) {
-                $data['browsers'] = implode("|", $request->browser_targets);
+                $data['browser_id'] = implode("|", $request->browser_targets);
             } else {
-                $data['browsers'] = ''.$request->browser_targets;
+                $data['browser_id'] = ''.$request->browser_targets;
             }
             if (strlen(trim($request->keyword_targets))) {
                 $data['keywords'] = str_replace(",", "|", $request->keyword_targets);
             } else {
                 $data['keywords'] = '';
             }
+
             foreach ($data as $key => $value) {
                 if (is_null($value)) {
                     $data[$key] = '0';
@@ -357,8 +364,6 @@ class ZoneController extends Controller
 	    	}
 						
 			if(isset($request->frequency_capping)) $data['frequency_capping'] = intval($request->frequency_capping);
-			$result = DB::select('SELECT * FROM ads WHERE id = '.$request->ad_id);
-			if(!sizeof($result)) Log::info("There is no record yet??");
            	if(DB::table('ads')->where('id', intval($request->ad_id))->update($data))
            	Log::info($user->name.' updated targets on Ad Campaign '.$request->ad_id);
            	Log::info(print_r($data, true));
@@ -608,8 +613,8 @@ class ZoneController extends Controller
             $weight = (float)($request->weight);
             if($weight){
                 $currentAd = intval($request->ad_id);
-				
 				$ads = Ad::where('zone_handle', $handle)->where('status', 1)->get();
+				$this->balanceAdCampaigns($request->ad_id, $request->handle); 
 				$ad_weight = $rtb_weight = 0;
 				foreach($ads as $ad){
 					if($ad->buyer_id == 0){
@@ -623,6 +628,7 @@ class ZoneController extends Controller
 					}
 				}
 				$check = $rtb_weight + $ad_weight;
+
 				if($check >= 100){
 					$available = (100 - ($rtb_weight + $ad_weight))* -1;
 					return('You available weight is '.$available.'% out of 100%.');
@@ -642,9 +648,7 @@ class ZoneController extends Controller
 
 	private function balanceAdCampaigns($id, $zone_handle)
     {		
-		
-		$this->balanceAdCampaigns($creative->ad_id, $creative->zone_handle); 
-		$fixedAds = Ad::where([['zone_handle', $zone_handle],['status', 1],['weight_fixed', 1]])->get();
+		$fixedAds = Ad::where([['zone_handle', $zone_handle],['status', 1],['fixed', 1]])->get();
 		$weight = $rtb_weight = 0;
 		foreach($fixedAds as $fixed_ad){
 			if($ad->buyer_id == 0){
@@ -657,24 +661,31 @@ class ZoneController extends Controller
 		if($check == 100){
 			$available = $rtb_weight;
 		} else {
-			$available = $check;
+			$available = $weight;
 		}
 		
-		
-		
-		$sql = "SELECT COUNT(*) AS records FROM ads WHERE ad_id = ".$id." and weight_fixed = 0";
-		$getSum = $sql = "SELECT COUNT(*) AS records FROM ads WHERE ad_id = ".$id." and weight_fixed = 0";
+		$sql = "SELECT COUNT(*) AS records FROM ads WHERE zone_handle = ".$zone_handle." and fixed = 0";
 		
 		$result = DB::select($sql);
 		$count = $result[0]->records;
 		if($count){
-			$weight = round(100 / $count);
-			$sql = "UPDATE ads SET weight = ? WHERE ad_id = ? AND weight_fixed = 0";
+			$weight = round($available / $count);
+			$sql = "UPDATE ads SET weight = ? WHERE ad_id = ? AND fixed = 0";
 			Log::info($sql);
 			DB::update($sql, array($weight, $id));
 		}
 		return true;
     }
+	
+	
+	private function updateBalance(Request $request)
+	{
+		$user = Auth::getUser();
+		$ad = Ad::find($request->ad_id);
+		$ad->fixed = $request->distributeWeight;
+		$ad->save();
+		return('Weight Balance has been updated.');
+	}
 	
 	public function updateImpressionCap(Request $request)
     {
