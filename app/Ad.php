@@ -24,9 +24,4 @@ class Ad extends Model
     {
     	return $this->belongsTo('App\Category', 'category_id');
     }
-
-    public function targets()
-    {
-        return $this->hasOne('App\CampaignTarget');
-    }
 }
