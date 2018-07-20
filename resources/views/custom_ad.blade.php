@@ -207,13 +207,15 @@
 						@endif
                                             </div>
 					</div>
-                                        <div class="form-group{{ $errors->has('campaign_weight') ? ' has-error' : '' }}">
+                                        <div class="form-group{{ $errors->has('campaign_weight') ? ' has-error' : '' }}" id="weight_form">
                                             <label for="campaign_weight" class="col-md-4 control-label">Campaign Weight</label>
                                             <div class="col-md-8">
 												<div class="radio inline-radio">
 													<input id="campaign_weight" type="text" class="form-control" name="campaign_weight" placeholder="Campaign Weight" value="{{ $available }}" min="1" max="{{ $available }}" style="display: inline-block; width: 150px;" required>&nbsp;&nbsp;
+													<label><input type="radio" name="distributeWeight" value="0" checked />Auto Balance</label>&nbsp;&nbsp;
+													<label><input type="radio" name="distributeWeight" value="1" />Fixed Balance</label>
 												</div>
-												
+												<span id="auto_balance">You have {{ $available }} % of this Zone's Weight available.  The auto balance will evenly distribute the weight with other existing custom ads that are set to auto balance.</span>
 												<span class="help-block">You have {{ $available }} % of this Zone's Weight available for this new Ad.  Please enter a number between 1 and {{ $available }}.</span>
 												@if ($errors->has('campaign_weight'))
                                                 <span class="help-block">
@@ -476,7 +478,7 @@ jQuery(document).ready(function($){
         $(document).on('hidden.bs.modal', function(){
             reloadMedia();
         });
-	
+		
 		var form = $("#campaign_form");
 		form.validate({
 			errorPlacement: function errorPlacement(error, element) { element.before(error); }
@@ -537,6 +539,7 @@ jQuery(document).ready(function($){
 				updateOverview();
 			},
 			onFinishing: function (event, currentIndex){
+				$('#campaign_weight').prop('disabled', false);
 				form.validate().settings.ignore = ":disabled";
 				if (form.valid()) {
 					return checkForm();
@@ -556,7 +559,7 @@ jQuery(document).ready(function($){
 					dangerMode: true,
 				}).then((cancel) => {
 					if (cancel) {
-						window.location.href = "campaigns";
+						window.location.href = "/zone_manage/{{ $zone->handle }}";
 					}
 				});
 			}
@@ -574,6 +577,22 @@ jQuery(document).ready(function($){
     $('.reload').change(function($){
            reloadMedia();
         });
+	
+		$('#campaign_weight').prop('disabled', true); 
+		$('#weight_form .help-block').css("display","none");	
+	   	$('#auto_balance').css("display","block");
+		$("input[type=radio][name=distributeWeight]").change(function () {
+			var radioButton = $('input[name=distributeWeight]:checked').val();
+		   if (radioButton == 0) {
+			   $('#campaign_weight').prop('disabled', true);
+			   $('#weight_form .help-block').css("display","none");
+			   $('#auto_balance').css("display","block");
+		   } else {
+			   $('#campaign_weight').prop('disabled', false);
+			   $('#weight_form .help-block').css("display","block");
+			   $('#auto_balance').css("display","none");
+		   }
+	   });
 
 
         if ($("input#websiteUrl").length) {

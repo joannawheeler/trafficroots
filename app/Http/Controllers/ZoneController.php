@@ -50,15 +50,15 @@ class ZoneController extends Controller
 	foreach($ads as $ad){
 		if($ad->buyer_id == 0){
 			$rtb_weight = $ad->weight;
-		} elseif ($ad->weight_fixed == 1) {
-			$weight  = $ad->weight;
+		} elseif ($ad->fixed == 1) {
+			$weight  += $ad->weight;
 		} 
 	}
-	$check = $weight;
-	if($check == 75){
-		$available = 0;
+	$check = 75 - $weight;
+	if($check){
+		$available = $check;
 	} else {
-		$available = 75 - $weight;
+		$available = 0;
 	}
 
         $countries = '<option value="0" selected>All Countries</option><option value="840">US - United States of America</option><option value="124">CA - Canada</option>';
@@ -166,8 +166,6 @@ class ZoneController extends Controller
 	    $new_ad['zone_handle'] = $input['handle'];
             $new_ad['location_type'] = $input['location_type'];
             $new_ad['buyer_id'] = $user->id;
-			$new_ad['fixed'] =  $request->distributeWeight;
-
 
 	    if(date('Y-m-d',strtotime($input['daterange_start'])) > date('Y-m-d')){
 		    $new_ad['status'] = 5;
@@ -211,7 +209,7 @@ class ZoneController extends Controller
 		    if($ad_id){
 				
 				DB::table('ads')->where('id', $ad_id)->update(array('fixed' => $request->distributeWeight));
-				
+				$this->balanceAds($request->handle);
 			    foreach($creatives as $key => $creative){
 		            $new_creative = array();
                             $stuff = explode('|', $creative);
@@ -241,11 +239,11 @@ class ZoneController extends Controller
 			    $link->fill($ins);
 			    $link->save();
 			    $link_id = $link->id;
-
+				}
 			    /* make creative */
 				$ins = array();
 			    $ins['ad_id'] = $ad_id;
-				$ins['description'] = $request->description;
+				$ins['description'] = $stuff[0];
 			    $ins['weight'] = 0;
 			    $ins['media_id'] = $media_id;
 			    $ins['link_id'] = $link_id;
@@ -254,7 +252,7 @@ class ZoneController extends Controller
 			    $creative = new AdCreative();
 			    $creative->fill($ins);
 			    $creative->save();
-			}
+				$this->balanceCreatives($creative->ad_id);
 		    }
 		    return json_encode(array('result' => 'OK'));
             }else{
@@ -321,6 +319,7 @@ class ZoneController extends Controller
    	public function updateTargets(Request $request)
     {
         try {
+			$user = Auth::getUser();
 			$data = array();
 			if(is_array($request->countries)){
 			$data['country_id'] = implode("|",$request->countries);
@@ -361,14 +360,12 @@ class ZoneController extends Controller
                 if (is_null($value)) {
                     $data[$key] = '0';
                 }
-	    	}
-						
+	    	}		
 			if(isset($request->frequency_capping)) $data['frequency_capping'] = intval($request->frequency_capping);
-           	if(DB::table('ads')->where('id', intval($request->ad_id))->update($data))
+           	if(DB::table('ads')->where('id', $request->ad_id)->update($data))
            	Log::info($user->name.' updated targets on Ad Campaign '.$request->ad_id);
            	Log::info(print_r($data, true));
             return('All Changes Saved');
-			
 		} catch (Exception $e) {
 			return ($e->getMessage);
 		}
@@ -565,14 +562,31 @@ class ZoneController extends Controller
     {
 		$user = Auth::getUser();
 		$CUtil = new CUtil();
-		$ad = DB::select('select * from ads where id = '.$request->id);
+
+		$ads = DB::select('select * from ads where id = '.$request->id);
 		
-        if ($ad) {
+        if ($ads) {
 			$category = $CUtil->getCategories();
             $status_types = $CUtil->getStatusTypes();
             $location = $CUtil->getLocationTypes();
 			
-			foreach ($ad as $camp) {
+			foreach ($ads as $camp) {
+				$availableWeight = Ad::where('zone_handle', $camp->zone_handle)->where('status', 1)->get();
+				$weight = $rtb_weight = 0;
+				foreach($availableWeight as $ad_weight){
+					if($ad_weight->buyer_id == 0){
+						$rtb_weight = $ad_weight->weight;
+					} elseif ($ad_weight->fixed == 1) {
+						$weight  += $ad_weight->weight;
+					} 
+				}
+				$check = 75 - $weight;
+				if($check){
+					$available = $check;
+				} else {
+					$available = 0;
+				}
+				
 				$countries = $CUtil->getCountries($camp->id, 1);
                 $states = $CUtil->getStates($camp->id, 1);
                 $os_targets = $CUtil->getOperatingSystems($camp->id, 1);
@@ -600,43 +614,24 @@ class ZoneController extends Controller
 						'platforms' => $platforms,
 						'keywords' => str_replace("|", ",", $row),
 						'counties' => $counties,
-						'creatives' => $creatives
+						'creatives' => $creatives,
+						'available_weight' => $available
 			]);
 		}
     }
 	
 	public function updateWeight(Request $request)
     {
-		$handle = $request->handle;
-		$user = Auth::getUser();
         try{
-            $weight = (float)($request->weight);
-            if($weight){
-                $currentAd = intval($request->ad_id);
-				$ads = Ad::where('zone_handle', $handle)->where('status', 1)->get();
-				$this->balanceAdCampaigns($request->ad_id, $request->handle); 
-				$ad_weight = $rtb_weight = 0;
-				foreach($ads as $ad){
-					if($ad->buyer_id == 0){
-						$rtb_weight = $ad->weight;
-					}else{
-						if ($ad->id == $currentAd){
-							$ad_weight += $weight;
-						} else {
-							$ad_weight += $ad->weight;
-						}
-					}
+			$ads = Ad::find($request->ad_id);
+            if($ads){
+				if ($request->distributeWeight == 1) {
+					$ads->weight = $request->weight;
 				}
-				$check = $rtb_weight + $ad_weight;
-
-				if($check >= 100){
-					$available = (100 - ($rtb_weight + $ad_weight))* -1;
-					return('You available weight is '.$available.'% out of 100%.');
-				} else {
-					Ad::where('id', $ad)->update(array('weight' => $weight));
-					Log::info($user->name.' Updated weight for Custom Ad '.$request->ad_id.' to $'.$weight);
-                	return('Weight has been updated.');
-				}
+				$ads->fixed = $request->distributeWeight;
+				$ads->save();
+				$this->balanceAds($request->handle);
+				return('Weight has been updated.');
 			}else{
                 /* bid evaluates to false - invalid */
                 return('Invalid Weight');
@@ -645,48 +640,44 @@ class ZoneController extends Controller
                 return $e->getMessage();
  	 	} 
     }
+	
+	private function balanceAds($handle)
+    {
+		$ads = Ad::where('zone_handle', $handle)->where('status', 1)->get();
+		$weight = $auto_weight = $rtb_weight = 0;
+		$available = 75; 
+		foreach($ads as $ad){
+			if($ad->fixed == 1) {
+				$weight += $ad->weight;
+			} 
+		}
 
-	private function balanceAdCampaigns($id, $zone_handle)
-    {		
-		$fixedAds = Ad::where([['zone_handle', $zone_handle],['status', 1],['fixed', 1]])->get();
-		$weight = $rtb_weight = 0;
-		foreach($fixedAds as $fixed_ad){
-			if($ad->buyer_id == 0){
-				$rtb_weight = $fixed_ad->weight;
-			}else{
-				$weight += $fixed_ad->weight;
-			}
+		if ($weight) {
+			$available = 75-$weight;
 		}
-		$check = $rtb_weight + $weight;
-		if($check == 100){
-			$available = $rtb_weight;
-		} else {
-			$available = $weight;
-		}
-		
-		$sql = "SELECT COUNT(*) AS records FROM ads WHERE zone_handle = ".$zone_handle." and fixed = 0";
-		
-		$result = DB::select($sql);
-		$count = $result[0]->records;
-		if($count){
-			$weight = round($available / $count);
-			$sql = "UPDATE ads SET weight = ? WHERE ad_id = ? AND fixed = 0";
+
+		$count = Ad::where('zone_handle', $handle)
+				->where('buyer_id', '!=', 0)
+				->where('fixed', 0)
+				->count();
+		if ($count) {
+			$weight = ($available / $count);
+			$sql = "UPDATE ads SET weight = ? WHERE zone_handle = ? and buyer_id != 0 and fixed = 0";
 			Log::info($sql);
-			DB::update($sql, array($weight, $id));
+			DB::update($sql, array($weight, $handle));
+
+			$sql = "UPDATE ads SET weight = ? WHERE zone_handle = ? and buyer_id = 0";
+			Log::info($sql);
+			DB::update($sql, array(25, $handle));
+		} else {
+			$weight = 100-$weight;
+			$sql = "UPDATE ads SET weight = ? WHERE zone_handle = ? and buyer_id = 0";
+			Log::info($sql);
+			DB::update($sql, array($weight, $handle));
 		}
 		return true;
     }
-	
-	
-	private function updateBalance(Request $request)
-	{
-		$user = Auth::getUser();
-		$ad = Ad::find($request->ad_id);
-		$ad->fixed = $request->distributeWeight;
-		$ad->save();
-		return('Weight Balance has been updated.');
-	}
-	
+
 	public function updateImpressionCap(Request $request)
     {
 	$user = Auth::getUser();

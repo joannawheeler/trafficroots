@@ -59,13 +59,20 @@ hljs.initHighlightingOnLoad();
 				<div class="ibox-content">
 					<div class="tableSearchOnly">
 						<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack">           
-							<thead><tr><th>Ad</th><th>Weight</th><th>Status</th><th>Options</th></tr></thead>
+							<thead><tr><th>Ad</th><th>Weight</th><th>Balance</th><th>Status</th><th>Options</th></tr></thead>
 							<tbody>
 							@foreach($ads as $ad)
 							@if($ad->buyer_id)
 							<tr>
 								<td class="text-center"><b class=" tablesaw-cell-label">Ad</b>{{$ad->description}}</td>
 								<td class="text-center"><b class=" tablesaw-cell-label">Weight</b>{{$ad->weight}}</td>
+								<td class="text-center"><b class=" tablesaw-cell-label">Balance</b>
+									@if($ad->fixed == 1) 
+										<span class="btn btn-xs label-warning">Fixed</span>
+									@else
+										<span class="btn btn-xs label-primary">Auto</span>
+									@endif
+								</td>
 								<td class="text-center"><b class=" tablesaw-cell-label">Status</b><span class="currentStatus label">{{ StatusType::where('id', $ad->status)->first()->description }}</div></td>
 								<td class="text-center"><b class=" tablesaw-cell-label">Options</b>
 							@if($ad->status == 1)
@@ -87,6 +94,7 @@ hljs.initHighlightingOnLoad();
 							<tr>
 								<td class="text-center"><b class=" tablesaw-cell-label">Ad</b>{{$ad->description}}</td>
 								<td class="text-center"><b class=" tablesaw-cell-label">Weight</b>{{$ad->weight}}</td>
+								<td class="text-center"><b class=" tablesaw-cell-label">Balance</b><span class="btn btn-xs label-warning">Fixed</span></td>
 								<td class="text-center"><b class=" tablesaw-cell-label">Status</b><span class="currentStatus label">TrafficRoots RTB</span></td>
 								<td>&nbsp;</td>
 							</tr>

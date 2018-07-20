@@ -44,7 +44,6 @@ Route::get('/edit_custom_ad/{id}', 'ZoneController@editCustomAd');
 Route::post('/update_frequencyAd', 'ZoneController@updateFrequencyCap');
 Route::post('/update_impressionCap', 'ZoneController@updateImpressionCap');
 Route::post('/update_weight', 'ZoneController@updateWeight');
-Route::post('/update_fixed_weight', 'ZoneController@updateBalance');
 Route::post('/update_start', 'ZoneController@updateStartDate');
 Route::post('/update_end', 'ZoneController@updateEndDate');
 Route::get('/custom_creatives/{id}', 'ZoneController@createCreative');

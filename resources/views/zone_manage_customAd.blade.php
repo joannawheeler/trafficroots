@@ -1,6 +1,16 @@
 @extends('layouts.app')
 @section('title','Zone Management')
 @section('css')
+<style>
+	input[disabled] {
+		cursor: not-allowed;
+		background-color: #efecec;
+		opacity: 1;
+		border: 1px solid darkgray;
+		border-radius: 4px;
+	}
+</style>
+@endsection
 @section('js')
 <script src="{{ URL::asset('js/plugins/select2/select2.full.min.js') }}"></script>
 <script src="{{ URL::asset('js/plugins/chosen/chosen.jquery.js') }}"></script>
@@ -72,16 +82,18 @@
 									<th>Frequency Capping</th>
 									<th>Start Date</th>
 									<th>End Date</th>
-									<th>Balance</th>
 								</tr>
 							</thead>
 							<tbody>
 								<td class="text-center"><b class=" tablesaw-cell-label">Weight</b>
 									<form name="weight_form" id="weight_form" role="form" class="form-horizontal" action="/update_weight" method="POST" size="2" max="75">
 										{{ csrf_field() }}
-										<input type="number" id="weight" name="weight" value="{{ $ad->weight }}" size="3">
+										<input type="number" id="weight" name="weight" value="{{ $ad->weight }}" size="2" required>&nbsp;&nbsp;
+										<label><input type="radio" name="distributeWeight" value="0"  {{ $ad->fixed == '0' ? 'checked' : '' }} /> Auto Balance</label>&nbsp;&nbsp;
+										<label><input type="radio" name="distributeWeight" value="1" {{ $ad->fixed == '1' ? 'checked' : '' }} /> Fixed Balance</label>
 										<input type="hidden" id="ad_id" name="ad_id" value="{{ $ad->id }}">
 										<input type="hidden" id="handle" name="handle" value="{{ $ad->zone_handle }}">
+										<input type="hidden" id="limit" name="limit" value="{{ $available_weight }}">
 									</form>
 								</td>
 								<td class="text-center"><b class=" tablesaw-cell-label">Impression Cap</b>
@@ -113,15 +125,6 @@
 										{{ csrf_field() }}
 										<input type="date" id="end_date" name="end_date" value="{{ $ad->end_date }}">
 										<input type="hidden" id="ad_id" name="ad_id" value="{{ $ad->id }}">
-									</form>
-								</td>
-								<td>
-									<form name="fixed_weight_form" id="fixed_weight_form" role="form" class="form-horizontal" action="/update_fixed_weight" method="POST">
-										{{ csrf_field() }}
-										<label><input type="radio" name="distributeWeight" value="0"  {{ $ad->fixed == '0' ? 'checked' : '' }} />Auto</label>&nbsp;&nbsp;
-										<label><input type="radio" name="distributeWeight" value="1" {{ $ad->fixed == '1' ? 'checked' : '' }} />Fixed</label>
-										<input type="hidden" id="ad_id" name="ad_id" value="{{ $ad->id }}">
-										<input type="hidden" id="handle" name="handle" value="{{ $ad->zone_handle }}">
 									</form>
 								</td>
 							</tbody>
@@ -262,7 +265,14 @@
 				toastr.success("{{ Session::get('creative_updated') }}");
 		   @endif	
 		   
+		   var radioButton = $('input[name=distributeWeight]:checked').val();
+		   if (radioButton == 0) {
+			  $('#weight').prop('disabled', true); 
+		   }
+		   
 		   $("#weight").change(function () {
+			   var weight_limit = $('#limit').val()
+			   if ($('#weight').val() <= weight_limit){
 				var url = "{{ url('/update_weight') }}";
 				var mydata = $("#weight_form").serialize();
 				$.post(url, mydata)
@@ -272,23 +282,33 @@
 				.fail(function (response) {
 					toastr.error(response);
 				});
+			   } else {
+				   toastr.error('Weight cannot be updated until the weight is ' +  weight_limit + ' or less');
+				   $('#weight').val("");
+			   } 
 			});
+		   
+		   $("input[type=radio][name=distributeWeight]").change(function () {
+			   var radioButton = $('input[name=distributeWeight]:checked').val();
+			   if (radioButton == 0) {
+				   $('#weight').prop('disabled', true);
+				   var url = "{{ url('/update_weight') }}";
+				   var mydata = $("#weight_form").serialize();
+				   $.post(url, mydata)
+					.done(function (response) {
+						toastr.success(response);
+				   })
+				    .fail(function (response) {
+						toastr.error(response);
+				   });
+			   } else {
+				   $('#weight').prop('disabled', false);
+			   }
+		   });
 		   
 		   $("#impression_cap").change(function () {
 				var url = "{{ url('/update_impressionCap') }}";
 				var mydata = $("#impression_form").serialize();
-				$.post(url, mydata)
-				.done(function (response) {
-					toastr.success(response);
-				})
-				.fail(function (response) {
-					toastr.error(response);
-				});
-			});
-		   
-		   $("input[type=radio][name=distributeWeight]").change(function () {
-				var url = "{{ url('/update_fixed_weight') }}";
-				var mydata = $("#fixed_weight_form").serialize();
 				$.post(url, mydata)
 				.done(function (response) {
 					toastr.success(response);
@@ -349,7 +369,7 @@
                     toastr.success(response);
                 })
                 .fail(function (response) {
-                    toastr.error(response);
+                    toastr.success(response);
                 });
         	});
 		   
