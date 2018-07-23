@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title','Zone Management')
+@section('title','Manage Custom Ad')
 @section('css')
 <style>
 	input[disabled] {
@@ -195,7 +195,6 @@
                                     <tr>
                                         <th>Date</th>
 										<th>Creative Name</th>
-										<th>Weight</th>
                                         <th>Media</th>
                                         <th>Link</th>
                                         <th>Status</th>
