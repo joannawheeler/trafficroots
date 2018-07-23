@@ -365,7 +365,7 @@ class CampaignController extends Controller
         $media = Media::where([['location_type', $campaign->location_type],['category', $campaign->campaign_category],['user_id', $user->id]])->whereIn('status', [1, 5])->orderby('media_name', 'ASC')->get();
         $folders = Folder::where([['location_type', $campaign->location_type],['user_id', $user->id]])->whereIn('status', [1, 5])->get();
         $links = Links::where([['category', $campaign->campaign_category],['user_id', $user->id]])->whereIn('status', [1, 5])->orderby('link_name', 'ASC')->get();
-        return view('new_creative', ['user' => $user, 'campaign' => $campaign, 'media' => $media, 'links' => $links, 'folders' => $folders]);
+        return view('new_creative', ['user' => $user, 'campaign' => $campaign, 'media' => $media, 'links' => $links, 'folders' => $folders, 'view_type' => 1]);
     }
     public function postCreative(Request $request)
     {
@@ -394,7 +394,7 @@ class CampaignController extends Controller
 	 	$links = Links::where([['category', $campaign->campaign_category],['user_id', $user->id]])->whereIn('status', [1, 5])->orderby('link_name', 'ASC')->get();
 		$folders = Folder::where([['id', $creative->folder_id],['user_id', $user->id]])->get();
 
-		return view('edit_creative', ['user' => $user, 'creative' => $creative, 'campaign' => $campaign, 'media' => $media, 'currentMedia' => $currentMedia, 'links' => $links, 'currentLink' => $currentLink, 'folders' => $folders]);
+		return view('edit_creative', ['user' => $user, 'creative' => $creative, 'campaign' => $campaign, 'media' => $media, 'currentMedia' => $currentMedia, 'links' => $links, 'currentLink' => $currentLink, 'folders' => $folders, 'view_type' => 1]);
     }
 	
 	public function updateCreative(Request $request)

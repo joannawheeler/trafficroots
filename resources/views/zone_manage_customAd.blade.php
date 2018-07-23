@@ -1,9 +1,28 @@
 @extends('layouts.app')
-@section('title','Zone Management')
+@section('title','Manage Custom Ad')
 @section('css')
+<style>
+	input[disabled] {
+		cursor: not-allowed;
+		background-color: #efecec;
+		opacity: 1;
+		border: 1px solid darkgray;
+		border-radius: 4px;
+	}
+</style>
+@endsection
 @section('js')
+<script src="{{ URL::asset('js/plugins/select2/select2.full.min.js') }}"></script>
+<script src="{{ URL::asset('js/plugins/chosen/chosen.jquery.js') }}"></script>
+@endsection
 
 @section('content')
+    @if(Session::has('success'))
+        <div class="alert alert-success">
+            <h2>{{ Session::get('success') }}</h2>
+        </div>
+    @endif
+
 <div class="content">
     <div class="row">   
         <div class="col-xs-12">
@@ -69,8 +88,12 @@
 								<td class="text-center"><b class=" tablesaw-cell-label">Weight</b>
 									<form name="weight_form" id="weight_form" role="form" class="form-horizontal" action="/update_weight" method="POST" size="2" max="75">
 										{{ csrf_field() }}
-										<input type="number" id="weight" name="weight" value="{{ $ad->weight }}" size="3">
+										<input type="number" id="weight" name="weight" value="{{ $ad->weight }}" size="2" required>&nbsp;&nbsp;
+										<label><input type="radio" name="distributeWeight" value="0"  {{ $ad->fixed == '0' ? 'checked' : '' }} /> Auto Balance</label>&nbsp;&nbsp;
+										<label><input type="radio" name="distributeWeight" value="1" {{ $ad->fixed == '1' ? 'checked' : '' }} /> Fixed Balance</label>
 										<input type="hidden" id="ad_id" name="ad_id" value="{{ $ad->id }}">
+										<input type="hidden" id="handle" name="handle" value="{{ $ad->zone_handle }}">
+										<input type="hidden" id="limit" name="limit" value="{{ $available_weight }}">
 									</form>
 								</td>
 								<td class="text-center"><b class=" tablesaw-cell-label">Impression Cap</b>
@@ -112,13 +135,9 @@
 				<form name="target_form" id="target_form" role="form" class="form-horizontal" target="#" method="POST">
 					{{ csrf_field() }}
 					<input type="hidden" id="ad_id" name="ad_id" value="{{ $ad->id }}">
+					<input type="hidden" id="ad_handle" name="ad_handle" value="{{ $ad->zone_handle }}">
+					<input type="hidden" id="ad_description" name="ad_description" value="{{ $ad->description }}">
 					<h2 class="text-success"><strong>Campaign Targeting Options</strong></h2>
-					<div class="col-xs-12 form-group">
-						 <label>Site Targeting - Hold Ctrl to Select Multiple Themes</label>
-						 <select id="themes[]" name="themes[]" class="chosen-select form-control state-control" data-placeholder="Choose a theme..." multiple>
-						 {!! $themes !!}
-						 </select>
-					</div>
 					<div class="col-xs-12 form-group">
 						<label>Country / Geo Targeting - Hold Ctrl to Select Multiple Countries</label>
 						<select id="countries" name="countries[]" class="chosen-select form-control" multiple>
@@ -175,7 +194,7 @@
                                 <thead>
                                     <tr>
                                         <th>Date</th>
-										<th>Weight</th>
+										<th>Creative Name</th>
                                         <th>Media</th>
                                         <th>Link</th>
                                         <th>Status</th>
@@ -186,7 +205,7 @@
                                     @foreach ($creatives as $file)
                                     <tr class="creative_row" id="creative_row_{{ $file->id }}">
                                         <td class="text-center"><b class=" tablesaw-cell-label">Date</b> {{ $file->created_at->format('m/d/Y') }} </td>
-										<td class="text-center"><b class=" tablesaw-cell-label">Weight</b> {{ $file->weight }} </td>
+										<td class="text-center"><b class=" tablesaw-cell-label">Creative Name</b> {{ $file->description }} </td>
                                         <td class="text-center"><b class=" tablesaw-cell-label">Media</b>
 											<a href="#" class="tr-preview" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="" data-content="<img src='https://publishers.trafficroots.com/{{ $file->medias->file_location }}' width='100%' height='auto'>" id="view_media_{{ $file->id }}"><span>{{ $file->medias->file_location }}</span></a> 
 										</td>
@@ -240,7 +259,18 @@
 			 "hideMethod": "fadeOut"
            }
 		   
+		   @if(session()->has('creative_updated'))
+				toastr.success("{{ Session::get('creative_updated') }}");
+		   @endif	
+		   
+		   var radioButton = $('input[name=distributeWeight]:checked').val();
+		   if (radioButton == 0) {
+			  $('#weight').prop('disabled', true); 
+		   }
+		   
 		   $("#weight").change(function () {
+			   var weight_limit = $('#limit').val()
+			   if ($('#weight').val() <= weight_limit){
 				var url = "{{ url('/update_weight') }}";
 				var mydata = $("#weight_form").serialize();
 				$.post(url, mydata)
@@ -250,9 +280,31 @@
 				.fail(function (response) {
 					toastr.error(response);
 				});
+			   } else {
+				   toastr.error('Weight cannot be updated until the weight is ' +  weight_limit + ' or less');
+				   $('#weight').val("");
+			   } 
 			});
 		   
-		   	$("#impression_cap").change(function () {
+		   $("input[type=radio][name=distributeWeight]").change(function () {
+			   var radioButton = $('input[name=distributeWeight]:checked').val();
+			   if (radioButton == 0) {
+				   $('#weight').prop('disabled', true);
+				   var url = "{{ url('/update_weight') }}";
+				   var mydata = $("#weight_form").serialize();
+				   $.post(url, mydata)
+					.done(function (response) {
+						toastr.success(response);
+				   })
+				    .fail(function (response) {
+						toastr.error(response);
+				   });
+			   } else {
+				   $('#weight').prop('disabled', false);
+			   }
+		   });
+		   
+		   $("#impression_cap").change(function () {
 				var url = "{{ url('/update_impressionCap') }}";
 				var mydata = $("#impression_form").serialize();
 				$.post(url, mydata)
@@ -306,21 +358,22 @@
 			});
 		   
 		   $('[data-toggle="tooltip"]').tooltip();
+
 		   $(".form-control").change(function () {
-			   	var url = "{{ url('/update_targets') }}";
-            	var mydata = $("#target_form").serialize();
-            	$.post(url, mydata)
+            var url = "{{ url('/update_adTargets') }}";
+            var mydata = $("#target_form").serialize();
+            $.post(url, mydata)
                 .done(function (response) {
                     toastr.success(response);
                 })
                 .fail(function (response) {
-                    toastr.error(response);
+                    toastr.success(response);
                 });
         	});
-    		
+		   
 		   $(".state-control").change(function () {
 			   $('#counties').html('');
-				var url = "{{ url('/update_counties') }}";
+				var url = "{{ url('/update_adCounties') }}";
 				var mydata = $("#target_form").serialize();
 				$.post(url, mydata)
 				.done(function (response) {

@@ -66,10 +66,16 @@ class CUtil extends Controller
 		        return $themes;
 
 		}
-	public function getCountries($id)
+	public function getCountries($id, $ad = NULL)
     {
-        $targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
-        $country_targets = explode("|",$targets->countries);
+		if ($ad) {
+			$targets = DB::table('ads')->where('id', $id)->first();
+        	$country_targets = explode("|",$targets->country_id);
+		} else {
+			$targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
+        	$country_targets = explode("|",$targets->countries);
+		}
+        
         $countries = '<option value="0"';
         if($country_targets[0] == '0') $countries .= ' selected';
         $countries .= '>All Countries</option>';
@@ -91,11 +97,16 @@ class CUtil extends Controller
 
     }
 	
-	
-    public function getStates($id)
+    public function getStates($id, $ad = NULL)
     {
-        $targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
-        $state_targets = explode("|",$targets->states);
+		if ($ad) {
+			$targets = DB::table('ads')->where('id', $id)->first();
+        	$state_targets = explode("|",$targets->state_id);
+		} else {
+			$targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
+        	$state_targets = explode("|",$targets->states);
+		}
+		
 		//$country_targets = implode(",",explode("|",$targets->countries));
         $states = '<option value="0"';
         if($state_targets[0] == '0') $states .= ' selected';
@@ -122,11 +133,19 @@ class CUtil extends Controller
 	
 	
 	
-    public function getCounties($id)
+    public function getCounties($id, $ad = NULL)
     {
-        $targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
-	$county_targets = explode("|",$targets->counties);
-	$state_targets = implode(",",explode("|",$targets->states));
+		if ($ad) {
+			$targets = DB::table('ads')->where('id', $id)->first();
+			$county_targets = explode("|",$targets->county_id);
+			$state_targets = implode(",",explode("|",$targets->state_id));
+		} else {
+			$targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
+			$county_targets = explode("|",$targets->counties);
+			$state_targets = implode(",",explode("|",$targets->states));
+		}
+		
+
         $counties = '<option value="0"';
         if($county_targets[0] == '0') $counties .= ' selected';
         $counties .= '>All Counties</option>';
@@ -199,10 +218,16 @@ class CUtil extends Controller
         }
         return $location;
     }
-    public function getOperatingSystems($id)
+    public function getOperatingSystems($id, $ad = NULL)
     {
-        $targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
-        $os_targets = explode("|",$targets->operating_systems);
+		if ($ad) {
+			$targets = DB::table('ads')->where('id', $id)->first();
+        	$os_targets = explode("|",$targets->os_id);
+		} else {
+			$targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
+        	$os_targets = explode("|",$targets->operating_systems);
+		}
+		
         $systems = OperatingSystem::orderBy('os')->get();
         $operating_systems = '<option value="0"';
         if($os_targets[0] == '0') $operating_systems .= ' selected';
@@ -214,10 +239,15 @@ class CUtil extends Controller
         }
         return $operating_systems;
     }   
-    public function getBrowsers($id)
+    public function getBrowsers($id, $ad = NULL)
     {
-        $targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
-        $b_targets = explode("|",$targets->browsers);
+		if ($ad) {
+			$targets = DB::table('ads')->where('id', $id)->first();
+        	$b_targets = explode("|",$targets->browser_id);
+		} else {
+			$targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
+        	$b_targets = explode("|",$targets->browsers);
+		}
         $browsers = Browser::orderBy('browser')->get();
         $browser_targets = '<option value="0"';
         if($b_targets[0] == '0') $browser_targets .= ' selected';
@@ -229,10 +259,16 @@ class CUtil extends Controller
         }
         return $browser_targets;;
     }
-    public function getPlatforms($id)
+    public function getPlatforms($id, $ad = NULL)
     {
-        $targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
-        $p_targets = explode("|",$targets->platforms);
+		if ($ad) {
+			$targets = DB::table('ads')->where('id', $id)->first();
+        	$p_targets = explode("|",$targets->device_id);
+		} else {
+			$targets = DB::table('campaign_targets')->where('campaign_id', $id)->first();
+        	$p_targets = explode("|",$targets->platforms);
+		}
+		
         $platforms = Platform::all();
         $platform_targets = '<option value="0"';
         if($p_targets[0] == '0') $platform_targets .= ' selected';

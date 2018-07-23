@@ -50,15 +50,15 @@ class ZoneController extends Controller
 	foreach($ads as $ad){
 		if($ad->buyer_id == 0){
 			$rtb_weight = $ad->weight;
-		}else{
-			$weight += $ad->weight;
-		}
+		} elseif ($ad->fixed == 1) {
+			$weight  += $ad->weight;
+		} 
 	}
-	$check = $rtb_weight + $weight;
-	if($check == 100){
-		$available = $rtb_weight;
+	$check = 75 - $weight;
+	if($check){
+		$available = $check;
 	} else {
-		return redirect('/sites');
+		$available = 0;
 	}
 
         $countries = '<option value="0" selected>All Countries</option><option value="840">US - United States of America</option><option value="124">CA - Canada</option>';
@@ -193,12 +193,13 @@ class ZoneController extends Controller
 		    $rtb = DB::select($sql, array($request->handle));
 		    $available = $rtb[0]->weight;
 		    if($available - $request->campaign_weight){
-			    if($new_ad['status'] == 1) DB::table('trafficroots.ads')->where('zone_handle', $request->handle)->where('buyer_id', 0)->update(array('weight' => ($available - $request->campaign_weight)));
+			    if($new_ad['status'] == 1) DB::table('ads')->where('zone_handle', $request->handle)->where('buyer_id', 0)->update(array('weight' => ($available - $request->campaign_weight)));
                             $new_ad['weight'] = $request->campaign_weight;
 		    }else{
                             $new_ad['weight'] = round($available / 2);
 		    }
-		    $data = $this->updateTargets($request);
+								
+		    $data = $this->createTargets($request);
 		    $insert_array = array_merge($new_ad, $data);
                     $insert_array['created_at'] = date('Y-m-d H:i:s');
 		    $ad = new Ad();
@@ -206,6 +207,9 @@ class ZoneController extends Controller
 		    $ad->save();
 		    $ad_id = $ad->id;
 		    if($ad_id){
+				
+				DB::table('ads')->where('id', $ad_id)->update(array('fixed' => $request->distributeWeight));
+				$this->balanceAds($request->handle);
 			    foreach($creatives as $key => $creative){
 		            $new_creative = array();
                             $stuff = explode('|', $creative);
@@ -235,10 +239,11 @@ class ZoneController extends Controller
 			    $link->fill($ins);
 			    $link->save();
 			    $link_id = $link->id;
-
+				
 			    /* make creative */
-                            $ins = array();
+				$ins = array();
 			    $ins['ad_id'] = $ad_id;
+				$ins['description'] = str_replace("%20"," ",$stuff[0]);
 			    $ins['weight'] = 0;
 			    $ins['media_id'] = $media_id;
 			    $ins['link_id'] = $link_id;
@@ -247,7 +252,8 @@ class ZoneController extends Controller
 			    $creative = new AdCreative();
 			    $creative->fill($ins);
 			    $creative->save();
-			}
+				$this->balanceCreatives($creative->ad_id);
+				}
 		    }
 		    return json_encode(array('result' => 'OK'));
             }else{
@@ -257,45 +263,47 @@ class ZoneController extends Controller
             return $t->getMessage();
           }
     }
-   public function updateTargets(Request $request)
+	
+	public function createTargets(Request $request)
     {
         try {
 	    $data = array();
 	    if(is_array($request->countries)){
-		$data['countries'] = implode("|",$request->countries);
+		$data['country_id'] = implode("|",$request->countries);
 	    }else{
-		$data['countries'] = ''.$request->countries;
+		$data['country_id'] = ''.$request->countries;
             }
             if (is_array($request->states)) {
-                $data['states'] = implode("|", $request->states);
+                $data['state_id'] = implode("|", $request->states);
             } else {
-                $data['states'] = ''.intval($request->states);
+                $data['state_id'] = ''.intval($request->states);
             }
             if (is_array($request->counties)) {
-                $data['counties'] = implode("|", $request->counties);
+                $data['county_id'] = implode("|", $request->counties);
             } else {
-                $data['counties'] = ''.intval($request->counties);
+                $data['county_id'] = ''.intval($request->counties);
             }
 	    if (is_array($request->platform_targets)) {
-                $data['platforms'] = implode("|", $request->platform_targets);
+                $data['device_id'] = implode("|", $request->platform_targets);
             } else {
-                $data['platforms'] = ''.$request->platform_targets;
+                $data['device_id'] = ''.$request->platform_targets;
             }
             if (is_array($request->operating_systems)) {
-                $data['operating_systems'] = implode("|", $request->operating_systems);
+                $data['os_id'] = implode("|", $request->operating_systems);
             } else {
-                $data['operating_systems'] = ''.$request->operating_systems;
+                $data['os_id'] = ''.$request->operating_systems;
             }
             if (is_array($request->browser_targets)) {
-                $data['browsers'] = implode("|", $request->browser_targets);
+                $data['browser_id'] = implode("|", $request->browser_targets);
             } else {
-                $data['browsers'] = ''.$request->browser_targets;
+                $data['browser_id'] = ''.$request->browser_targets;
             }
             if (strlen(trim($request->keyword_targets))) {
                 $data['keywords'] = str_replace(",", "|", $request->keyword_targets);
             } else {
                 $data['keywords'] = '';
             }
+
             foreach ($data as $key => $value) {
                 if (is_null($value)) {
                     $data[$key] = '0';
@@ -307,6 +315,75 @@ class ZoneController extends Controller
             return ($e->getMessage);
         }
     }
+
+	
+   	public function updateTargets(Request $request)
+    {
+        try {
+			$user = Auth::getUser();
+			$data = array();
+			if(is_array($request->countries)){
+			$data['country_id'] = implode("|",$request->countries);
+			}else{
+			$data['country_id'] = ''.$request->countries;
+            }
+            if (is_array($request->states)) {
+                $data['state_id'] = implode("|", $request->states);
+            } else {
+                $data['state_id'] = ''.intval($request->states);
+            }
+            if (is_array($request->counties)) {
+                $data['county_id'] = implode("|", $request->counties);
+            } else {
+                $data['county_id'] = ''.intval($request->counties);
+            }
+	    if (is_array($request->platform_targets)) {
+                $data['device_id'] = implode("|", $request->platform_targets);
+            } else {
+                $data['device_id'] = ''.$request->platform_targets;
+            }
+            if (is_array($request->operating_systems)) {
+                $data['os_id'] = implode("|", $request->operating_systems);
+            } else {
+                $data['os_id'] = ''.$request->operating_systems;
+            }
+            if (is_array($request->browser_targets)) {
+                $data['browser_id'] = implode("|", $request->browser_targets);
+            } else {
+                $data['browser_id'] = ''.$request->browser_targets;
+            }
+            if (strlen(trim($request->keyword_targets))) {
+                $data['keywords'] = str_replace(",", "|", $request->keyword_targets);
+            } else {
+                $data['keywords'] = '';
+            }
+            foreach ($data as $key => $value) {
+                if (is_null($value)) {
+                    $data[$key] = '0';
+                }
+	    	}		
+			if(isset($request->frequency_capping)) $data['frequency_capping'] = intval($request->frequency_capping);
+           	if(DB::table('ads')->where('id', $request->ad_id)->update($data))
+           	Log::info($user->name.' updated targets on Ad Campaign '.$request->ad_id);
+           	Log::info(print_r($data, true));
+            return('All Changes Saved');
+		} catch (Exception $e) {
+			return ($e->getMessage);
+		}
+    }
+	
+	public function updateCounties(Request $request)
+    {
+		try{
+            $this->updateTargets($request);
+			$CUtil = new CUtil();
+			$output = $CUtil->getCounties($request->ad_id, 1);
+            return($output);
+		}catch(Throwable $t){
+            Log::error($t->getMessage());
+		}
+    }
+	
     public function manageZone(Request $request)
     {
 	    if(strlen($request->handle)){
@@ -331,58 +408,51 @@ class ZoneController extends Controller
 	    }
         }
     }
-//     public function getZones($site_id)
-//     {
-//         $user = Auth::getUser();
-//         if ($user->user_type == 99) {
-//             $site = Site::where('id', $site_id)->first();
-//         } else {
-//             $site = Site::where('id', $site_id)->where('user_id', $user->id)->first();
-//         }
-//         if (!sizeof($site)) {
-//             $msg = 'Invalid Site';
-//             return ($msg);
-//         } else {
-//             $sql = "SELECT DISTINCT(stat_date) FROM site_analysis WHERE site_handle = '".$site->site_handle."'";
-//             $result = DB::select($sql);
-// <<<<<<< HEAD
-//             if (sizeof($result) < 3) {
-// =======
-//             if(sizeof($result) < 3){
-// >>>>>>> 95a0bf642ed033bf2111f8da8f67e9e3ba85eadd
-//                 $msg = '<div><p>For all new sites, 72 hours of traffic analysis is required before Zone Creation can be activated.</p><br /><p>Please insert the following image tag on your site`s main index page.  When sufficient data has been gathered, your site can be added to our inventory and you will be able to create zones!</p><br />This code will show a transparent 1x1 GIF image.<br /><br /><code>'.htmlspecialchars('<img alt="Trafficroots Analysis Pixel" src="'.env('APP_URL', 'http://localhost').'/pixel/'.$site->site_handle.'" style="display:none;">');
-//                 $msg .= '</code><br /><br /><a href="/analysis/'.$site->site_handle.'"><button type="button" class="btn-u">View Site Analysis Data</button></a></div>';
-//                 $msg = $site->site_name .'|'.$msg;
-//                 return $msg;
-// <<<<<<< HEAD
-//             } else {
-// =======
-//             }else{
-// >>>>>>> 95a0bf642ed033bf2111f8da8f67e9e3ba85eadd
-//                 $msg = '<div><h3>Your Trafficroots Analysis Pixel</h3><code>'.htmlspecialchars('<img alt="Trafficroots Analysis Pixel" src="'.env('APP_URL', 'http://localhost').'/pixel/'.$site->site_handle.'" style="display:none;">');
-//                 $msg .= '</code><br /><br /><a href="/analysis/'.$site->site_handle.'"><button type="button" class="btn-u">View Site Analysis Data</button></a><br /><br />';
-//                 $zones = Zone::where('site_id', $site_id)
-//                      ->join('location_types', 'zones.location_type', '=', 'location_types.id')
-//                      ->select('zones.id', 'zones.handle', 'zones.description', 'zones.status', 'zones.location_type', 'location_types.description as location', 'location_types.width', 'location_types.height')
-//                      ->get();
-//                 if (sizeof($zones)) {
-//                     $msg .= '<table class="table table-hover table-border table-striped table-condensed" width="100%" id="zones_table"><thead><tr><th>Zone ID</th><th>Description</th><th>Width</th><th>Height</th><th>Location</th><th>Stats</th></thead><tbody>';
-//                     foreach ($zones as $zone) {
-//                         $msg .= '<tr><td>'.$zone->id.'</td><td>'.$zone->description.'</td><td>'.$zone->width.'</td><td>'.$zone->height.'</td><td>'.$zone->location.'</td><td><a href="/zonestats/'.$zone->id.'"><i class="fa fa-bar-chart zone-stat" aria-hidden="true"></i></a></td><tr>';
-//                     }
-//                     $msg .= '</table>';
-//                     $msg .= '<br /><br /><a href="/addzone/'.$site_id.'"><button type="button" class="btn-u">Create A Zone on '.$site->site_name.'</button></a></div>';
-//                     $msg = $site->site_name .'|'.$msg;
-//                     return($msg);
-//                 } else {
-//                     $msg .= '<h4>No Zones Defined on '.$site->site_name.'</h4>';
-//                     $msg .= '<br /><br /><a href="/addzone/'.$site_id.'"><button type="button" class="btn-u">Create A Zone on '.$site->site_name.'</button></a></div>';
-//                     $msg = $site->site_name .'|'.$msg;
-//                     return($msg);
-//                 }
-//             }
-//         }
-//     }
+     public function getZones($site_id)
+	 {
+		 $user = Auth::getUser();
+		 if ($user->user_type == 99) {
+			 $site = Site::where('id', $site_id)->first();
+		 } else {
+			 $site = Site::where('id', $site_id)->where('user_id', $user->id)->first();
+		 }
+		 if (!sizeof($site)) {
+			 $msg = 'Invalid Site';
+			 return ($msg);
+		 } else {
+			 $sql = "SELECT DISTINCT(stat_date) FROM site_analysis WHERE site_handle = '".$site->site_handle."'";
+			 $result = DB::select($sql);
+			 if (sizeof($result) < 3) {
+				 $msg = '<div><p>For all new sites, 72 hours of traffic analysis is required before Zone Creation can be activated.</p><br /><p>Please insert the following image tag on your site`s main index page.  When sufficient data has been gathered, your site can be added to our inventory and you will be able to create zones!</p><br />This code will show a transparent 1x1 GIF image.<br /><br /><code>'.htmlspecialchars('<img alt="Trafficroots Analysis Pixel" src="'.env('APP_URL', 'http://localhost').'/pixel/'.$site->site_handle.'" style="display:none;">');
+				 $msg .= '</code><br /><br /><a href="/analysis/'.$site->site_handle.'"><button type="button" class="btn-u">View Site Analysis Data</button></a></div>';
+				 $msg = $site->site_name .'|'.$msg;
+				 return $msg;
+			 } else {
+				 $msg = '<div><h3>Your Trafficroots Analysis Pixel</h3><code>'.htmlspecialchars('<img alt="Trafficroots Analysis Pixel" src="'.env('APP_URL', 'http://localhost').'/pixel/'.$site->site_handle.'" style="display:none;">');
+				 $msg .= '</code><br /><br /><a href="/analysis/'.$site->site_handle.'"><button type="button" class="btn-u">View Site Analysis Data</button></a><br /><br />';
+				 $zones = Zone::where('site_id', $site_id)
+					 ->join('location_types', 'zones.location_type', '=', 'location_types.id')
+					 ->select('zones.id', 'zones.handle', 'zones.description', 'zones.status', 'zones.location_type', 'location_types.description as location', 'location_types.width', 'location_types.height')
+					 ->get();
+				 if (sizeof($zones)) {
+					 $msg .= '<table class="table table-hover table-border table-striped table-condensed" width="100%" id="zones_table"><thead><tr><th>Zone ID</th><th>Description</th><th>Width</th><th>Height</th><th>Location</th><th>Stats</th></thead><tbody>';
+					 foreach ($zones as $zone) {
+						 $msg .= '<tr><td>'.$zone->id.'</td><td>'.$zone->description.'</td><td>'.$zone->width.'</td><td>'.$zone->height.'</td><td>'.$zone->location.'</td><td><a href="/zonestats/'.$zone->id.'"><i class="fa fa-bar-chart zone-stat" aria-hidden="true"></i></a></td><tr>';
+						 $msg .= '</table>';
+						 $msg .= '<br /><br /><a href="/addzone/'.$site_id.'"><button type="button" class="btn-u">Create A Zone on '.$site->site_name.'</button></a></div>';
+						 $msg = $site->site_name .'|'.$msg;
+						 return($msg);
+					 }
+				 } else {
+					 $msg .= '<h4>No Zones Defined on '.$site->site_name.'</h4>';
+					 $msg .= '<br /><br /><a href="/addzone/'.$site_id.'"><button type="button" class="btn-u">Create A Zone on '.$site->site_name.'</button></a></div>';
+					 $msg = $site->site_name .'|'.$msg;
+					 return($msg);
+				 }
+			 }
+		 }
+	 }
+	
     private function insertFirstAd($handle, $location_type)
     {
         try {
@@ -493,58 +563,77 @@ class ZoneController extends Controller
     {
 		$user = Auth::getUser();
 		$CUtil = new CUtil();
+
+		$ads = DB::select('select * from ads where id = '.$request->id);
 		
-		$ad = Ad::where('id', $request->id)->firstOrFail();
-        if ($ad) {
+        if ($ads) {
+			$category = $CUtil->getCategories();
             $status_types = $CUtil->getStatusTypes();
             $location = $CUtil->getLocationTypes();
 			
-			foreach ($ad as $ads) {
-				$themes = $CUtil->getThemes(67);
-				$countries = $CUtil->getCountries(67);
-				$states = $CUtil->getStates(67);
-				$os_targets = $CUtil->getOperatingSystems(67);
-				$platforms = $CUtil->getPlatforms(67);
-				$browser_targets = $CUtil->getBrowsers(67);
-				$counties = $CUtil->getCounties(67);
-				$row = DB::table('campaign_targets')->where('campaign_id', 67)->first();
-				$creatives = AdCreative::where('ad_id', $request->id)->get();
-				if (!$creatives) {
-					$creatives = array();
+			foreach ($ads as $camp) {
+				$availableWeight = Ad::where('zone_handle', $camp->zone_handle)->where('status', 1)->get();
+				$weight = $rtb_weight = 0;
+				foreach($availableWeight as $ad_weight){
+					if($ad_weight->buyer_id == 0){
+						$rtb_weight = $ad_weight->weight;
+					} elseif ($ad_weight->fixed == 1) {
+						$weight  += $ad_weight->weight;
+					} 
 				}
+				$check = 75 - $weight;
+				if($check){
+					$available = $check;
+				} else {
+					$available = 0;
+				}
+				
+				$countries = $CUtil->getCountries($camp->id, 1);
+                $states = $CUtil->getStates($camp->id, 1);
+                $os_targets = $CUtil->getOperatingSystems($camp->id, 1);
+                $platforms = $CUtil->getPlatforms($camp->id, 1);
+				$browser_targets = $CUtil->getBrowsers($camp->id, 1);
+				$counties = $CUtil->getCounties($camp->id, 1);
+				$creatives = AdCreative::where('ad_id', $camp->id)->get();
+                if (!$creatives) {
+                    $creatives = array();
+                }
+				$row = $camp->keywords;
 			}
-		}
 		
-		$frequencyCapping = '<option value="0">Disabled</option><option value="1">1 Impression Per 24 Hours</option><option value="2">2 Impressions Per 24 Hours</option><option value="3">3 Impressions Per 24 Hours</option><option value="4">4 Impressions Per 24 Hours</option><option value="5">5 Impressions Per 24 Hours</option>';
+			$frequencyCapping = '<option value="0">Disabled</option><option value="1">1 Impression Per 24 Hours</option><option value="2">2 Impressions Per 24 Hours</option><option value="3">3 Impressions Per 24 Hours</option><option value="4">4 Impressions Per 24 Hours</option><option value="5">5 Impressions Per 24 Hours</option>';
 
-		return view('zone_manage_customAd', [
-					'ad' => $ad,
-					'frequencyCapping' => $frequencyCapping,
-					'location_types' => $location,
-					'status_types' => $status_types,
-		    		'themes' => $themes,
-					'countries' => $countries,
-                    'states' => $states,
-                    'os_targets' => $os_targets,
-                    'browser_targets' => $browser_targets,
-                    'platforms' => $platforms,
-                    'keywords' => str_replace("|", ",", $row->keywords),
-		    		'counties' => $counties,
-					'creatives' => $creatives
-		]);
+			return view('zone_manage_customAd', [
+						'ad' => $camp,
+						'frequencyCapping' => $frequencyCapping,
+						'location_types' => $location,
+						'status_types' => $status_types,
+						'countries' => $countries,
+						'states' => $states,
+						'os_targets' => $os_targets,
+						'browser_targets' => $browser_targets,
+						'platforms' => $platforms,
+						'keywords' => str_replace("|", ",", $row),
+						'counties' => $counties,
+						'creatives' => $creatives,
+						'available_weight' => $available
+			]);
+		}
     }
 	
 	public function updateWeight(Request $request)
     {
-	$user = Auth::getUser();
         try{
-            $weight = (float)($request->weight);
-            if($weight){
-                $ad = intval($request->ad_id);
-				Ad::where('id', $ad)->update(array('weight' => $weight));
-				Log::info($user->name.' Updated weight for Custom Ad '.$request->ad_id.' to $'.$weight);
-                return('Weight has been updated');
-            }else{
+			$ads = Ad::find($request->ad_id);
+            if($ads){
+				if ($request->distributeWeight == 1) {
+					$ads->weight = $request->weight;
+				}
+				$ads->fixed = $request->distributeWeight;
+				$ads->save();
+				$this->balanceAds($request->handle);
+				return('Weight has been updated.');
+			}else{
                 /* bid evaluates to false - invalid */
                 return('Invalid Weight');
 			}
@@ -553,6 +642,43 @@ class ZoneController extends Controller
  	 	} 
     }
 	
+	private function balanceAds($handle)
+    {
+		$ads = Ad::where('zone_handle', $handle)->where('status', 1)->get();
+		$weight = $auto_weight = $rtb_weight = 0;
+		$available = 75; 
+		foreach($ads as $ad){
+			if($ad->fixed == 1) {
+				$weight += $ad->weight;
+			} 
+		}
+
+		if ($weight) {
+			$available = 75-$weight;
+		}
+
+		$count = Ad::where('zone_handle', $handle)
+				->where('buyer_id', '!=', 0)
+				->where('fixed', 0)
+				->count();
+		if ($count) {
+			$weight = ($available / $count);
+			$sql = "UPDATE ads SET weight = ? WHERE zone_handle = ? and buyer_id != 0 and fixed = 0";
+			Log::info($sql);
+			DB::update($sql, array($weight, $handle));
+
+			$sql = "UPDATE ads SET weight = ? WHERE zone_handle = ? and buyer_id = 0";
+			Log::info($sql);
+			DB::update($sql, array(25, $handle));
+		} else {
+			$weight = 100-$weight;
+			$sql = "UPDATE ads SET weight = ? WHERE zone_handle = ? and buyer_id = 0";
+			Log::info($sql);
+			DB::update($sql, array($weight, $handle));
+		}
+		return true;
+    }
+
 	public function updateImpressionCap(Request $request)
     {
 	$user = Auth::getUser();
@@ -631,56 +757,119 @@ class ZoneController extends Controller
 	
 	public function createCreative(Request $request)
     {
-	if(!$this->checkBank()) return redirect('/addfunds');
-		if(!$this->checkBank()) return redirect('/addfunds');
         $user = Auth::getUser();
-        $campaign = Ad::where('id', $request->id)->first();
+        $ad = Ad::where('id', $request->id)->first();
         $creatives = AdCreative::where('ad_id', $request->id)->get();
-        $media = Media::where([['status', 1],['location_type', $campaign->location_type],['user_id', $user->id]])->get();
+        $media = Media::where([['status', 1],['location_type', $ad->location_type],['user_id', $user->id]])->get();
         $links = Links::where([['status', 1],['user_id', $user->id]])->get();
-        return view('new_creative', ['user' => $user, 'campaign' => $campaign, 'media' => $media, 'links' => $links]);
+        return view('new_creative', ['user' => $user, 'campaign' => $ad, 'media' => $media, 'links' => $links, 'view_type' => 2]);
     }
+	
+	public function postCreative(Request $request)
+    {
+		try{
+			$user = Auth::getUser();
+			/* create media */
+			$ins = array();
+			$ins['user_id'] = $user->id;
+			$ins['location_type'] = $request->location_type;
+			$ins['category'] = 0;
+			$ins['media_name'] = $request->description.'_0';
+			$ins['file_location'] = $request->banner_link;
+			$ins['created_at'] = date('Y-m-d H:i:s');
+			$ins['status'] = 1;
+			$media = new Media();
+			$media->fill($ins);
+			$media->save();		
+			$media_id = $media->id;
+
+			/* create link */
+			$ins = array();
+			$ins['user_id'] = $user->id;
+			$ins['category'] = 0;
+			$ins['link_name'] = $request->description.'_0';
+			$ins['url'] = $request->click_link;
+			$ins['created_at'] = date('Y-m-d H:i:s');
+			$ins['status'] = 1;
+			$link = new Links();
+			$link->fill($ins);
+			$link->save();
+			$link_id = $link->id;
+
+			/* make creative */
+			$ins = array();
+			$ins['ad_id'] = $request->campaign_id;
+			$ins['description'] = $request->description;
+			$ins['weight'] = 0;
+			$ins['media_id'] = $media_id;
+			$ins['link_id'] = $link_id;
+			$ins['status'] = 1;
+			$ins['created_at'] = date('Y-m-d H:i:s');
+			$creative = new AdCreative();
+			$creative->fill($ins);
+			$creative->save();
+			$this->balanceCreatives($creative->ad_id); 
+			
+			return redirect('/edit_custom_ad/'.$request->campaign_id)->with('creative_updated', 'Success! A new creative has been added.');
+		}catch(Throwable $t){
+		return $t->getMessage();
+	  }
+    }
+	
+	private function balanceCreatives($id)
+    {
+		$sql = "SELECT COUNT(*) AS records FROM ad_creatives WHERE ad_id = ".$id;
+		$result = DB::select($sql);
+		$count = $result[0]->records;
+		if($count){
+			$weight = round(100 / $count);
+			$sql = "UPDATE ad_creatives SET weight = ? WHERE ad_id = ?";
+			Log::info($sql);
+			DB::update($sql, array($weight, $id));
+		}
+		return true;
+    }
+	
 	
 	public function editCreative(Request $request)
     {
 		$user = Auth::getUser();
-        $creative = Ad::where([['id', $request->id],['buyer_id', $user->id]])->first();
-		$campaign = AdCreative::where([['id', $creative->campaign_id],['buyer_id', $user->id]])->first();
-        $currentMedia = Media::where([['id', $creative->media_id],['user_id', $user->id]])->first()->id;
-		$media = Media::where([['location_type', $campaign->location_type],['category', $campaign->campaign_category],['user_id', $user->id]])->whereIn('status', [1, 5])->orderby('media_name', 'ASC')->get();
-		$currentLink = Links::where([['id', $creative->link_id],['user_id', $user->id]])->first()->id;
-	 	$links = Links::where([['category', $campaign->campaign_category],['user_id', $user->id]])->whereIn('status', [1, 5])->orderby('link_name', 'ASC')->get();
-		return view('edit_creative', ['user' => $user, 'creative' => $creative, 'campaign' => $campaign, 'media' => $media, 'edit_creative' => $currentMedia, 'links' => $links, 'currentLink' => $currentLink]);
+        $creative = AdCreative::find($request->id);
+		$campaign = Ad::find($creative->ad_id);
+		return view('edit_creative', ['creative' => $creative, 'campaign' => $campaign, 'view_type'=>2]);
     }
 	
 	public function updateCreative(Request $request)
     {
-		if(!$this->checkBank()) return redirect('/addfunds');	
 		try{
 			$user = Auth::getUser();
-			$data = $request->all();
-			$data['user_id'] = $user->id;
-			$creative = AdCreative::where([['campaign_id', $data['campaign_id']],['buyer_id', $user->id]])->first();
-			$creative->fill($data);
-			$creative->save();
-
-			$media = DB::select('select * from media where id = '."'".$request->media_id."'".' and user_id = '.$user->id.' and status = 1');
-			$links = DB::select('select * from links where id = '."'".$request->link_id."'".' and user_id = '.$user->id.' and status = 1');
-			if ($media && $links) {
-				$update = array('status' => 1, 'updated_at' => DB::raw('NOW()'));	
-				DB::table('creatives')->where([['link_id', $request->link_id],['media_id', $request->media_id]])->update($update);
-				Log::info($user->name." Active Creative ".$request->id);
-			} else {
-				$update = array('status' => 5, 'updated_at' => DB::raw('NOW()'));
-				DB::table('creatives')->where([['link_id', $request->link_id],['media_id', $request->media_id]])->update($update);
-				Log::info($user->name." Set Creative to Pending ".$request->id);
-			}
+			$creative = AdCreative::find($request->creative_id);
+			$creative->status = 1;
+			$creative->description = $request->description;
+			$media = Media::find($creative->media_id);
+			$link = Media::find($creative->link_id);
 			
-			return redirect('/zone_manage_customAd/'.$request->campaign_id);
+			
+			
+			$creative->save();
+			if (!($media->file_location == $request->banner_link)){
+				$update = array('file_location' => $request->banner_link, 'updated_at' => DB::raw('NOW()'));
+				DB::table('media')->where([['id', $creative->media_id],['user_id', $user->id]])->update($update);
+				Log::info($user->name." Updated media for AdCreative id ".$request->creative_id);
+			}
+			if (!($link->url == $request->click_link)){
+				$update = array('url' => $request->click_link, 'updated_at' => DB::raw('NOW()'));
+				DB::table('links')->where([['id', $creative->link_id],['user_id', $user->id]])->update($update);
+				Log::info($user->name." Updated link for AdCreative id ".$request->creative_id);
+			}
+						
+			$this->balanceCreatives($creative->ad_id); 
+			
+			return redirect('/edit_custom_ad/'.$request->campaign_id)->with('creative_updated', 'Success! Creative has been updated.');
 			
 		} catch(Exception $e){
             return $e->getMessage();
-        } 
+        }
     }
 	
 	public function checkBank()

@@ -113,7 +113,7 @@
 							</div>
 
 						<div class="ibox-content tableSearchOnly">
-							<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack" style="display: block; overflow-x: auto; white-space: nowrap;;">
+							<table class="tablesaw tablesaw-stack table-striped table-hover dataTableSearchOnly dateTableFilter" data-tablesaw-mode="stack" style="display: block; overflow-x: auto; white-space: nowrap;">
 							<thead>
 									<tr>
 										<th>Date</th>
