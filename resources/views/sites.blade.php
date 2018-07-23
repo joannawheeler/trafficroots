@@ -212,7 +212,7 @@ hljs.initHighlightingOnLoad();
 								<tr>
 									<td class="text-center"><b class=" tablesaw-cell-label">Site Name</b><div>{{ $site->site_name }}</div></td>
 									<td class="text-center col-xs-12 col-md-3"><b class=" tablesaw-cell-label">Site Url</b><div>{{ $site->site_url }}</div></td>
-									<td class="text-center"><b class=" tablesaw-cell-label">Site Theme</b><div>{{ App\SiteTheme::where('id',$site->site_theme)->first()->theme }}</div></td>
+									<td class="text-center"><b class=" tablesaw-cell-label">Site Theme</b><div>{{ App\SiteTheme::where('id',$site->site_theme)->orderBy('theme')->first()->theme }}</div></td>
 									<td class="text-center" 
 										data-site_id="{{ $site->id }}">
 										<b class=" tablesaw-cell-label">Options</b>
@@ -481,15 +481,14 @@ hljs.initHighlightingOnLoad();
                                     value="{{ $site->site_theme }}"
                                     name="site_theme"
                                     required>
-                                @foreach($themes as $theme)
-                                <option @if($theme->id == $site->site_theme) selected="selected" @endif value="{{ $theme->id }}">{{ $theme->category }}</option>
+								@foreach($themes as $theme)
+                                <option @if($theme->id == $site->site_theme) selected="selected" @endif value="{{ $theme->id }}">{{ $theme->theme }}</option>
                                 @endforeach
                             </select>
 
                             <label class="error hide"
                                    for="site_theme"></label>
-			</div>
-
+						</div>
                                         <div class="form-group">
                                             <label for="allowed_category[]">Advertising Categories Allowed</label>
                                             <select class="form-control m-b chosen-select"

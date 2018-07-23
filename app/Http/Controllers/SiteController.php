@@ -32,8 +32,8 @@ class SiteController extends Controller
             }
 
         $sites = Site::with('zones')->where('user_id', $user->id)->get();
-	    $themes = SiteTheme::all();
-	    $categories = Category::all();
+	    $themes = SiteTheme::orderBy('theme')->get();
+	    $categories = Category::orderBy('category')->get();
 	    $status_types = StatusType::all();
         $locationTypes = LocationType::orderBy('width')->get();
         $pending = $this->getPendingBids();
