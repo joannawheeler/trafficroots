@@ -239,11 +239,11 @@ class ZoneController extends Controller
 			    $link->fill($ins);
 			    $link->save();
 			    $link_id = $link->id;
-				}
+				
 			    /* make creative */
 				$ins = array();
 			    $ins['ad_id'] = $ad_id;
-				$ins['description'] = $stuff[0];
+				$ins['description'] = str_replace("%20"," ",$stuff[0]);
 			    $ins['weight'] = 0;
 			    $ins['media_id'] = $media_id;
 			    $ins['link_id'] = $link_id;
@@ -253,6 +253,7 @@ class ZoneController extends Controller
 			    $creative->fill($ins);
 			    $creative->save();
 				$this->balanceCreatives($creative->ad_id);
+				}
 		    }
 		    return json_encode(array('result' => 'OK'));
             }else{
