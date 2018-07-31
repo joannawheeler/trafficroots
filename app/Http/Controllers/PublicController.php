@@ -11,6 +11,126 @@ use Cache;
 class PublicController extends Controller
 {
 
+    public function advertiserSupport()
+    {
+        // TODO: replace below data with data pulled from db
+        // $data =
+        // '{
+        //   "Getting Started" : [
+        //     "Video: How to Get Started",
+        //     "CLICK ME TO REDIRECT!",
+        //     "Tips for Success",
+        //     "How to do something",
+        //     "Some other information here",
+        //     "Some other information here"
+        //   ],
+        //   "Campaigns" : [
+        //     "Why was my campaign rejected?",
+        //     "How long does it take for my campaign to be approved?"
+        //   ],
+        //   "Pricing" : [
+        //     "How much is it to advertise?",
+        //     "Do I receive an Invoice?",
+        //     "How do I add funds to my account?",
+        //     "What payment options do you accept?"
+        //   ],
+        //   "Payments" : [
+        //     "Video: How to Get Started",
+        //     "CLICK ME TO REDIRECT!",
+        //     "Tips for Success",
+        //     "How to do something",
+        //     "Some other information here",
+        //     "Some other information here"
+        //   ],
+        //   "Something Else" : [
+        //     "Why was my campaign rejected?",
+        //     "How long does it take for my campaign to be approved?"
+        //   ],
+        //   "Something Else" : [
+        //     "How much is it to advertise?",
+        //     "Do I receive an Invoice?",
+        //     "How do I add funds to my account?",
+        //     "What payment options do you accept?"
+        //   ]
+        // }';
+        // $topics = json.decode($data, TRUE);
+
+
+        // $topics = [
+        //   (object) ['name' => 'Payments', 'subtopics' => 'Where do I pay?'],
+        //   (object) ['name' => 'Campaigns', 'subtopics' => 'Where are my Campaigns?']
+        // ];
+
+        // print_r($topics)
+
+        // $content;
+        // foreach($topics as $topic => $subtopic) {
+        //   $content = $content . $topic . '<li>' . $subtopic . '</li>';
+        // }
+        // $output = '<ul>' . $content . '</ul>';
+
+        return view('advertiserSupport');
+    }
+
+        public function publisherSupport()
+    {
+        // TODO: replace below data with data pulled from db
+        // $topics = "hi"
+        // {
+        //   "Getting Started" : [
+        //     "Video: How to Get Started",
+        //     "CLICK ME TO REDIRECT!",
+        //     "Tips for Success",
+        //     "How to do something",
+        //     "Some other information here",
+        //     "Some other information here"
+        //   ],
+        //   "Campaigns" : [
+        //     "Why was my campaign rejected?",
+        //     "How long does it take for my campaign to be approved?"
+        //   ],
+        //   "Pricing" : [
+        //     "How much is it to advertise?",
+        //     "Do I receive an Invoice?",
+        //     "How do I add funds to my account?",
+        //     "What payment options do you accept?"
+        //   ],
+        //   "Payments" : [
+        //     "Video: How to Get Started",
+        //     "CLICK ME TO REDIRECT!",
+        //     "Tips for Success",
+        //     "How to do something",
+        //     "Some other information here",
+        //     "Some other information here"
+        //   ],
+        //   "Something Else" : [
+        //     "Why was my campaign rejected?",
+        //     "How long does it take for my campaign to be approved?"
+        //   ],
+        //   "Something Else" : [
+        //     "How much is it to advertise?",
+        //     "Do I receive an Invoice?",
+        //     "How do I add funds to my account?",
+        //     "What payment options do you accept?"
+        //   ]
+        // };
+        // $topics = [
+        //   (object) ['name' => 'Payments', 'subtopics' => 'Where do I pay?'],
+        //   (object) ['name' => 'Campaigns', 'subtopics' => 'Where are my Campaigns?']
+        // ];
+
+        // print_r($topics)
+
+        // $output = '<ul>';
+        // foreach($topics as $topic) {
+        //   $output = $output . '<li>' . $topic->name . '</li>';
+        // }
+
+        // $output = $output . '</ul>';
+
+        return view('publisherSupport');
+    }
+
     public function aboutUs()
     {
          return view('about');
@@ -82,7 +202,7 @@ class PublicController extends Controller
                 sleep(4);
                 return false;
             }
-            
+
             Redis::incr('SENDLANE');
             return true;
         }
@@ -90,15 +210,15 @@ class PublicController extends Controller
         Redis::expire('SENDLANE',2);
         return true;
 
-    }    
+    }
     public function sendlaneSubscribe($data = array())
     {
         /* use Sendlane API to register new sign ups
-         * allow list_id to be passed as argument, 
+         * allow list_id to be passed as argument,
          * so this function can be used for
          * subscribing to future lists, too
          */
-       
+
         if(count($data) && $this->checkCache()){
             Log::info('Subscribing '.$data['email'].' to list '.$data['list_id']);
             $return = array();
@@ -129,14 +249,14 @@ class PublicController extends Controller
                     Log::error('Failed getting '.$info['url'].' : response code '.$info['http_code']);
                 }
             }
-            return $return;           
+            return $return;
 
         }
     }
 
     public function subscribeUser(Request $request)
     {
-        /* implement Sendlane api 
+        /* implement Sendlane api
          * returns json
          */
         Log::info('begin subscribe function');
@@ -158,14 +278,14 @@ class PublicController extends Controller
          $last_name = filter_var($request->last_name, FILTER_SANITIZE_STRING);;
          $url = $api_url.$command;
          $process = false;
- 
+
          if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
 		 $process = true;
 		 Log::info("Posting to $url");
 	 }else{
 
-            Log::error('Invalid subscribe attempt using '.$email);     
-            $return['response'] = "Invalid email";  
+            Log::error('Invalid subscribe attempt using '.$email);
+            $return['response'] = "Invalid email";
          }
          if($process && $this->checkCache()){
 		 $post = array('api' => $api_key, 'hash' => $hash_key, 'list_id' => $list_id, 'email' => $email, 'first_name' => $first_name, 'last_name' => $last_name);
@@ -186,13 +306,13 @@ class PublicController extends Controller
                 $return['response'] = $stuff;
                 return json_encode($return);
             }else{
-                
+
                 Log::error('Failed getting '.$info['url'].' : response code '.$info['http_code']);
             }
 	 }else{
 		 Log::error('Curl Error No: '.curl_errno($ch));
 	 }
-         } 
+         }
          return json_encode($return);
     }
 }

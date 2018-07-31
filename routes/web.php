@@ -9,6 +9,11 @@
 | to using a Closure or controller method. Build something great!
 |
 */
+// /landing/advertiserSupport
+Route::get('/advertiserSupport', 'PublicController@advertiserSupport');
+
+Route::get('/publisherSupport', 'PublicController@publisherSupport');
+
 // OAuth Routes
 Route::get('auth/{driver}', ['as' => 'socialAuth', 'uses' => 'Auth\SocialController@redirectToProvider']);
 Route::get('auth/{driver}/callback', ['as' => 'socialAuthCallback', 'uses' => 'Auth\SocialController@handleProviderCallback']);
@@ -19,7 +24,7 @@ $landing = function() {
     Route::post('/pub_subscribe', 'PublicController@subscribeUser');
 };
 Route::group(['domain' => 'www.trafficroots.com'], $landing);
-Route::group(['domain' => 'trafficroots.com'], $landing); 
+Route::group(['domain' => 'trafficroots.com'], $landing);
 
 Route::get('/', function () {
     return redirect('/home');
