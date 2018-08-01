@@ -29,78 +29,191 @@
   </head>
   <body> -->
     <!-- <p> $output </p> -->
+
 @section('content')
+<style>
+  ul {
+    font-size: 18px;
+    padding: 0;
+    list-style-type: none;
+  }
 
-    <h1 class="text-center">Publisher Support</h1>
-    <!-- Load Advertiser Support page onClick -->
-    <p class="text-center"><a href="https://trafficroots.test/advertiserSupport">Switch to Advertiser Support</a><p>
-    <div>
-      <section class="container">
-        <div class="row">
-          <div class="col-sm-4">
-            <h2 class="topics text-center">Getting Started</h2>
-            <ul>
-              <li><a href="#">Video: How to Get Started</a></li>
+  a {
+    /*color: #1ab394*/
+    color: black
+  }
 
-<!--               <li><a id="clickMe" title="Click to do something"
- href="PleaseEnableJavascript.html" onclick="MyFunction();return false;">CLICK ME TO REDIRECT!1</a></li> -->
-              <li><a href="#">Tips for Success</a></li>
-              <li><a href="#">How to do something</a></li>
-              <li><a href="#">Some other information here</a></li>
-              <li><a href="#">Some other information here</a></li>
-            </ul>
-          </div>
-          <div class="col-sm-4">
-            <h2 class="topics text-center">Campaigns</h2>
-            <ul>
-              <li><a href="#">Why was my campaign rejected?</a></li>
-              <li><a href="#">How long does it take for my campaign to be approved?</a></li>
-            </ul>
-          </div>
-          <div class="col-sm-4">
-            <h2 class="topics text-center">Pricing</h2>
-            <ul>
-              <li><a href="#">How much is it to advertise?</a></li>
-              <li><a href="#">Do I receive an Invoice?</a></li>
-              <li><a href="#">How do I add funds to my acount?</a></li>
-              <li><a href="#">What payment options do you accept?</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-4">
-            <h2 class="topics text-center">Payments</h2>
-            <li><a href="#">Video: How to Get Started</a></li>
-            <li><a href="#">Tips for Success</a></li>
-              <li><a href="#">How much is it to advertise?</a></li>
-              <li><a href="#">Do I receive an Invoice?</a></li>
-          </div>
-          <div class="col-sm-4">
-            <h2 class="topics text-center">Something Else</h2>
-            <ul>
-              <li><a href="#">Why was my campaign rejected?</a></li>
-              <li><a href="#">How long does it take for my campaign to be approved?</a></li>
-            </ul>
-          </div>
-          <div class="col-sm-4">
-            <h2 class="topics text-center">Something Else</h2>
-            <ul>
-              <li><a href="#">How much is it to advertise?</a></li>
-              <li><a href="#">Do I receive an Invoice?</a></li>
-              <li><a href="#">How do I add funds to my acount?</a></li>
-            </ul>
-          </div>
-        </div>
-      </section>
-      <section>
-        <p class="helpForumRedirect text-center">Have a specific question? Check out our <span><a href="#">Help Forum</a></span></p>
-      </section>
-      <section>
-        <p class="articleHelpful text-center">Was this article helpful? <span><a href="#">Yes </a></span>or <span><a href="#">No</a></span></p>
-      </section>
+  #switchToAdvLink {
+    color: lightgrey
+  }
 
+  .topics {
+    font-weight: bolder;
+    font-size: 28px;
+  }
+
+  .topicsSection {
+    padding: 50px 50px 120px 120px;
+  }
+
+  .switchToAdvText {
+    color: lightgrey;
+  }
+
+  .footerSection {
+    background-color: #DCDCDC;
+}
+
+  .alignCenterVertical {
+    align-items:center;
+    justify-content: center;
+    display: flex;
+    height: 50%;
+  }
+
+  .listPadding {
+    padding: 0px
+  }
+
+  .topicHeadAndList {
+
+  }
+
+
+    /* Small devices (tablets, 768px and up) */
+  @media (min-width: @screen-sm-min) {  }
+
+  /* Medium devices (desktops, 992px and up) */
+  @media (min-width: @screen-md-min) {
+  }
+
+  /* Large devices (large desktops, 1200px and up) */
+  @media (min-width: @screen-lg-min) {
+  }
+
+</style>
+<div class="container-fluid">
+  <section>
+    <div class="row" style="background-color: rgba(176,196,222,.75); height: 8.5%; position: fixed; width: 100%">
     </div>
+  </section>
 
+  <section>
+    <div class="row alignCenterVertical" style="background-image: url('https://www.renmoneyng.com/images/uploads/faqs.png'); background-size: cover; margin-top: 4.5%">
+      <div class="col-12-sm" style="">
+        <h1 class="title" style="font-weight: bolder; font-size: 60px; color: white; ">Publisher Support</h1>
+        <p class="text-center switchToAdvText"; ">Switch to<a id="switchToAdvLink" href="https://trafficroots.test/advertiserSupport"> Advertiser Support</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="row">
+      <div class="col-sm-4">
+        <h2 class="topics">Getting Started</h2>
+        <ul>
+          <li><a href="#">Video: How to Get Started</a></li>
+          <li><a href="#">Am I a publisher or am I an advertiser?</a></li><li><a href="#">Tips for Success</a></li>
+          <li><a href="#">How long does it take for my campaign to be approved?
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-sm-4">
+        <h2 class="topics">Campaigns</h2>
+      <ul>
+          <li><a href="#">Why was my campaign rejected?</a></li>
+          <li><a href="#">How long does it take for my campaign to be approved?</a></li>
+          <li><a href="#">Do I receive an Invoice?</a></li>
+        </ul>
+      </div>
+      <div class="col-sm-4">
+        <h2 class="topics">Pricing</h2>
+        <ul>
+          <li><a href="#">How much is it to advertise?</a></li>
+          <li><a href="#">Do I receive an Invoice?</a></li>
+          <li><a href="#">How do I add funds to my acount?</a></li>
+          <li><a href="#">What payment options do you accept?</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-4">
+        <h2 class="topics">Payments</h2>
+        <ul>
+        <li><a href="#">Video: How to Get Started</a></li>
+        <li><a href="#">Tips for Success</a></li>
+          <li><a href="#">How much is it to advertise?</a></li>
+          <li><a href="#">Do I receive an Invoice?</a></li>
+        </ul>
+      </div>
+      <div class="col-sm-4">
+        <h2 class="topics">Something Else</h2>
+        <ul>
+          <li><a href="#">Why was my campaign rejected?</a></li>
+          <li><a href="#">How long does it take for my campaign to be approved?</a></li>
+          <li><a href="#">How long does it take for my campaign to be approved?</a></li>
+        </ul>
+      </div>
+      <div class="col-sm-4">
+        <h2 class="topics">Something Else</h2>
+        <ul>
+          <li><a href="#">How much is it to advertise?</a></li>
+          <li><a href="#">Do I receive an Invoice?</a></li>
+          <li><a href="#">How do I add funds to my acount?</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="contact" class="gray-section contact" style="margin-top: 0px">
+    <div class="container-fluid">
+        <div class="row m-b-lg">
+            <div class="col-lg-12 text-center">
+                <div class="navy-line"></div>
+                <h1>Contact Us</h1>
+            </div>
+        </div>
+        <div class="row m-b-lg">
+            <div class="col-lg-12 text-center">
+                <address>
+                    <strong><span class="navy">Traffic Roots, LLC.</span></strong><br/>
+
+                    San Diego, CA 92121<br/>
+
+                </address>
+            </div>
+            <div class="col-lg-12 text-center">
+                <div class="navy-line"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <a href="mailto:info@trafficroots.com" class="btn btn-primary">Send us mail</a>
+                <p class="m-t-sm">
+                    Or follow us on social platform
+                </p>
+                <ul class="list-inline social-icon">
+                    <li><a href="https://twitter.com/TrafficRoots" target="_blank"><i class="fa fa-twitter"></i></a>
+                    </li>
+                    <li><a href="https://www.facebook.com/trafficrootsmedia/" target="_blank"><i class="fa fa-facebook"></i></a>
+                    </li>
+                    <li><a href="https://www.linkedin.com/in/traffic-roots-44b648123/" target="_blank"><i class="fa fa-linkedin"></i></a>
+                    </li>
+                    <li><a href="https://instagram.com/traffic_roots" target="_blank"><i class="fa fa-instagram"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 text-center m-t-lg m-b-lg">
+                <p><strong>&copy; <?php echo date('Y'); ?> Traffic Roots, LLC</strong></p>
+            </div>
+        </div>
+    </div>
+</section>
+</div>
 @endsection
 <!--   </body>
 </html> -->

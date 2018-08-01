@@ -30,9 +30,11 @@
   <body> -->
 
 @section('content')
+  <div style="padding-top: 76">
     <h1 class="text-center">Advertiser Support</h1>
     <!-- Load Advertiser Support page onClick -->
-    <p class="text-center"><a href="https://trafficroots.test/publisherSupport">Switch to Publisher Support</a><p>
+    <p class="text-center"><a href="https://trafficroots.test/publisherSupport">Switch to Publisher Support</a></p>
+  </div>
     <div>
       <section class="container">
         <div class="row">
