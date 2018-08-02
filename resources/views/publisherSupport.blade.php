@@ -1,6 +1,7 @@
 @extends('layouts.landing')
 @section('title', 'Support')
 @section('css')
+<!-- -->
 <!-- @section('content')
  -->
 @section('content')
