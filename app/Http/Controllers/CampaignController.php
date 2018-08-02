@@ -131,15 +131,10 @@ class CampaignController extends Controller
 	$user = Auth::getUser();
         try{
             $frequency = (float)($request->frequency_cap);
-            if($frequency){
-                $campaign = intval($request->camp_id);
-				Campaign::where('id', $campaign)->where('user_id', $user->id)->update(array('frequency_capping' => $frequency));
-				Log::info($user->name.' updated Frequency Capping for campaign '.$request->camp_id.' to $'.$frequency);
-                return('All Changes Saved');
-            }else{
-                /* bid evaluates to false - invalid */
-                return('Invalid Frequency Capping');
-			}
+			$campaign = intval($request->camp_id);
+			Campaign::where('id', $campaign)->where('user_id', $user->id)->update(array('frequency_capping' => $frequency));
+			Log::info($user->name.' updated Frequency Capping for campaign '.$request->camp_id.' to $'.$frequency);
+			return('All Changes Saved');
          }catch(Exception $e){
                 return $e->getMessage();
  	 	} 
@@ -513,7 +508,7 @@ class CampaignController extends Controller
 				$creatives = DB::table('campaigns')
 				->join('creatives', 'creatives.campaign_id', '=', 'campaigns.id')
 				->join('media', 'media.id', '=', 'creatives.media_id')
-				->select('campaigns.campaign_name', 'creatives.campaign_id', 'creatives.description', 'media.media_name')
+				->select('campaigns.campaign_name', 'creatives.campaign_id', 'creatives.created_at', 'creatives.description', 'media.media_name')
 				->where('media.id', $request->media_id)
 				->get();
 				if($creatives){
